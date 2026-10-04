@@ -1,18 +1,17 @@
 # woori-tools
 
-woori.today에서 운영할 검색 중심 계산기·생활 도구 서비스입니다. 각 계산기는 독립 URL을 가지며, 계산 로직은 브라우저에서 즉시 실행하는 방향으로 구성합니다. MoneyBook과는 별개의 서비스입니다.
+woori.today의 검색 중심 계산기·생활 도구 서비스입니다. MoneyBook과 별개의 Next.js frontend이며 계산은 사용자의 브라우저에서 처리합니다.
 
 ## 기술 스택
 
-- Next.js App Router, React, TypeScript (strict)
-- Tailwind CSS 4
-- pnpm
-- Vitest
-- Docker multi-stage production image (Next.js standalone output)
+- Next.js App Router, React, TypeScript strict
+- Tailwind CSS 4, pnpm
+- Vitest 단위 테스트
+- Docker multi-stage build, Next.js standalone output
 
-Backend, 데이터베이스, 로그인 및 글로벌 상태 라이브러리는 사용하지 않습니다.
+Backend, DB, 로그인, 관리자, 글로벌 상태 라이브러리는 사용하지 않습니다.
 
-## 로컬 실행
+## 실행
 
 Node.js 20 이상과 pnpm이 필요합니다.
 
@@ -21,53 +20,52 @@ pnpm install
 pnpm dev
 ```
 
-개발 서버는 `http://localhost:3000`에서 실행됩니다.
+개발 서버와 production 서버의 기본 주소는 **http://localhost:3001**입니다. MoneyBook의 3000 포트와 분리해 사용합니다.
 
-## 주요 명령어
+## 명령어
 
 ```sh
-pnpm dev        # 개발 서버
+pnpm dev        # 개발 서버 (3001)
 pnpm lint       # ESLint
-pnpm test       # Vitest 단위 테스트
-pnpm typecheck  # TypeScript 검사
-pnpm build      # Production 빌드
-pnpm start      # Production 서버
+pnpm test       # Vitest
+pnpm typecheck  # TypeScript
+pnpm build      # production build
+pnpm start      # production 서버 (3001)
 ```
 
-## 주요 구조
+## 계산기 구조
 
 ```text
 src/
-  app/                    # App Router 페이지, sitemap, robots
-  components/layout/      # 공통 헤더와 푸터
-  components/seo/         # JSON-LD 기반
-  constants/              # 사이트 설정
-  data/calculators/       # 계산기 카테고리와 Registry
-  lib/formatter/          # 숫자 및 KRW formatter
-  lib/seo/                # 페이지 metadata helper
-  types/                  # 계산기 및 정책 데이터 타입
+  app/calculators/[slug]/       # 공통 SEO 상세 route, 정적 생성
+  calculators/                  # React와 분리한 계산 로직 및 순수 함수 테스트
+  components/calculator/        # 계산 입력과 결과 Client Component
+  data/calculator-content/      # 계산기별 콘텐츠를 카테고리별로 관리
+  data/calculators/             # Registry와 카테고리
+  data/policies/                # 연도와 출처가 있는 정책 자료
+  lib/formatter/                # 천 단위 숫자·KRW formatter
+  lib/seo/                      # canonical 및 metadata helper
 ```
 
-새 계산기는 순수 계산 함수와 단위 테스트를 먼저 정의하고 UI와 분리하세요. 상세 페이지를 완성하고 Registry에서 공개 처리한 항목만 목록과 sitemap에 노출되어야 합니다. 자세한 원칙은 `AGENTS.md`를 참고하세요.
+## 계산기 추가 방법
 
-## 브랜치 전략
+1. `src/calculators/<분야>/`에 React와 분리된 순수 계산 함수와 경계값 테스트를 추가합니다.
+2. `src/data/calculator-content/`의 분야 파일에 독립 slug, 고유 설명·공식·예제·FAQ·관련 링크·입력 정의를 등록합니다.
+3. 새 분야면 콘텐츠 배열을 `index.ts`에 연결합니다. Registry, 계산기 목록, 정적 상세 페이지와 sitemap은 공개 콘텐츠 정의에서 생성됩니다.
+4. 정책값은 UI나 계산 함수에 직접 넣지 말고 `src/data/policies/`에 기준 연도·버전·유효기간·출처를 분리합니다. 확인되지 않은 정책 계산기는 공개하지 않습니다.
+5. 숫자 입력은 공통 formatter를 사용하고, 결과 계산은 단위 테스트로 확인합니다.
 
-`main` → `release` → `develop` → `feature/dev` 흐름을 사용하며, 작업은 현재 지정된 브랜치에서 진행합니다. 커밋 제목 형식은 `Type : [scope] 작업 내용`입니다.
-
-## Production build
-
-```sh
-pnpm build
-pnpm start
-```
+SEO는 각 계산기의 실제 URL, 고유 metadata/canonical/H1, 공식과 설명, 예제, FAQ 및 관련 링크를 하나의 기능으로 관리합니다. sitemap에는 공개된 페이지만 들어갑니다.
 
 ## Docker
 
-프로젝트 루트에서 production 이미지를 빌드하고 실행합니다.
-
 ```sh
 docker build -t woori-tools .
-docker run --rm -p 3000:3000 woori-tools
+docker run --rm -p 3001:3001 woori-tools
 ```
 
-컨테이너는 standalone 서버를 non-root 사용자로 실행합니다.
+컨테이너 내부 앱도 3001 포트에서 standalone 서버를 non-root 사용자로 실행합니다.
+
+## 브랜치와 커밋
+
+`main` → `release` → `develop` → `feature/dev` 흐름을 사용합니다. 커밋 제목은 `Type : [scope] 작업 내용` 형식입니다. 프로젝트 원칙은 `AGENTS.md`에 정리되어 있습니다.

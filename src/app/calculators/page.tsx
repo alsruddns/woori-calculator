@@ -1,38 +1,47 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { publishedCalculators } from "@/data/calculators/registry";
 import { calculatorCategories } from "@/data/calculators/categories";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import { publishedCalculatorPages } from "@/data/calculator-content";
 
-export const metadata = createPageMetadata({
-  title: "계산기",
-  description: "woori.today에서 제공하는 온라인 계산기와 생활 도구를 확인하세요.",
+export const metadata: Metadata = createPageMetadata({
+  title: "계산기와 생활 도구",
+  description: "퍼센트, 금융, 날짜, 생활에 필요한 온라인 계산기를 한곳에서 이용하세요.",
   path: "/calculators",
+  keywords: ["온라인 계산기", "생활 계산기", "무료 계산기"],
 });
 
+const categoryOrder = ["math", "finance", "salary", "tax", "date-time", "life"] as const;
+
 export default function CalculatorsPage() {
+  const populatedCategories = categoryOrder
+    .map((category) => ({
+      category,
+      label: calculatorCategories[category],
+      items: publishedCalculatorPages.filter((calculator) => calculator.category === category),
+    }))
+    .filter(({ items }) => items.length > 0);
+
   return (
     <section className="mx-auto max-w-5xl px-5 py-14 sm:py-20">
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500"><Link className="hover:text-teal-800" href="/">홈</Link><span aria-hidden="true" className="mx-2">/</span><span aria-current="page">계산기</span></nav>
-      <h1 className="text-3xl font-bold tracking-tight text-slate-950">계산기</h1>
-      <p className="mt-3 max-w-2xl leading-7 text-slate-600">일상에서 자주 필요한 계산 도구를 준비하고 있습니다.</p>
-      {publishedCalculators.length ? (
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-          {publishedCalculators.map((calculator) => (
-            <li key={calculator.id}>
-              <Link className="block rounded-xl border border-slate-200 bg-white p-5 hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800" href={`/calculators/${calculator.slug}`}>
-                <span className="text-xs font-semibold text-teal-800">{calculatorCategories[calculator.category]}</span>
-                <h2 className="mt-2 text-lg font-semibold">{calculator.name}</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{calculator.description}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="mt-8 rounded-xl border border-dashed border-slate-300 bg-white px-6 py-10 text-center">
-          <h2 className="font-semibold text-slate-900">계산기를 준비하고 있어요</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">첫 번째 계산기가 준비되면 이곳에서 바로 이용할 수 있습니다.</p>
-        </div>
-      )}
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-950">계산기와 생활 도구</h1>
+        <p className="mt-3 max-w-2xl leading-7 text-slate-600">필요한 계산을 골라 바로 이용해 보세요. 계산 입력값은 브라우저에서 계산됩니다.</p>
+      </header>
+      <nav aria-label="계산기 카테고리" className="mt-7 flex flex-wrap gap-2">
+        {populatedCategories.map(({ category, label }) => <a key={category} className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:border-teal-700 hover:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800" href={`#category-${category}`}>{label}</a>)}
+      </nav>
+      <div className="mt-10 space-y-10">
+        {populatedCategories.map(({ category, label, items }) => (
+          <section key={category} id={`category-${category}`} aria-labelledby={`heading-${category}`}>
+            <div className="flex items-baseline justify-between gap-4"><h2 id={`heading-${category}`} className="text-xl font-bold text-slate-950">{label}</h2><span className="text-sm text-slate-500">{items.length}개</span></div>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((calculator) => <li key={calculator.id}><Link href={`/calculators/${calculator.slug}`} className="block h-full rounded-xl border border-slate-200 bg-white p-5 hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800"><span className="text-xs font-semibold text-teal-800">{calculator.shortName}</span><h3 className="mt-2 font-semibold text-slate-950">{calculator.name}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{calculator.description}</p></Link></li>)}
+            </ul>
+          </section>
+        ))}
+      </div>
     </section>
   );
 }

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/constants/site-config";
-import { publishedCalculators } from "@/data/calculators/registry";
+import { publishedCalculatorPages } from "@/data/calculator-content";
 
 const staticPaths = ["/", "/calculators", "/about", "/privacy", "/terms"] as const;
 
@@ -11,8 +11,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: path === "/" ? 1 : 0.5,
   }));
 
-  const calculatorEntries: MetadataRoute.Sitemap = publishedCalculators.map((calculator) => ({
+  const calculatorEntries: MetadataRoute.Sitemap = publishedCalculatorPages.map((calculator) => ({
     url: new URL(`/calculators/${calculator.slug}`, siteConfig.url).toString(),
+    lastModified: new Date(`${calculator.updatedAt}T00:00:00.000Z`),
     changeFrequency: "monthly",
     priority: 0.7,
   }));

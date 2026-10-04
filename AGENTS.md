@@ -11,10 +11,12 @@ woori-tools는 woori.today에서 운영할 검색 중심 계산기·생활 도�
 - Backend가 없는 계산기에 API 계층을 억지로 만들지 않는다.
 - Redux, RTK Query, Zustand는 필요해지기 전까지 도입하지 않는다.
 - frontend만 변경한다. Backend 변경은 금지한다.
+- 개발 서버와 production 서버의 기본 포트는 `3001`이다.
+- 사용자가 보는 숫자는 공통 formatter를 사용해 `1,000`처럼 천 단위 쉼표를 표시한다.
 
 ## 계산기 구조 원칙
 
-계산기 UI와 React 없이 테스트할 수 있는 순수 계산 함수를 분리한다 (Page → Calculator UI → pure calculation function). 계산기 추가는 URL, Registry, metadata, canonical, H1, description, UI/result, 계산 방법, 공식, 예제, FAQ, 기준 연도, 업데이트일, 출처, 관련 계산기, unit test, sitemap 노출을 함께 고려한다. 정책과 무관하면 `STATIC`, 연도별 제도·세율·보험료·정책에 의존하면 `POLICY`로 분류한다.
+계산기 UI와 React 없이 테스트할 수 있는 순수 계산 함수를 분리한다 (Page → Calculator UI → pure calculation function). 계산기 추가는 URL, Registry, metadata, canonical, H1, description, UI/result, 계산 방법, 공식, 예제, FAQ, 기준 연도, 업데이트일, 출처, 관련 계산기, unit test, sitemap 노출을 함께 고려한다. 정책과 무관하면 `STATIC`, 연도별 제도·세율·보험료·정책에 의존하면 `POLICY`로 분류한다. 정책값은 UI나 계산 함수에 직접 하드코딩하지 않고 출처가 검증된 정책 데이터로 분리한다.
 
 ## SEO 원칙
 

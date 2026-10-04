@@ -1,11 +1,20 @@
+import { publishedCalculatorPages } from "@/data/calculator-content";
 import type { CalculatorDefinition } from "@/types/calculator";
 
-// 상세 페이지와 실제 계산기가 준비되면 항목을 등록하고 공개 상태로 전환한다.
-export const calculatorRegistry: readonly CalculatorDefinition[] = [];
+export const calculatorRegistry: readonly CalculatorDefinition[] = publishedCalculatorPages.map((page): CalculatorDefinition => ({
+  id: page.id,
+  slug: page.slug,
+  name: page.name,
+  shortName: page.shortName,
+  description: page.description,
+  category: page.category,
+  policyType: page.policyType,
+  keywords: page.keywords,
+  isPublished: page.isPublished,
+  relatedCalculatorIds: page.relatedCalculatorIds,
+}));
 
-export const publishedCalculators = calculatorRegistry.filter(
-  (calculator) => calculator.isPublished,
-);
+export const publishedCalculators = calculatorRegistry;
 
 export function getPublishedCalculatorBySlug(slug: string) {
   return publishedCalculators.find((calculator) => calculator.slug === slug);
