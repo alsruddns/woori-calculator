@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { matchesCalculatorSearch } from "@/lib/i18n/search";
 
 export type SidebarCalculator = { slug: string; name: string; category: string; keywords?: readonly string[] };
 
@@ -21,7 +22,7 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
-  const filtered = calculators.filter((item) => `${item.name} ${item.slug} ${(item.keywords ?? []).join(" ")}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  const filtered = calculators.filter((item) => matchesCalculatorSearch(item, query));
 
   useEffect(() => {
     if (!open) return;

@@ -43,3 +43,10 @@ git diff --check
 ## 작업 안전 규칙
 
 Backend를 변경하지 않는다. 다른 작업자의 변경사항을 reset, checkout, stash, clean으로 되돌리지 않는다. 검증 후 이번 작업 파일만 commit하고 push한다.
+
+## Internationalization
+
+- Do not publish a locale calculator page until its complete content and UI labels are translated; avoid mixed-language SEO pages.
+- Every localized page needs its own canonical URL and hreflang alternates only for pages that exist.
+- Do not copy Korean policy calculators into other locales without verified translations that clearly state the South Korea policy basis.
+- Keep localized search names and keywords in the active locale, and use the shared locale routing/content system.

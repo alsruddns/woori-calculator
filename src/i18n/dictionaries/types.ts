@@ -5,6 +5,7 @@ export type LocalizedCalculatorContent = {
   shortName: string;
   title: string;
   description: string;
+  keywords?: readonly string[];
   howTo: string;
   formula: string;
   example: { question: string; answer: string };
@@ -25,8 +26,8 @@ export type LocaleDictionary = {
   categories: Record<string, string>;
   calculatorList: { title: string; description: string; breadcrumbHome: string; breadcrumbCalculators: string; count: string; noResults: string };
   detail: { home: string; calculators: string; howTo: string; formula: string; example: string; notes: string; faqs: string; related: string; result: string; calculate: string; invalid: string; updated: string };
-  home: { title: string; description: string };
+  home: { title: string; description: string; featured?: string; categories?: string };
   units: { won: string; number: string; year: string; month: string; durationLabel: string };
   categoriesOrder: readonly string[];
-  calculators: Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>;
+  calculators: Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>;
 };

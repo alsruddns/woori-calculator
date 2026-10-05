@@ -12,6 +12,9 @@ export const localeConfig: Record<Locale, { htmlLang: string; ogLocale: string; 
 
 export const localizedCalculatorSlugs = [
   "percentage", "discount", "loan-interest", "compound-interest", "vat", "date-difference", "age", "area",
+  "ratio", "average", "weighted-average", "cagr", "unit-price", "unit-converter", "change-rate",
+  "simple-interest", "savings-interest", "deposit-interest", "ltv", "dti", "dsr", "margin", "markup",
+  "dday", "workdays", "bmi", "pace", "fuel-cost", "calorie-per-serving",
 ] as const;
 export type LocalizedCalculatorSlug = (typeof localizedCalculatorSlugs)[number];
 export const hasLocale = (value: string): value is Locale => locales.includes(value as Locale);

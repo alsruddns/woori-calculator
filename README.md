@@ -73,3 +73,11 @@ docker run --rm -p 3001:3001 woori-tools
 ## 브랜치와 커밋
 
 `main` → `release` → `develop` → `feature/dev` 흐름을 사용합니다. 커밋 제목은 `Type : [scope] 작업 내용` 형식입니다. 프로젝트 원칙은 `AGENTS.md`에 정리되어 있습니다.
+
+## Internationalized URLs and content
+
+- Supported locales: Korean (`ko`), English (`en`), Japanese (`ja`), and Simplified Chinese (`zh`).
+- Korean keeps existing paths such as `/calculators/...`; other locales use `/en/...`, `/ja/...`, or `/zh/...` prefixes.
+- `src/i18n/config.ts` lists calculators with complete translated pages. Policy calculators based on Korean rules remain Korean-only until a separately reviewed translation clearly identifies the South Korea basis.
+- Add locale content under `src/i18n/dictionaries/` with a unique title, description, keywords, instructions, formula, example, FAQ, and translated input/result labels before publishing its slug.
+- Each localized page uses its own canonical URL and hreflang links only to available translations. Do not publish incomplete or mixed-language pages.

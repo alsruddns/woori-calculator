@@ -13,6 +13,16 @@ import type { CalculatorField, CalculatorOutcome } from "@/types/calculator-page
 type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: Locale; dictionary?: Pick<LocaleDictionary, "detail" | "units">; content?: LocalizedCalculatorContent };
 
 const unitLabels: Record<string, string> = Object.fromEntries(Object.entries(units).map(([key, unit]) => [key, unit.label]));
+function localizedResultUnit(unit: string | undefined, locale: Locale) {
+  if (!unit || locale === "ko") return unit;
+  if (unit === "세") return locale === "en" ? "years old" : locale === "ja" ? "歳" : "岁";
+  if (unit === "평") return locale === "en" ? "pyeong" : "坪";
+  if (unit.startsWith("일")) {
+    const day = locale === "en" ? "days" : locale === "ja" ? "日" : "天";
+    return `${day}${unit.slice(1)}`;
+  }
+  return unit;
+}
 const optionsFor = (field: CalculatorField, values: Record<string, string>) => {
   if (field.name !== "fromUnit" && field.name !== "toUnit") return field.options ?? [];
   const category = values.category ?? "length";
@@ -73,7 +83,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                     {optionsFor(field, values).map((option) => <option key={option.value} value={option.value}>{content?.options[field.name]?.[option.value] ?? option.label}</option>)}
                   </select>
                 ) : field.type === "textarea" ? (
-                  <textarea id={inputId} className={`${commonClass} min-h-28 py-3`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={field.placeholder} aria-describedby={describedBy} />
+                  <textarea id={inputId} className={`${commonClass} min-h-28 py-3`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
                 ) : (
                   <div className="relative">
                     <input
@@ -114,10 +124,11 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
         <section className="mt-7 rounded-xl bg-teal-50 p-5" aria-live="polite" aria-label={dictionary?.detail.result ?? "Result"}>
           <h2 className="text-base font-bold text-slate-950">{dictionary?.detail.result ?? "Result"}</h2>
           <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-            {success.results.map((item) => {
+            {success.results.map((item, index) => {
               const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "KRW";
-              const value = typeof item.value === "number" ? (isMoney ? formatKrw(item.value, item.precision ?? 0, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${item.unit ? ` ${item.unit}` : ""}`) : item.value;
-              return <div key={item.label} className="rounded-lg bg-white px-4 py-3"><dt className="text-sm text-slate-600">{content?.resultLabels[item.label] ?? item.label}</dt><dd className="mt-1 break-words text-xl font-bold tabular-nums text-teal-900">{value}</dd></div>;
+              const resultUnit = localizedResultUnit(item.unit, locale);
+              const value = typeof item.value === "number" ? (isMoney ? formatKrw(item.value, item.precision ?? 0, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${resultUnit ? ` ${resultUnit}` : ""}`) : item.value;
+              return <div key={`${item.label}-${index}`} className="rounded-lg bg-white px-4 py-3"><dt className="text-sm text-slate-600">{content?.resultLabels[item.label] ?? content?.resultLabels[`__result_${index}`] ?? item.label}</dt><dd className="mt-1 break-words text-xl font-bold tabular-nums text-teal-900">{value}</dd></div>;
             })}
           </dl>
           {success.note ? <p className="mt-4 text-sm leading-6 text-slate-700">{content?.resultNote ?? success.note}</p> : null}
