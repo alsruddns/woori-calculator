@@ -113,6 +113,34 @@ export const calculateMinimumWage: CalculatorFunction = (input) => {
   return { results: [won("2026년 법정 최저 시급", minimumWage2026.hourlyWon), won("입력 시급과 기준 차이", wage - minimumWage2026.hourlyWon), won("8시간 기준 일급", minimumWage2026.dailyWon), won("월 환산액 (209시간 기준)", minimumWage2026.monthlyWon)], note: "2026년 적용 기준 참고용 비교입니다. 근로시간·수당·적용 제외 등 개별 조건을 반영한 법률 판단이나 임금 체불 판정이 아닙니다." };
 };
 
+export const calculateStockAveragePrice: CalculatorFunction = (input) => {
+  const existingQuantity = readNumber(input, "existingQuantity");
+  const existingAveragePrice = readNumber(input, "existingAveragePrice");
+  const additionalQuantity = readNumber(input, "additionalQuantity");
+  const additionalPrice = readNumber(input, "additionalPrice");
+  if (existingQuantity === undefined || existingAveragePrice === undefined || additionalQuantity === undefined || additionalPrice === undefined) return { error: "네 항목을 모두 입력해 주세요." };
+  if ([existingQuantity, existingAveragePrice, additionalQuantity, additionalPrice].some((value) => value < 0)) return { error: "수량과 매수가는 0 이상이어야 합니다." };
+  const totalQuantity = existingQuantity + additionalQuantity;
+  if (totalQuantity <= 0) return { error: "총 보유 수량은 0보다 커야 합니다." };
+  if (existingQuantity > 0 && existingAveragePrice <= 0) return { error: "평균단가 변화율을 계산하려면 기존 평균단가가 0보다 커야 합니다.", field: "existingAveragePrice" };
+  const existingInvestment = existingQuantity * existingAveragePrice;
+  const additionalInvestment = additionalQuantity * additionalPrice;
+  const totalInvestment = existingInvestment + additionalInvestment;
+  const average = totalInvestment / totalQuantity;
+  const change = existingQuantity > 0 ? average - existingAveragePrice : 0;
+  const changePercent = existingQuantity > 0 ? change / existingAveragePrice * 100 : 0;
+  if (![existingInvestment, additionalInvestment, totalInvestment, average, change, changePercent].every(Number.isFinite)) return { error: "입력값이 너무 커서 결과를 계산할 수 없습니다." };
+  return { results: [
+    { label: "기존 투자금액", value: Math.round(existingInvestment), unit: "원" },
+    { label: "추가 투자금액", value: Math.round(additionalInvestment), unit: "원" },
+    { label: "총 보유 수량", value: Number(totalQuantity.toFixed(6)), unit: "주", precision: 6 },
+    { label: "총 투자금액", value: Math.round(totalInvestment), unit: "원" },
+    { label: "새로운 평균단가", value: Number(average.toFixed(2)), unit: "원", precision: 2 },
+    { label: "평균단가 변화액", value: Number(change.toFixed(2)), unit: "원", precision: 2 },
+    { label: "평균단가 변화율", value: Number(changePercent.toFixed(2)), unit: "%", precision: 2 },
+  ], note: "수수료, 세금, 환전 비용은 포함하지 않습니다. 평균단가 변화액과 변화율은 기존 평균단가를 기준으로 계산합니다." };
+};
+
 export const financeCalculators: Record<string, CalculatorFunction> = {
   "compound-interest": calculateCompoundInterest,
   "simple-interest": calculateSimpleInterest,
@@ -123,6 +151,7 @@ export const financeCalculators: Record<string, CalculatorFunction> = {
   dti: calculateDti,
   dsr: calculateDsr,
   "minimum-wage": calculateMinimumWage,
+  "stock-average-price": calculateStockAveragePrice,
 };
 
 export function runFinanceCalculator(slug: string, input: Record<string, string>): CalculatorOutcome | undefined {

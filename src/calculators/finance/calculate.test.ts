@@ -1,7 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { calculateCompoundInterest, calculateDepositInterest, calculateDsr, calculateDti, calculateLoanInterest, calculateLtv, calculateSavingsInterest, calculateSimpleInterest } from "@/calculators/finance/calculate";
+import { calculateCompoundInterest, calculateDepositInterest, calculateDsr, calculateDti, calculateLoanInterest, calculateLtv, calculateSavingsInterest, calculateSimpleInterest, calculateStockAveragePrice } from "@/calculators/finance/calculate";
 
 describe("finance calculator functions", () => {
+  it("calculates stock average price and all requested investment results", () => {
+    expect(calculateStockAveragePrice({ existingQuantity: "10", existingAveragePrice: "10000", additionalQuantity: "10", additionalPrice: "8000" })).toMatchObject({
+      results: [
+        { label: "기존 투자금액", value: 100000 }, { label: "추가 투자금액", value: 80000 }, { label: "총 보유 수량", value: 20 },
+        { label: "총 투자금액", value: 180000 }, { label: "새로운 평균단가", value: 9000 }, { label: "평균단가 변화액", value: -1000 }, { label: "평균단가 변화율", value: -10 },
+      ],
+    });
+  });
+
+  it("handles zero existing quantity and rejects zero totals, zero reference price, negatives, and huge values", () => {
+    expect(calculateStockAveragePrice({ existingQuantity: "0", existingAveragePrice: "0", additionalQuantity: "2", additionalPrice: "1500" })).toMatchObject({ results: [{ value: 0 }, { value: 3000 }, { value: 2 }, { value: 3000 }, { value: 1500 }, { value: 0 }, { value: 0 }] });
+    expect(calculateStockAveragePrice({ existingQuantity: "0", existingAveragePrice: "0", additionalQuantity: "0", additionalPrice: "0" })).toHaveProperty("error");
+    expect(calculateStockAveragePrice({ existingQuantity: "1", existingAveragePrice: "0", additionalQuantity: "1", additionalPrice: "10" })).toMatchObject({ error: expect.any(String), field: "existingAveragePrice" });
+    expect(calculateStockAveragePrice({ existingQuantity: "-1", existingAveragePrice: "10", additionalQuantity: "1", additionalPrice: "10" })).toHaveProperty("error");
+    expect(calculateStockAveragePrice({ existingQuantity: "1e308", existingAveragePrice: "1e308", additionalQuantity: "1", additionalPrice: "1" })).toHaveProperty("error");
+  });
+
   it("calculates monthly compound interest and zero-rate simple interest", () => {
     expect(calculateCompoundInterest({ principal: "1000000", rate: "12", years: "1", frequency: "12" })).toMatchObject({ results: [{ value: 1126825 }, { value: 126825 }] });
     expect(calculateSimpleInterest({ principal: "1000000", rate: "0", years: "2" })).toMatchObject({ results: [{ value: 0 }, { value: 1000000 }] });

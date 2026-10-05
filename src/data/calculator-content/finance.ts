@@ -1,5 +1,5 @@
 import { createCalculatorPage } from "@/data/calculator-content/create-page";
-import { calculateCompoundInterest, calculateDepositInterest, calculateDsr, calculateDti, calculateLoanInterest, calculateLtv, calculateSavingsInterest, calculateSimpleInterest } from "@/calculators/finance/calculate";
+import { calculateCompoundInterest, calculateDepositInterest, calculateDsr, calculateDti, calculateLoanInterest, calculateLtv, calculateSavingsInterest, calculateSimpleInterest, calculateStockAveragePrice } from "@/calculators/finance/calculate";
 import type { CalculatorPageDefinition } from "@/types/calculator-page";
 
 const amount = (name: string, label: string, extra: object = {}) => ({ name, label, type: "number" as const, min: 0, step: 10000, ...extra });
@@ -54,5 +54,23 @@ export const financeCalculatorPages: readonly CalculatorPageDefinition[] = [
     fields: [amount("income", "연소득"), amount("repayment", "연간 전체 대출 원리금 상환액")], calculate: calculateDsr,
     howTo: "연소득과 모든 대출의 연간 원금·이자 상환액 합계를 입력하세요. 두 값은 같은 통화 단위를 사용해야 합니다.", formula: "기본 DSR(%) = 연간 전체 대출 원리금 상환액 ÷ 연소득 × 100", example: { question: "연소득 5,000만 원, 연간 원리금 1,000만 원이면?", answer: "단순 산식 기준 DSR은 20%입니다." },
     notes: ["금융기관별 산정 방식, 만기 환산, 스트레스 DSR 등 규제는 반영하지 않습니다. 대출 가능 여부를 판정하지 않습니다."], faqs: [{ question: "스트레스 DSR도 계산하나요?", answer: "아닙니다. 입력한 연간 상환액으로 기본 비율만 계산하고 규제 가산금리는 적용하지 않습니다." }, { question: "대출 한도를 알 수 있나요?", answer: "이 계산기는 비율 안내용이며 금융기관의 한도 심사와 승인 결과를 대신하지 않습니다." }],
+  }),
+  createCalculatorPage({
+    slug: "stock-average-price", name: "주식 물타기 계산기", shortName: "주식 물타기", category: "finance", description: "기존 보유 주식과 추가 매수 주식의 투자금액을 합산해 새로운 평균 매입단가와 변화율을 계산합니다.", title: "주식 물타기 계산기: 추가 매수 후 평단가 계산", keywords: ["주식 물타기 계산기", "주식 평단가 계산기", "주식 추가 매수 평균단가", "주식 평균 매입단가"], relatedCalculatorIds: ["cagr", "change-rate", "average"],
+    fields: [
+      { name: "existingQuantity", label: "기존 보유 수량 (주)", type: "number", min: 0, step: 0.000001 },
+      { name: "existingAveragePrice", label: "기존 평균단가 (원)", type: "number", min: 0, step: 1 },
+      { name: "additionalQuantity", label: "추가 매수 수량 (주)", type: "number", min: 0, step: 0.000001 },
+      { name: "additionalPrice", label: "추가 매수가 (원)", type: "number", min: 0, step: 1 },
+    ], calculate: calculateStockAveragePrice,
+    howTo: "기존 보유 수량과 평균단가, 새로 매수할 수량과 매수가를 입력하세요. 기존 투자금액과 추가 투자금액을 더해 총 보유 수량으로 나눈 평단가를 계산합니다.",
+    formula: "기존 투자금액 = 기존 수량 × 기존 평균단가 · 추가 투자금액 = 추가 수량 × 추가 매수가 · 새로운 평균단가 = (기존 투자금액 + 추가 투자금액) ÷ (기존 수량 + 추가 수량)",
+    example: { question: "10주를 평균 10,000원에 보유 중이고, 10주를 8,000원에 더 사면 새 평단가는?", answer: "기존 투자금액은 100,000원, 추가 투자금액은 80,000원입니다. 총 20주와 투자금액 180,000원을 기준으로 새 평단가는 9,000원입니다." },
+    notes: ["수수료, 세금, 환전 비용은 포함하지 않습니다.", "평균단가 변화율은 기존 평균단가 대비 새 평균단가의 변화 비율입니다."],
+    faqs: [
+      { question: "주식 물타기 후 평단가는 어떻게 계산하나요?", answer: "기존 투자금액과 추가 매수 금액을 합산한 뒤 총 보유 수량으로 나눕니다. 각 매수 가격이 다르므로 수량을 반영한 가중평균입니다." },
+      { question: "추가 매수가가 기존 평단가보다 높아도 계산되나요?", answer: "네. 추가 매수가가 높으면 새 평단가가 올라가고, 낮으면 내려갑니다." },
+      { question: "수수료와 세금도 반영되나요?", answer: "현재 계산은 입력한 수량과 가격만 사용하며 매매 수수료, 세금, 환전 비용은 포함하지 않습니다." },
+    ],
   }),
 ];
