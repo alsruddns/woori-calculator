@@ -9,6 +9,7 @@ const read = (input: Record<string, string>, key: string, label: string) => {
 
 export const calculateVat: CalculatorFunction = (input) => {
   const mode = input.mode ?? "supply";
+  if (mode !== "supply" && mode !== "gross") return { error: "계산 방식을 선택해 주세요.", field: "mode" };
   const raw = read(input, mode === "supply" ? "amount" : "gross", mode === "supply" ? "공급가액" : "합계 금액");
   if (typeof raw === "string") return { error: raw };
   if (raw < 0) return { error: "금액은 0 이상이어야 합니다." };
@@ -22,6 +23,7 @@ export const calculateVat: CalculatorFunction = (input) => {
 
 export const calculateUnitPrice: CalculatorFunction = (input) => {
   const mode = input.mode ?? "unit";
+  if (mode !== "unit" && mode !== "total") return { error: "계산 방식을 선택해 주세요.", field: "mode" };
   const firstKey = mode === "unit" ? "total" : "unitPrice";
   const secondKey = mode === "unit" ? "quantity" : "quantity";
   const first = read(input, firstKey, mode === "unit" ? "총 가격" : "단가");
@@ -30,7 +32,7 @@ export const calculateUnitPrice: CalculatorFunction = (input) => {
   if (typeof quantity === "string") return { error: quantity, field: secondKey };
   if (first < 0 || quantity <= 0) return { error: "가격은 0 이상, 수량은 0보다 커야 합니다." };
   return mode === "unit"
-    ? { results: [{ label: "개당 단가", value: Number((first / quantity).toFixed(2)), unit: "원" }] }
+    ? { results: [{ label: "개당 단가", value: Number((first / quantity).toFixed(2)), unit: "원", precision: 2 }] }
     : { results: [{ label: "총 가격", value: Math.round(first * quantity), unit: "원" }] };
 };
 

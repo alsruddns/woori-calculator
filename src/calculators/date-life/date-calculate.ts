@@ -1,19 +1,12 @@
 import type { CalculatorFunction, CalculatorOutcome } from "@/types/calculator-page";
 import { readNumber } from "@/lib/calculators/input";
+import { parseDateOnly } from "@/lib/calculators/date-only";
 
 const DAY = 86_400_000;
 
-function dateValue(value: string | undefined): number | undefined {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
-  const [year, month, day] = value.split("-").map(Number);
-  const time = Date.UTC(year!, month! - 1, day!);
-  const date = new Date(time);
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month! - 1 && date.getUTCDate() === day ? time : undefined;
-}
-
 export const calculateDateDifference: CalculatorFunction = (input) => {
-  const start = dateValue(input.start);
-  const end = dateValue(input.end);
+  const start = parseDateOnly(input.start);
+  const end = parseDateOnly(input.end);
   if (start === undefined || end === undefined) return { error: "시작일과 종료일을 올바르게 선택해 주세요." };
   if (end < start) return { error: "종료일은 시작일과 같거나 이후여야 합니다.", field: "end" };
   const base = (end - start) / DAY;
@@ -27,16 +20,16 @@ export const calculateDateDifference: CalculatorFunction = (input) => {
 };
 
 export const calculateDday: CalculatorFunction = (input) => {
-  const target = dateValue(input.target);
-  const reference = input.reference === "today" ? Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) : dateValue(input.referenceDate);
+  const target = parseDateOnly(input.target);
+  const reference = input.reference === "today" ? Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) : parseDateOnly(input.referenceDate);
   if (target === undefined || reference === undefined) return { error: "기준일과 목표일을 올바르게 선택해 주세요." };
   const days = Math.round((target - reference) / DAY);
   return { results: [{ label: days > 0 ? "목표일까지" : days < 0 ? "목표일로부터 경과" : "기준일", value: Math.abs(days), unit: days > 0 ? "일 (D-N)" : days < 0 ? "일 (D+N)" : "일 (D-Day)" }] };
 };
 
 export const calculateAge: CalculatorFunction = (input) => {
-  const birth = dateValue(input.birth);
-  const reference = dateValue(input.reference);
+  const birth = parseDateOnly(input.birth);
+  const reference = parseDateOnly(input.reference);
   if (birth === undefined || reference === undefined) return { error: "생년월일과 기준일을 올바르게 선택해 주세요." };
   if (reference < birth) return { error: "기준일은 생년월일과 같거나 이후여야 합니다.", field: "reference" };
   const b = new Date(birth);
@@ -47,8 +40,8 @@ export const calculateAge: CalculatorFunction = (input) => {
 };
 
 export const calculateWorkdays: CalculatorFunction = (input) => {
-  const start = dateValue(input.start);
-  const end = dateValue(input.end);
+  const start = parseDateOnly(input.start);
+  const end = parseDateOnly(input.end);
   if (start === undefined || end === undefined) return { error: "시작일과 종료일을 올바르게 선택해 주세요." };
   if (end < start) return { error: "종료일은 시작일과 같거나 이후여야 합니다.", field: "end" };
   const includesStart = input.includeStart !== "false";
@@ -88,6 +81,7 @@ export const calculateArea: CalculatorFunction = (input) => {
   if (typeof value === "string") return { error: value, field: "value" };
   if (value < 0) return { error: "면적은 0 이상이어야 합니다." };
   const mode = input.mode ?? "sqm-to-pyeong";
+  if (mode !== "sqm-to-pyeong" && mode !== "pyeong-to-sqm") return { error: "변환 방향을 선택해 주세요.", field: "mode" };
   return mode === "sqm-to-pyeong"
     ? { results: [{ label: "평", value: Number((value / (400 / 121)).toFixed(2)), unit: "평" }] }
     : { results: [{ label: "제곱미터", value: Number((value * (400 / 121)).toFixed(2)), unit: "㎡" }] };

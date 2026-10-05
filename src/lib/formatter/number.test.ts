@@ -1,19 +1,28 @@
 import { describe, expect, it } from "vitest";
 import { formatInputNumber, formatKrw, formatNumber } from "@/lib/formatter/number";
 
-describe("number formatters", () => {
-  it("formats numbers using Korean grouping and decimals", () => {
-    expect(formatNumber(1234567.5)).toBe("1,234,567.5");
-    expect(formatNumber(0.00000062137, 8)).toBe("0.00000062");
+describe("shared number formatting", () => {
+  it.each([
+    [1000, "1,000"],
+    [1234567.89, "1,234,567.89"],
+    [-0, "0"],
+    [-0.001, "0"],
+  ])("formats %s as %s", (value, expected) => {
+    expect(formatNumber(value)).toBe(expected);
   });
 
-  it("formats Korean won without fractional digits", () => {
-    expect(formatKrw(1234567)).toBe("₩1,234,567");
+  it("uses Korean won suffix and a safe placeholder for non-finite values", () => {
+    expect(formatKrw(10000)).toBe("10,000원");
+    expect(formatKrw(3333.333, 2)).toBe("3,333.33원");
+    expect(formatNumber(Number.NaN)).toBe("—");
+    expect(formatNumber(Number.POSITIVE_INFINITY)).toBe("—");
+    expect(formatNumber(1234.567, Number.NaN)).toBe("1,234.57");
+    expect(formatKrw(Number.NaN)).toBe("—");
   });
 
-  it("groups editable numeric input while preserving decimals and signs", () => {
-    expect(formatInputNumber("1234567.80")).toBe("1,234,567.80");
-    expect(formatInputNumber("-12345.6")).toBe("-12,345.6");
+  it("groups input without removing a decimal part or a leading minus", () => {
+    expect(formatInputNumber("1234567.89")).toBe("1,234,567.89");
+    expect(formatInputNumber("-1234567.89")).toBe("-1,234,567.89");
     expect(formatInputNumber("-")).toBe("-");
   });
 });

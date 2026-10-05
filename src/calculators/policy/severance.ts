@@ -1,17 +1,10 @@
 import type { CalculatorFunction, CalculatorOutcome } from "@/types/calculator-page";
 import { readNumber } from "@/lib/calculators/input";
-
-function parseDate(value: string | undefined): number | undefined {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
-  const [year, month, day] = value.split("-").map(Number);
-  const time = Date.UTC(year!, month! - 1, day!);
-  const date = new Date(time);
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month! - 1 && date.getUTCDate() === day ? time : undefined;
-}
+import { parseDateOnly } from "@/lib/calculators/date-only";
 
 export const calculateSeveranceEstimate: CalculatorFunction = (input): CalculatorOutcome => {
-  const start = parseDate(input.start);
-  const lastWorkday = parseDate(input.lastWorkday);
+  const start = parseDateOnly(input.start);
+  const lastWorkday = parseDateOnly(input.lastWorkday);
   const averageDailyWage = readNumber(input, "averageDailyWage");
   if (start === undefined || lastWorkday === undefined) return { error: "입사일과 마지막 근무일을 올바르게 선택해 주세요." };
   if (lastWorkday < start) return { error: "마지막 근무일은 입사일과 같거나 이후여야 합니다.", field: "lastWorkday" };

@@ -58,6 +58,7 @@ export const calculateLoanInterest: CalculatorFunction = (input) => {
   if ("error" in parsed) return parsed;
   const { principal, rate, months } = parsed.values;
   const method = input.method ?? "equal-payment";
+  if (!["equal-payment", "equal-principal", "bullet"].includes(method)) return { error: "상환 방식을 선택해 주세요.", field: "method" };
   if (principal <= 0 || rate < 0 || months < 1 || !Number.isInteger(months) || months > 1200) return { error: "원금은 0보다 크게, 이율은 0 이상, 기간은 1~1,200개월로 입력해 주세요." };
   const monthlyRate = rate / 1200;
   const scheduledPayment = monthlyRate === 0 ? principal / months : principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
@@ -78,7 +79,7 @@ export const calculateLoanInterest: CalculatorFunction = (input) => {
     interestTotal += interest;
     totalPayment += payment;
   }
-  const firstLabel = method === "bullet" ? "월 이자 납입액" : "첫 회차 납입액";
+  const firstLabel = method === "bullet" ? (months === 1 ? "만기 상환액" : "월 이자 납입액") : "첫 회차 납입액";
   return { results: [{ label: firstLabel, value: firstPayment, unit: "원" }, won("총 이자", interestTotal), won("총 상환액", totalPayment)], note: "매월 이자를 원 단위로 반올림해 추정했습니다. 실제 금융기관의 상환일·수수료·금리 변동에 따라 달라질 수 있습니다." };
 };
 

@@ -18,5 +18,14 @@ export function calculateBySlug(slug: string, input: Record<string, string>): Ca
   if ("results" in policyOutcome && policyOutcome.results.some((item) => typeof item.value === "number" && !Number.isFinite(item.value))) {
     return { error: "입력값이 너무 커 결과를 계산할 수 없습니다." };
   }
+  if ("results" in policyOutcome) {
+    return {
+      ...policyOutcome,
+      results: policyOutcome.results.map((item) => ({
+        ...item,
+        value: typeof item.value === "number" && Object.is(item.value, -0) ? 0 : item.value,
+      })),
+    };
+  }
   return policyOutcome;
 }

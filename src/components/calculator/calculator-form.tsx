@@ -85,7 +85,7 @@ export function CalculatorForm({ slug, fields }: CalculatorFormProps) {
                     {field.unit ? <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">{field.unit}</span> : null}
                   </div>
                 )}
-                {fieldError ? <p id={describedBy} className="mt-1 text-sm text-red-700">{fieldError}</p> : null}
+                {fieldError ? <p id={describedBy} role="alert" className="mt-1 text-sm text-red-700">{fieldError}</p> : null}
               </div>
             );
           })}
@@ -99,7 +99,7 @@ export function CalculatorForm({ slug, fields }: CalculatorFormProps) {
           <h2 className="text-base font-bold text-slate-950">계산 결과</h2>
           <dl className="mt-4 grid gap-3 sm:grid-cols-2">
             {success.results.map((item) => {
-              const value = typeof item.value === "number" ? (item.unit === "원" ? formatKrw(item.value) : `${formatNumber(item.value, item.precision ?? 2)}${item.unit ? ` ${item.unit}` : ""}`) : item.value;
+              const value = typeof item.value === "number" ? (item.unit === "원" ? formatKrw(item.value, item.precision ?? 0) : `${formatNumber(item.value, item.precision ?? 2)}${item.unit ? ` ${item.unit}` : ""}`) : item.value;
               return <div key={item.label} className="rounded-lg bg-white px-4 py-3"><dt className="text-sm text-slate-600">{item.label}</dt><dd className="mt-1 break-words text-xl font-bold tabular-nums text-teal-900">{value}</dd></div>;
             })}
           </dl>

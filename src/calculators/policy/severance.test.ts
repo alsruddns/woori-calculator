@@ -10,4 +10,9 @@ describe("severance estimate", () => {
     expect(calculateSeveranceEstimate({ start: "2026-02-01", lastWorkday: "2026-01-01", averageDailyWage: "100000" })).toHaveProperty("error");
     expect(calculateSeveranceEstimate({ start: "2026-01-01", lastWorkday: "2026-01-01", averageDailyWage: "" })).toHaveProperty("error");
   });
+
+  it("counts date-only boundaries without local timezone conversion", () => {
+    const ancientDates = calculateSeveranceEstimate({ start: "0099-12-31", lastWorkday: "0100-01-01", averageDailyWage: "100000" });
+    expect("results" in ancientDates && ancientDates.results[0]?.value).toBe(2);
+  });
 });

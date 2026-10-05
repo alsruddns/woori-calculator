@@ -13,6 +13,7 @@ function values(input: Record<string, string>, names: Record<string, string>): {
 
 export const calculatePercentage: CalculatorFunction = (input) => {
   const mode = input.mode ?? "of";
+  if (!["of", "what-percent", "increase", "decrease"].includes(mode)) return { error: "계산 방식을 선택해 주세요.", field: "mode" };
   const fields = values(input, { a: "A 값", b: "B 값" });
   if ("error" in fields) return fields;
   const { a, b } = fields.values;
@@ -26,6 +27,7 @@ export const calculatePercentage: CalculatorFunction = (input) => {
 
 export const calculateDiscount: CalculatorFunction = (input) => {
   const mode = input.mode ?? "rate";
+  if (mode !== "rate" && mode !== "actual") return { error: "계산 방식을 선택해 주세요.", field: "mode" };
   if (mode === "rate") {
     const parsed = values(input, { price: "정가", rate: "할인율" });
     if ("error" in parsed) return parsed;
@@ -60,7 +62,12 @@ export const calculateRatio: CalculatorFunction = (input) => {
   const { a, b, known } = parsed.values;
   if (a === 0 || b === 0) return { error: "비율의 A와 B는 0이 아닌 값으로 입력해 주세요." };
   const precision = 1_000_000;
-  const divisor = gcd(Math.round(Math.abs(a) * precision), Math.round(Math.abs(b) * precision));
+  const scaledA = Math.round(Math.abs(a) * precision);
+  const scaledB = Math.round(Math.abs(b) * precision);
+  if (!Number.isSafeInteger(scaledA) || !Number.isSafeInteger(scaledB) || scaledA === 0 || scaledB === 0) {
+    return { error: "비율 값은 6자리 이내의 소수이며 안전한 범위로 입력해 주세요." };
+  }
+  const divisor = gcd(scaledA, scaledB);
   return { results: [result("단순화한 A", Math.round(a * precision) / divisor), result("단순화한 B", Math.round(b * precision) / divisor), result("기준 A일 때 B", known * b / a)] };
 };
 

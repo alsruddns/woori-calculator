@@ -10,6 +10,10 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
+function formatKoreanDate(value: string) {
+  return new Intl.DateTimeFormat("ko-KR", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${value}T00:00:00.000Z`));
+}
+
 export function generateStaticParams() {
   return publishedCalculatorPages.map(({ slug }) => ({ slug }));
 }
@@ -90,8 +94,8 @@ export default async function CalculatorPage({ params }: PageProps) {
           <ul className="mt-3 space-y-2">
             {related.map((item) => <li key={item.id}><Link className="block rounded-lg border border-slate-200 bg-white px-4 py-3 font-medium text-slate-800 hover:border-teal-700 hover:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800" href={`/calculators/${item.slug}`}>{item.name}<span aria-hidden="true" className="float-right">→</span></Link></li>)}
           </ul>
-          <p className="mt-4 text-xs text-slate-500">최종 업데이트: {calculator.updatedAt}</p>
-          {calculator.sources?.length ? <section className="mt-7" aria-labelledby="policy-sources"><h3 id="policy-sources" className="text-sm font-bold text-slate-900">기준 및 출처</h3><ul className="mt-2 space-y-2">{calculator.sources.map((source) => <li key={source.url}><a className="text-sm text-teal-900 underline underline-offset-2 hover:text-teal-700 focus-visible:outline-2" href={source.url} target="_blank" rel="noreferrer">{source.name}</a><p className="mt-1 text-xs text-slate-500">확인일: {source.checkedAt}</p></li>)}</ul></section> : null}
+          <p className="mt-4 text-xs text-slate-500">최종 업데이트: <time dateTime={calculator.updatedAt}>{formatKoreanDate(calculator.updatedAt)}</time></p>
+          {calculator.sources?.length ? <section className="mt-7" aria-labelledby="policy-sources"><h3 id="policy-sources" className="text-sm font-bold text-slate-900">기준 및 출처</h3><ul className="mt-2 space-y-2">{calculator.sources.map((source) => <li key={source.url}><a className="text-sm text-teal-900 underline underline-offset-2 hover:text-teal-700 focus-visible:outline-2" href={source.url} target="_blank" rel="noreferrer">{source.name}</a><p className="mt-1 text-xs text-slate-500">확인일: <time dateTime={source.checkedAt}>{formatKoreanDate(source.checkedAt)}</time></p></li>)}</ul></section> : null}
         </aside>
       </div>
     </article>
