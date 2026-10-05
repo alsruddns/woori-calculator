@@ -10,7 +10,7 @@ export function SiteFooter() {
           <Link className="rounded hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" href="/privacy">개인정보처리방침</Link>
           <Link className="rounded hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" href="/terms">이용약관</Link>
         </nav>
-        <p>© {new Date().getFullYear()} {siteConfig.shortName}</p>
+        <p>© {siteConfig.shortName}</p>
       </div>
     </footer>
   );
