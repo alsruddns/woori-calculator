@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/constants/site-config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
+import { localizedCalculatorSlugs, localePath } from "@/i18n/config";
 
 const staticPaths = ["/", "/calculators", "/about", "/privacy", "/terms"] as const;
 
@@ -18,5 +19,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...calculatorEntries];
+  const localeEntries: MetadataRoute.Sitemap = localizedCalculatorSlugs.flatMap((slug) => ["en", "ja", "zh"].map((locale) => {
+    const path = `/calculators/${slug}`;
+    return {
+      url: new URL(localePath(locale as "en" | "ja" | "zh", path), siteConfig.url).toString(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: { languages: {
+        ko: new URL(path, siteConfig.url).toString(),
+        en: new URL(localePath("en", path), siteConfig.url).toString(),
+        ja: new URL(localePath("ja", path), siteConfig.url).toString(),
+        zh: new URL(localePath("zh", path), siteConfig.url).toString(),
+        "x-default": new URL(path, siteConfig.url).toString(),
+      } },
+    };
+  }));
+
+  const localizedLandingEntries: MetadataRoute.Sitemap = ["en", "ja", "zh"].flatMap((locale) => ["/", "/calculators"].map((path) => ({
+    url: new URL(localePath(locale as "en" | "ja" | "zh", path), siteConfig.url).toString(),
+    changeFrequency: path === "/" ? "weekly" as const : "monthly" as const,
+    priority: path === "/" ? 0.8 : 0.6,
+    alternates: { languages: {
+      ko: new URL(path, siteConfig.url).toString(),
+      en: new URL(localePath("en", path), siteConfig.url).toString(),
+      ja: new URL(localePath("ja", path), siteConfig.url).toString(),
+      zh: new URL(localePath("zh", path), siteConfig.url).toString(),
+      "x-default": new URL(path, siteConfig.url).toString(),
+    } },
+  })));
+
+  return [...staticEntries, ...calculatorEntries, ...localeEntries, ...localizedLandingEntries];
 }

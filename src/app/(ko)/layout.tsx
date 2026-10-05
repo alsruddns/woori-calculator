@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/constants/site-config";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import "./globals.css";
+import "../globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),

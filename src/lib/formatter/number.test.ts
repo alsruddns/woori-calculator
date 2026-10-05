@@ -25,4 +25,13 @@ describe("shared number formatting", () => {
     expect(formatInputNumber("-1234567.89")).toBe("-1,234,567.89");
     expect(formatInputNumber("-")).toBe("-");
   });
+
+  it("formats grouped numbers and KRW amounts with each supported locale", () => {
+    expect(formatNumber(1234567.89, 2, "en")).toBe("1,234,567.89");
+    expect(formatNumber(1234567.89, 2, "ja")).toBe("1,234,567.89");
+    expect(formatNumber(1234567.89, 2, "zh")).toBe("1,234,567.89");
+    expect(formatKrw(10000, 0, "en")).toBe("KRW 10,000");
+    expect(formatKrw(10000, 0, "ja")).toBe("KRW 10,000");
+    expect(formatKrw(10000, 0, "zh")).toBe("KRW 10,000");
+  });
 });

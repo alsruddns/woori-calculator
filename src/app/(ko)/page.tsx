@@ -3,14 +3,9 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/constants/site-config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { calculatorCategories } from "@/data/calculators/categories";
-import { createPageMetadata } from "@/lib/seo/metadata";
+import { localizedMetadata } from "@/lib/i18n/seo";
 
-export const metadata = createPageMetadata({
-  title: "일상에 필요한 계산과 생활 도구",
-  description: "퍼센트, 금융, 날짜와 생활 계산을 쉽고 빠르게. woori.today의 무료 온라인 계산기를 이용해 보세요.",
-  path: "/",
-  keywords: ["온라인 계산기", "무료 계산기", "생활 도구"],
-});
+export const metadata = localizedMetadata("ko", "/", "일상에 필요한 계산과 생활 도구", "필요한 계산과 생활 도구를 woori.today에서 쉽고 빠르게 이용하세요.", ["계산기", "생활 도구"]);
 
 const featuredSlugs = ["percentage", "discount", "vat", "compound-interest", "loan-interest", "date-difference"];
 

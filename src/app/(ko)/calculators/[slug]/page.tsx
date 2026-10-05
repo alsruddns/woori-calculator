@@ -7,6 +7,9 @@ import { siteConfig } from "@/constants/site-config";
 import { calculatorCategories } from "@/data/calculators/categories";
 import { getCalculatorPage, publishedCalculatorPages } from "@/data/calculator-content";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
+import { localizedCalculatorSlugs } from "@/i18n/config";
+import { localizedMetadata } from "@/lib/i18n/seo";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -23,6 +26,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const calculator = getCalculatorPage(slug);
   if (!calculator) return {};
   const path = `/calculators/${calculator.slug}` as `/${string}`;
+  if (localizedCalculatorSlugs.includes(calculator.slug as (typeof localizedCalculatorSlugs)[number])) {
+    return localizedMetadata("ko", path, calculator.title, calculator.description, calculator.keywords);
+  }
   return createPageMetadata({ title: calculator.title, description: calculator.description, path, keywords: calculator.keywords });
 }
 
@@ -37,7 +43,8 @@ export default async function CalculatorPage({ params }: PageProps) {
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return (
-    <article className="mx-auto max-w-5xl px-5 py-10 sm:py-14">
+    <CalculatorWorkspace categories={calculatorCategories} categoryOrder={["math", "finance", "salary", "tax", "date-time", "life"]} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
+    <article className="min-w-0 py-6 sm:py-10">
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -99,5 +106,6 @@ export default async function CalculatorPage({ params }: PageProps) {
         </aside>
       </div>
     </article>
+    </CalculatorWorkspace>
   );
 }
