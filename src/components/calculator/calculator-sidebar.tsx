@@ -51,7 +51,7 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
 
   const list = (searchId: string) => <nav aria-label={labels.menu} className="min-w-0">
     <label className="sr-only" htmlFor={searchId}>{labels.search}</label>
-    <input id={searchId} className="mb-4 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} />
+    <input id={searchId} maxLength={200} className="mb-4 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} />
     {categoryOrder.map((category) => {
       const items = filtered.filter((item) => item.category === category);
       if (!items.length) return null;

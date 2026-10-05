@@ -14,7 +14,7 @@ describe("calculator registry", () => {
     expect(new Set(publishedCalculators.map(({ slug }) => slug)).size).toBe(publishedCalculators.length);
     expect(publishedCalculators.every(({ isPublished }) => isPublished)).toBe(true);
     expect(calculatorRegistry.find(({ slug }) => slug === "salary")).toBeUndefined();
-    expect(calculatorPages.length).toBe(33);
+    expect(calculatorPages.length).toBe(35);
   });
 
   it("keeps related links within the published calculator set and registers calculation logic", () => {
@@ -24,7 +24,7 @@ describe("calculator registry", () => {
       expect(new Set(calculator.relatedCalculatorIds).size).toBe(calculator.relatedCalculatorIds.length);
       expect(calculateBySlug(calculator.slug, {})).toHaveProperty("error");
     }
-    expect(calculateBySlug("percentage", { a: "1e308", b: "100", mode: "of" })).toMatchObject({ error: expect.stringContaining("너무 커") });
+    expect(calculateBySlug("percentage", { a: "1e308", b: "100", mode: "of" })).toHaveProperty("error");
   });
 
   it("keeps public content, metadata, category, canonical path, and sitemap inputs coherent", () => {

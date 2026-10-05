@@ -19,6 +19,10 @@ woori-tools는 woori.today에서 운영할 검색 중심 계산기·생활 도�
 
 계산기 UI와 React 없이 테스트할 수 있는 순수 계산 함수를 분리한다 (Page → Calculator UI → pure calculation function). 계산기 추가는 URL, Registry, metadata, canonical, H1, description, UI/result, 계산 방법, 공식, 예제, FAQ, 기준 연도, 업데이트일, 출처, 관련 계산기, unit test, sitemap 노출을 함께 고려한다. 정책과 무관하면 `STATIC`, 연도별 제도·세율·보험료·정책에 의존하면 `POLICY`로 분류한다. 정책값은 UI나 계산 함수에 직접 하드코딩하지 않고 출처가 검증된 정책 데이터로 분리한다.
 - 예제 결과는 실제 순수 계산 함수와 대조한다. 공개 계산기는 핵심 계산과 경계값에 대한 unit test를 가져야 한다.
+- 공개 계산기 입력값에는 계산 의미에 맞는 합리적인 최대값을 둔다.
+- 배열이나 반복 생성 로직에 사용자 입력을 상한 없이 그대로 사용하지 않는다.
+- `NaN`, `Infinity`, `-Infinity`, `-0`를 사용자에게 표시하지 않는다.
+- 계산량이 커질 수 있는 기능은 입력 상한 또는 수학적 최적화로 실행량을 제한한다.
 
 ## SEO 원칙
 

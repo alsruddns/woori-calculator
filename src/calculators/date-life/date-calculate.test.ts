@@ -30,6 +30,10 @@ describe("date and life calculator functions", () => {
     expect(calculateAge({ birth: "2000-02-29", reference: "2021-02-28" })).toMatchObject({ results: [{ value: 20 }] });
     expect(calculateAge({ birth: "2000-02-29", reference: "2021-03-01" })).toMatchObject({ results: [{ value: 21 }] });
     expect(calculateAge({ birth: "2027-01-01", reference: "2026-01-01" })).toHaveProperty("error");
+    expect(calculateDday({ reference: "custom", referenceDate: "1900-01-01", target: "2100-01-01" })).toHaveProperty("results");
+    expect(calculateDday({ reference: "custom", referenceDate: "1900-01-01", target: "2201-01-01" })).toHaveProperty("error");
+    expect(calculateAge({ birth: "1900-01-01", reference: "2100-01-01" })).toHaveProperty("results");
+    expect(calculateAge({ birth: "1900-01-01", reference: "2201-01-01" })).toHaveProperty("error");
   });
 
   it("counts weekdays without silently excluding holidays", () => {
@@ -39,6 +43,9 @@ describe("date and life calculator functions", () => {
     expect(calculateWorkdays({ start: "2026-01-05", end: "2026-01-09", includeStart: "false", includeEnd: "false" })).toMatchObject({ results: [{ value: 3 }] });
     expect(calculateWorkdays({ start: "2026-01-10", end: "2026-01-10" })).toMatchObject({ results: [{ value: 0 }] });
     expect(calculateDateDifference({ start: "2026-01-01", end: "2026-01-03", include: "start" })).toMatchObject({ results: [{ value: 2 }, { value: 2 }] });
+    expect(calculateWorkdays({ start: "1900-01-01", end: "2100-01-01" })).toHaveProperty("results");
+    expect(calculateWorkdays({ start: "1900-01-01", end: "2201-01-01" })).toHaveProperty("error");
+    expect(calculateDateDifference({ start: "1900-01-01", end: "2201-01-01" })).toHaveProperty("error");
   });
 
   it.each([

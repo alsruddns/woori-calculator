@@ -65,11 +65,20 @@ describe("finance calculator functions", () => {
   it("calculates monthly compound interest and zero-rate simple interest", () => {
     expect(calculateCompoundInterest({ principal: "1000000", rate: "12", years: "1", frequency: "12" })).toMatchObject({ results: [{ value: 1126825 }, { value: 126825 }] });
     expect(calculateSimpleInterest({ principal: "1000000", rate: "0", years: "2" })).toMatchObject({ results: [{ value: 0 }, { value: 1000000 }] });
+    expect(calculateCompoundInterest({ principal: "1000000", rate: "1000", years: "200", frequency: "365" })).toHaveProperty("error");
+    expect(calculateCompoundInterest({ principal: "1000000", rate: "5", years: "200", frequency: "1" })).toHaveProperty("results");
+    expect(calculateCompoundInterest({ principal: "1000000", rate: "1000.01", years: "1" })).toHaveProperty("error");
+    expect(calculateSimpleInterest({ principal: "1000000", rate: "5", years: "200" })).toHaveProperty("results");
+    expect(calculateSimpleInterest({ principal: "1000000", rate: "5", years: "200.1" })).toHaveProperty("error");
   });
 
   it("calculates deposit and monthly installment estimates", () => {
     expect(calculateDepositInterest({ principal: "10000000", rate: "3.6", months: "12" })).toMatchObject({ results: [{ value: 360000 }, { value: 10360000 }] });
     expect(calculateSavingsInterest({ monthly: "100000", rate: "12", months: "12" })).toMatchObject({ results: [{ value: 1200000 }, { value: 66000 }, { value: 1266000 }] });
+    expect(calculateSavingsInterest({ monthly: "1000", rate: "5", months: "2400" })).toHaveProperty("results");
+    expect(calculateSavingsInterest({ monthly: "1000", rate: "5", months: "2401" })).toHaveProperty("error");
+    expect(calculateDepositInterest({ principal: "1000", rate: "5", months: "2400" })).toHaveProperty("results");
+    expect(calculateDepositInterest({ principal: "1000", rate: "5", months: "2401" })).toHaveProperty("error");
   });
 
   it("amortizes all loan methods and rejects invalid terms", () => {
@@ -81,6 +90,9 @@ describe("finance calculator functions", () => {
     expect(calculateLoanInterest({ principal: "12000000", rate: "0", months: "1", method: "equal-payment" })).toMatchObject({ results: [{ value: 12000000 }, { value: 0 }, { value: 12000000 }] });
     expect(calculateLoanInterest({ principal: "12000000", rate: "12", months: "1", method: "bullet" })).toMatchObject({ results: [{ label: "만기 상환액", value: 12120000 }, { value: 120000 }, { value: 12120000 }] });
     expect(calculateLoanInterest({ principal: "12000000", rate: "5.5", months: "360", method: "equal-payment" })).toHaveProperty("results");
+    expect(calculateLoanInterest({ principal: "1000", rate: "100", months: "1200" })).toHaveProperty("results");
+    expect(calculateLoanInterest({ principal: "1000", rate: "100.01", months: "1200" })).toHaveProperty("error");
+    expect(calculateLoanInterest({ principal: "1000", rate: "5", months: "1201" })).toHaveProperty("error");
     expect(calculateLoanInterest({ principal: "12000000", rate: "5", months: "0" })).toHaveProperty("error");
   });
 
@@ -100,6 +112,13 @@ describe("finance calculator functions", () => {
     expect(calculateSavingsInterest({ monthly: "10000", rate: "5", months: "1.5" })).toHaveProperty("error");
     expect(calculateSimpleInterest({ principal: "10000", rate: "5", years: "-1" })).toHaveProperty("error");
     expect(calculateDsr({ income: "100", repayment: "0" })).toMatchObject({ results: [{ value: 0 }] });
+  });
+
+  it("caps stock quantities and prevents excessive target purchases", () => {
+    expect(calculateStockAveragePrice({ existingQuantity: "1000000000", existingAveragePrice: "1", additionalQuantity: "0", additionalPrice: "1" })).toHaveProperty("results");
+    expect(calculateStockAveragePrice({ existingQuantity: "1000000001", existingAveragePrice: "1", additionalQuantity: "0", additionalPrice: "1" })).toHaveProperty("error");
+    expect(calculateStockAveragePrice({ existingQuantity: "1000000000", existingAveragePrice: "1", additionalQuantity: "1", additionalPrice: "1" })).toHaveProperty("error");
+    expect(calculateStockAveragePrice({ mode: "target", currentQuantity: "1000000000", currentAveragePrice: "100", currentPrice: "50", targetReturn: "-1", priceMode: "price" })).toHaveProperty("error");
   });
 
   it.each(["equal-payment", "equal-principal", "bullet"])("keeps zero-rate loan totals equal to principal for %s", (method) => {

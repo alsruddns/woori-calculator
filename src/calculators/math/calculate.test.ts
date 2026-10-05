@@ -8,7 +8,7 @@ describe("math calculator functions", () => {
     expect(calculatePercentage({ a: "25", b: "0", mode: "what-percent" })).toHaveProperty("error");
     expect(calculatePercentage({ a: "100", b: "10", mode: "decrease" })).toMatchObject({ results: [{ value: 90 }] });
     expect(calculatePercentage({ a: "-100", b: "12.5", mode: "increase" })).toMatchObject({ results: [{ value: -112.5 }] });
-    expect(calculatePercentage({ a: "1e308", b: "100", mode: "of" })).toMatchObject({ results: [{ value: Number.POSITIVE_INFINITY }] });
+    expect(calculatePercentage({ a: "1e308", b: "100", mode: "of" })).toHaveProperty("error");
     expect(calculatePercentage({ a: "1", b: "Infinity", mode: "of" })).toHaveProperty("error");
   });
 
@@ -38,6 +38,10 @@ describe("math calculator functions", () => {
     expect(calculateWeightedAverage({ values: "1, 2", weights: "1" })).toHaveProperty("error");
     expect(calculateWeightedAverage({ values: "1, 2", weights: "0, 0" })).toHaveProperty("error");
     expect(calculateWeightedAverage({ values: "1, 2", weights: "-1, 2" })).toHaveProperty("error");
+    const listAtLimit = Array(500).fill("1").join(",");
+    const listAboveLimit = Array(501).fill("1").join(",");
+    expect(calculateWeightedAverage({ values: listAtLimit, weights: listAtLimit })).toHaveProperty("results");
+    expect(calculateWeightedAverage({ values: listAboveLimit, weights: listAboveLimit })).toHaveProperty("error");
   });
 
   it("averages entered values, including decimals, and rejects blank lists", () => {
@@ -45,6 +49,8 @@ describe("math calculator functions", () => {
     expect(calculateAverage({ numbers: "1,000; 2,000" })).toMatchObject({ results: [{ value: 3000 }, { value: 2 }, { value: 1500 }] });
     expect(calculateAverage({ numbers: "" })).toHaveProperty("error");
     expect(calculateAverage({ numbers: "-1.5, 1000000000" })).toMatchObject({ results: [{ value: 999999998.5 }, { value: 2 }, { value: 499999999.25 }] });
+    expect(calculateAverage({ numbers: Array(501).fill("1").join(",") })).toHaveProperty("error");
+    expect(calculateAverage({ numbers: "1".repeat(30_001) })).toHaveProperty("error");
   });
 
   it("calculates CAGR and validates non-positive terms", () => {
@@ -52,5 +58,7 @@ describe("math calculator functions", () => {
     expect(calculateCagr({ initial: "0", final: "100", years: "2" })).toHaveProperty("error");
     expect(calculateCagr({ initial: "100", final: "121", years: "0" })).toHaveProperty("error");
     expect(calculateCagr({ initial: "1", final: "1000000", years: "0.5" })).toMatchObject({ results: [{ value: 99999999999900 }] });
+    expect(calculateCagr({ initial: "1", final: "1000000", years: "200" })).toHaveProperty("results");
+    expect(calculateCagr({ initial: "1", final: "1000000", years: "200.1" })).toHaveProperty("error");
   });
 });

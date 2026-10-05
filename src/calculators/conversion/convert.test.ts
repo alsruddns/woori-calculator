@@ -33,4 +33,9 @@ describe("unit converter", () => {
   ])("converts %s %s to %s", (category, fromUnit, toUnit, value, expected) => {
     expect(calculateUnitConversion({ category, fromUnit, toUnit, value })).toMatchObject({ results: [{ value: expected }] });
   });
+
+  it("accepts the configured numeric maximum and rejects oversized numeric input", () => {
+    expect(calculateUnitConversion({ category: "length", value: "1000000000000000", fromUnit: "m", toUnit: "km" })).toMatchObject({ results: [{ value: 1_000_000_000_000 }] });
+    expect(calculateUnitConversion({ category: "length", value: "1000000000000001", fromUnit: "m", toUnit: "km" })).toHaveProperty("error");
+  });
 });

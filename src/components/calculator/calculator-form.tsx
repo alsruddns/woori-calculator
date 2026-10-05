@@ -83,13 +83,14 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                     {optionsFor(field, values).map((option) => <option key={option.value} value={option.value}>{content?.options[field.name]?.[option.value] ?? option.label}</option>)}
                   </select>
                 ) : field.type === "textarea" ? (
-                  <textarea id={inputId} className={`${commonClass} min-h-28 py-3 text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
+                  <textarea id={inputId} maxLength={30_000} className={`${commonClass} min-h-28 py-3 text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
                 ) : (
                   <div className="relative">
                     <input
                       id={inputId}
                       className={`${commonClass} text-base ${(content?.fields[field.name]?.unit ?? field.unit) ? "pr-16" : ""}`}
                       type={field.type === "date" ? "date" : "text"}
+                      maxLength={field.type === "date" ? 10 : 64}
                       inputMode={field.type === "date" ? undefined : "decimal"}
                       value={values[field.name] ?? ""}
                       onChange={(event) => changeValue(field.name, event.target.value)}
@@ -116,8 +117,8 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
             );
           })}
         </div>
-        {error && !error.field ? <p className="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{content ? content.validation : error.error}</p> : null}
-        <button type="submit" className="mt-5 min-h-11 w-full rounded-lg bg-teal-800 px-5 font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:mt-6 sm:w-auto">{dictionary?.detail.calculate ?? "Calculate"}</button>
+        {error && !error.field ? <p className="mt-5 min-w-0 break-words rounded-lg bg-red-50 px-4 py-3 text-sm leading-5 text-red-800 [overflow-wrap:anywhere]" role="alert">{content ? content.validation : error.error}</p> : null}
+        <button type="submit" className="mt-5 min-h-11 w-full rounded-lg bg-teal-800 px-5 font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:mt-6 sm:w-auto">{dictionary?.detail.calculate ?? (locale === "ko" ? "계산하기" : locale === "ja" ? "計算する" : locale === "zh" ? "计算" : "Calculate")}</button>
       </form>
 
       {success ? (

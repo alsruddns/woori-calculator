@@ -1,5 +1,5 @@
 import { createCalculatorPage } from "@/data/calculator-content/create-page";
-import { calculateMargin, calculateMarkup, calculateUnitPrice, calculateVat } from "@/calculators/tax/calculate";
+import { calculateMargin, calculateMarkup, calculateProductMargin, calculateUnitPrice, calculateVat, calculateWithholdingTax33 } from "@/calculators/tax/calculate";
 import type { CalculatorPageDefinition } from "@/types/calculator-page";
 
 const amount = (name: string, label: string, extra: object = {}) => ({ name, label, type: "number" as const, min: 0, step: 1, ...extra });
@@ -29,5 +29,17 @@ export const taxCalculatorPages: readonly CalculatorPageDefinition[] = [
     fields: [amount("cost", "원가 (원)", { step: 1 }), amount("sale", "판매가 (원)", { step: 1 })], calculate: calculateMarkup,
     howTo: "0보다 큰 원가와 판매가를 입력하면 차액과 원가 기준 마크업률을 계산합니다.", formula: "마크업 금액 = 판매가 − 원가 · 마크업률(%) = 마크업 금액 ÷ 원가 × 100", example: { question: "원가 60원에서 판매가 100원으로 정하면?", answer: "마크업은 40원, 마크업률은 약 66.67%입니다." },
     notes: ["수수료, 세금, 인건비 등 다른 비용은 포함하지 않습니다."], faqs: [{ question: "마크업률 50%면 마진율도 50%인가요?", answer: "아닙니다. 원가 100원에 50% 마크업을 더한 판매가는 150원이고 마진율은 50÷150, 약 33.33%입니다." }, { question: "원가가 0원일 수 있나요?", answer: "원가가 분모이므로 마크업률을 계산하려면 0보다 커야 합니다." }],
+  }),
+  createCalculatorPage({
+    slug: "product-margin", name: "판매 수익·목표 마진 계산기", shortName: "판매 수익", category: "finance", description: "판매가와 수수료, 배송비, 기타 비용을 반영해 예상 순이익과 실질 마진율을 계산하거나 목표 마진율에 필요한 판매가를 구합니다.", title: "판매 수익 계산기: 수수료·배송비 반영 순이익과 목표 판매가", keywords: ["판매 수익 계산기", "상품 마진 계산기", "목표 마진 판매가", "수수료 포함 순이익"], relatedCalculatorIds: ["margin", "markup", "unit-price"],
+    fields: [select("mode", "계산 방식", [{ label: "판매 수익 계산", value: "profit" }, { label: "목표 마진 판매가 계산", value: "target" }]), amount("cost", "상품 원가 (원)"), { ...amount("sale", "판매가 (원)"), showWhen: { field: "mode", value: "profit" } }, { name: "feeRate", label: "판매 수수료율 (%)", type: "number", min: 0, step: 0.1, defaultValue: "0" }, amount("shipping", "배송비 (원)", { defaultValue: "0" }), amount("otherCost", "기타 비용 (원)", { defaultValue: "0" }), { name: "targetMargin", label: "목표 마진율 (%)", type: "number", min: 0, step: 0.1, defaultValue: "30", showWhen: { field: "mode", value: "target" } }], calculate: calculateProductMargin,
+    howTo: "판매 수익 계산에서는 판매가와 원가, 판매 수수료율, 배송비와 기타 비용을 입력합니다. 목표 마진 판매가 계산에서는 목표 마진율을 입력하면 필요한 판매가를 구합니다.", formula: "순이익 = 판매가 − 원가 − (판매가 × 수수료율) − 배송비 − 기타 비용 · 실질 마진율(%) = 순이익 ÷ 판매가 × 100 · 목표 판매가 = (원가 + 배송비 + 기타 비용) ÷ (1 − 수수료율 − 목표 마진율)", example: { question: "원가 10,000원, 판매가 20,000원, 수수료율 10%, 배송비 3,000원이면?", answer: "예상 순이익은 5,000원이며 실질 마진율은 25%입니다." },
+    notes: ["입력한 비용만 반영하는 단순 추정치입니다. 광고비, 세금, 반품 등 입력하지 않은 비용은 포함하지 않습니다."], faqs: [{ question: "마진율과 마크업률은 같은가요?", answer: "아닙니다. 마진율은 판매가를 기준으로 하고 마크업률은 원가를 기준으로 차액의 비율을 계산합니다." }, { question: "필요한 판매가에는 어떤 비용이 반영되나요?", answer: "상품 원가, 입력한 수수료율, 배송비와 기타 비용을 반영합니다. 입력하지 않은 비용은 포함되지 않습니다." }],
+  }),
+  createCalculatorPage({
+    slug: "withholding-tax-3-3", name: "3.3% 원천징수 계산기", shortName: "3.3% 원천징수", category: "tax", description: "사업소득 지급액을 기준으로 소득세 3%와 지방소득세 0.3%, 예상 실수령액을 계산하는 참고용 도구입니다.", title: "3.3% 원천징수 계산기: 사업소득 세금과 실수령액", keywords: ["3.3 원천징수 계산기", "프리랜서 세금 계산", "사업소득 실수령액", "원천징수 계산"], relatedCalculatorIds: ["vat", "margin", "product-margin"],
+    fields: [amount("amount", "지급액 (원)", { step: 1 })], calculate: calculateWithholdingTax33,
+    howTo: "사업소득 지급액을 입력하면 소득세 3%, 지방소득세 0.3%와 단순 계산한 예상 실수령액을 확인할 수 있습니다.", formula: "소득세 = 지급액 × 3% (원 미만 버림) · 지방소득세 = 지급액 × 0.3% (원 미만 버림) · 예상 실수령액 = 지급액 − 두 세액의 합", example: { question: "지급액이 1,000,000원이면?", answer: "소득세 30,000원, 지방소득세 3,000원, 예상 실수령액은 967,000원입니다." },
+    notes: ["사업소득 3.3%를 가정한 단순 참고 계산입니다. 개인별 공제, 신고 및 최종 세액은 반영하지 않습니다."], faqs: [{ question: "모든 프리랜서 지급에 3.3%가 적용되나요?", answer: "지급의 성격과 개인 상황에 따라 달라질 수 있습니다. 이 계산기는 사업소득 3.3%를 가정한 참고용입니다." }, { question: "세액은 어떻게 원 단위로 처리하나요?", answer: "소득세와 지방소득세를 각각 계산한 뒤 원 미만을 버리는 방식으로 추정합니다." }],
   }),
 ];
