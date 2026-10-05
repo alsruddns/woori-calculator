@@ -74,21 +74,21 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
             const fieldError = error?.field === field.name ? (content?.validation ?? error.error) : undefined;
             const inputId = `${slug}-${field.name}`;
             const describedBy = fieldError ? `${inputId}-error` : undefined;
-            const commonClass = "mt-2 min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
+            const commonClass = "mt-2 min-h-12 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
             return (
-              <div key={field.name} className={field.type === "textarea" ? "sm:col-span-2" : ""}>
+              <div key={field.name} className={`min-w-0 ${field.type === "textarea" ? "sm:col-span-2" : ""}`}>
                 <label htmlFor={inputId} className="block text-sm font-semibold text-slate-800">{field.name === duration?.field ? (dictionary?.units.durationLabel ?? "기간") : (content?.fields[field.name]?.label ?? field.label)}</label>
                 {field.type === "select" ? (
-                  <select id={inputId} className={commonClass} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} aria-describedby={describedBy}>
+                  <select id={inputId} className={`${commonClass} text-sm sm:text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} aria-describedby={describedBy}>
                     {optionsFor(field, values).map((option) => <option key={option.value} value={option.value}>{content?.options[field.name]?.[option.value] ?? option.label}</option>)}
                   </select>
                 ) : field.type === "textarea" ? (
-                  <textarea id={inputId} className={`${commonClass} min-h-28 py-3`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
+                  <textarea id={inputId} className={`${commonClass} min-h-28 py-3 text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
                 ) : (
                   <div className="relative">
                     <input
                       id={inputId}
-                      className={`${commonClass} ${(content?.fields[field.name]?.unit ?? field.unit) ? "pr-16" : ""}`}
+                      className={`${commonClass} text-base ${(content?.fields[field.name]?.unit ?? field.unit) ? "pr-16" : ""}`}
                       type={field.type === "date" ? "date" : "text"}
                       inputMode={field.type === "date" ? undefined : "decimal"}
                       value={values[field.name] ?? ""}
@@ -109,26 +109,26 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                     {(content?.fields[field.name]?.unit ?? field.unit) ? <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">{content?.fields[field.name]?.unit ?? field.unit}</span> : null}
                   </div>
                 )}
-                {field.name === duration?.field ? <div className="mt-2 flex items-center gap-2"><span className="text-sm text-slate-600">{dictionary?.units.durationLabel ?? "기간"}</span><select aria-label={dictionary?.units.durationLabel ?? "기간 단위"} className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm focus-visible:outline-2 focus-visible:outline-teal-700" value={durationUnit} onChange={(event) => setDurationUnit(event.target.value as DurationUnit)}><option value="month">{dictionary?.units.month ?? "개월"}</option><option value="year">{dictionary?.units.year ?? "년"}</option></select></div> : null}
-                {locale === "ko" && ["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent"].includes(field.name) && values[field.name] && Number.isInteger(Number((values[field.name] ?? "").replace(/,/g, ""))) ? <p className="mt-1 text-xs text-slate-500">{numberToKoreanText(Number((values[field.name] ?? "").replace(/,/g, "")))} {dictionary?.units.won ?? "원"}</p> : null}
-                {fieldError ? <p id={describedBy} role="alert" className="mt-1 text-sm text-red-700">{fieldError}</p> : null}
+                {field.name === duration?.field ? <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3"><span className="min-w-0 text-sm text-slate-600">{dictionary?.units.durationLabel ?? "기간"}</span><select aria-label={dictionary?.units.durationLabel ?? "기간 단위"} className="min-h-11 min-w-20 rounded-lg border border-slate-300 bg-white px-3 text-sm focus-visible:outline-2 focus-visible:outline-teal-700" value={durationUnit} onChange={(event) => setDurationUnit(event.target.value as DurationUnit)}><option value="month">{dictionary?.units.month ?? "개월"}</option><option value="year">{dictionary?.units.year ?? "년"}</option></select></div> : null}
+                {locale === "ko" && ["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent", "cost", "unitPrice", "existingAveragePrice", "additionalPrice", "currentAveragePrice", "currentPrice", "shipping", "otherCost", "mortgage", "repayment", "otherInterest"].includes(field.name) && values[field.name] && Number.isInteger(Number((values[field.name] ?? "").replace(/,/g, ""))) ? <p className="mt-1 min-w-0 break-words text-xs leading-5 text-slate-500 [overflow-wrap:anywhere]">{numberToKoreanText(Number((values[field.name] ?? "").replace(/,/g, "")))} {dictionary?.units.won ?? "원"}</p> : null}
+                {fieldError ? <p id={describedBy} role="alert" className="mt-1 min-w-0 break-words text-sm leading-5 text-red-700 [overflow-wrap:anywhere]">{fieldError}</p> : null}
               </div>
             );
           })}
         </div>
         {error && !error.field ? <p className="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{content ? content.validation : error.error}</p> : null}
-        <button type="submit" className="mt-6 min-h-12 w-full rounded-lg bg-teal-800 px-5 font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:w-auto">{dictionary?.detail.calculate ?? "Calculate"}</button>
+        <button type="submit" className="mt-5 min-h-11 w-full rounded-lg bg-teal-800 px-5 font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:mt-6 sm:w-auto">{dictionary?.detail.calculate ?? "Calculate"}</button>
       </form>
 
       {success ? (
         <section className="mt-7 rounded-xl bg-teal-50 p-5" aria-live="polite" aria-label={dictionary?.detail.result ?? "Result"}>
           <h2 className="text-base font-bold text-slate-950">{dictionary?.detail.result ?? "Result"}</h2>
-          <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+          <dl className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2">
             {success.results.map((item, index) => {
               const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "KRW";
               const resultUnit = localizedResultUnit(item.unit, locale);
               const value = typeof item.value === "number" ? (isMoney ? formatKrw(item.value, item.precision ?? 0, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${resultUnit ? ` ${resultUnit}` : ""}`) : item.value;
-              return <div key={`${item.label}-${index}`} className="rounded-lg bg-white px-4 py-3"><dt className="text-sm text-slate-600">{content?.resultLabels[item.label] ?? content?.resultLabels[`__result_${index}`] ?? item.label}</dt><dd className="mt-1 break-words text-xl font-bold tabular-nums text-teal-900">{value}</dd></div>;
+              return <div key={`${item.label}-${index}`} className="min-w-0 rounded-lg bg-white px-3 py-3 sm:px-4"><dt className="break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]">{content?.resultLabels[item.label] ?? content?.resultLabels[`__result_${index}`] ?? item.label}</dt><dd className="mt-1 break-words text-lg font-bold tabular-nums text-teal-900 [overflow-wrap:anywhere] sm:text-xl">{value}</dd></div>;
             })}
           </dl>
           {success.note ? <p className="mt-4 text-sm leading-6 text-slate-700">{content?.resultNote ?? success.note}</p> : null}

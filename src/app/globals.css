@@ -11,4 +11,5 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; }
+main, article, section, aside, nav, form, fieldset, dl, ul, ol { min-width: 0; }
 a { text-underline-offset: 0.2em; }

@@ -49,9 +49,9 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
     };
   }, [open]);
 
-  const list = <nav aria-label={labels.menu}>
-    <label className="sr-only" htmlFor="calculator-menu-search">{labels.search}</label>
-    <input id="calculator-menu-search" className="mb-4 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} />
+  const list = (searchId: string) => <nav aria-label={labels.menu} className="min-w-0">
+    <label className="sr-only" htmlFor={searchId}>{labels.search}</label>
+    <input id={searchId} className="mb-4 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} />
     {categoryOrder.map((category) => {
       const items = filtered.filter((item) => item.category === category);
       if (!items.length) return null;
@@ -60,7 +60,7 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
         <ul className="space-y-1">{items.map((item) => {
           const href = `${basePath}/${item.slug}`;
           const active = pathname === href;
-          return <li key={item.slug}><Link href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)} className={`block rounded-lg px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${active ? "bg-teal-50 font-semibold text-teal-900" : "text-slate-700 hover:bg-slate-100"}`}>{item.name}</Link></li>;
+          return <li key={item.slug} className="min-w-0"><Link href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)} className={`block min-h-11 min-w-0 break-words rounded-lg px-3 py-3 text-sm leading-5 [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${active ? "bg-teal-50 font-semibold text-teal-900" : "text-slate-700 hover:bg-slate-100"}`}>{item.name}</Link></li>;
         })}</ul>
       </section>;
     })}
@@ -68,13 +68,13 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
   </nav>;
 
   return <>
-    <aside className="sticky top-5 hidden max-h-[calc(100vh-2.5rem)] w-64 shrink-0 self-start overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:block" aria-label={labels.menu}>{list}</aside>
-    <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="calculator-mobile-menu" onClick={() => setOpen(true)} className="mb-5 min-h-11 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 lg:hidden">{labels.menu}</button>
+    <aside className="sticky top-5 hidden max-h-[calc(100vh-2.5rem)] w-64 shrink-0 self-start overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:block" aria-label={labels.menu}>{list("desktop-calculator-menu-search")}</aside>
+    <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="calculator-mobile-menu" onClick={() => setOpen(true)} className="mb-1 min-h-11 self-start rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 lg:hidden">{labels.menu}</button>
     {open ? <div className="fixed inset-0 z-50 lg:hidden" role="presentation">
       <button type="button" tabIndex={-1} aria-label={labels.close} onClick={() => setOpen(false)} className="absolute inset-0 h-full w-full bg-slate-950/40" />
-      <aside ref={dialogRef} id="calculator-mobile-menu" role="dialog" aria-modal="true" aria-label={labels.menu} className="absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] flex-col overflow-y-auto bg-white p-5 shadow-xl">
-        <div className="mb-4 flex items-center justify-between"><h2 className="font-bold">{labels.menu}</h2><button ref={closeRef} type="button" onClick={() => setOpen(false)} className="min-h-10 rounded px-3 text-sm focus-visible:outline-2 focus-visible:outline-teal-700">{labels.close}</button></div>
-        {list}
+      <aside ref={dialogRef} id="calculator-mobile-menu" role="dialog" aria-modal="true" aria-label={labels.menu} className="absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] max-w-full flex-col overflow-y-auto overscroll-contain bg-white pb-[max(1.25rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-4 pt-[max(1.25rem,env(safe-area-inset-top))] shadow-xl">
+        <div className="mb-4 flex min-w-0 items-center justify-between gap-3"><h2 className="min-w-0 break-words font-bold [overflow-wrap:anywhere]">{labels.menu}</h2><button ref={closeRef} type="button" onClick={() => setOpen(false)} className="min-h-11 min-w-11 shrink-0 rounded px-3 text-sm focus-visible:outline-2 focus-visible:outline-teal-700">{labels.close}</button></div>
+        {list("mobile-calculator-menu-search")}
       </aside>
     </div> : null}
   </>;

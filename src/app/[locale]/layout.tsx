@@ -20,5 +20,5 @@ export default async function LocaleLayout({ children, params }: Readonly<{ chil
   const { locale: key } = await params as { locale: string };
   if (!hasLocale(key) || key === "ko") notFound();
   const dictionary = getDictionary(key);
-  return <html lang={localeConfig[key].htmlLang} className="h-full antialiased"><body className="flex min-h-full flex-col bg-slate-50 text-slate-900"><a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2" href="#main-content">{dictionary.nav.skip}</a><LocalizedHeader dictionary={dictionary} /><main id="main-content" className="flex-1">{children}</main><LocalizedFooter dictionary={dictionary} /></body></html>;
+  return <html lang={localeConfig[key].htmlLang} className="h-full antialiased"><body className="flex min-h-full min-w-0 flex-col bg-slate-50 text-slate-900"><a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2" href="#main-content">{dictionary.nav.skip}</a><LocalizedHeader dictionary={dictionary} /><main id="main-content" className="min-w-0 flex-1">{children}</main><LocalizedFooter dictionary={dictionary} /></body></html>;
 }

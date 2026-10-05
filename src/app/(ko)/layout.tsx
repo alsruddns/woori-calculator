@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="flex min-h-full flex-col bg-slate-50 text-slate-900">
         <a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2" href="#main-content">본문으로 건너뛰기</a>
         <SiteHeader />
-        <main id="main-content" className="flex-1">{children}</main>
+      <main id="main-content" className="min-w-0 flex-1">{children}</main>
         <SiteFooter />
       </body>
     </html>
