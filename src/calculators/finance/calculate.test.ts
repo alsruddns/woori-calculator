@@ -11,6 +11,49 @@ describe("finance calculator functions", () => {
     });
   });
 
+  it("solves target return with the required formula and recomputes the whole-share outcome", () => {
+    const input = { mode: "target", currentQuantity: "100", currentAveragePrice: "50000", currentReturn: "-30", targetReturn: "-20", priceMode: "return" };
+    const result = calculateStockAveragePrice(input);
+    expect(result).toMatchObject({ results: [
+      { label: "계산상 필요한 추가 매수수량", value: 71.43 },
+      { label: "정수 주식 기준 필요한 매수수량", value: 72 },
+      { label: "정수 수량 기준 추가 투자금액", value: 2520000 },
+      { label: "물타기 후 총 보유수량", value: 172 },
+      { label: "물타기 후 새로운 평균단가", value: 43720.93 },
+      { label: "정수 수량 매수 후 실제 예상 손익률", value: -19.95 },
+    ] });
+    if (!("results" in result)) throw new Error("Expected a successful target return calculation");
+
+    const directPrice = calculateStockAveragePrice({ ...input, priceMode: "price", currentPrice: "35000" });
+    expect(directPrice).toMatchObject({ results: result.results });
+    const q = 100;
+    const a = 50000;
+    const p = 35000;
+    const n = p / (1 - 0.2);
+    const expected = q * (a - n) / (n - p);
+    expect(result.results[0]?.value).toBe(Number(expected.toFixed(2)));
+  });
+
+  it("handles equal returns and reports targets that cannot be reached or require unnecessary buying", () => {
+    expect(calculateStockAveragePrice({ mode: "target", currentQuantity: "100", currentAveragePrice: "50000", currentPrice: "35000", targetReturn: "-30", priceMode: "price" })).toMatchObject({ results: [{ value: 0 }, { value: 0 }] });
+    const unreachable = "현재 가격으로 추가 매수하는 것만으로는 유한한 매수수량으로 해당 목표 손익률에 정확히 도달할 수 없습니다.";
+    expect(calculateStockAveragePrice({ mode: "target", currentQuantity: "100", currentAveragePrice: "50000", currentPrice: "35000", targetReturn: "0", priceMode: "price" })).toMatchObject({ error: unreachable });
+    expect(calculateStockAveragePrice({ mode: "target", currentQuantity: "100", currentAveragePrice: "50000", currentPrice: "35000", targetReturn: "5", priceMode: "price" })).toMatchObject({ error: unreachable });
+    expect(calculateStockAveragePrice({ mode: "target", currentQuantity: "100", currentAveragePrice: "50000", currentPrice: "35000", targetReturn: "-40", priceMode: "price" })).toHaveProperty("error");
+  });
+
+  it("validates target-mode quantities, prices, and percentages without exposing non-finite results", () => {
+    const base = { mode: "target", currentQuantity: "100", currentAveragePrice: "50000", currentPrice: "35000", targetReturn: "-20", priceMode: "price" };
+    for (const override of [
+      { currentQuantity: "0" }, { currentAveragePrice: "0" }, { currentPrice: "0" }, { currentPrice: "-1" },
+      { targetReturn: "-100" }, { targetReturn: "NaN" }, { targetReturn: "Infinity" },
+      { currentPrice: "NaN" }, { currentQuantity: "Infinity" },
+    ]) expect(calculateStockAveragePrice({ ...base, ...override })).toHaveProperty("error");
+    expect(calculateStockAveragePrice({ ...base, currentReturn: "-100", priceMode: "return" })).toHaveProperty("error");
+    expect(calculateStockAveragePrice({ ...base, currentReturn: "NaN", priceMode: "return" })).toHaveProperty("error");
+    expect(calculateStockAveragePrice({ ...base, currentQuantity: "1e308", currentAveragePrice: "1e308", currentPrice: "1e308" })).toHaveProperty("error");
+  });
+
   it("handles zero existing quantity and rejects zero totals, zero reference price, negatives, and huge values", () => {
     expect(calculateStockAveragePrice({ existingQuantity: "0", existingAveragePrice: "0", additionalQuantity: "2", additionalPrice: "1500" })).toMatchObject({ results: [{ value: 0 }, { value: 3000 }, { value: 2 }, { value: 3000 }, { value: 1500 }, { value: 0 }, { value: 0 }] });
     expect(calculateStockAveragePrice({ existingQuantity: "0", existingAveragePrice: "0", additionalQuantity: "0", additionalPrice: "0" })).toHaveProperty("error");

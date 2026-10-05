@@ -114,6 +114,73 @@ export const calculateMinimumWage: CalculatorFunction = (input) => {
 };
 
 export const calculateStockAveragePrice: CalculatorFunction = (input) => {
+  const mode = input.mode ?? (input.existingQuantity !== undefined ? "manual" : "target");
+  if (mode !== "target" && mode !== "manual") return { error: "계산 방식을 선택해 주세요.", field: "mode" };
+
+  if (mode === "target") {
+    const quantity = readNumber(input, "currentQuantity");
+    const averagePrice = readNumber(input, "currentAveragePrice");
+    const targetReturn = readNumber(input, "targetReturn");
+    if (quantity === undefined || averagePrice === undefined || targetReturn === undefined) return { error: "보유 수량, 평균단가, 목표 손익률을 입력해 주세요." };
+    if (quantity <= 0) return { error: "현재 보유 수량은 0보다 커야 합니다.", field: "currentQuantity" };
+    if (averagePrice <= 0) return { error: "현재 평균단가는 0보다 커야 합니다.", field: "currentAveragePrice" };
+    if (targetReturn <= -100) return { error: "목표 손익률은 -100%보다 커야 합니다.", field: "targetReturn" };
+
+    const priceMode = input.priceMode ?? "price";
+    if (priceMode !== "price" && priceMode !== "return") return { error: "현재 주가 입력 방식을 선택해 주세요.", field: "priceMode" };
+    let currentPrice: number;
+    let currentReturn: number;
+    if (priceMode === "price") {
+      const value = readNumber(input, "currentPrice");
+      if (value === undefined) return { error: "현재 주가를 입력해 주세요.", field: "currentPrice" };
+      currentPrice = value;
+      currentReturn = (currentPrice - averagePrice) / averagePrice * 100;
+    } else {
+      const inputReturn = readNumber(input, "currentReturn");
+      if (inputReturn === undefined) return { error: "현재 손익률을 입력해 주세요.", field: "currentReturn" };
+      if (inputReturn <= -100) return { error: "현재 손익률은 -100%보다 커야 합니다.", field: "currentReturn" };
+      currentReturn = inputReturn;
+      currentPrice = averagePrice * (1 + inputReturn / 100);
+    }
+    if (!Number.isFinite(currentPrice) || currentPrice <= 0) return { error: "현재 주가는 0보다 커야 합니다.", field: priceMode === "price" ? "currentPrice" : "currentReturn" };
+    if (!Number.isFinite(currentReturn)) return { error: "현재 손익률을 계산할 수 없습니다." };
+    if (targetReturn === currentReturn) {
+      return { results: [{ label: "계산상 필요한 추가 매수수량", value: 0, unit: "주", precision: 2 }, { label: "정수 주식 기준 필요한 매수수량", value: 0, unit: "주" }], note: "목표 손익률이 현재 손익률과 같아 추가 매수가 필요하지 않습니다." };
+    }
+    if (targetReturn === 0 || (currentReturn < 0 && targetReturn > 0)) {
+      return { error: "현재 가격으로 추가 매수하는 것만으로는 유한한 매수수량으로 해당 목표 손익률에 정확히 도달할 수 없습니다.", field: "targetReturn" };
+    }
+    if ((currentReturn < 0 && (targetReturn < currentReturn || targetReturn >= 0)) || (currentReturn > 0 && (targetReturn <= 0 || targetReturn >= currentReturn))) {
+      return { error: "목표 손익률이 현재 상황에서 추가 매수로 맞출 수 있는 범위를 벗어났습니다.", field: "targetReturn" };
+    }
+
+    const targetAverage = currentPrice / (1 + targetReturn / 100);
+    const denominator = targetAverage - currentPrice;
+    const requiredQuantity = quantity * (averagePrice - targetAverage) / denominator;
+    if (!Number.isFinite(requiredQuantity) || requiredQuantity <= 0 || !Number.isFinite(targetAverage) || denominator === 0) {
+      return { error: "현재 가격으로 추가 매수하는 것만으로는 유한한 매수수량으로 해당 목표 손익률에 정확히 도달할 수 없습니다.", field: "targetReturn" };
+    }
+
+    const nearestInteger = Math.round(requiredQuantity);
+    const isNumericallyInteger = nearestInteger > 0 && Math.abs(requiredQuantity - nearestInteger) < 1e-10 * Math.max(1, Math.abs(requiredQuantity));
+    const wholeQuantity = isNumericallyInteger ? nearestInteger : Math.ceil(requiredQuantity);
+    const addedInvestment = wholeQuantity * currentPrice;
+    const totalQuantity = quantity + wholeQuantity;
+    const totalInvestment = quantity * averagePrice + addedInvestment;
+    const newAverage = totalInvestment / totalQuantity;
+    const actualReturn = (currentPrice / newAverage - 1) * 100;
+    const values = [requiredQuantity, addedInvestment, totalQuantity, totalInvestment, newAverage, actualReturn];
+    if (!values.every(Number.isFinite)) return { error: "입력값이 너무 커서 결과를 계산할 수 없습니다." };
+    return { results: [
+      { label: "계산상 필요한 추가 매수수량", value: Number(requiredQuantity.toFixed(2)), unit: "주", precision: 2 },
+      { label: "정수 주식 기준 필요한 매수수량", value: wholeQuantity, unit: "주" },
+      { label: "정수 수량 기준 추가 투자금액", value: Math.round(addedInvestment), unit: "원" },
+      { label: "물타기 후 총 보유수량", value: Number(totalQuantity.toFixed(6)), unit: "주", precision: 6 },
+      { label: "물타기 후 새로운 평균단가", value: Number(newAverage.toFixed(2)), unit: "원", precision: 2 },
+      { label: "정수 수량 매수 후 실제 예상 손익률", value: Number(actualReturn.toFixed(2)), unit: "%", precision: 2 },
+    ], note: "정수 매수수량은 계산상 필요수량을 올림해 산정합니다. 수수료, 세금, 환전 비용은 포함하지 않습니다." };
+  }
+
   const existingQuantity = readNumber(input, "existingQuantity");
   const existingAveragePrice = readNumber(input, "existingAveragePrice");
   const additionalQuantity = readNumber(input, "additionalQuantity");

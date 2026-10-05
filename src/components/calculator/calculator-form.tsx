@@ -70,7 +70,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7" aria-label={dictionary?.detail.calculators ?? "Calculator input and result"}>
       <form onSubmit={submit} noValidate>
         <div className="grid gap-5 sm:grid-cols-2">
-          {fields.filter((field) => !field.showWhen || values[field.showWhen.field] === field.showWhen.value).map((field) => {
+          {fields.filter((field) => (!field.showWhen || values[field.showWhen.field] === field.showWhen.value) && (!field.showWhenAll || field.showWhenAll.every((condition) => values[condition.field] === condition.value))).map((field) => {
             const fieldError = error?.field === field.name ? (content?.validation ?? error.error) : undefined;
             const inputId = `${slug}-${field.name}`;
             const describedBy = fieldError ? `${inputId}-error` : undefined;

@@ -10,6 +10,7 @@ export type CalculatorField = {
   step?: number;
   defaultValue?: string;
   showWhen?: { field: string; value: string };
+  showWhenAll?: readonly { field: string; value: string }[];
   options?: readonly { label: string; value: string }[];
 };
 
