@@ -3,6 +3,10 @@ import { calculatorRegistry, publishedCalculators } from "@/data/calculators/reg
 import { calculatorPages, getCalculatorPage, publishedCalculatorPages } from "@/data/calculator-content";
 import { calculateBySlug } from "@/calculators/calculate";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
+import { matchesCalculatorSearch } from "@/lib/i18n/search";
+import { getDictionary } from "@/i18n/dictionaries";
+import { locales } from "@/i18n/config";
 
 describe("calculator registry", () => {
   it("publishes only calculators with a content definition and stable unique slugs", () => {
@@ -47,5 +51,29 @@ describe("calculator registry", () => {
     const dateLifeSlugs = ["date-difference", "dday", "age", "workdays", "bmi", "area", "pace", "fuel-cost", "calorie-per-serving"];
     const dateLife = calculatorPages.filter(({ slug }) => dateLifeSlugs.includes(slug));
     expect(new Set(dateLife.map(({ formula }) => formula)).size).toBe(dateLife.length);
+  });
+
+  it("uses the shared category order and keeps the Korean loan and stock calculator names consistent", () => {
+    expect(calculatorCategoryOrder).toEqual(["finance", "tax", "salary", "life", "date-time", "math"]);
+    expect(new Set(calculatorCategoryOrder).size).toBe(Object.keys(calculatorCategories).length);
+    expect(calculatorCategories.math).toBe("수학·도구");
+    for (const locale of locales) expect(getDictionary(locale).categoriesOrder).toEqual(calculatorCategoryOrder);
+
+    const loan = getCalculatorPage("loan-interest")!;
+    expect(loan.name).toBe("대출 이자 계산기");
+    expect(loan.shortName).toBe("대출 이자");
+    expect(loan.title).toContain("대출 이자 계산기");
+    expect(loan.keywords).toContain("대출 이자 계산기");
+    expect(matchesCalculatorSearch({ name: loan.name, slug: loan.slug, keywords: loan.keywords }, "대출 이자 계산기")).toBe(true);
+    expect(createPageMetadata({ title: loan.title, description: loan.description, path: `/calculators/${loan.slug}` }).alternates?.canonical).toContain("/calculators/loan-interest");
+
+    const stock = getCalculatorPage("stock-average-price")!;
+    expect(stock.name).toBe("주식·코인 물타기 계산기");
+    expect(stock.shortName).toBe("주식·코인 물타기");
+    expect(stock.title).toContain("주식·코인 물타기 계산기");
+    expect(stock.description).toContain("주식·코인");
+    expect(stock.keywords).toContain("주식·코인 물타기 계산기");
+    expect(matchesCalculatorSearch({ name: stock.name, slug: stock.slug, keywords: stock.keywords }, "코인 물타기 계산기")).toBe(true);
+    expect(createPageMetadata({ title: stock.title, description: stock.description, path: `/calculators/${stock.slug}` }).alternates?.canonical).toContain("/calculators/stock-average-price");
   });
 });

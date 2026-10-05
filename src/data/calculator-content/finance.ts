@@ -32,7 +32,7 @@ export const financeCalculatorPages: readonly CalculatorPageDefinition[] = [
     notes: ["실제 상품의 일수 산정, 복리, 세금, 우대 조건은 반영하지 않습니다."], faqs: [{ question: "세후 이자를 확인할 수 있나요?", answer: "현재는 세전 이자만 계산합니다. 세금은 가입 조건 등에 따라 달라질 수 있습니다." }, { question: "기간을 6개월로 입력해도 되나요?", answer: "개월 단위로 입력하므로 6개월 예치라면 6을 입력하면 됩니다." }],
   }),
   createCalculatorPage({
-    slug: "loan-interest", name: "대출 상환 계산기", shortName: "대출 상환", category: "finance", description: "원리금균등·원금균등·만기일시 방식의 첫 납입액과 총 이자, 상환액을 비교합니다.", title: "대출 상환 계산기: 원리금균등·원금균등·만기일시", keywords: ["대출 상환 계산기", "대출 이자 계산", "월 상환액"], relatedCalculatorIds: ["ltv", "dti", "dsr", "simple-interest"],
+    slug: "loan-interest", name: "대출 이자 계산기", shortName: "대출 이자", category: "finance", description: "대출 원금과 금리, 상환 기간 및 방식으로 첫 납입액과 예상 총 이자·상환액을 계산합니다.", title: "대출 이자 계산기: 상환 방식별 월 납입액과 총 이자", keywords: ["대출 이자 계산기", "대출 이자 계산", "월 상환액", "대출 상환 방식 비교"], relatedCalculatorIds: ["ltv", "dti", "dsr", "simple-interest"],
     fields: [amount("principal", "대출 원금"), { name: "rate", label: "연이율 (%)", type: "number", min: 0, step: 0.01 }, months("months", "상환 기간 (개월)"), select("method", "상환 방식", [{ label: "원리금균등", value: "equal-payment" }, { label: "원금균등", value: "equal-principal" }, { label: "만기일시", value: "bullet" }])], calculate: calculateLoanInterest,
     howTo: "대출 원금, 연이율, 전체 개월 수와 상환 방식을 선택하세요. 월 이율은 연이율을 12로 나누어 적용하고 매월 이자를 원 단위로 반올림합니다.", formula: "원리금균등 월 납입액 = P × r ÷ (1 − (1+r)^−n) · 원금균등 원금 = P ÷ n · 월 이자 = 잔액 × r", example: { question: "1,200만 원을 무이자로 12개월 원리금균등 상환하면?", answer: "매월 약 1,000,000원씩 상환하며 총 이자는 0원입니다." },
     notes: ["추정 결과이며 실제 금융기관의 납입일, 금리 변동, 수수료, 상환 규칙에 따라 달라집니다."], faqs: [{ question: "원리금균등과 원금균등의 차이는 무엇인가요?", answer: "원리금균등은 납입액을 비슷하게 유지하고, 원금균등은 원금을 일정하게 갚아 초기에 더 많이 납입합니다." }, { question: "만기일시 상환은 무엇인가요?", answer: "기간 중 이자를 납부하고 만기에 원금을 한 번에 갚는 방식으로 계산합니다." }],
@@ -56,7 +56,7 @@ export const financeCalculatorPages: readonly CalculatorPageDefinition[] = [
     notes: ["금융기관별 산정 방식, 만기 환산, 스트레스 DSR 등 규제는 반영하지 않습니다. 대출 가능 여부를 판정하지 않습니다."], faqs: [{ question: "스트레스 DSR도 계산하나요?", answer: "아닙니다. 입력한 연간 상환액으로 기본 비율만 계산하고 규제 가산금리는 적용하지 않습니다." }, { question: "대출 한도를 알 수 있나요?", answer: "이 계산기는 비율 안내용이며 금융기관의 한도 심사와 승인 결과를 대신하지 않습니다." }],
   }),
   createCalculatorPage({
-    slug: "stock-average-price", name: "주식 물타기 계산기", shortName: "주식 물타기", category: "finance", description: "목표 손익률을 맞추는 데 필요한 추가 매수수량과 정수 주식 기준 새 평단가를 계산하거나, 매수수량을 직접 입력해 변경된 평단가를 구합니다.", title: "주식 물타기 계산기: 목표 수익률·추가 매수 후 평단가", keywords: ["주식 물타기 계산기", "주식 평단가 계산기", "주식 추가 매수 평균단가", "목표 수익률 물타기", "주식 손익률 계산"], relatedCalculatorIds: ["cagr", "change-rate", "average"],
+    slug: "stock-average-price", name: "주식·코인 물타기 계산기", shortName: "주식·코인 물타기", category: "finance", description: "주식·코인의 보유 수량과 평균단가, 추가 매수 수량과 가격으로 물타기 후 새 평단가와 총 투자금액을 계산합니다. 목표 손익률 모드에서는 현재 주가 또는 손익률을 바탕으로 필요한 매수 수량도 계산합니다.", title: "주식·코인 물타기 계산기: 목표 수익률과 추가 매수 평단가", keywords: ["주식·코인 물타기 계산기", "코인 물타기 계산기", "주식·코인 평단가 계산기", "주식 추가 매수 평균단가", "목표 수익률 물타기", "주식 코인 손익률 계산"], relatedCalculatorIds: ["cagr", "change-rate", "average"],
     fields: [
       { name: "mode", label: "계산 방식", type: "select", defaultValue: "target", options: [{ label: "목표 수익률 맞추기", value: "target" }, { label: "추가 매수 후 평단가 계산", value: "manual" }] },
       { name: "currentQuantity", label: "현재 보유 수량 (주)", type: "number", min: 0, step: 1, showWhen: { field: "mode", value: "target" } },

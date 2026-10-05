@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { calculatorCategories } from "@/data/calculators/categories";
+import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
 
 export const metadata: Metadata = localizedMetadata("ko", "/calculators", "계산기와 생활 도구", "일상에 필요한 계산기를 골라 바로 결과를 확인하세요. 계산은 브라우저에서 처리됩니다.", ["계산기", "생활 계산기"]);
 
-const categoryOrder = ["math", "finance", "salary", "tax", "date-time", "life"] as const;
-
 export default function CalculatorsPage() {
-  const populatedCategories = categoryOrder
+  const populatedCategories = calculatorCategoryOrder
     .map((category) => ({
       category,
       label: calculatorCategories[category],
@@ -19,7 +17,7 @@ export default function CalculatorsPage() {
     .filter(({ items }) => items.length > 0);
 
   return (
-    <CalculatorWorkspace categories={calculatorCategories} categoryOrder={categoryOrder} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
+    <CalculatorWorkspace categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
     <section className="py-6 sm:py-10">
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500"><Link className="hover:text-teal-800" href="/">홈</Link><span aria-hidden="true" className="mx-2">/</span><span aria-current="page">계산기</span></nav>
       <header>

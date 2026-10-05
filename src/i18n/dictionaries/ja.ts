@@ -1,4 +1,5 @@
 import type { LocaleDictionary } from "@/i18n/dictionaries/types";
+import { calculatorCategoryOrder } from "@/data/calculators/categories";
 
 export const ja: LocaleDictionary = {
   locale: "ja", siteName: "今日を暮らすツール", description: "毎日に役立つ計算ツールを、簡単・スピーディーに。",
@@ -8,7 +9,7 @@ export const ja: LocaleDictionary = {
   detail: { home: "ホーム", calculators: "計算ツール", howTo: "使い方", formula: "計算式", example: "計算例", notes: "ご注意", faqs: "よくある質問", related: "関連する計算ツール", result: "計算結果", calculate: "計算する", invalid: "入力内容を確認して、もう一度お試しください。", updated: "最終更新" },
   home: { title: "毎日の計算を、簡単・スピーディーに", description: "暮らしに役立つ計算ツールをわかりやすく提供します。" },
   units: { won: "KRW", number: "数値", year: "年", month: "か月", durationLabel: "期間" },
-  categoriesOrder: ["math", "finance", "tax", "date-time", "life"],
+  categoriesOrder: calculatorCategoryOrder,
   calculators: {
     percentage: { name: "パーセント計算", shortName: "パーセント", title: "パーセント計算｜割合・増減を計算", description: "数値の一定割合、2つの数値の比率、増加率・減少後の値を計算します。", howTo: "計算方法を選び、AとBを入力してください。割合の計算ではAが比較する値、Bが基準値です。", formula: "AのB％ = A × B ÷ 100 · AはBの何％ = A ÷ B × 100 · 増減後の値 = A × (1 ± B ÷ 100)", example: { question: "200の15％はいくつですか？", answer: "200 × 15 ÷ 100 = 30です。" }, faqs: [{ question: "AがBの何％かはどう計算しますか？", answer: "AをBで割り、100を掛けます。基準値Bが0の場合は計算できません。" }, { question: "15％増やしてから15％減らすと元に戻りますか？", answer: "戻りません。増加後の値を基準に減少率を適用するため、元の値より少し小さくなります。" }], related: ["discount", "loan-interest", "compound-interest"], fields: { mode: { label: "計算方法" }, a: { label: "値 A" }, b: { label: "値 B" } }, options: { mode: { of: "AのB％", "what-percent": "AはBの何％", increase: "AをB％増加", decrease: "AをB％減少" } }, resultLabels: { "A의 B%": "計算結果", "A는 B의": "AはBの割合", "증가 후 값": "増加後の値", "감소 후 값": "減少後の値" }, validation: "選択した計算方法に合った数値を入力してください。", resultNote: "選択した割合の計算式による結果です。" },
     discount: { name: "割引計算", shortName: "割引", title: "割引計算｜割引額と割引後の価格", description: "定価と割引率から割引額・販売価格を計算するか、定価と販売価格から実際の割引率を求めます。", howTo: "割引率から計算するか、販売価格から割引率を逆算するかを選び、必要な金額を入力してください。割引額は1ウォン単位で四捨五入します。", formula: "割引額 = 定価 × 割引率 ÷ 100 · 販売価格 = 定価 − 割引額 · 割引率 = (定価 − 販売価格) ÷ 定価 × 100", example: { question: "50,000ウォンの商品が20％引きの場合は？", answer: "割引額は10,000ウォン、販売価格は40,000ウォンです。" }, faqs: [{ question: "販売価格から割引率を計算できますか？", answer: "はい。定価と販売価格から逆算する方法を選んでください。" }, { question: "販売価格が定価より高くても計算できますか？", answer: "割引ではなく値上げにあたるため、この計算では扱いません。" }], related: ["percentage", "vat", "loan-interest"], fields: { mode: { label: "計算方法" }, price: { label: "定価", unit: "KRW" }, rate: { label: "割引率", unit: "%" }, sale: { label: "販売価格", unit: "KRW" } }, options: { mode: { rate: "定価と割引率から計算", actual: "定価と販売価格から逆算" } }, resultLabels: { "할인 금액": "割引額", "최종 가격": "販売価格", "실제 할인율": "実際の割引率" }, validation: "定価は0以上、割引率は0～100％で入力してください。逆算では販売価格を定価以下にしてください。", resultNote: "割引額はウォン単位に四捨五入しています。" },

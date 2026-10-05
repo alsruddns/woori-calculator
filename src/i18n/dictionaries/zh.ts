@@ -1,4 +1,5 @@
 import type { LocaleDictionary } from "@/i18n/dictionaries/types";
+import { calculatorCategoryOrder } from "@/data/calculators/categories";
 
 export const zh: LocaleDictionary = {
   locale: "zh", siteName: "今日生活工具", description: "简单、快捷地使用日常计算器和生活工具。",
@@ -8,7 +9,7 @@ export const zh: LocaleDictionary = {
   detail: { home: "首页", calculators: "计算器", howTo: "使用方法", formula: "计算公式", example: "计算示例", notes: "注意事项", faqs: "常见问题", related: "相关计算器", result: "计算结果", calculate: "开始计算", invalid: "请检查输入内容后重试。", updated: "最后更新" },
   home: { title: "让日常计算更简单快捷", description: "提供清晰易用的日常计算器和生活工具。" },
   units: { won: "KRW", number: "数值", year: "年", month: "个月", durationLabel: "期限" },
-  categoriesOrder: ["math", "finance", "tax", "date-time", "life"],
+  categoriesOrder: calculatorCategoryOrder,
   calculators: {
     percentage: { name: "百分比计算器", shortName: "百分比", title: "百分比计算器：比例、增长与减少", description: "计算数值的百分之几、两个数值的比例，以及按百分比增长或减少后的数值。", howTo: "选择计算方式后输入A和B。计算比例时，A为比较值，B为基准值。", formula: "A的B% = A × B ÷ 100 · A占B的百分比 = A ÷ B × 100 · 增减后数值 = A × (1 ± B ÷ 100)", example: { question: "200的15%是多少？", answer: "200 × 15 ÷ 100 = 30。" }, faqs: [{ question: "如何计算A占B的百分之几？", answer: "用A除以B再乘以100。B为0时无法计算比例。" }, { question: "先增加15%再减少15%会回到原数吗？", answer: "不会。减少比例基于增加后的数值计算，因此结果会略低于原数。" }], related: ["discount", "loan-interest", "compound-interest"], fields: { mode: { label: "计算方式" }, a: { label: "数值A" }, b: { label: "数值B" } }, options: { mode: { of: "计算A的B%", "what-percent": "计算A占B的百分比", increase: "A增加B%", decrease: "A减少B%" } }, resultLabels: { "A의 B%": "计算结果", "A는 B의": "A占B的百分比", "증가 후 값": "增长后的数值", "감소 후 값": "减少后的数值" }, validation: "请为所选百分比计算输入有效数值。", resultNote: "结果根据所选的百分比公式计算。" },
     discount: { name: "折扣计算器", shortName: "折扣", title: "折扣计算器：折扣金额与最终价格", description: "根据原价和折扣率计算优惠金额与售价，也可以根据原价和售价反算实际折扣率。", howTo: "选择按折扣率计算或按售价反算，并输入所需金额。折扣金额按韩元取整。", formula: "折扣金额 = 原价 × 折扣率 ÷ 100 · 售价 = 原价 − 折扣金额 · 实际折扣率 = (原价 − 售价) ÷ 原价 × 100", example: { question: "原价50,000韩元打八折后是多少？", answer: "优惠10,000韩元，最终价格为40,000韩元。" }, faqs: [{ question: "知道售价后能反算折扣率吗？", answer: "可以。选择根据原价和售价反算即可。" }, { question: "售价可以高于原价吗？", answer: "不可以。高于原价属于涨价，不属于折扣计算。" }], related: ["percentage", "vat", "loan-interest"], fields: { mode: { label: "计算方式" }, price: { label: "原价", unit: "KRW" }, rate: { label: "折扣率", unit: "%" }, sale: { label: "售价", unit: "KRW" } }, options: { mode: { rate: "根据原价和折扣率计算", actual: "根据原价和售价反算" } }, resultLabels: { "할인 금액": "优惠金额", "최종 가격": "最终价格", "실제 할인율": "实际折扣率" }, validation: "原价须为非负数，折扣率须为0%至100%。反算时售价不能高于原价。", resultNote: "折扣金额按韩元取整。" },

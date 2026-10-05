@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/constants/site-config";
-import { calculatorCategories } from "@/data/calculators/categories";
+import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { getCalculatorPage, publishedCalculatorPages } from "@/data/calculator-content";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
@@ -43,7 +43,7 @@ export default async function CalculatorPage({ params }: PageProps) {
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return (
-    <CalculatorWorkspace categories={calculatorCategories} categoryOrder={["math", "finance", "salary", "tax", "date-time", "life"]} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
+    <CalculatorWorkspace categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
     <article className="min-w-0 py-6 sm:py-10">
       <JsonLd data={{
         "@context": "https://schema.org",
