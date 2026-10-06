@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/constants/site-config";
+import { siteConfig, siteUrl } from "@/constants/site-config";
 
 type PageMetadataInput = {
   title: string;
@@ -14,7 +14,7 @@ export function createPageMetadata({
   path,
   keywords,
 }: PageMetadataInput): Metadata {
-  const canonical = path === "/" ? "/" : path.replace(/\/$/, "");
+  const canonical = siteUrl(path === "/" ? "/" : path.replace(/\/$/, ""));
 
   return {
     title,

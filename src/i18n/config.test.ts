@@ -3,7 +3,7 @@ import { hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, lo
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
-import { siteConfig } from "@/constants/site-config";
+import { siteUrl } from "@/constants/site-config";
 
 describe("locale routing and translated calculator catalog", () => {
   it("accepts only supported locale keys and localized calculator slugs", () => {
@@ -60,13 +60,13 @@ describe("locale routing and translated calculator catalog", () => {
   it.each(localizedCalculatorSlugs.flatMap((slug) => (["en", "ja", "zh"] as const).map((locale) => [slug, locale] as const)))("has locale-specific canonical and hreflang for %s (%s)", (slug, locale) => {
     const page = getDictionary(locale).calculators[slug]!;
     const metadata = localizedMetadata(locale, `/calculators/${slug}`, page.title, page.description, page.keywords);
-    expect(metadata.alternates?.canonical).toBe(`${siteConfig.url}/${locale}/calculators/${slug}`);
+    expect(metadata.alternates?.canonical).toBe(siteUrl(`/${locale}/calculators/${slug}`));
     expect(metadata.alternates?.languages).toMatchObject({
-      ko: `${siteConfig.url}/calculators/${slug}`,
-      en: `${siteConfig.url}/en/calculators/${slug}`,
-      ja: `${siteConfig.url}/ja/calculators/${slug}`,
-      zh: `${siteConfig.url}/zh/calculators/${slug}`,
-      "x-default": `${siteConfig.url}/calculators/${slug}`,
+      ko: siteUrl(`/calculators/${slug}`),
+      en: siteUrl(`/en/calculators/${slug}`),
+      ja: siteUrl(`/ja/calculators/${slug}`),
+      zh: siteUrl(`/zh/calculators/${slug}`),
+      "x-default": siteUrl(`/calculators/${slug}`),
     });
   });
 
@@ -92,10 +92,10 @@ describe("locale routing and translated calculator catalog", () => {
       const metadata = localizedMetadata(locale, "/calculators/percentage", "Title", "Description");
       expect(metadata.alternates?.canonical).toContain(`/${locale}/calculators/percentage`);
       expect(metadata.alternates?.languages).toMatchObject({
-        ko: "https://woori.today/calculators/percentage",
-        en: "https://woori.today/en/calculators/percentage",
-        ja: "https://woori.today/ja/calculators/percentage",
-        zh: "https://woori.today/zh/calculators/percentage",
+        ko: "https://www.woori.today/calculator/calculators/percentage",
+        en: "https://www.woori.today/calculator/en/calculators/percentage",
+        ja: "https://www.woori.today/calculator/ja/calculators/percentage",
+        zh: "https://www.woori.today/calculator/zh/calculators/percentage",
       });
       expect(localeConfig[locale].ogLocale).toMatch(/^(en_US|ja_JP|zh_CN)$/);
     }

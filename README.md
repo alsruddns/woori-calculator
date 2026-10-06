@@ -86,16 +86,16 @@ docker run --rm -p 3001:3001 woori-tools
 
 ## Production deployment
 
-- Production origin and canonical host: `https://woori.today` (apex host). `www.woori.today` should redirect to the apex host at the edge.
+- Production origin and canonical host: `https://www.woori.today/calculator`.
 - The Next.js server listens on port `3001`; keep MoneyBook on `3000`. Build with `pnpm build`, or use the standalone Docker image.
 - A Caddy site-only example is shown below. Caddy terminates HTTPS and owns HSTS; Next.js sets the other baseline response headers. Do not duplicate HSTS at the application layer.
 
 ```caddyfile
-www.woori.today {
-    redir https://woori.today{uri} permanent
+woori.today {
+    redir https://www.woori.today{uri} permanent
 }
 
-woori.today {
+www.woori.today {
     encode zstd gzip
     header Strict-Transport-Security "max-age=31536000"
     reverse_proxy 127.0.0.1:3001
@@ -108,8 +108,8 @@ The app currently does not set a Content-Security-Policy. A production CSP needs
 
 - [ ] `pnpm test`, `pnpm lint`, `pnpm typecheck`, and `pnpm build` pass.
 - [ ] Build and run the Docker image; confirm it listens on container port `3001` and reports healthy.
-- [ ] Configure DNS, Caddy HTTPS, apex canonical host, and `www` redirect.
-- [ ] Check `https://woori.today/`, `/sitemap.xml`, `/robots.txt`, and a missing URL returns 404.
+- [ ] Configure DNS, Caddy HTTPS, and apex to `www` redirect.
+- [ ] Check `https://www.woori.today/calculator`, `/calculator/sitemap.xml`, `/calculator/robots.txt`, and a missing URL returns 404.
 - [ ] Inspect canonical, hreflang, locale `lang`, and page titles on representative ko/en/ja/zh pages.
 - [ ] Submit the sitemap in Google Search Console and Naver Search Advisor after ownership verification.
 - [ ] Add real Google/Naver verification values through the `verification` metadata in the root route-group layout when available; never commit placeholder tokens.

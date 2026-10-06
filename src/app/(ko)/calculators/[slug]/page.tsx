@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { JsonLd } from "@/components/seo/json-ld";
-import { siteConfig } from "@/constants/site-config";
+import { siteConfig, siteUrl } from "@/constants/site-config";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { getCalculatorPage, publishedCalculatorPages } from "@/data/calculator-content";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -49,12 +49,12 @@ export default async function CalculatorPage({ params }: PageProps) {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: siteConfig.name, item: siteConfig.url },
-          { "@type": "ListItem", position: 2, name: "계산기", item: `${siteConfig.url}/calculators` },
-          { "@type": "ListItem", position: 3, name: calculator.name, item: `${siteConfig.url}${path}` },
+          { "@type": "ListItem", position: 1, name: siteConfig.name, item: siteUrl("/") },
+          { "@type": "ListItem", position: 2, name: "계산기", item: siteUrl("/calculators") },
+          { "@type": "ListItem", position: 3, name: calculator.name, item: siteUrl(path) },
         ],
       }} />
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: calculator.title, description: calculator.description, url: `${siteConfig.url}${path}`, inLanguage: "ko-KR" }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: calculator.title, description: calculator.description, url: siteUrl(path), inLanguage: "ko-KR" }} />
 
       <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6">
         <Link className="inline-flex min-h-11 items-center hover:text-teal-800" href="/">홈</Link><span aria-hidden="true">/</span>
