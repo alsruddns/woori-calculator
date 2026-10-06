@@ -1,0 +1,11 @@
+.git
+.next
+node_modules
+coverage
+.vitest
+test-results
+playwright-report
+.next-verify
+*.tsbuildinfo
+.env*
+*.log

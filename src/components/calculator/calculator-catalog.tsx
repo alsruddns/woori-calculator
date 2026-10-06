@@ -1,0 +1,24 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { matchesCalculatorSearch } from "@/lib/i18n/search";
+
+type CatalogItem = { slug: string; name: string; description: string; category: string; keywords?: readonly string[] };
+
+export function CalculatorCatalog({ items, categories, categoryOrder, searchLabel, emptyLabel, basePath }: {
+  items: readonly CatalogItem[];
+  categories: Readonly<Record<string, string>>;
+  categoryOrder: readonly string[];
+  searchLabel: string;
+  emptyLabel: string;
+  basePath: string;
+}) {
+  const [query, setQuery] = useState("");
+  const filtered = useMemo(() => items.filter((item) => matchesCalculatorSearch(item, query)), [items, query]);
+  const groups = categoryOrder.map((category) => ({ category, items: filtered.filter((item) => item.category === category) })).filter(({ items: group }) => group.length);
+  return <>
+    <label className="mt-7 block max-w-xl"><span className="sr-only">{searchLabel}</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={searchLabel} className="min-h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-base outline-none focus-visible:border-teal-700 focus-visible:ring-2 focus-visible:ring-teal-700/20" /></label>
+    {groups.length ? <div className="mt-8 min-w-0 space-y-7 sm:space-y-9">{groups.map(({ category, items: group }) => <section key={category} id={`category-${category}`} aria-labelledby={`heading-${category}`} className="min-w-0"><h2 id={`heading-${category}`} className="break-words text-xl font-bold [overflow-wrap:anywhere]">{categories[category]}</h2><ul className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-3">{group.map((item) => <li key={item.slug} className="min-w-0"><Link href={`${basePath}/${item.slug}`} className="block h-full min-w-0 break-words rounded-xl border border-slate-200 bg-white p-4 [overflow-wrap:anywhere] hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:p-5"><h3 className="break-words font-semibold [overflow-wrap:anywhere]">{item.name}</h3><p className="mt-2 break-words text-sm leading-6 text-slate-600 [overflow-wrap:anywhere]">{item.description}</p></Link></li>)}</ul></section>)}</div> : <p className="mt-8 break-words rounded-xl border border-slate-200 bg-white p-4 text-slate-600 [overflow-wrap:anywhere] sm:p-5">{emptyLabel}</p>}
+  </>;
+}
