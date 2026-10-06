@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/json-ld";
-import { siteConfig } from "@/constants/site-config";
+import { siteConfig, siteUrl } from "@/constants/site-config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { localizedMetadata } from "@/lib/i18n/seo";
@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebSite", name: siteConfig.name, url: siteConfig.url, inLanguage: "ko-KR" }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebSite", name: siteConfig.name, url: siteUrl("/"), inLanguage: "ko-KR" }} />
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-5 sm:py-24">
           <p className="mb-4 text-sm font-semibold text-teal-800">woori.today · 우리의 오늘</p>
