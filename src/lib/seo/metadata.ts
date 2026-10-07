@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/constants/site-config";
+import { localePath } from "@/i18n/config";
 
 type PageMetadataInput = {
   title: string;
@@ -14,8 +15,7 @@ export function createPageMetadata({
   path,
   keywords,
 }: PageMetadataInput): Metadata {
-  const normalizedPath = path === "/" ? "" : path.replace(/\/$/, "");
-  const canonical = `${siteConfig.serviceBaseUrl}${normalizedPath}`;
+  const canonical = `${siteConfig.serviceBaseUrl}${localePath("ko", path)}`;
 
   return {
     title,

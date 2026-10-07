@@ -2,23 +2,18 @@ import type { NextConfig } from "next";
 import { securityHeaders } from "./src/lib/security/headers";
 
 const nextConfig: NextConfig = {
-  basePath: "/calculator",
   output: "standalone",
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
   async redirects() {
     return [
-      { source: "/calculators/:slug", destination: "/:slug", permanent: true },
-      { source: "/:locale(en|ja|zh)/calculators/:slug", destination: "/:locale/:slug", permanent: true },
+      { source: "/", destination: "/ko", permanent: true },
+      { source: "/calculators", destination: "/ko/calculators", permanent: true },
+      { source: "/calculators/:slug", destination: "/ko/calculators/:slug", permanent: true },
+      { source: "/about", destination: "/ko/about", permanent: true },
+      { source: "/privacy", destination: "/ko/privacy", permanent: true },
+      { source: "/terms", destination: "/ko/terms", permanent: true },
     ];
-  },
-  async rewrites() {
-    return {
-      afterFiles: [
-        { source: "/:locale(en|ja|zh)/:slug", destination: "/:locale/calculators/:slug" },
-        { source: "/:slug", destination: "/calculators/:slug" },
-      ],
-    };
   },
   async headers() {
     return [{ source: "/:path*", headers: [...securityHeaders] }];

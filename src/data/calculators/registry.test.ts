@@ -7,6 +7,7 @@ import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculator
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
 import { getDictionary } from "@/i18n/dictionaries";
 import { locales } from "@/i18n/config";
+import { siteConfig } from "@/constants/site-config";
 
 describe("calculator registry", () => {
   it("publishes only calculators with a content definition and stable unique slugs", () => {
@@ -46,7 +47,7 @@ describe("calculator registry", () => {
       expect(page.example.answer.trim()).not.toBe("");
       expect(page.faqs.length).toBeGreaterThan(0);
       expect(page.fields.length).toBeGreaterThan(0);
-      expect(createPageMetadata({ title: page.title, description: page.description, path: `/calculators/${page.slug}` }).alternates?.canonical).toContain(`/calculators/${page.slug}`);
+      expect(createPageMetadata({ title: page.title, description: page.description, path: `/calculators/${page.slug}` }).alternates?.canonical).toBe(`${siteConfig.url}/ko/calculators/${page.slug}`);
     }
     const dateLifeSlugs = ["date-difference", "dday", "age", "workdays", "bmi", "area", "pace", "fuel-cost", "calorie-per-serving"];
     const dateLife = calculatorPages.filter(({ slug }) => dateLifeSlugs.includes(slug));
@@ -65,7 +66,7 @@ describe("calculator registry", () => {
     expect(loan.title).toContain("대출 이자 계산기");
     expect(loan.keywords).toContain("대출 이자 계산기");
     expect(matchesCalculatorSearch({ name: loan.name, slug: loan.slug, keywords: loan.keywords }, "대출 이자 계산기")).toBe(true);
-    expect(createPageMetadata({ title: loan.title, description: loan.description, path: `/calculators/${loan.slug}` }).alternates?.canonical).toContain("/calculators/loan-interest");
+    expect(createPageMetadata({ title: loan.title, description: loan.description, path: `/calculators/${loan.slug}` }).alternates?.canonical).toBe(`${siteConfig.url}/ko/calculators/loan-interest`);
 
     const stock = getCalculatorPage("stock-average-price")!;
     expect(stock.name).toBe("주식·코인 물타기 계산기");
@@ -74,6 +75,6 @@ describe("calculator registry", () => {
     expect(stock.description).toContain("주식·코인");
     expect(stock.keywords).toContain("주식·코인 물타기 계산기");
     expect(matchesCalculatorSearch({ name: stock.name, slug: stock.slug, keywords: stock.keywords }, "코인 물타기 계산기")).toBe(true);
-    expect(createPageMetadata({ title: stock.title, description: stock.description, path: `/calculators/${stock.slug}` }).alternates?.canonical).toContain("/calculators/stock-average-price");
+    expect(createPageMetadata({ title: stock.title, description: stock.description, path: `/calculators/${stock.slug}` }).alternates?.canonical).toBe(`${siteConfig.url}/ko/calculators/stock-average-price`);
   });
 });

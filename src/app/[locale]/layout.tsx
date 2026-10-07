@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LocalizedHeader } from "@/components/layout/localized-header";
 import { LocalizedFooter } from "@/components/layout/localized-footer";
-import { localeConfig, locales, hasLocale } from "@/i18n/config";
+import { localeConfig, dictionaryLocales, hasLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { siteConfig } from "@/constants/site-config";
 import "../globals.css";
 
-export function generateStaticParams() { return locales.filter((locale) => locale !== "ko").map((locale) => ({ locale })); }
+export function generateStaticParams() { return dictionaryLocales.map((locale) => ({ locale })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale: key } = await params;

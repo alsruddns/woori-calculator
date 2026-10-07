@@ -1,7 +1,7 @@
 export const locales = ["ko", "en", "ja", "zh"] as const;
 export type Locale = (typeof locales)[number];
-export const prefixedLocales = ["en", "ja", "zh"] as const satisfies readonly Locale[];
-export type PrefixedLocale = (typeof prefixedLocales)[number];
+export const dictionaryLocales = ["en", "ja", "zh"] as const satisfies readonly Locale[];
+export type DictionaryLocale = (typeof dictionaryLocales)[number];
 
 export const localeConfig: Record<Locale, { htmlLang: string; ogLocale: string; languageName: string }> = {
   ko: { htmlLang: "ko", ogLocale: "ko_KR", languageName: "한국어" },
@@ -21,12 +21,13 @@ export const hasLocale = (value: string): value is Locale => locales.includes(va
 export const hasLocalizedCalculator = (slug: string): slug is LocalizedCalculatorSlug => localizedCalculatorSlugs.includes(slug as LocalizedCalculatorSlug);
 
 export function localePath(locale: Locale, path = "") {
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  return locale === "ko" ? (normalized === "/" ? "/" : normalized) : `/${locale}${normalized === "/" ? "" : normalized}`;
+  const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
+  const normalized = withLeadingSlash === "/" ? "" : withLeadingSlash.replace(/\/+$/, "");
+  return `/${locale}${normalized}`;
 }
 
 export function languageSwitchPath(pathname: string, target: Locale) {
-  const path = pathname.replace(/^\/(en|ja|zh)(?=\/|$)/, "") || "/";
+  const path = pathname.replace(/^\/(ko|en|ja|zh)(?=\/|$)/, "") || "/";
   const slug = path.match(/^\/calculators\/([^/]+)/)?.[1];
   if ((slug && !hasLocalizedCalculator(slug)) || /^\/(about|privacy|terms)(\/|$)/.test(path)) return localePath(target, "/calculators");
   return localePath(target, path);

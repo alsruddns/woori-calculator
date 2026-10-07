@@ -7,7 +7,7 @@ type Props = {
   categoryOrder: readonly string[];
   labels: { menu: string; search: string; close: string; empty: string };
   localizedItems?: readonly SidebarCalculator[];
-  basePath?: string;
+  basePath: string;
 };
 
 export function CalculatorWorkspace({ children, categories, categoryOrder, labels, localizedItems, basePath }: Props) {
