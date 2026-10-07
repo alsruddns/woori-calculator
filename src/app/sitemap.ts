@@ -15,18 +15,15 @@ function languageAlternates(path: string) {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const landingEntries: MetadataRoute.Sitemap = locales.flatMap((locale) => ["", "/calculators"].map((path) => ({
-    url: `${siteConfig.url}${localePath(locale, path)}`,
-    changeFrequency: path ? "monthly" as const : "weekly" as const,
-    priority: path ? 0.6 : locale === "ko" ? 1 : 0.8,
-    alternates: { languages: languageAlternates(path) },
-  })));
-
-  const legalEntries: MetadataRoute.Sitemap = ["/about", "/privacy", "/terms"].map((path) => ({
-    url: `${siteConfig.url}${localePath("ko", path)}`,
-    changeFrequency: "monthly",
-    priority: 0.5,
-  }));
+  const landingEntries: MetadataRoute.Sitemap = locales.map((locale) => {
+    const path = "/calculators";
+    return {
+      url: `${siteConfig.url}${localePath(locale, path)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: { languages: languageAlternates(path) },
+    };
+  });
 
   const translatedCalculatorEntries: MetadataRoute.Sitemap = translatedSlugs.flatMap((slug) => {
     const page = publishedCalculatorPages.find((calculator) => calculator.slug === slug)!;
@@ -49,5 +46,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
-  return [...landingEntries, ...legalEntries, ...translatedCalculatorEntries, ...koreanOnlyEntries];
+  return [...landingEntries, ...translatedCalculatorEntries, ...koreanOnlyEntries];
 }

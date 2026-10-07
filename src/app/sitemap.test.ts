@@ -6,24 +6,22 @@ import { publishedCalculatorPages } from "@/data/calculator-content";
 import { hasLocalizedCalculator, localePath, locales } from "@/i18n/config";
 
 describe("crawl metadata routes", () => {
-  it("lists locale-prefixed landings, legal pages, and every published calculator exactly once", () => {
+  it("lists only calculator-owned locale landings and published calculators exactly once", () => {
     const entries = sitemap();
     const urls = entries.map(({ url }) => url);
     const publicLocalizedSlugs = publishedCalculatorPages.map(({ slug }) => slug).filter(hasLocalizedCalculator);
-    expect(entries).toHaveLength(11 + publishedCalculatorPages.length + publicLocalizedSlugs.length * 3);
+    expect(entries).toHaveLength(locales.length + publishedCalculatorPages.length + publicLocalizedSlugs.length * 3);
     expect(new Set(urls).size).toBe(urls.length);
     expect(siteConfig.url).toBe("https://www.woori.today");
     expect(urls.every((url) => url.startsWith("https://www.woori.today/"))).toBe(true);
-    expect(urls.some((url) => /^https:\/\/www\.woori\.today\/(?:calculators|about|privacy|terms)(?:\/|$)/.test(url))).toBe(false);
+    expect(urls.some((url) => /^https:\/\/www\.woori\.today\/(?:ko|en|ja|zh)(?:\/|$)$/.test(url))).toBe(false);
+    expect(urls.some((url) => /\/(?:about|privacy|terms)(?:\/|$)/.test(url))).toBe(false);
     expect(urls.some((url) => url.includes("/calculator/"))).toBe(false);
 
     for (const locale of locales) {
-      expect(urls).toContain(`${siteConfig.url}${localePath(locale)}`);
       expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
     }
-    for (const path of ["/about", "/privacy", "/terms"]) {
-      expect(urls).toContain(`${siteConfig.url}${localePath("ko", path)}`);
-    }
+    expect(urls.every((url) => /\/(ko|en|ja|zh)\/calculators(?:\/|$)/.test(url))).toBe(true);
     for (const calculator of publishedCalculatorPages) {
       const koUrl = `${siteConfig.url}${localePath("ko", `/calculators/${calculator.slug}`)}`;
       expect(urls).toContain(koUrl);
@@ -47,10 +45,10 @@ describe("crawl metadata routes", () => {
     expect(urls.some((url) => url.includes("localhost"))).toBe(false);
   });
 
-  it("allows public crawling and points robots to the production sitemap", () => {
+  it("keeps the app robots route pointed at the externally proxied calculator sitemap", () => {
     const policy = robots();
     expect(policy.rules).toMatchObject({ userAgent: "*", allow: "/" });
-    expect(policy.sitemap).toBe("https://www.woori.today/sitemap.xml");
+    expect(policy.sitemap).toBe("https://www.woori.today/calculator-sitemap.xml");
     expect(policy.host).toBe("https://www.woori.today");
   });
 });
