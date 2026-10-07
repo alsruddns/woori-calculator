@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hasLocale(key) || key === "ko" || !localizedCalculatorSlugs.includes(slug as (typeof localizedCalculatorSlugs)[number])) return {};
   const page = getDictionary(key).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
   if (!page) return {};
-  return localizedMetadata(key, `/calculators/${slug}`, page.title, page.description, page.keywords);
+  return localizedMetadata(key, `/${slug}`, page.title, page.description, page.keywords);
 }
 
 export default async function LocalizedCalculatorPage({ params }: Props) {
@@ -32,11 +32,11 @@ export default async function LocalizedCalculatorPage({ params }: Props) {
   const source = getCalculatorPage(slug);
   if (!source) notFound();
   const category = categoryFor(slug);
-  const path = `/${locale}/calculators/${slug}`;
+  const path = `/${locale}/${slug}`;
   return <CalculatorWorkspace localizedItems={localizedCalculatorSlugs.map((id) => ({ slug: id, name: dictionary.calculators[id]!.name, keywords: dictionary.calculators[id]!.keywords, category: categoryFor(id) }))} categories={dictionary.categories} categoryOrder={dictionary.categoriesOrder} basePath={`/${locale}/calculators`} labels={{ menu: dictionary.nav.menu, search: dictionary.nav.search, close: dictionary.nav.close, empty: dictionary.nav.searchEmpty }}>
     <article className="min-w-0 py-4">
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: dictionary.detail.home, item: `${siteConfig.url}/${locale}` }, { "@type": "ListItem", position: 2, name: dictionary.detail.calculators, item: `${siteConfig.url}/${locale}/calculators` }, { "@type": "ListItem", position: 3, name: content.name, item: `${siteConfig.url}${path}` }] }} />
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: content.title, description: content.description, url: `${siteConfig.url}${path}`, inLanguage: localeConfig[locale].htmlLang }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: dictionary.detail.home, item: `${siteConfig.serviceBaseUrl}/${locale}` }, { "@type": "ListItem", position: 2, name: dictionary.detail.calculators, item: `${siteConfig.serviceBaseUrl}/${locale}/calculators` }, { "@type": "ListItem", position: 3, name: content.name, item: `${siteConfig.serviceBaseUrl}${path}` }] }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: content.title, description: content.description, url: `${siteConfig.serviceBaseUrl}${path}`, inLanguage: localeConfig[locale].htmlLang }} />
       <nav aria-label={dictionary.calculatorList.breadcrumbCalculators} className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6"><Link className="inline-flex min-h-11 items-center" href={`/${locale}`}>{dictionary.detail.home}</Link><span aria-hidden="true">/</span><Link className="inline-flex min-h-11 items-center" href={`/${locale}/calculators`}>{dictionary.detail.calculators}</Link><span aria-hidden="true">/</span><span aria-current="page">{content.name}</span></nav>
       <header className="mb-7 min-w-0 max-w-3xl"><p className="text-sm font-semibold text-teal-800">{dictionary.categories[category]}</p><h1 className="mt-2 break-words text-2xl font-bold tracking-tight text-slate-950 [overflow-wrap:anywhere] sm:text-3xl lg:text-4xl">{content.name}</h1><p className="mt-4 break-words leading-7 text-slate-600 [overflow-wrap:anywhere]">{content.description}</p></header>
       <CalculatorForm key={`${locale}-${slug}`} slug={slug} fields={source.fields} locale={locale} dictionary={{ detail: dictionary.detail, units: dictionary.units }} content={content} />

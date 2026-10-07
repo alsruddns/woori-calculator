@@ -14,7 +14,8 @@ export function createPageMetadata({
   path,
   keywords,
 }: PageMetadataInput): Metadata {
-  const canonical = path === "/" ? "/" : path.replace(/\/$/, "");
+  const normalizedPath = path === "/" ? "" : path.replace(/\/$/, "");
+  const canonical = `${siteConfig.serviceBaseUrl}${normalizedPath}`;
 
   return {
     title,

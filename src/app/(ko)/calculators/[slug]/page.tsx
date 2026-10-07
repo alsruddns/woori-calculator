@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const calculator = getCalculatorPage(slug);
   if (!calculator) return {};
-  const path = `/calculators/${calculator.slug}` as `/${string}`;
+  const path = `/${calculator.slug}` as `/${string}`;
   if (localizedCalculatorSlugs.includes(calculator.slug as (typeof localizedCalculatorSlugs)[number])) {
     return localizedMetadata("ko", path, calculator.title, calculator.description, calculator.keywords);
   }
@@ -49,12 +49,12 @@ export default async function CalculatorPage({ params }: PageProps) {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: siteConfig.name, item: siteConfig.url },
-          { "@type": "ListItem", position: 2, name: "계산기", item: `${siteConfig.url}/calculators` },
-          { "@type": "ListItem", position: 3, name: calculator.name, item: `${siteConfig.url}${path}` },
+          { "@type": "ListItem", position: 1, name: siteConfig.name, item: siteConfig.serviceBaseUrl },
+          { "@type": "ListItem", position: 2, name: "계산기", item: `${siteConfig.serviceBaseUrl}/calculators` },
+          { "@type": "ListItem", position: 3, name: calculator.name, item: `${siteConfig.serviceBaseUrl}${path}` },
         ],
       }} />
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: calculator.title, description: calculator.description, url: `${siteConfig.url}${path}`, inLanguage: "ko-KR" }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: calculator.title, description: calculator.description, url: `${siteConfig.serviceBaseUrl}${path}`, inLanguage: "ko-KR" }} />
 
       <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6">
         <Link className="inline-flex min-h-11 items-center hover:text-teal-800" href="/">홈</Link><span aria-hidden="true">/</span>
