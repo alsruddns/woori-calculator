@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   title: { default: siteConfig.name, template: `%s | ${siteConfig.shortName}` },
   description: siteConfig.description,
   applicationName: siteConfig.shortName,
+  icons: {
+    icon: "/_assets/calculator/icon.png",
+    apple: "/_assets/calculator/apple-icon.png",
+  },
   openGraph: {
     type: "website",
     locale: siteConfig.locale,

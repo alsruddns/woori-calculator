@@ -4,6 +4,10 @@ import { securityHeaders } from "./src/lib/security/headers";
 const nextConfig: NextConfig = {
   output: "standalone",
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
+  assetPrefix: "/_assets/calculator",
+  images: {
+    path: "/_assets/calculator/_next/image",
+  },
   poweredByHeader: false,
   async redirects() {
     return [
