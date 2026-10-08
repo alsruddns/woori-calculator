@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale: key } = await params;
   if (!hasLocale(key) || key === "ko") return {};
   const dictionary = getDictionary(key);
-  return { metadataBase: new URL(siteConfig.serviceBaseUrl), title: { default: dictionary.siteName, template: `%s | ${dictionary.siteName}` }, description: dictionary.description, applicationName: dictionary.siteName, verification: { other: { "google-adsense-account": "ca-pub-8033378933696766" } }, icons: { icon: "/_assets/calculator/icon.png", apple: "/_assets/calculator/apple-icon.png" }, openGraph: { type: "website", locale: localeConfig[key].ogLocale, siteName: dictionary.siteName, title: dictionary.siteName, description: dictionary.description }, twitter: { card: "summary", title: dictionary.siteName, description: dictionary.description }, robots: { index: true, follow: true } };
+  return { metadataBase: new URL(siteConfig.serviceBaseUrl), title: { default: dictionary.siteName, template: `%s | ${dictionary.siteName}` }, description: dictionary.description, applicationName: dictionary.siteName, icons: { icon: "/_assets/calculator/icon.png", apple: "/_assets/calculator/apple-icon.png" }, openGraph: { type: "website", locale: localeConfig[key].ogLocale, siteName: dictionary.siteName, title: dictionary.siteName, description: dictionary.description }, twitter: { card: "summary", title: dictionary.siteName, description: dictionary.description }, robots: { index: true, follow: true } };
 }
 
 export default async function LocaleLayout({ children, params }: Readonly<{ children: React.ReactNode; params: Promise<unknown> }>) {

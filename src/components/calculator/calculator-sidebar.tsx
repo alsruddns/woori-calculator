@@ -68,7 +68,7 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
   </nav>;
 
   return <>
-    <aside className="sticky top-5 hidden max-h-[calc(100vh-2.5rem)] w-64 shrink-0 self-start overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:block" aria-label={labels.menu}>{list("desktop-calculator-menu-search")}</aside>
+    <aside className="sticky top-5 hidden max-h-[calc(100vh-2.5rem)] w-64 min-w-0 self-start overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:block" aria-label={labels.menu}>{list("desktop-calculator-menu-search")}</aside>
     <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="calculator-mobile-menu" onClick={() => setOpen(true)} className="mb-1 min-h-11 self-start rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 lg:hidden">{labels.menu}</button>
     {open ? <div className="fixed inset-0 z-50 lg:hidden" role="presentation">
       <button type="button" tabIndex={-1} aria-label={labels.close} onClick={() => setOpen(false)} className="absolute inset-0 h-full w-full bg-slate-950/40" />

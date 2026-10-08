@@ -9,11 +9,6 @@ export const metadata: Metadata = {
   title: { default: siteConfig.name, template: `%s | ${siteConfig.shortName}` },
   description: siteConfig.description,
   applicationName: siteConfig.shortName,
-  verification: {
-    other: {
-      "google-adsense-account": "ca-pub-8033378933696766",
-    },
-  },
   icons: {
     icon: "/_assets/calculator/icon.png",
     apple: "/_assets/calculator/apple-icon.png",
