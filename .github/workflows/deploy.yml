@@ -43,3 +43,26 @@ jobs:
             cd /opt/services/compose
             docker compose --env-file .env.moneybook pull calculator
             docker compose --env-file .env.moneybook up -d calculator
+
+      - name: Wait for calculator deployment and sitemap
+        env:
+          INDEXNOW_KEY: 8d730277e73843358dbc63ab157816af
+        run: |
+          for attempt in $(seq 1 18); do
+            key_content="$(curl --fail --silent "https://www.woori.today/${INDEXNOW_KEY}.txt" || true)"
+            if curl --fail --silent "https://www.woori.today/ko/calculators" >/dev/null \
+              && curl --fail --silent "https://www.woori.today/calculator-sitemap.xml" >/dev/null \
+              && [ "$key_content" = "$INDEXNOW_KEY" ]; then
+              echo "Calculator page, sitemap, and IndexNow key are available."
+              exit 0
+            fi
+            echo "Waiting for calculator routes and IndexNow key (attempt ${attempt}/18)."
+            sleep 10
+          done
+          echo "Deployment verification failed; IndexNow URLs were not submitted."
+          exit 1
+
+      - name: Submit calculator URLs to IndexNow
+        env:
+          INDEXNOW_KEY: 8d730277e73843358dbc63ab157816af
+        run: node scripts/submit-indexnow.mjs
