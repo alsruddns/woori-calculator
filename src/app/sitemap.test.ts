@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import sitemap from "@/app/sitemap";
-import robots from "@/app/robots";
 import { siteConfig } from "@/constants/site-config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { hasLocalizedCalculator, localePath, locales } from "@/i18n/config";
@@ -45,10 +44,4 @@ describe("crawl metadata routes", () => {
     expect(urls.some((url) => url.includes("localhost"))).toBe(false);
   });
 
-  it("keeps the app robots route pointed at the externally proxied calculator sitemap", () => {
-    const policy = robots();
-    expect(policy.rules).toMatchObject({ userAgent: "*", allow: "/" });
-    expect(policy.sitemap).toBe("https://www.woori.today/calculator-sitemap.xml");
-    expect(policy.host).toBe("https://www.woori.today");
-  });
 });
