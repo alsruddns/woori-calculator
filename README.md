@@ -100,6 +100,12 @@ docker run --rm -p 3001:3001 woori-tools
 
 - Set `NEXT_PUBLIC_GA_ID=G-ZJSJW06SCX` in the build environment to enable GA4 on Korean and translated calculator routes. The shared layout renders no analytics scripts when the variable is unset.
 
+### IndexNow
+
+- The main-branch deploy workflow submits the calculator listing/detail URLs from the deployed calculator sitemap after the public calculator route and sitemap respond successfully. The sitemap is generated from the published calculator registry; the submitter filters to the four locale-first calculator routes and removes duplicates.
+- `public/8d730277e73843358dbc63ab157816af.txt` hosts the verification key. The public host must serve it at the configured root URL before an IndexNow request can be sent.
+- For a no-submit preview, run `INDEXNOW_KEY=<key> INDEXNOW_DRY_RUN=true node scripts/submit-indexnow.mjs` after the deployed sitemap is reachable.
+
 - Production origin and canonical host: `https://www.woori.today`. The apex host redirects to `www` at the edge.
 - The Calculator Next.js server listens on port `3001`; build with `pnpm build`, or use the standalone Docker image. It has no `/calculator` `basePath`.
 - Nginx sends only `/{locale}/calculators` and `/{locale}/calculators/*` to this service. The Portal owns `/ko`, `/en`, `/ja`, `/zh`, and the production `/robots.txt`.
