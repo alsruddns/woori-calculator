@@ -1,50 +1,39 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/constants/site-config";
-import { publishedCalculatorPages } from "@/data/calculator-content";
+import { getCalculatorPage } from "@/data/calculator-content";
+import { calculatorRegistry } from "@/data/calculators/registry";
 import { hasLocalizedCalculator, localePath, locales } from "@/i18n/config";
+import { localizedLanguageAlternates } from "@/lib/i18n/seo";
+import type { CalculatorDefinition } from "@/types/calculator";
 
-const translatedSlugs = publishedCalculatorPages
-  .map(({ slug }) => slug)
-  .filter(hasLocalizedCalculator);
-
-function languageAlternates(path: string) {
-  return Object.fromEntries([
-    ...locales.map((locale) => [locale, `${siteConfig.url}${localePath(locale, path)}`] as const),
-    ["x-default", `${siteConfig.url}${localePath("ko", path)}`] as const,
-  ]);
-}
-
-export default function sitemap(): MetadataRoute.Sitemap {
+export function createSitemapEntries(calculators: readonly CalculatorDefinition[] = calculatorRegistry): MetadataRoute.Sitemap {
   const landingEntries: MetadataRoute.Sitemap = locales.map((locale) => {
     const path = "/calculators";
     return {
       url: `${siteConfig.url}${localePath(locale, path)}`,
       changeFrequency: "monthly" as const,
       priority: 0.6,
-      alternates: { languages: languageAlternates(path) },
+      alternates: { languages: localizedLanguageAlternates(path) },
     };
   });
 
-  const translatedCalculatorEntries: MetadataRoute.Sitemap = translatedSlugs.flatMap((slug) => {
-    const page = publishedCalculatorPages.find((calculator) => calculator.slug === slug)!;
-    const path = `/calculators/${slug}`;
-    return locales.map((locale) => ({
-      url: `${siteConfig.url}${localePath(locale, path)}`,
-      lastModified: new Date(`${page.updatedAt}T00:00:00.000Z`),
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-      alternates: { languages: languageAlternates(path) },
-    }));
-  });
+  const detailEntries: MetadataRoute.Sitemap = calculators
+    .filter(({ isPublished, slug }) => isPublished && hasLocalizedCalculator(slug))
+    .flatMap(({ slug }) => {
+      const path = `/calculators/${slug}`;
+      const page = getCalculatorPage(slug);
+      return locales.map((locale) => ({
+        url: `${siteConfig.url}${localePath(locale, path)}`,
+        ...(page ? { lastModified: new Date(`${page.updatedAt}T00:00:00.000Z`) } : {}),
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+        alternates: { languages: localizedLanguageAlternates(path) },
+      }));
+    });
 
-  const koreanOnlyEntries: MetadataRoute.Sitemap = publishedCalculatorPages
-    .filter(({ slug }) => !hasLocalizedCalculator(slug))
-    .map((page) => ({
-      url: `${siteConfig.url}${localePath("ko", `/calculators/${page.slug}`)}`,
-      lastModified: new Date(`${page.updatedAt}T00:00:00.000Z`),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    }));
+  return [...landingEntries, ...detailEntries];
+}
 
-  return [...landingEntries, ...translatedCalculatorEntries, ...koreanOnlyEntries];
+export default function sitemap(): MetadataRoute.Sitemap {
+  return createSitemapEntries();
 }
