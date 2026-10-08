@@ -94,6 +94,7 @@ docker run --rm -p 3001:3001 woori-tools
 - Ad slots are placeholders only; no advertising script or network SDK is loaded.
 - `NEXT_PUBLIC_ADS_ENABLED` defaults to `false`. In production, unset or `false` removes the ad slots and their grid columns. Set it to `true` only when preparing to integrate an ad provider; enabled production slots reserve their configured minimum height without showing a placeholder.
 - During development, neutral `광고 영역` placeholders show the desktop rail positions. Inline slots are available through `AdSlot` but are not inserted into calculator content.
+- Desktop calculator layout shows the right rail from 1400px and the left rail from 1700px. Each rail is 180px wide; the sidebar remains 260px wide.
 
 - Production origin and canonical host: `https://www.woori.today`. The apex host redirects to `www` at the edge.
 - The Calculator Next.js server listens on port `3001`; build with `pnpm build`, or use the standalone Docker image. It has no `/calculator` `basePath`.

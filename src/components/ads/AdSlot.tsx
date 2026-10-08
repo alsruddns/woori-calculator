@@ -16,8 +16,8 @@ const sizeClasses: Record<AdSize, string> = {
 };
 
 const placementClasses: Record<AdPlacement, string> = {
-  "left-rail": "w-full max-w-[250px]",
-  "right-rail": "w-full max-w-[300px]",
+  "left-rail": "w-full max-w-[180px]",
+  "right-rail": "w-full max-w-[180px]",
   inline: "w-full",
 };
 
