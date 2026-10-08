@@ -3,7 +3,6 @@ import { hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, lo
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
-import { siteUrl } from "@/constants/site-config";
 
 describe("locale routing and translated calculator catalog", () => {
   it("accepts only supported locale keys and localized calculator slugs", () => {
@@ -13,20 +12,22 @@ describe("locale routing and translated calculator catalog", () => {
     expect(hasLocalizedCalculator("salary")).toBe(false);
   });
 
-  it("keeps Korean paths and prefixes the other supported locales", () => {
-    expect(localePath("ko", "/calculators/percentage")).toBe("/calculators/percentage");
+  it("prefixes all supported locale paths, including Korean", () => {
+    expect(localePath("ko", "/calculators/percentage")).toBe("/ko/calculators/percentage");
     expect(localePath("en", "/calculators/percentage")).toBe("/en/calculators/percentage");
     expect(localePath("ja", "/calculators/age")).toBe("/ja/calculators/age");
     expect(localePath("zh", "/calculators/area")).toBe("/zh/calculators/area");
+    expect(localePath("ko")).toBe("/ko");
     expect(localePath("en", "/")).toBe("/en");
   });
 
   it("switches language to the same translated tool or a safe localized landing", () => {
-    expect(languageSwitchPath("/calculators/loan-interest", "en")).toBe("/en/calculators/loan-interest");
+    expect(languageSwitchPath("/ko/calculators/loan-interest", "en")).toBe("/en/calculators/loan-interest");
+    expect(languageSwitchPath("/en/calculators/loan-interest", "ko")).toBe("/ko/calculators/loan-interest");
     expect(languageSwitchPath("/ja/calculators/area", "zh")).toBe("/zh/calculators/area");
-    expect(languageSwitchPath("/calculators/social-insurance", "en")).toBe("/en/calculators");
-    expect(languageSwitchPath("/privacy", "ja")).toBe("/ja/calculators");
-    expect(languageSwitchPath("/zh", "ko")).toBe("/");
+    expect(languageSwitchPath("/ko/calculators/social-insurance", "en")).toBe("/en/calculators");
+    expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ja/calculators");
+    expect(languageSwitchPath("/zh", "ko")).toBe("/ko");
   });
 
   it("provides complete localized content and unique search metadata for all translated calculators", () => {
@@ -60,14 +61,26 @@ describe("locale routing and translated calculator catalog", () => {
   it.each(localizedCalculatorSlugs.flatMap((slug) => (["en", "ja", "zh"] as const).map((locale) => [slug, locale] as const)))("has locale-specific canonical and hreflang for %s (%s)", (slug, locale) => {
     const page = getDictionary(locale).calculators[slug]!;
     const metadata = localizedMetadata(locale, `/calculators/${slug}`, page.title, page.description, page.keywords);
-    expect(metadata.alternates?.canonical).toBe(siteUrl(`/${locale}/calculators/${slug}`));
+    expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/${locale}/calculators/${slug}`);
     expect(metadata.alternates?.languages).toMatchObject({
-      ko: siteUrl(`/calculators/${slug}`),
-      en: siteUrl(`/en/calculators/${slug}`),
-      ja: siteUrl(`/ja/calculators/${slug}`),
-      zh: siteUrl(`/zh/calculators/${slug}`),
-      "x-default": siteUrl(`/calculators/${slug}`),
+      ko: `https://www.woori.today/ko/calculators/${slug}`,
+      en: `https://www.woori.today/en/calculators/${slug}`,
+      ja: `https://www.woori.today/ja/calculators/${slug}`,
+      zh: `https://www.woori.today/zh/calculators/${slug}`,
+      "x-default": `https://www.woori.today/ko/calculators/${slug}`,
     });
+    expect(metadata.openGraph?.url).toBe(metadata.alternates?.canonical);
+  });
+
+  it("canonicalizes Korean calculator pages under /ko with a Korean x-default", () => {
+    const metadata = localizedMetadata("ko", "/calculators/loan-interest", "Title", "Description");
+    expect(metadata.alternates?.canonical).toBe("https://www.woori.today/ko/calculators/loan-interest");
+    expect(metadata.alternates?.languages).toMatchObject({
+      ko: "https://www.woori.today/ko/calculators/loan-interest",
+      "x-default": "https://www.woori.today/ko/calculators/loan-interest",
+    });
+    expect(metadata.openGraph?.url).toBe(metadata.alternates?.canonical);
+    expect(metadata.openGraph?.locale).toBe("ko_KR");
   });
 
   it("searches with translated names, slugs, and locale-specific keywords", () => {
@@ -90,12 +103,13 @@ describe("locale routing and translated calculator catalog", () => {
   it("uses locale specific canonical, hreflang, html and Open Graph values", () => {
     for (const locale of ["en", "ja", "zh"] as const) {
       const metadata = localizedMetadata(locale, "/calculators/percentage", "Title", "Description");
-      expect(metadata.alternates?.canonical).toContain(`/${locale}/calculators/percentage`);
+      expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/${locale}/calculators/percentage`);
       expect(metadata.alternates?.languages).toMatchObject({
-        ko: "https://www.woori.today/calculator/calculators/percentage",
-        en: "https://www.woori.today/calculator/en/calculators/percentage",
-        ja: "https://www.woori.today/calculator/ja/calculators/percentage",
-        zh: "https://www.woori.today/calculator/zh/calculators/percentage",
+        ko: "https://www.woori.today/ko/calculators/percentage",
+        en: "https://www.woori.today/en/calculators/percentage",
+        ja: "https://www.woori.today/ja/calculators/percentage",
+        zh: "https://www.woori.today/zh/calculators/percentage",
+        "x-default": "https://www.woori.today/ko/calculators/percentage",
       });
       expect(localeConfig[locale].ogLocale).toMatch(/^(en_US|ja_JP|zh_CN)$/);
     }

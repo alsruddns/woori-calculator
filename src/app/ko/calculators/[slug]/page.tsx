@@ -3,12 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { JsonLd } from "@/components/seo/json-ld";
-import { siteConfig, siteUrl } from "@/constants/site-config";
+import { siteConfig } from "@/constants/site-config";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { getCalculatorPage, publishedCalculatorPages } from "@/data/calculator-content";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
-import { localizedCalculatorSlugs } from "@/i18n/config";
+import { localizedCalculatorSlugs, localePath } from "@/i18n/config";
 import { localizedMetadata } from "@/lib/i18n/seo";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -37,28 +37,28 @@ export default async function CalculatorPage({ params }: PageProps) {
   const calculator = getCalculatorPage(slug);
   if (!calculator) notFound();
 
-  const path = `/calculators/${calculator.slug}`;
+  const path = localePath("ko", `/calculators/${calculator.slug}`);
   const related = calculator.relatedCalculatorIds
     .map((id) => getCalculatorPage(id))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return (
-    <CalculatorWorkspace categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
+      <CalculatorWorkspace categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} basePath={localePath("ko", "/calculators")} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
     <article className="min-w-0 py-6 sm:py-10">
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: siteConfig.name, item: siteUrl("/") },
-          { "@type": "ListItem", position: 2, name: "계산기", item: siteUrl("/calculators") },
-          { "@type": "ListItem", position: 3, name: calculator.name, item: siteUrl(path) },
+          { "@type": "ListItem", position: 1, name: siteConfig.name, item: `${siteConfig.serviceBaseUrl}${localePath("ko")}` },
+          { "@type": "ListItem", position: 2, name: "계산기", item: `${siteConfig.serviceBaseUrl}${localePath("ko", "/calculators")}` },
+          { "@type": "ListItem", position: 3, name: calculator.name, item: `${siteConfig.serviceBaseUrl}${path}` },
         ],
       }} />
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", name: calculator.title, description: calculator.description, url: siteUrl(path), inLanguage: "ko-KR" }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", "@id": `${siteConfig.serviceBaseUrl}${path}#webpage`, name: calculator.title, description: calculator.description, url: `${siteConfig.serviceBaseUrl}${path}`, isPartOf: { "@id": `${siteConfig.serviceBaseUrl}${localePath("ko")}#website` }, inLanguage: "ko-KR" }} />
 
       <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6">
-        <Link className="inline-flex min-h-11 items-center hover:text-teal-800" href="/">홈</Link><span aria-hidden="true">/</span>
-        <Link className="inline-flex min-h-11 items-center hover:text-teal-800" href="/calculators">계산기</Link><span aria-hidden="true">/</span>
+        <Link className="inline-flex min-h-11 items-center hover:text-teal-800" href={localePath("ko")}>홈</Link><span aria-hidden="true">/</span>
+        <Link className="inline-flex min-h-11 items-center hover:text-teal-800" href={localePath("ko", "/calculators")}>계산기</Link><span aria-hidden="true">/</span>
         <span aria-current="page">{calculator.name}</span>
       </nav>
 
@@ -99,7 +99,7 @@ export default async function CalculatorPage({ params }: PageProps) {
         <aside aria-labelledby="related-calculators">
           <h2 id="related-calculators" className="text-lg font-bold text-slate-950">관련 계산기</h2>
           <ul className="mt-3 space-y-2">
-            {related.map((item) => <li key={item.id}><Link className="flex min-w-0 items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 font-medium text-slate-800 hover:border-teal-700 hover:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800" href={`/calculators/${item.slug}`}><span className="min-w-0 break-words [overflow-wrap:anywhere]">{item.name}</span><span aria-hidden="true" className="shrink-0">→</span></Link></li>)}
+            {related.map((item) => <li key={item.id}><Link className="flex min-w-0 items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 font-medium text-slate-800 hover:border-teal-700 hover:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800" href={localePath("ko", `/calculators/${item.slug}`)}><span className="min-w-0 break-words [overflow-wrap:anywhere]">{item.name}</span><span aria-hidden="true" className="shrink-0">→</span></Link></li>)}
           </ul>
           <p className="mt-4 text-xs text-slate-500">최종 업데이트: <time dateTime={calculator.updatedAt}>{formatKoreanDate(calculator.updatedAt)}</time></p>
           {calculator.sources?.length ? <section className="mt-7 min-w-0" aria-labelledby="policy-sources"><h3 id="policy-sources" className="text-sm font-bold text-slate-900">기준 및 출처</h3><ul className="mt-2 min-w-0 space-y-2">{calculator.sources.map((source) => <li key={source.url} className="min-w-0"><a className="break-words text-sm text-teal-900 underline underline-offset-2 [overflow-wrap:anywhere] hover:text-teal-700 focus-visible:outline-2" href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a><p className="mt-1 text-xs text-slate-500">확인일: <time dateTime={source.checkedAt}>{formatKoreanDate(source.checkedAt)}</time></p></li>)}</ul></section> : null}

@@ -41,7 +41,8 @@ pnpm start      # production 서버 (3001)
 
 ```text
 src/
-  app/calculators/[slug]/       # 공통 SEO 상세 route, 정적 생성
+  app/ko/calculators/[slug]/    # 한국어 SEO 상세 route, 정적 생성
+  app/[locale]/calculators/[slug]/ # 번역된 locale SEO 상세 route
   calculators/                  # React와 분리한 계산 로직 및 순수 함수 테스트
   components/calculator/        # 계산 입력과 결과 Client Component
   data/calculator-content/      # 계산기별 콘텐츠를 카테고리별로 관리
@@ -79,37 +80,28 @@ docker run --rm -p 3001:3001 woori-tools
 ## Internationalized URLs and content
 
 - Supported locales: Korean (`ko`), English (`en`), Japanese (`ja`), and Simplified Chinese (`zh`).
-- Korean keeps existing paths such as `/calculators/...`; other locales use `/en/...`, `/ja/...`, or `/zh/...` prefixes.
+- Calculator routes use a locale prefix: `/ko/calculators/...`, `/en/calculators/...`, `/ja/calculators/...`, and `/zh/calculators/...`.
+- Locale roots (`/ko`, `/en`, `/ja`, `/zh`) and the domain-level `/robots.txt` belong to the Portal service.
+- Legacy Korean calculator routes without `/ko` permanently redirect to their `/ko/calculators` equivalents when they reach this app.
 - `src/i18n/config.ts` lists calculators with complete translated pages. Policy calculators based on Korean rules remain Korean-only until a separately reviewed translation clearly identifies the South Korea basis.
 - Add locale content under `src/i18n/dictionaries/` with a unique title, description, keywords, instructions, formula, example, FAQ, and translated input/result labels before publishing its slug.
 - Each localized page uses its own canonical URL and hreflang links only to available translations. Do not publish incomplete or mixed-language pages.
 
 ## Production deployment
 
-- Production origin and canonical host: `https://www.woori.today/calculator`.
-- The Next.js server listens on port `3001`; keep MoneyBook on `3000`. Build with `pnpm build`, or use the standalone Docker image.
-- A Caddy site-only example is shown below. Caddy terminates HTTPS and owns HSTS; Next.js sets the other baseline response headers. Do not duplicate HSTS at the application layer.
-
-```caddyfile
-woori.today {
-    redir https://www.woori.today{uri} permanent
-}
-
-www.woori.today {
-    encode zstd gzip
-    header Strict-Transport-Security "max-age=31536000"
-    reverse_proxy 127.0.0.1:3001
-}
-```
-
-The app currently does not set a Content-Security-Policy. A production CSP needs a deliberate nonce/hash strategy for Next.js static rendering and its inline bootstrap scripts; do not add broad `unsafe-eval` or third-party script allowances as a shortcut.
+- Production origin and canonical host: `https://www.woori.today`. The apex host redirects to `www` at the edge.
+- The Calculator Next.js server listens on port `3001`; build with `pnpm build`, or use the standalone Docker image. It has no `/calculator` `basePath`.
+- Nginx sends only `/{locale}/calculators` and `/{locale}/calculators/*` to this service. The Portal owns `/ko`, `/en`, `/ja`, `/zh`, and the production `/robots.txt`.
+- The app's internal `/sitemap.xml` is exposed externally by Nginx at `https://www.woori.today/calculator-sitemap.xml`. Sitemap page URLs use the public `/{locale}/calculators/...` paths.
+- Nginx must also route root-relative Next.js assets and public files to the Calculator container without taking over Portal-owned assets. The current app uses root-relative asset URLs; verify routing for `/_next/*`, optimized images, and the Calculator's public brand/icon files when deploying. Do not add `/calculator` as a Next.js `basePath` to address edge routing.
+- The app does not configure the production domain's `/robots.txt`; that belongs to Portal. It currently does not set a Content-Security-Policy. A production CSP needs a deliberate nonce/hash strategy for Next.js static rendering and its inline bootstrap scripts; do not add broad `unsafe-eval` or third-party script allowances as a shortcut.
 
 ## Search engine and release checklist
 
 - [ ] `pnpm test`, `pnpm lint`, `pnpm typecheck`, and `pnpm build` pass.
 - [ ] Build and run the Docker image; confirm it listens on container port `3001` and reports healthy.
-- [ ] Configure DNS, Caddy HTTPS, and apex to `www` redirect.
-- [ ] Check `https://www.woori.today/calculator`, `/calculator/sitemap.xml`, `/calculator/robots.txt`, and a missing URL returns 404.
+- [ ] Configure Nginx routes for Calculator page URLs, its root-relative assets, and the external calculator sitemap URL.
+- [ ] Check a calculator landing/detail route for each supported locale, the externally exposed `/calculator-sitemap.xml`, and an unknown calculator returns 404.
 - [ ] Inspect canonical, hreflang, locale `lang`, and page titles on representative ko/en/ja/zh pages.
 - [ ] Submit the sitemap in Google Search Console and Naver Search Advisor after ownership verification.
 - [ ] Add real Google/Naver verification values through the `verification` metadata in the root route-group layout when available; never commit placeholder tokens.

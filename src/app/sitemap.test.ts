@@ -1,42 +1,47 @@
 import { describe, expect, it } from "vitest";
 import sitemap from "@/app/sitemap";
-import robots from "@/app/robots";
-import { siteConfig, siteUrl } from "@/constants/site-config";
+import { siteConfig } from "@/constants/site-config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
-import { localizedCalculatorSlugs } from "@/i18n/config";
+import { hasLocalizedCalculator, localePath, locales } from "@/i18n/config";
 
 describe("crawl metadata routes", () => {
-  it("lists exactly the real static pages and published calculators once", () => {
+  it("lists only calculator-owned locale landings and published calculators exactly once", () => {
     const entries = sitemap();
     const urls = entries.map(({ url }) => url);
-    expect(entries).toHaveLength(publishedCalculatorPages.length + 5 + localizedCalculatorSlugs.length * 3 + 6);
+    const publicLocalizedSlugs = publishedCalculatorPages.map(({ slug }) => slug).filter(hasLocalizedCalculator);
+    expect(entries).toHaveLength(locales.length + publishedCalculatorPages.length + publicLocalizedSlugs.length * 3);
     expect(new Set(urls).size).toBe(urls.length);
-    expect(urls.every((url) => url.startsWith(`${siteConfig.url}/calculator`) && new URL(url).pathname.startsWith("/calculator"))).toBe(true);
-    for (const page of publishedCalculatorPages) {
-      expect(urls).toContain(siteUrl(`/calculators/${page.slug}`));
+    expect(siteConfig.url).toBe("https://www.woori.today");
+    expect(urls.every((url) => url.startsWith("https://www.woori.today/"))).toBe(true);
+    expect(urls.some((url) => /^https:\/\/www\.woori\.today\/(?:ko|en|ja|zh)(?:\/|$)$/.test(url))).toBe(false);
+    expect(urls.some((url) => /\/(?:about|privacy|terms)(?:\/|$)/.test(url))).toBe(false);
+    expect(urls.some((url) => url.includes("/calculator/"))).toBe(false);
+
+    for (const locale of locales) {
+      expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
     }
-    for (const slug of localizedCalculatorSlugs) {
-      for (const locale of ["en", "ja", "zh"]) expect(urls).toContain(siteUrl(`/${locale}/calculators/${slug}`));
-      const localeEntry = entries.find(({ url }) => url === siteUrl(`/en/calculators/${slug}`));
-      expect(localeEntry?.alternates?.languages).toMatchObject({
-        ko: siteUrl(`/calculators/${slug}`),
-        en: siteUrl(`/en/calculators/${slug}`),
-        ja: siteUrl(`/ja/calculators/${slug}`),
-        zh: siteUrl(`/zh/calculators/${slug}`),
-      });
-    }
-    for (const locale of ["en", "ja", "zh"]) {
-      expect(urls).toContain(siteUrl(`/${locale}`));
-      expect(urls).toContain(siteUrl(`/${locale}/calculators`));
+    expect(urls.every((url) => /\/(ko|en|ja|zh)\/calculators(?:\/|$)/.test(url))).toBe(true);
+    for (const calculator of publishedCalculatorPages) {
+      const koUrl = `${siteConfig.url}${localePath("ko", `/calculators/${calculator.slug}`)}`;
+      expect(urls).toContain(koUrl);
+      const entriesForSlug = entries.filter(({ url }) => url.endsWith(`/calculators/${calculator.slug}`));
+      if (hasLocalizedCalculator(calculator.slug)) {
+        for (const locale of locales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, `/calculators/${calculator.slug}`)}`);
+        expect(entriesForSlug).toHaveLength(locales.length);
+        expect(entriesForSlug[0]?.alternates?.languages).toMatchObject({
+          ko: koUrl,
+          en: `${siteConfig.url}/en/calculators/${calculator.slug}`,
+          ja: `${siteConfig.url}/ja/calculators/${calculator.slug}`,
+          zh: `${siteConfig.url}/zh/calculators/${calculator.slug}`,
+          "x-default": koUrl,
+        });
+      } else {
+        expect(entriesForSlug).toHaveLength(1);
+        expect(entriesForSlug[0]?.alternates).toBeUndefined();
+      }
     }
     expect(urls.some((url) => url.endsWith("/calculators/salary"))).toBe(false);
     expect(urls.some((url) => url.includes("localhost"))).toBe(false);
   });
 
-  it("allows public crawling and points robots to the production sitemap", () => {
-    const policy = robots();
-    expect(policy.rules).toMatchObject({ userAgent: "*", allow: "/" });
-    expect(policy.sitemap).toBe(siteUrl("/sitemap.xml"));
-    expect(policy.host).toBe(siteConfig.url);
-  });
 });

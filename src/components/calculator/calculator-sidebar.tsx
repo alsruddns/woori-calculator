@@ -12,10 +12,10 @@ type Props = {
   categories: Readonly<Record<string, string>>;
   categoryOrder: readonly string[];
   labels: { menu: string; search: string; close: string; empty: string };
-  basePath?: string;
+  basePath: string;
 };
 
-export function CalculatorSidebar({ calculators, categories, categoryOrder, labels, basePath = "/calculators" }: Props) {
+export function CalculatorSidebar({ calculators, categories, categoryOrder, labels, basePath }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
