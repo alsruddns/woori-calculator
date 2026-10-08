@@ -39,5 +39,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /opt/services/compose
-            docker compose pull calculator
-            docker compose up -d calculator
+            docker compose --env-file .env.moneybook pull calculator
+            docker compose --env-file .env.moneybook up -d calculator
