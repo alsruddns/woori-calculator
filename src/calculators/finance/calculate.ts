@@ -23,7 +23,10 @@ export const calculateCompoundInterest: CalculatorFunction = (input) => {
   if (principal < 0 || rate < 0 || rate > 1000 || years < 0 || years > 200 || ![1, 2, 4, 12, 365].includes(frequency)) return { error: "원금은 0~1,000조 원, 연이율은 0~1,000%, 기간은 0~200년으로 입력해 주세요." };
   const total = principal * Math.pow(1 + rate / 100 / frequency, frequency * years);
   if (!Number.isFinite(total) || !Number.isFinite(total - principal)) return { error: "결과가 계산 범위를 벗어났습니다. 금리나 기간을 줄여 주세요." };
-  return { results: [won("최종 금액", total), won("총 이자", total - principal)], note: "세금과 수수료를 반영하지 않은 이론상 계산입니다. 추가 납입은 포함하지 않습니다." };
+  const monthly = years * 12 <= 24;
+  const periods = Math.min(200, Math.ceil(monthly ? years * 12 : years));
+  const rows = Array.from({ length: periods }, (_, index) => { const elapsed = monthly ? Math.min(years, (index + 1) / 12) : Math.min(years, index + 1); const previousElapsed = monthly ? Math.min(years, index / 12) : Math.min(years, index); const end = principal * Math.pow(1 + rate / 100 / frequency, frequency * elapsed); const start = principal * Math.pow(1 + rate / 100 / frequency, frequency * previousElapsed); return [monthly ? Math.min(years * 12, index + 1) : elapsed, start, end - start, end - principal, end]; });
+  return { results: [won("최종 금액", total), won("총 이자", total - principal)], note: "세금과 수수료를 반영하지 않은 이론상 계산입니다. 추가 납입은 포함하지 않습니다.", table: { title: "periodDetails", periodUnit: monthly ? "month" : "year", columns: ["period", "openingBalance", "periodInterest", "cumulativeInterest", "endingBalance"], rows } };
 };
 
 export const calculateSimpleInterest: CalculatorFunction = (input) => {
@@ -33,7 +36,10 @@ export const calculateSimpleInterest: CalculatorFunction = (input) => {
   if (principal < 0 || rate < 0 || rate > 1000 || years < 0 || years > 200) return { error: "원금은 0~1,000조 원, 연이율은 0~1,000%, 기간은 0~200년으로 입력해 주세요." };
   const interest = principal * rate / 100 * years;
   if (!Number.isFinite(interest) || !Number.isFinite(principal + interest)) return { error: "결과가 계산 범위를 벗어났습니다. 입력 범위를 줄여 주세요." };
-  return { results: [won("단리 이자", interest), won("원리금", principal + interest)], note: "이자는 원금에 대해서만 계산하며 세금과 수수료는 포함하지 않습니다." };
+  const monthly = years * 12 <= 24;
+  const periods = Math.min(200, Math.ceil(monthly ? years * 12 : years));
+  const rows = Array.from({ length: periods }, (_, index) => { const elapsed = monthly ? Math.min(years, (index + 1) / 12) : Math.min(years, index + 1); const previous = monthly ? Math.min(years, index / 12) : Math.min(years, index); const cumulative = principal * rate / 100 * elapsed; return [monthly ? Math.min(years * 12, index + 1) : elapsed, principal, cumulative - principal * rate / 100 * previous, cumulative, principal + cumulative]; });
+  return { results: [won("단리 이자", interest), won("원리금", principal + interest)], note: "이자는 원금에 대해서만 계산하며 세금과 수수료는 포함하지 않습니다.", table: { title: "periodDetails", periodUnit: monthly ? "month" : "year", columns: ["period", "openingBalance", "periodInterest", "cumulativeInterest", "endingBalance"], rows } };
 };
 
 export const calculateDepositInterest: CalculatorFunction = (input) => {
@@ -43,7 +49,10 @@ export const calculateDepositInterest: CalculatorFunction = (input) => {
   if (principal < 0 || rate < 0 || rate > 1000 || months < 0 || months > 2400) return { error: "예치금은 0~1,000조 원, 연이율은 0~1,000%, 기간은 0~2,400개월로 입력해 주세요." };
   const interest = principal * rate / 100 * months / 12;
   if (!Number.isFinite(interest) || !Number.isFinite(principal + interest)) return { error: "결과가 계산 범위를 벗어났습니다. 입력 범위를 줄여 주세요." };
-  return { results: [won("세전 이자", interest), won("세전 만기 금액", principal + interest)], note: "연 단리 기준의 단순 예상치이며 실제 상품의 일수 계산·세금·우대금리는 반영하지 않습니다." };
+  const monthly = months <= 24;
+  const periods = Math.min(200, Math.ceil(monthly ? months : months / 12));
+  const rows = Array.from({ length: periods }, (_, index) => { const elapsed = monthly ? Math.min(months, index + 1) : Math.min(months, (index + 1) * 12); const previous = index ? (monthly ? Math.min(months, index) : Math.min(months, index * 12)) : 0; const cumulative = principal * rate / 100 * elapsed / 12; const prior = principal * rate / 100 * previous / 12; return [monthly ? elapsed : elapsed / 12, principal, cumulative - prior, cumulative, principal + cumulative]; });
+  return { results: [won("세전 이자", interest), won("세전 만기 금액", principal + interest)], note: "연 단리 기준의 단순 예상치이며 실제 상품의 일수 계산·세금·우대금리는 반영하지 않습니다.", table: { title: "periodDetails", periodUnit: monthly ? "month" : "year", columns: ["period", "openingBalance", "periodInterest", "cumulativeInterest", "endingBalance"], rows } };
 };
 
 export const calculateSavingsInterest: CalculatorFunction = (input) => {
@@ -54,7 +63,10 @@ export const calculateSavingsInterest: CalculatorFunction = (input) => {
   const principal = monthly * months;
   const interest = monthly * (rate / 100) * months * (months - 1) / 24;
   if (!Number.isFinite(principal) || !Number.isFinite(interest) || !Number.isFinite(principal + interest)) return { error: "결과가 계산 범위를 벗어났습니다. 입력 범위를 줄여 주세요." };
-  return { results: [won("납입 원금", principal), won("예상 세전 이자", interest), won("세전 만기 금액", principal + interest)], note: "매월 말 납입하고, 각 납입액에 남은 기간만큼 연 단리를 적용한 단순 예상치입니다. 세금·우대금리·상품별 일수 계산은 제외합니다." };
+  const yearly = months > 24;
+  const periods = Math.min(200, Math.ceil(yearly ? months / 12 : months));
+  const rows = Array.from({ length: periods }, (_, index) => { const month = yearly ? Math.min(months, (index + 1) * 12) : index + 1; const previousMonth = index ? (yearly ? Math.min(months, index * 12) : index) : 0; const paid = monthly * month; const accrued = monthly * (rate / 100) * month * (month - 1) / 24; const prior = monthly * (rate / 100) * previousMonth * (previousMonth - 1) / 24; return [yearly ? month / 12 : month, monthly, paid, accrued - prior, accrued, paid + accrued]; });
+  return { results: [won("납입 원금", principal), won("예상 세전 이자", interest), won("세전 만기 금액", principal + interest)], note: "매월 말 납입하고, 각 납입액에 남은 기간만큼 연 단리를 적용한 단순 예상치입니다. 세금·우대금리·상품별 일수 계산은 제외합니다.", table: { title: "periodDetails", periodUnit: yearly ? "year" : "month", columns: ["period", "monthlyDeposit", "cumulativePrincipal", "periodInterest", "cumulativeInterest", "endingBalance"], rows } };
 };
 
 export const calculateLoanInterest: CalculatorFunction = (input) => {
@@ -71,6 +83,7 @@ export const calculateLoanInterest: CalculatorFunction = (input) => {
   let interestTotal = 0;
   let firstPayment = 0;
   let totalPayment = 0;
+  const rows: number[][] = [];
   const equalPrincipal = Math.round(principal / months);
   for (let month = 1; month <= months; month += 1) {
     const interest = Math.round(balance * monthlyRate);
@@ -83,9 +96,10 @@ export const calculateLoanInterest: CalculatorFunction = (input) => {
     balance = Math.max(0, balance - principalPaid);
     interestTotal += interest;
     totalPayment += payment;
+    rows.push([month, payment, principalPaid, interest, balance]);
   }
   const firstLabel = method === "bullet" ? (months === 1 ? "만기 상환액" : "월 이자 납입액") : "첫 회차 납입액";
-  return { results: [{ label: firstLabel, value: firstPayment, unit: "원" }, won("총 이자", interestTotal), won("총 상환액", totalPayment)], note: "매월 이자를 원 단위로 반올림해 추정했습니다. 실제 금융기관의 상환일·수수료·금리 변동에 따라 달라질 수 있습니다." };
+  return { results: [{ label: firstLabel, value: firstPayment, unit: "원" }, won("총 이자", interestTotal), won("총 상환액", totalPayment)], note: "매월 이자를 원 단위로 반올림해 추정했습니다. 실제 금융기관의 상환일·수수료·금리 변동에 따라 달라질 수 있습니다.", table: { title: "repaymentSchedule", periodUnit: "month", columns: ["period", "payment", "principal", "interest", "remainingBalance"], rows } };
 };
 
 export const calculateLtv: CalculatorFunction = (input) => {

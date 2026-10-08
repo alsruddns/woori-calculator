@@ -72,6 +72,39 @@ describe("finance calculator functions", () => {
     expect(calculateSimpleInterest({ principal: "1000000", rate: "5", years: "200.1" })).toHaveProperty("error");
   });
 
+  it("keeps period detail endpoints identical to the existing finance summaries", () => {
+    const compound = calculateCompoundInterest({ principal: "1000000", rate: "10", years: "5", frequency: "1" });
+    expect(compound).toMatchObject({ results: [{ value: 1610510 }, { value: 610510 }] });
+    if (!("results" in compound) || !compound.table) throw new Error("Expected compound detail rows");
+    expect(compound.table.rows).toHaveLength(5);
+    expect(Math.round(Number(compound.table.rows.at(-1)?.[4]))).toBe(compound.results[0]?.value);
+    expect(Math.round(Number(compound.table.rows.at(-1)?.[3]))).toBe(compound.results[1]?.value);
+
+    const simple = calculateSimpleInterest({ principal: "1000000", rate: "10", years: "5" });
+    const deposit = calculateDepositInterest({ principal: "1000000", rate: "10", months: "60" });
+    const savings = calculateSavingsInterest({ monthly: "100000", rate: "10", months: "60" });
+    for (const outcome of [simple, deposit, savings]) {
+      if (!("results" in outcome) || !outcome.table) throw new Error("Expected period rows");
+      expect(Math.round(Number(outcome.table.rows.at(-1)?.at(-1)))).toBe(outcome.results.at(-1)?.value);
+    }
+    const fractional = calculateCompoundInterest({ principal: "1000000", rate: "10", years: "2.5", frequency: "12" });
+    if (!("results" in fractional) || !fractional.table) throw new Error("Expected fractional period rows");
+    expect(fractional.table.rows.at(-1)?.[0]).toBe(2.5);
+    expect(Math.round(Number(fractional.table.rows.at(-1)?.[4]))).toBe(fractional.results[0]?.value);
+    const partialMonth = calculateCompoundInterest({ principal: "1000000", rate: "10", years: "0.1", frequency: "12" });
+    if (!("results" in partialMonth) || !partialMonth.table) throw new Error("Expected partial-month detail row");
+    expect(partialMonth.table.rows.at(-1)?.[0]).toBeCloseTo(1.2);
+    expect(Math.round(Number(partialMonth.table.rows.at(-1)?.[4]))).toBe(partialMonth.results[0]?.value);
+  });
+
+  it.each(["equal-payment", "equal-principal", "bullet"])("loan schedule totals reconcile for %s", (method) => {
+    const outcome = calculateLoanInterest({ principal: "12000000", rate: "12", months: "24", method });
+    if (!("results" in outcome) || !outcome.table) throw new Error("Expected repayment schedule");
+    expect(outcome.table.rows.reduce((sum, row) => sum + Number(row[2]), 0)).toBe(12000000);
+    expect(outcome.table.rows.reduce((sum, row) => sum + Number(row[3]), 0)).toBe(outcome.results[1]?.value);
+    expect(outcome.table.rows.at(-1)?.[4]).toBe(0);
+  });
+
   it("calculates deposit and monthly installment estimates", () => {
     expect(calculateDepositInterest({ principal: "10000000", rate: "3.6", months: "12" })).toMatchObject({ results: [{ value: 360000 }, { value: 10360000 }] });
     expect(calculateSavingsInterest({ monthly: "100000", rate: "12", months: "12" })).toMatchObject({ results: [{ value: 1200000 }, { value: 66000 }, { value: 1266000 }] });

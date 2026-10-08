@@ -1,3 +1,5 @@
+import { ADS_ENABLED } from "@/lib/ads/enabled";
+
 type AdPlacement = "left-rail" | "right-rail" | "inline";
 type AdSize = "rectangle" | "vertical" | "responsive";
 
@@ -6,7 +8,6 @@ type Props = {
   size: AdSize;
 };
 
-const adsEnabled = process.env.NEXT_PUBLIC_ADS_ENABLED === "true";
 const showDevelopmentPlaceholder = process.env.NODE_ENV !== "production";
 
 const sizeClasses: Record<AdSize, string> = {
@@ -22,7 +23,7 @@ const placementClasses: Record<AdPlacement, string> = {
 };
 
 export function AdSlot({ placement, size }: Props) {
-  if (!adsEnabled && !showDevelopmentPlaceholder) return null;
+  if (!ADS_ENABLED) return null;
   const placeholderClasses = showDevelopmentPlaceholder
     ? "rounded-xl border border-dashed border-slate-300 bg-slate-100 text-sm text-slate-500"
     : "";
