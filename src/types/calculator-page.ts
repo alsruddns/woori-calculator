@@ -15,7 +15,9 @@ export type CalculatorField = {
 };
 
 export type CalculatorValue = { label: string; value: number | string; unit?: string; precision?: number };
-export type CalculatorOutput = { results: CalculatorValue[]; note?: string };
+export type CalculatorTableColumn = "period" | "openingBalance" | "monthlyDeposit" | "cumulativePrincipal" | "periodInterest" | "cumulativeInterest" | "endingBalance" | "payment" | "principal" | "interest" | "remainingBalance" | "amount" | "change";
+export type CalculatorTable = { title: "periodDetails" | "repaymentSchedule" | "yearlyForecast"; periodUnit?: "year" | "month"; columns: readonly CalculatorTableColumn[]; rows: readonly (number | string)[][]; note?: "cagrAssumption" };
+export type CalculatorOutput = { results: CalculatorValue[]; note?: string; table?: CalculatorTable };
 export type CalculatorOutcome = CalculatorOutput | { error: string; field?: string };
 export type CalculatorFunction = (input: Record<string, string>) => CalculatorOutcome;
 

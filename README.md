@@ -89,6 +89,17 @@ docker run --rm -p 3001:3001 woori-tools
 
 ## Production deployment
 
+### Ad slot preparation
+
+- Ad slots are placeholders only; no advertising script or network SDK is loaded.
+- `NEXT_PUBLIC_ADS_ENABLED=false` (also the default when unset) disables ad slots and removes their grid columns. Set it to `true` to enable the desktop rails. Until an ad provider is connected, enabled slots show placeholders in development and reserve space without placeholder content in production.
+- No AdSense script, publisher ID, or slot ID is configured. Keep production set to `false` until approval and integration.
+- Desktop calculator layout shows the right rail from 1400px and the left rail from 1700px. Each rail is 180px wide; the sidebar remains 260px wide.
+
+### Google Analytics
+
+- Set `NEXT_PUBLIC_GA_ID=G-ZJSJW06SCX` in the build environment to enable GA4 on Korean and translated calculator routes. The shared layout renders no analytics scripts when the variable is unset.
+
 - Production origin and canonical host: `https://www.woori.today`. The apex host redirects to `www` at the edge.
 - The Calculator Next.js server listens on port `3001`; build with `pnpm build`, or use the standalone Docker image. It has no `/calculator` `basePath`.
 - Nginx sends only `/{locale}/calculators` and `/{locale}/calculators/*` to this service. The Portal owns `/ko`, `/en`, `/ja`, `/zh`, and the production `/robots.txt`.

@@ -30,6 +30,8 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/woori-calculator:latest
+          build-args: |
+            NEXT_PUBLIC_GA_ID=G-ZJSJW06SCX
 
       - name: Deploy to iwinv
         uses: appleboy/ssh-action@v1

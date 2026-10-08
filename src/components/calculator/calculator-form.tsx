@@ -9,6 +9,7 @@ import { numberToKoreanText } from "@/lib/formatter/korean-number";
 import type { Locale } from "@/i18n/config";
 import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import type { CalculatorField, CalculatorOutcome } from "@/types/calculator-page";
+import { ResultTable } from "@/components/calculator/ResultTable";
 
 type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: Locale; dictionary?: Pick<LocaleDictionary, "detail" | "units">; content?: LocalizedCalculatorContent };
 
@@ -85,10 +86,11 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                 ) : field.type === "textarea" ? (
                   <textarea id={inputId} maxLength={30_000} className={`${commonClass} min-h-28 py-3 text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
                 ) : (
-                  <div className="relative">
+                  <div className={field.name === duration?.field ? "mt-2 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2" : "relative"}>
+                    <div className="relative min-w-0">
                     <input
                       id={inputId}
-                      className={`${commonClass} text-base ${(content?.fields[field.name]?.unit ?? field.unit) ? "pr-16" : ""}`}
+                      className={`${field.name === duration?.field ? commonClass.replace("mt-2 ", "") : commonClass} text-base ${(content?.fields[field.name]?.unit ?? field.unit) ? "pr-16" : ""}`}
                       type={field.type === "date" ? "date" : "text"}
                       maxLength={field.type === "date" ? 10 : 64}
                       inputMode={field.type === "date" ? undefined : "decimal"}
@@ -108,9 +110,10 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                       aria-invalid={Boolean(fieldError)}
                     />
                     {(content?.fields[field.name]?.unit ?? field.unit) ? <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">{content?.fields[field.name]?.unit ?? field.unit}</span> : null}
+                    </div>
+                    {field.name === duration?.field ? <select aria-label={dictionary?.units.durationLabel ?? "기간 단위"} className="min-h-12 min-w-20 rounded-lg border border-slate-300 bg-white px-3 text-sm focus-visible:outline-2 focus-visible:outline-teal-700" value={durationUnit} onChange={(event) => setDurationUnit(event.target.value as DurationUnit)}><option value="month">{dictionary?.units.month ?? "개월"}</option><option value="year">{dictionary?.units.year ?? "년"}</option></select> : null}
                   </div>
                 )}
-                {field.name === duration?.field ? <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3"><span className="min-w-0 text-sm text-slate-600">{dictionary?.units.durationLabel ?? "기간"}</span><select aria-label={dictionary?.units.durationLabel ?? "기간 단위"} className="min-h-11 min-w-20 rounded-lg border border-slate-300 bg-white px-3 text-sm focus-visible:outline-2 focus-visible:outline-teal-700" value={durationUnit} onChange={(event) => setDurationUnit(event.target.value as DurationUnit)}><option value="month">{dictionary?.units.month ?? "개월"}</option><option value="year">{dictionary?.units.year ?? "년"}</option></select></div> : null}
                 {locale === "ko" && ["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent", "cost", "unitPrice", "existingAveragePrice", "additionalPrice", "currentAveragePrice", "currentPrice", "shipping", "otherCost", "mortgage", "repayment", "otherInterest"].includes(field.name) && values[field.name] && Number.isInteger(Number((values[field.name] ?? "").replace(/,/g, ""))) ? <p className="mt-1 min-w-0 break-words text-xs leading-5 text-slate-500 [overflow-wrap:anywhere]">{numberToKoreanText(Number((values[field.name] ?? "").replace(/,/g, "")))} {dictionary?.units.won ?? "원"}</p> : null}
                 {fieldError ? <p id={describedBy} role="alert" className="mt-1 min-w-0 break-words text-sm leading-5 text-red-700 [overflow-wrap:anywhere]">{fieldError}</p> : null}
               </div>
@@ -124,7 +127,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
       {success ? (
         <section className="mt-7 rounded-xl bg-teal-50 p-5" aria-live="polite" aria-label={dictionary?.detail.result ?? "Result"}>
           <h2 className="text-base font-bold text-slate-950">{dictionary?.detail.result ?? "Result"}</h2>
-          <dl className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2">
+          <dl className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {success.results.map((item, index) => {
               const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "KRW";
               const resultUnit = localizedResultUnit(item.unit, locale);
@@ -132,6 +135,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
               return <div key={`${item.label}-${index}`} className="min-w-0 rounded-lg bg-white px-3 py-3 sm:px-4"><dt className="break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]">{content?.resultLabels[item.label] ?? content?.resultLabels[`__result_${index}`] ?? item.label}</dt><dd className="mt-1 break-words text-lg font-bold tabular-nums text-teal-900 [overflow-wrap:anywhere] sm:text-xl">{value}</dd></div>;
             })}
           </dl>
+          {success.table ? <ResultTable table={success.table} locale={locale} /> : null}
           {success.note ? <p className="mt-4 text-sm leading-6 text-slate-700">{content?.resultNote ?? success.note}</p> : null}
         </section>
       ) : null}

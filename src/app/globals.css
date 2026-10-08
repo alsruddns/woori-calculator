@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-ad-right: 1400px;
+  --breakpoint-ad-left: 1700px;
+}
+
+@media (min-width: 1400px) {
+  .calculator-page-shell[data-ad-layout="enabled"] {
+    grid-template-columns: 16.25rem minmax(0, 1fr) 11.25rem;
+  }
+}
+
+@media (min-width: 1700px) {
+  .calculator-page-shell[data-ad-layout="enabled"] {
+    grid-template-columns: 11.25rem 16.25rem minmax(0, 1fr) 11.25rem;
+  }
+}
+
 :root {
   color-scheme: light;
   background: #f8fafc;

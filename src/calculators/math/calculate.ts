@@ -115,7 +115,8 @@ export const calculateCagr: CalculatorFunction = (input) => {
   if (initial <= 0 || final <= 0 || years <= 0 || years > 200) return { error: "초기값과 최종값은 0~1,000조, 기간은 0보다 크고 200년 이하여야 합니다." };
   const cagr = (Math.pow(final / initial, 1 / years) - 1) * 100;
   if (!Number.isFinite(cagr)) return { error: "CAGR 결과가 계산 범위를 벗어났습니다. 입력값이나 기간을 조정해 주세요." };
-  return { results: [result("연평균 성장률 (CAGR)", cagr, "%")] };
+  const rows = Array.from({ length: Math.ceil(years) }, (_, index) => { const elapsed = Math.min(years, index + 1); const amount = elapsed === years ? final : initial * Math.pow(1 + cagr / 100, elapsed); const previous = initial * Math.pow(1 + cagr / 100, Math.max(0, elapsed - 1)); return [elapsed, amount, amount - previous]; });
+  return { results: [result("연평균 성장률 (CAGR)", cagr, "%")], table: { title: "yearlyForecast", periodUnit: "year", columns: ["period", "amount", "change"], rows, note: "cagrAssumption" } };
 };
 
 export const mathCalculators: Record<string, CalculatorFunction> = {

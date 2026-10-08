@@ -54,10 +54,18 @@ describe("math calculator functions", () => {
   });
 
   it("calculates CAGR and validates non-positive terms", () => {
-    expect(calculateCagr({ initial: "100", final: "121", years: "2" })).toMatchObject({ results: [{ value: 10 }] });
+    const cagr = calculateCagr({ initial: "100", final: "121", years: "2" });
+    expect(cagr).toMatchObject({ results: [{ value: 10 }] });
+    if (!("results" in cagr) || !cagr.table) throw new Error("Expected CAGR forecast rows");
+    expect(cagr.table.rows.at(-1)?.[1]).toBeCloseTo(121);
+    expect(cagr.table.note).toBe("cagrAssumption");
     expect(calculateCagr({ initial: "0", final: "100", years: "2" })).toHaveProperty("error");
     expect(calculateCagr({ initial: "100", final: "121", years: "0" })).toHaveProperty("error");
-    expect(calculateCagr({ initial: "1", final: "1000000", years: "0.5" })).toMatchObject({ results: [{ value: 99999999999900 }] });
+    const fractional = calculateCagr({ initial: "1", final: "1000000", years: "0.5" });
+    expect(fractional).toMatchObject({ results: [{ value: 99999999999900 }] });
+    if (!("results" in fractional) || !fractional.table) throw new Error("Expected fractional CAGR forecast rows");
+    expect(fractional.table.rows.at(-1)?.[0]).toBe(0.5);
+    expect(fractional.table.rows.at(-1)?.[1]).toBeCloseTo(1000000);
     expect(calculateCagr({ initial: "1", final: "1000000", years: "200" })).toHaveProperty("results");
     expect(calculateCagr({ initial: "1", final: "1000000", years: "200.1" })).toHaveProperty("error");
   });
