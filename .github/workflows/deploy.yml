@@ -46,7 +46,7 @@ jobs:
 
       - name: Wait for calculator deployment and sitemap
         env:
-          INDEXNOW_KEY: 8d730277e73843358dbc63ab157816af
+          INDEXNOW_KEY: bc52d22e38f7489988b717aa090fbdfb
         run: |
           for attempt in $(seq 1 18); do
             key_content="$(curl --fail --silent "https://www.woori.today/${INDEXNOW_KEY}.txt" || true)"
@@ -64,5 +64,5 @@ jobs:
 
       - name: Submit calculator URLs to IndexNow
         env:
-          INDEXNOW_KEY: 8d730277e73843358dbc63ab157816af
+          INDEXNOW_KEY: bc52d22e38f7489988b717aa090fbdfb
         run: node scripts/submit-indexnow.mjs

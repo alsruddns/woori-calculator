@@ -103,7 +103,7 @@ docker run --rm -p 3001:3001 woori-tools
 ### IndexNow
 
 - The main-branch deploy workflow submits the calculator listing/detail URLs from the deployed calculator sitemap after the public calculator route and sitemap respond successfully. The sitemap is generated from the published calculator registry; the submitter filters to the four locale-first calculator routes and removes duplicates.
-- `public/8d730277e73843358dbc63ab157816af.txt` hosts the verification key. The public host must serve it at the configured root URL before an IndexNow request can be sent.
+- `public/bc52d22e38f7489988b717aa090fbdfb.txt` hosts the verification key. The public host must serve it at the configured root URL before an IndexNow request can be sent.
 - For a no-submit preview, run `INDEXNOW_KEY=<key> INDEXNOW_DRY_RUN=true node scripts/submit-indexnow.mjs` after the deployed sitemap is reachable.
 
 - Production origin and canonical host: `https://www.woori.today`. The apex host redirects to `www` at the edge.
