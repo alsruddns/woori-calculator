@@ -3,6 +3,7 @@ import { siteConfig } from "@/constants/site-config";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { GoogleAdSense } from "@/components/ads/GoogleAdSense";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <main id="main-content" className="min-w-0 flex-1">{children}</main>
         <SiteFooter />
         <GoogleAnalytics />
+        <GoogleAdSense />
       </body>
     </html>
   );
