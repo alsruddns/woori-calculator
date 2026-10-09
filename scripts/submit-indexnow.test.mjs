@@ -31,10 +31,10 @@ describe("IndexNow URL preparation", () => {
   });
 
   it("builds a unique IndexNow payload using the key location", () => {
-    expect(createIndexNowPayload([routes[0], routes[0]], "8d730277e73843358dbc63ab157816af")).toEqual({
+    expect(createIndexNowPayload([routes[0], routes[0]], "bc52d22e38f7489988b717aa090fbdfb")).toEqual({
       host: "www.woori.today",
-      key: "8d730277e73843358dbc63ab157816af",
-      keyLocation: "https://www.woori.today/8d730277e73843358dbc63ab157816af.txt",
+      key: "bc52d22e38f7489988b717aa090fbdfb",
+      keyLocation: "https://www.woori.today/bc52d22e38f7489988b717aa090fbdfb.txt",
       urlList: [routes[0]],
     });
     expect(() => createIndexNowPayload([], "bad key")).toThrow("INDEXNOW_KEY");
@@ -43,13 +43,13 @@ describe("IndexNow URL preparation", () => {
   it.each([200, 202])("supports dry-run and accepts IndexNow HTTP %s", async (status) => {
     const fetchImpl = vi.fn()
       .mockResolvedValueOnce({ ok: true, text: async () => sitemap(routes) })
-      .mockResolvedValueOnce({ ok: true, text: async () => "8d730277e73843358dbc63ab157816af\n" })
+      .mockResolvedValueOnce({ ok: true, text: async () => "bc52d22e38f7489988b717aa090fbdfb\n" })
       .mockResolvedValueOnce({ status, text: async () => status === 200 ? "OK" : "Accepted" });
     const dryRunFetch = vi.fn().mockResolvedValue({ ok: true, text: async () => sitemap(routes) });
-    const dryRun = await submitIndexNow({ key: "8d730277e73843358dbc63ab157816af", dryRun: true, fetchImpl: dryRunFetch });
+    const dryRun = await submitIndexNow({ key: "bc52d22e38f7489988b717aa090fbdfb", dryRun: true, fetchImpl: dryRunFetch });
     expect(dryRun.status).toBe("dry-run");
     expect(dryRunFetch).toHaveBeenCalledTimes(1);
-    expect(await submitIndexNow({ key: "8d730277e73843358dbc63ab157816af", fetchImpl })).toMatchObject({ status, count: 8 });
+    expect(await submitIndexNow({ key: "bc52d22e38f7489988b717aa090fbdfb", fetchImpl })).toMatchObject({ status, count: 8 });
     expect(fetchImpl).toHaveBeenCalledTimes(3);
     expect(JSON.parse(fetchImpl.mock.calls[2][1].body).urlList).toHaveLength(8);
     expect(fetchImpl.mock.calls[2][1].headers["Content-Type"]).toBe("application/json; charset=utf-8");
@@ -58,16 +58,16 @@ describe("IndexNow URL preparation", () => {
   it("reports non-success API responses clearly", async () => {
     const fetchImpl = vi.fn()
       .mockResolvedValueOnce({ ok: true, text: async () => sitemap(routes) })
-      .mockResolvedValueOnce({ ok: true, text: async () => "8d730277e73843358dbc63ab157816af" })
+      .mockResolvedValueOnce({ ok: true, text: async () => "bc52d22e38f7489988b717aa090fbdfb" })
       .mockResolvedValueOnce({ status: 403, text: async () => "key validation failed" });
-    await expect(submitIndexNow({ key: "8d730277e73843358dbc63ab157816af", fetchImpl })).rejects.toThrow("HTTP 403: key validation failed");
+    await expect(submitIndexNow({ key: "bc52d22e38f7489988b717aa090fbdfb", fetchImpl })).rejects.toThrow("HTTP 403: key validation failed");
   });
 
   it("does not submit when the published key file cannot be verified", async () => {
     const fetchImpl = vi.fn()
       .mockResolvedValueOnce({ ok: true, text: async () => sitemap(routes) })
       .mockResolvedValueOnce({ ok: false, status: 404, text: async () => "Not found" });
-    await expect(submitIndexNow({ key: "8d730277e73843358dbc63ab157816af", fetchImpl })).rejects.toThrow("key file is not publicly reachable: HTTP 404");
+    await expect(submitIndexNow({ key: "bc52d22e38f7489988b717aa090fbdfb", fetchImpl })).rejects.toThrow("key file is not publicly reachable: HTTP 404");
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 });
