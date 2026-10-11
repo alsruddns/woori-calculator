@@ -1,6 +1,7 @@
 import type { CalculatorFunction, CalculatorOutcome } from "@/types/calculator-page";
 import { MAX_DATE_RANGE_DAYS, MAX_MONEY, readNumber } from "@/lib/calculators/input";
 import { parseDateOnly } from "@/lib/calculators/date-only";
+import { calculateFuelEfficiency } from "@/calculators/date-life/fuel-efficiency";
 
 const DAY = 86_400_000;
 
@@ -140,6 +141,7 @@ export const dateLifeCalculators: Record<string, CalculatorFunction> = {
   area: calculateArea,
   pace: calculatePace,
   "fuel-cost": calculateFuelCost,
+  "fuel-efficiency": calculateFuelEfficiency,
   "calorie-per-serving": calculateCaloriePerServing,
 };
 

@@ -15,7 +15,7 @@ describe("calculator registry", () => {
     expect(new Set(publishedCalculators.map(({ slug }) => slug)).size).toBe(publishedCalculators.length);
     expect(publishedCalculators.every(({ isPublished }) => isPublished)).toBe(true);
     expect(calculatorRegistry.find(({ slug }) => slug === "salary")).toBeUndefined();
-    expect(calculatorPages.length).toBe(36);
+    expect(calculatorPages.length).toBe(37);
   });
 
   it("keeps related links within the published calculator set and registers calculation logic", () => {
@@ -49,9 +49,11 @@ describe("calculator registry", () => {
       expect(page.fields.length).toBeGreaterThan(0);
       expect(createPageMetadata({ title: page.title, description: page.description, path: `/calculators/${page.slug}` }).alternates?.canonical).toBe(`${siteConfig.url}/ko/calculators/${page.slug}`);
     }
-    const dateLifeSlugs = ["date-difference", "dday", "age", "workdays", "bmi", "area", "pace", "fuel-cost", "calorie-per-serving"];
+    const dateLifeSlugs = ["date-difference", "dday", "age", "workdays", "bmi", "area", "pace", "fuel-cost", "fuel-efficiency", "calorie-per-serving"];
     const dateLife = calculatorPages.filter(({ slug }) => dateLifeSlugs.includes(slug));
     expect(new Set(dateLife.map(({ formula }) => formula)).size).toBe(dateLife.length);
+    expect(getCalculatorPage("fuel-efficiency")?.relatedCalculatorIds).toContain("fuel-cost");
+    expect(getCalculatorPage("fuel-cost")?.relatedCalculatorIds).toContain("fuel-efficiency");
   });
 
   it("uses the shared category order and keeps the Korean loan and stock calculator names consistent", () => {

@@ -9,6 +9,7 @@ type Copy = {
   name: string; shortName: string; title: string; description: string; keywords: readonly string[];
   formula: string; example: { question: string; answer: string };
   faq: { question: string; answer: string };
+  faqs?: readonly { question: string; answer: string }[];
   results: readonly string[];
   variants?: Readonly<Record<string, readonly string[]>>;
 };
@@ -35,6 +36,7 @@ const en: CopySet = {
   bmi: { name: "BMI Calculator", shortName: "BMI", title: "BMI Calculator: Body Mass Index from Height and Weight", description: "Calculate body mass index from height in centimeters and weight in kilograms. The result is general information, not a diagnosis.", keywords: ["BMI calculator", "body mass index calculator", "BMI from height and weight"], formula: "BMI = weight in kilograms ÷ height in meters².", example: { question: "What is the BMI for 70 kg at 175 cm?", answer: "The BMI is about 22.9 kg/m². This number alone does not assess a person's health." }, faq: { question: "Is BMI a medical diagnosis?", answer: "No. It is a screening measure with limitations and should not be treated as an individual diagnosis." }, results: ["BMI"] },
   pace: { name: "Running Pace Calculator", shortName: "Running pace", title: "Running Pace Calculator: Pace per Kilometer and Speed", description: "Use running distance and elapsed time to calculate minutes per kilometer and average speed in kilometers per hour.", keywords: ["running pace calculator", "pace per kilometer", "average running speed"], formula: "Pace (min/km) = total minutes ÷ distance in km. Speed (km/h) = distance ÷ elapsed hours.", example: { question: "What is the pace for 5 km in 27 minutes 30 seconds?", answer: "The pace is 5:30 per kilometer and average speed is 10.91 km/h." }, faq: { question: "What does 5:30 per kilometer mean?", answer: "It means each kilometer takes 5 minutes and 30 seconds at that average pace." }, results: ["Average pace", "Average speed"] },
   "fuel-cost": { name: "Fuel Cost Calculator", shortName: "Fuel cost", title: "Fuel Cost Calculator: Estimate Fuel Needed and Trip Cost", description: "Estimate fuel volume and cost from trip distance, vehicle fuel economy, and fuel price per liter.", keywords: ["fuel cost calculator", "trip fuel cost", "fuel consumption calculator"], formula: "Fuel needed (L) = distance (km) ÷ fuel economy (km/L). Cost = fuel needed × price per liter.", example: { question: "What is the fuel cost for 300 km at 15 km/L and KRW 1,700/L?", answer: "The trip uses about 20 liters and costs about KRW 34,000." }, faq: { question: "Does this predict my exact fuel bill?", answer: "No. It uses the distance, average economy, and price you enter; actual consumption and prices can vary." }, results: ["Fuel needed", "Estimated fuel cost"] },
+  "fuel-efficiency": { name: "Fuel Efficiency Calculator", shortName: "Fuel efficiency", title: "Fuel Efficiency Calculator - km/L, Fuel Use, and Driving Range | woori.today", description: "Calculate vehicle fuel economy from distance and fuel used, or estimate fuel needed and driving range from your vehicle's efficiency.", keywords: ["fuel efficiency calculator", "km per liter calculator", "fuel consumption calculator"], formula: "Fuel economy (km/L) = distance ÷ fuel used · Fuel per 100 km = fuel used ÷ distance × 100 · Fuel needed = distance ÷ economy · Driving range = fuel × economy.", example: { question: "What is the economy after driving 520 km using 40 L?", answer: "The vehicle averages 13 km/L, or about 7.69 L/100 km." }, faq: { question: "How do I calculate fuel economy?", answer: "Divide the distance driven by the amount of fuel used to get km/L. Actual economy can vary with driving conditions." }, results: ["Fuel economy", "Fuel used per 100 km"], variants: { consumption: ["Fuel needed"], range: ["Estimated driving range"] } },
   "calorie-per-serving": { name: "Calories per Serving Calculator", shortName: "Calories per serving", title: "Calories per Serving Calculator: Estimate a Portion", description: "Divide the total calories of a recipe or package by its total quantity, then estimate calories for the portion you eat.", keywords: ["calories per serving calculator", "portion calorie calculator", "recipe calories per portion"], formula: "Calories in portion = total calories ÷ total quantity × portion quantity.", example: { question: "A recipe has 900 kcal across 6 servings. How many calories are in 1.5 servings?", answer: "The estimate is 225 kcal for 1.5 servings." }, faq: { question: "Can this determine whether a meal is healthy?", answer: "No. It only scales the calorie number you enter and does not provide nutrition or medical advice." }, results: ["Estimated calories per serving"] },
 };
 
@@ -59,6 +61,7 @@ const ja: CopySet = {
   bmi: { name: "BMI計算", shortName: "BMI", title: "BMI計算｜身長と体重から体格指数を算出", description: "身長（cm）と体重（kg）からBMIを計算します。結果は参考値で、診断ではありません。", keywords: ["BMI 計算", "体格指数 計算", "身長 体重 BMI"], formula: "BMI = 体重 (kg) ÷ 身長 (m)²。", example: { question: "身長175 cm、体重70 kgの場合のBMIは？", answer: "BMIは約22.9 kg/m²です。この値だけで健康状態を判断することはできません。" }, faq: { question: "BMIは医療診断に使えますか？", answer: "いいえ。BMIには限界があり、個人の診断や医療上の助言の代わりにはなりません。" }, results: ["BMI"] },
   pace: { name: "ランニングペース計算", shortName: "ランニングペース", title: "ランニングペース計算｜1kmあたりの時間と速度", description: "走行距離と時間から、1kmあたりのペースと平均速度を計算します。", keywords: ["ランニング ペース 計算", "1km ペース", "平均走行速度"], formula: "ペース (分/km) = 合計時間 (分) ÷ 距離 (km)。速度 (km/h) = 距離 ÷ 経過時間 (時)。", example: { question: "5 kmを27分30秒で走った場合のペースは？", answer: "1 kmあたり5分30秒、平均速度は約10.91 km/hです。" }, faq: { question: "5:30/kmはどのくらいの速さですか？", answer: "平均して1 kmを5分30秒で走るペースを表します。" }, results: ["平均ペース", "平均速度"] },
   "fuel-cost": { name: "燃料費計算", shortName: "燃料費", title: "燃料費計算｜必要な燃料量とドライブ費用", description: "走行距離、燃費、1リットルあたりの価格から、必要燃料量と費用を試算します。", keywords: ["燃料費 計算", "ドライブ ガソリン代", "燃料消費量 計算"], formula: "必要燃料 (L) = 距離 (km) ÷ 燃費 (km/L)。費用 = 必要燃料 × 1Lあたりの価格。", example: { question: "300 km、燃費15 km/L、1,700 KRW/Lの場合の費用は？", answer: "燃料は約20 L必要で、費用は約34,000 KRWです。" }, faq: { question: "実際の給油額と一致しますか？", answer: "入力した距離・平均燃費・価格による概算です。実際の燃費や価格により変わります。" }, results: ["必要燃料量", "燃料費の目安"] },
+  "fuel-efficiency": { name: "燃費計算", shortName: "燃費", title: "燃費計算｜km/L・燃料消費量・航続距離", description: "走行距離と使用燃料から燃費を計算し、必要な燃料量や走行可能な距離も推定できます。", keywords: ["燃費 計算", "km/L 計算", "燃料消費量 計算"], formula: "燃費 (km/L) = 走行距離 ÷ 使用燃料量 · 100kmあたりの燃料 = 使用燃料量 ÷ 走行距離 × 100 · 必要燃料量 = 走行距離 ÷ 燃費 · 走行距離 = 燃料量 × 燃費。", example: { question: "520 km走行して40 L使った場合の燃費は？", answer: "燃費は13 km/L、100 kmあたりの燃料消費量は約7.69 Lです。" }, faq: { question: "燃費はどのように計算しますか？", answer: "走行距離を使用した燃料量で割るとkm/Lの燃費を計算できます。実際の燃費は走行条件によって変わります。" }, results: ["燃費", "100kmあたりの燃料消費量"], variants: { consumption: ["必要な燃料量"], range: ["予想走行距離"] } },
   "calorie-per-serving": { name: "1食分カロリー計算", shortName: "1食分カロリー", title: "1食分カロリー計算｜分量に応じたカロリー", description: "料理やパッケージ全体のカロリーと総量から、食べる分量のカロリーを換算します。", keywords: ["1食分 カロリー 計算", "分量別 カロリー", "料理 カロリー 計算"], formula: "食べる分のカロリー = 全体のカロリー ÷ 全体量 × 食べる量。", example: { question: "全体900 kcal、6人分の料理を1.5人分食べると？", answer: "1.5人分の目安は225 kcalです。" }, faq: { question: "この計算で食事の健康度が分かりますか？", answer: "いいえ。入力したカロリーを分量に応じて換算するだけで、栄養・医療上の助言は行いません。" }, results: ["食べる分のカロリー目安"] },
 };
 
@@ -83,6 +86,7 @@ const zh: CopySet = {
   bmi: { name: "BMI 计算器", shortName: "BMI", title: "BMI 计算器：根据身高和体重计算身体质量指数", description: "输入厘米身高和千克体重计算 BMI。结果仅供一般参考，不能作为诊断。", keywords: ["BMI计算器", "身体质量指数计算", "身高体重BMI"], formula: "BMI = 体重 (kg) ÷ 身高 (m)²。", example: { question: "身高 175 cm、体重 70 kg 的 BMI 是多少？", answer: "BMI 约为 22.9 kg/m²。单凭这个数值不能判断个人健康状况。" }, faq: { question: "BMI 可以作为医学诊断吗？", answer: "不可以。BMI 有局限性，不能代替针对个人的诊断或医疗建议。" }, results: ["BMI"] },
   pace: { name: "跑步配速计算器", shortName: "跑步配速", title: "跑步配速计算器：每公里用时与平均速度", description: "根据跑步距离和用时，计算每公里配速以及每小时平均速度。", keywords: ["跑步配速计算", "每公里配速", "平均跑步速度"], formula: "配速 (分钟/km) = 总分钟数 ÷ 距离 (km)。速度 (km/h) = 距离 ÷ 用时 (小时)。", example: { question: "5 km 用时 27 分 30 秒，配速是多少？", answer: "配速为每公里 5 分 30 秒，平均速度约 10.91 km/h。" }, faq: { question: "5:30/km 表示什么？", answer: "表示平均每跑 1 km 需要 5 分 30 秒。" }, results: ["平均配速", "平均速度"] },
   "fuel-cost": { name: "油费计算器", shortName: "油费", title: "油费计算器：估算行程所需燃油与费用", description: "根据行驶距离、平均油耗和每升油价，估算所需燃油量和油费。", keywords: ["油费计算器", "行程油费计算", "燃油消耗计算"], formula: "所需燃油 (L) = 距离 (km) ÷ 油耗 (km/L)。费用 = 所需燃油 × 每升价格。", example: { question: "行驶 300 km，油耗 15 km/L，油价 1,700 KRW/L，费用是多少？", answer: "约需 20 L 燃油，预计费用为 34,000 KRW。" }, faq: { question: "结果会和实际加油金额完全一致吗？", answer: "不会。这是按输入距离、平均油耗和价格估算，实际情况可能不同。" }, results: ["所需燃油量", "预计油费"] },
+  "fuel-efficiency": { name: "油耗计算器", shortName: "油耗", title: "油耗计算器：计算 km/L、燃油消耗与续航距离", description: "根据行驶距离和燃油用量计算汽车油耗，也可估算所需燃油量和预计续航距离。", keywords: ["油耗计算器", "km/L计算", "燃油消耗计算"], formula: "油耗 (km/L) = 行驶距离 ÷ 燃油用量 · 每100 km燃油用量 = 燃油用量 ÷ 行驶距离 × 100 · 所需燃油量 = 行驶距离 ÷ 油耗 · 续航距离 = 燃油量 × 油耗。", example: { question: "行驶520 km并使用40 L燃油，油耗是多少？", answer: "油耗为13 km/L，每100 km约消耗7.69 L燃油。" }, faq: { question: "如何计算汽车油耗？", answer: "用行驶距离除以使用的燃油量即可得到km/L。实际油耗会受驾驶和道路状况影响。" }, results: ["汽车油耗", "每100 km燃油用量"], variants: { consumption: ["所需燃油量"], range: ["预计续航距离"] } },
   "calorie-per-serving": { name: "每份热量计算器", shortName: "每份热量", title: "每份热量计算器：按食用分量估算卡路里", description: "根据整份食物的总热量和总量，换算所食用分量对应的热量。", keywords: ["每份热量计算", "分量卡路里计算器", "食谱热量分摊"], formula: "所食用分量热量 = 总热量 ÷ 总量 × 食用量。", example: { question: "一道食谱共 900 kcal、分为 6 份，吃 1.5 份是多少？", answer: "估算热量为 225 kcal。" }, faq: { question: "这个计算器能判断饮食是否健康吗？", answer: "不能。它只按分量换算输入的热量，不提供营养或医疗建议。" }, results: ["所食用分量的热量估算"] },
 };
 
@@ -93,12 +97,22 @@ const fieldLabels: Record<Locale, Record<string, string>> = {
   zh: { old: "原始值", current: "新值", a: "数值 A", b: "数值 B", known: "已知的 A 值", numbers: "待计算的数字", values: "数值列表", weights: "权重列表", initial: "初始值", final: "最终值", years: "期限", mode: "计算方式", total: "总价", unitPrice: "单价", quantity: "数量", category: "单位类别", value: "待换算数值", fromUnit: "原单位", toUnit: "目标单位", principal: "本金", rate: "年利率", monthly: "每月存款额", months: "期限", homePrice: "房产价格", loan: "贷款金额", income: "年收入", mortgage: "住房贷款年度本息", otherInterest: "其他贷款年度利息", repayment: "全部贷款年度还款额", cost: "成本", sale: "售价", reference: "基准日期", referenceDate: "自选基准日期", target: "目标日期", start: "开始日期", end: "结束日期", includeStart: "包含开始日期", includeEnd: "包含结束日期", height: "身高", weight: "体重", distance: "距离", hours: "小时", minutes: "分钟", efficiency: "平均油耗", price: "油价", calories: "总热量", servings: "总份量", portion: "食用份量" },
 };
 
+fieldLabels.en.fuelAmount = "Fuel amount";
+fieldLabels.ja.fuelAmount = "燃料量";
+fieldLabels.zh.fuelAmount = "燃油量";
+
 const optionLabels: Record<Locale, Record<string, string>> = {
   ko: {},
   en: { "unit-price.mode.unit": "Find unit price", "unit-price.mode.total": "Find total price", "unit-converter.category.length": "Length", "unit-converter.category.weight": "Weight", "unit-converter.category.volume": "Volume", "unit-converter.category.temperature": "Temperature", "dday.reference.today": "Today", "dday.reference.custom": "Choose a date", "workdays.includeStart.true": "Include", "workdays.includeStart.false": "Exclude", "workdays.includeEnd.true": "Include", "workdays.includeEnd.false": "Exclude" },
   ja: { "unit-price.mode.unit": "単価を計算", "unit-price.mode.total": "合計金額を計算", "unit-converter.category.length": "長さ", "unit-converter.category.weight": "重さ", "unit-converter.category.volume": "容量", "unit-converter.category.temperature": "温度", "dday.reference.today": "今日", "dday.reference.custom": "日付を指定", "workdays.includeStart.true": "含める", "workdays.includeStart.false": "含めない", "workdays.includeEnd.true": "含める", "workdays.includeEnd.false": "含めない" },
   zh: { "unit-price.mode.unit": "计算单价", "unit-price.mode.total": "计算总价", "unit-converter.category.length": "长度", "unit-converter.category.weight": "重量", "unit-converter.category.volume": "容量", "unit-converter.category.temperature": "温度", "dday.reference.today": "今天", "dday.reference.custom": "选择日期", "workdays.includeStart.true": "包含", "workdays.includeStart.false": "不包含", "workdays.includeEnd.true": "包含", "workdays.includeEnd.false": "不包含" },
 };
+
+for (const locale of ["en", "ja", "zh"] as const) {
+  optionLabels[locale]["fuel-efficiency.mode.efficiency"] = locale === "en" ? "Fuel economy" : locale === "ja" ? "燃費計算" : "计算油耗";
+  optionLabels[locale]["fuel-efficiency.mode.consumption"] = locale === "en" ? "Fuel needed" : locale === "ja" ? "必要燃料量" : "所需燃油量";
+  optionLabels[locale]["fuel-efficiency.mode.range"] = locale === "en" ? "Driving range" : locale === "ja" ? "走行可能距離" : "预计续航距离";
+}
 
 const unitNames: Record<Exclude<Locale, "ko">, Record<string, string>> = {
   en: { mm: "Millimeters (mm)", cm: "Centimeters (cm)", m: "Meters (m)", km: "Kilometers (km)", inch: "Inches (in)", ft: "Feet (ft)", yard: "Yards (yd)", mile: "Miles (mi)", mg: "Milligrams (mg)", g: "Grams (g)", kg: "Kilograms (kg)", oz: "Ounces (oz)", lb: "Pounds (lb)", ml: "Milliliters (mL)", l: "Liters (L)", c: "Celsius (°C)", f: "Fahrenheit (°F)" },
@@ -116,6 +130,27 @@ const genericNotes: Record<Exclude<Locale, "ko">, string> = {
   en: "The result is calculated from the values entered and the formula shown. It is an estimate where product or lender rules may differ.",
   ja: "入力値と表示した計算式による結果です。商品条件や金融機関の基準によって実際の結果と異なる場合があります。",
   zh: "结果根据输入值和页面公式计算。具体产品或贷款机构规则可能会导致实际结果不同。",
+};
+
+const fuelEfficiencyFaqs: Record<Exclude<Locale, "ko">, readonly { question: string; answer: string }[]> = {
+  en: [
+    { question: "How do I calculate fuel economy?", answer: "Divide the distance driven by the amount of fuel used to get km/L." },
+    { question: "What does 10 km/L mean?", answer: "The vehicle travels about 10 kilometers on one liter of fuel." },
+    { question: "Why can dashboard and actual economy differ?", answer: "Traffic, idling, temperature, tire condition, and driving style can change real fuel use." },
+    { question: "What does L/100 km mean?", answer: "It is the fuel needed to travel 100 kilometers. A lower value means lower fuel use." },
+  ],
+  ja: [
+    { question: "燃費はどのように計算しますか？", answer: "走行距離を使用した燃料量で割るとkm/Lを計算できます。" },
+    { question: "10 km/Lとはどういう意味ですか？", answer: "燃料1 Lで約10 km走行できるという意味です。" },
+    { question: "車載表示と実燃費が異なるのはなぜですか？", answer: "交通状況、アイドリング、気温、タイヤの状態、運転方法などで変わります。" },
+    { question: "L/100 kmとは何ですか？", answer: "100 km走るために必要な燃料量です。数値が小さいほど燃料消費が少なくなります。" },
+  ],
+  zh: [
+    { question: "如何计算汽车油耗？", answer: "用行驶距离除以使用的燃油量即可得到km/L。" },
+    { question: "10 km/L是什么意思？", answer: "表示使用1 L燃油大约可以行驶10 km。" },
+    { question: "为什么仪表盘油耗和实际油耗不同？", answer: "交通、怠速、气温、轮胎状况和驾驶方式都会影响实际油耗。" },
+    { question: "L/100 km是什么意思？", answer: "表示行驶100 km所需的燃油量。数值越低，耗油越少。" },
+  ],
 };
 
 function sampleInput(slug: string) {
@@ -145,6 +180,8 @@ function localizedFields(locale: Exclude<Locale, "ko">, slug: string) {
     if (slug === "pace" && field.name === "hours") unit = locale === "en" ? "hours" : locale === "ja" ? "時間" : "小时";
     if (slug === "pace" && field.name === "minutes") unit = locale === "en" ? "min" : locale === "ja" ? "分" : "分钟";
     if (slug === "fuel-cost" && field.name === "efficiency") unit = "km/L";
+    if (slug === "fuel-efficiency" && field.name === "efficiency") unit = "km/L";
+    if (slug === "fuel-efficiency" && field.name === "fuelAmount") unit = "L";
     if (slug === "calorie-per-serving" && field.name === "calories") unit = "kcal";
     if (slug === "calorie-per-serving" && ["servings", "portion"].includes(field.name)) unit = locale === "en" ? "servings" : locale === "ja" ? "人分" : "份";
     if (slug === "unit-price" && field.name === "quantity") unit = locale === "en" ? "items" : locale === "ja" ? "個" : "件";
@@ -212,10 +249,10 @@ function createContent(locale: Exclude<Locale, "ko">, slug: LocalizedCalculatorS
   return {
     name: copy.name, shortName: copy.shortName, title: copy.title, description: copy.description, keywords: copy.keywords,
     howTo: genericHowTo, formula: copy.formula, example: copy.example,
-    faqs: [copy.faq, alternateFaq[locale]], related,
+    faqs: slug === "fuel-efficiency" ? fuelEfficiencyFaqs[locale] : copy.faqs ?? [copy.faq, alternateFaq[locale]], related,
     fields: localizedFields(locale, slug), options: localizedOptions(locale, slug), resultLabels: labels,
     validation: locale === "en" ? "Check the values and selections, then try again. The required values must be valid for this calculation." : locale === "ja" ? "入力値と選択内容を確認して、もう一度お試しください。計算に必要な値を正しく入力してください。" : "请检查输入值和选项后重试，并确保所需数值符合计算条件。",
-    resultNote: slug === "dti" || slug === "dsr" || slug === "ltv" ? copy.faq.answer : genericNotes[locale],
+    resultNote: slug === "fuel-efficiency" ? (locale === "en" ? "Actual fuel economy and driving range vary with traffic, idling, temperature, tire condition, and driving style." : locale === "ja" ? "実際の燃費や走行可能距離は、交通状況、アイドリング、気温、タイヤの状態、運転方法によって異なります。" : "实际油耗和续航距离会受交通、怠速、气温、轮胎状况和驾驶方式影响。") : slug === "dti" || slug === "dsr" || slug === "ltv" ? copy.faq.answer : genericNotes[locale],
   };
 }
 
