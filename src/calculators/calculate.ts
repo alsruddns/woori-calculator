@@ -6,6 +6,7 @@ import { runFinanceCalculator } from "@/calculators/finance/calculate";
 import { runMathCalculator } from "@/calculators/math/calculate";
 import { runPolicyCalculator } from "@/calculators/policy/severance";
 import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
+import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { runTaxCalculator } from "@/calculators/tax/calculate";
 
 export function calculateBySlug(slug: string, input: Record<string, string>): CalculatorOutcome {
@@ -21,7 +22,7 @@ export function calculateBySlug(slug: string, input: Record<string, string>): Ca
     ?? runTaxCalculator(slug, input)
     ?? runDateLifeCalculator(slug, input)
     ?? runConversionCalculator(slug, input);
-  const policyOutcome = outcome ?? runPolicyCalculator(slug, input) ?? (slug === "social-insurance" ? calculateSocialInsurance(input) : undefined);
+  const policyOutcome = outcome ?? runPolicyCalculator(slug, input) ?? (slug === "social-insurance" ? calculateSocialInsurance(input) : slug === "unemployment-benefit" ? calculateUnemploymentBenefit(input) : undefined);
   if (!policyOutcome) return { error: "이 계산기를 찾을 수 없습니다." };
   if ("results" in policyOutcome && policyOutcome.results.some((item) => typeof item.value === "number" && (!Number.isFinite(item.value) || (Number.isInteger(item.value) && Math.abs(item.value) > Number.MAX_SAFE_INTEGER)))) {
     return { error: "입력값이 안전한 계산 범위를 벗어났습니다. 입력 범위를 줄여 주세요." };
