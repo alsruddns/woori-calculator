@@ -1,5 +1,6 @@
 import { conversionCalculatorPages } from "@/data/calculator-content/conversion";
 import { dateLifeCalculatorPages } from "@/data/calculator-content/date-life";
+import { dateExtendedPages } from "@/data/calculator-content/date-extended";
 import { everydayPages } from "@/data/calculator-content/everyday";
 import { financeCalculatorPages } from "@/data/calculator-content/finance";
 import { extendedFinancePages, salaryConversionPage } from "@/data/calculator-content/finance-extended";
@@ -16,6 +17,7 @@ export const calculatorPages: readonly CalculatorPageDefinition[] = [
   salaryConversionPage,
   ...taxCalculatorPages,
   ...dateLifeCalculatorPages,
+  ...dateExtendedPages,
   ...everydayPages,
   ...conversionCalculatorPages,
   ...employmentCalculatorPages,

@@ -24,11 +24,11 @@ describe("date and life calculator functions", () => {
 
   it("calculates D-Day directions and completed age", () => {
     expect(calculateDday({ reference: "custom", referenceDate: "2026-01-01", target: "2026-01-04" })).toMatchObject({ results: [{ value: 3, unit: "일 (D-N)" }] });
-    expect(calculateAge({ birth: "2000-12-31", reference: "2026-12-30" })).toMatchObject({ results: [{ value: 25 }] });
+    expect(calculateAge({ birth: "2000-12-31", reference: "2026-12-30" })).toMatchObject({ results: [{ value: 25 }, { value: 26 }, { value: 27 }] });
     expect(calculateDday({ reference: "custom", referenceDate: "2026-01-04", target: "2026-01-01" })).toMatchObject({ results: [{ value: 3, unit: "일 (D+N)" }] });
     expect(calculateDday({ reference: "custom", referenceDate: "2026-01-01", target: "2026-01-01" })).toMatchObject({ results: [{ value: 0, unit: "일 (D-Day)" }] });
-    expect(calculateAge({ birth: "2000-02-29", reference: "2021-02-28" })).toMatchObject({ results: [{ value: 20 }] });
-    expect(calculateAge({ birth: "2000-02-29", reference: "2021-03-01" })).toMatchObject({ results: [{ value: 21 }] });
+    expect(calculateAge({ birth: "2000-02-29", reference: "2021-02-28" })).toMatchObject({ results: [{ value: 20 }, { value: 21 }, { value: 22 }] });
+    expect(calculateAge({ birth: "2000-02-29", reference: "2021-03-01" })).toMatchObject({ results: [{ value: 21 }, { value: 21 }, { value: 22 }] });
     expect(calculateAge({ birth: "2027-01-01", reference: "2026-01-01" })).toHaveProperty("error");
     expect(calculateDday({ reference: "custom", referenceDate: "1900-01-01", target: "2100-01-01" })).toHaveProperty("results");
     expect(calculateDday({ reference: "custom", referenceDate: "1900-01-01", target: "2201-01-01" })).toHaveProperty("error");
