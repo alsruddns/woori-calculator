@@ -15,7 +15,7 @@ describe("calculator registry", () => {
     expect(new Set(publishedCalculators.map(({ slug }) => slug)).size).toBe(publishedCalculators.length);
     expect(publishedCalculators.every(({ isPublished }) => isPublished)).toBe(true);
     expect(calculatorRegistry.find(({ slug }) => slug === "salary")).toBeUndefined();
-    expect(calculatorPages.length).toBe(35);
+    expect(calculatorPages.length).toBe(36);
   });
 
   it("keeps related links within the published calculator set and registers calculation logic", () => {
