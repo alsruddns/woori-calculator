@@ -3,7 +3,7 @@ import { dateLifeCalculatorPages } from "@/data/calculator-content/date-life";
 import { dateExtendedPages } from "@/data/calculator-content/date-extended";
 import { everydayPages } from "@/data/calculator-content/everyday";
 import { financeCalculatorPages } from "@/data/calculator-content/finance";
-import { extendedFinancePages, salaryConversionPage } from "@/data/calculator-content/finance-extended";
+import { annualLeaveAllowancePage, extendedFinancePages, hourlyWagePage, salaryConversionPage } from "@/data/calculator-content/finance-extended";
 import { employmentCalculatorPages } from "@/data/calculator-content/employment";
 import { mathCalculatorPages } from "@/data/calculator-content/math";
 import { mathExtendedPages } from "@/data/calculator-content/math-extended";
@@ -17,6 +17,8 @@ export const calculatorPages: readonly CalculatorPageDefinition[] = [
   ...financeCalculatorPages,
   ...extendedFinancePages,
   salaryConversionPage,
+  hourlyWagePage,
+  annualLeaveAllowancePage,
   ...taxCalculatorPages,
   ...dateLifeCalculatorPages,
   ...dateExtendedPages,

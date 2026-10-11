@@ -1,10 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { calculateAffordableLoan, calculateDividend, calculatePrepaymentFee, calculateProfitLoss, calculateRefinance, calculateSalaryConversion } from "@/calculators/finance/extended";
+import { calculateAffordableLoan, calculateAnnualLeaveAllowance, calculateDividend, calculateHourlyWage, calculatePrepaymentFee, calculateProfitLoss, calculateRefinance, calculateSalaryConversion } from "@/calculators/finance/extended";
 
 describe("extended static finance calculators", () => {
   it("converts monthly and annual gross pay over twelve months", () => {
     expect(calculateSalaryConversion({ mode: "monthly", amount: "3000000" })).toMatchObject({ results: [{ value: 3000000 }, { value: 36000000 }] });
     expect(calculateSalaryConversion({ mode: "annual", amount: "36000000" })).toMatchObject({ results: [{ value: 3000000 }, { value: 36000000 }] });
+  });
+  it("converts pay to an assumed hourly rate and estimates unused leave arithmetically", () => {
+    expect(calculateHourlyWage({ mode: "monthly-to-hourly", pay: "3000000", monthlyHours: "209" })).toMatchObject({ results: [{ value: 14354.07 }] });
+    expect(calculateHourlyWage({ mode: "hourly-to-monthly", pay: "10000", monthlyHours: "160" })).toMatchObject({ results: [{ value: 1600000 }, { value: 19200000 }] });
+    expect(calculateAnnualLeaveAllowance({ dailyWage: "100000", days: "3" })).toMatchObject({ results: [{ value: 100000 }, { value: 3 }, { value: 300000 }] });
   });
   it("calculates gross dividends and price-based yield", () => {
     expect(calculateDividend({ shares: "100", perShare: "500", payments: "2", price: "10000" })).toMatchObject({ results: [{ value: 50000 }, { value: 100000 }, { value: 10 }] });

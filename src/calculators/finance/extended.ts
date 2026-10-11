@@ -21,6 +21,21 @@ export const calculateSalaryConversion: CalculatorFunction = (input) => {
   return { results: [money("월 환산 급여", monthly), money("연 환산 급여", annual)], note: "12개월 기준 단순 환산이며 상여금, 세금, 보험료는 반영하지 않습니다." };
 };
 
+export const calculateHourlyWage: CalculatorFunction = (input) => {
+  const pay = n(input, "pay"), hours = n(input, "monthlyHours");
+  if (pay === undefined || hours === undefined || pay < 0 || pay > 1_000_000_000 || hours <= 0 || hours > 1000) return error;
+  if (input.mode === "monthly-to-hourly") return { results: [{ label: "단순 환산 시급", value: Number((pay / hours).toFixed(2)), unit: "원/시간", precision: 2 }] };
+  if (input.mode === "annual-to-hourly") return { results: [{ label: "단순 환산 시급", value: Number((pay / (hours * 12)).toFixed(2)), unit: "원/시간", precision: 2 }] };
+  if (input.mode === "hourly-to-monthly") return { results: [money("월 환산 급여", pay * hours), money("연 환산 급여", pay * hours * 12)] };
+  return error;
+};
+
+export const calculateAnnualLeaveAllowance: CalculatorFunction = (input) => {
+  const dailyWage = n(input, "dailyWage"), days = n(input, "days");
+  if (dailyWage === undefined || days === undefined || dailyWage < 0 || dailyWage > 100_000_000 || days < 0 || days > 500) return error;
+  return { results: [money("입력한 1일 통상임금", dailyWage), { label: "미사용 일수", value: days, unit: "일" }, money("산술상 예상액", dailyWage * days)], note: "입력한 1일 통상임금과 일수를 곱한 산술 예시입니다. 연차 발생·사용촉진·수당 지급 여부 등 법적 요건은 판단하지 않습니다." };
+};
+
 export const calculateDividend: CalculatorFunction = (input) => {
   const v = values(input, ["shares", "perShare", "payments", "price"]);
   if (!v) return error;
@@ -77,5 +92,4 @@ export const calculateAffordableLoan: CalculatorFunction = (input) => {
   return { results: [money("월 납입액 기준 대출원금", principal), money("기간 전체 납입액", payment * months), money("계산상 총 이자", payment * months - principal)], note: "원리금균등 상환과 고정금리를 가정한 산술 추정입니다. 대출 가능액이나 승인 여부를 의미하지 않습니다." };
 };
 
-export const extendedFinance: Record<string, CalculatorFunction> = { "salary-conversion": calculateSalaryConversion, dividend: calculateDividend, "profit-loss": calculateProfitLoss, "loan-refinance": calculateRefinance, "prepayment-fee": calculatePrepaymentFee, "loan-affordability": calculateAffordableLoan };
-
+export const extendedFinance: Record<string, CalculatorFunction> = { "salary-conversion": calculateSalaryConversion, "hourly-wage": calculateHourlyWage, "annual-leave-allowance": calculateAnnualLeaveAllowance, dividend: calculateDividend, "profit-loss": calculateProfitLoss, "loan-refinance": calculateRefinance, "prepayment-fee": calculatePrepaymentFee, "loan-affordability": calculateAffordableLoan };
