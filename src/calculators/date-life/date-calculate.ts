@@ -2,6 +2,7 @@ import type { CalculatorFunction, CalculatorOutcome } from "@/types/calculator-p
 import { MAX_DATE_RANGE_DAYS, MAX_MONEY, readNumber } from "@/lib/calculators/input";
 import { parseDateOnly } from "@/lib/calculators/date-only";
 import { calculateFuelEfficiency } from "@/calculators/date-life/fuel-efficiency";
+import { calculateTaxiFare, calculateTip, calculateTripSplit, calculateUtilityBill, calculateVehicleCosts } from "@/calculators/date-life/everyday";
 
 const DAY = 86_400_000;
 
@@ -143,6 +144,11 @@ export const dateLifeCalculators: Record<string, CalculatorFunction> = {
   "fuel-cost": calculateFuelCost,
   "fuel-efficiency": calculateFuelEfficiency,
   "calorie-per-serving": calculateCaloriePerServing,
+  "utility-bill": calculateUtilityBill,
+  "vehicle-cost": calculateVehicleCosts,
+  "taxi-fare": calculateTaxiFare,
+  "trip-split": calculateTripSplit,
+  "tip-calculator": calculateTip,
 };
 
 export function runDateLifeCalculator(slug: string, input: Record<string, string>): CalculatorOutcome | undefined { return dateLifeCalculators[slug]?.(input); }
