@@ -2,6 +2,8 @@ import type { CalculatorFunction, CalculatorOutcome } from "@/types/calculator-p
 import { MAX_DATE_RANGE_DAYS, MAX_MONEY, readNumber } from "@/lib/calculators/input";
 import { parseDateOnly } from "@/lib/calculators/date-only";
 import { calculateFuelEfficiency } from "@/calculators/date-life/fuel-efficiency";
+import { calculateTaxiFare, calculateTip, calculateTripSplit, calculateUtilityBill, calculateVehicleCosts } from "@/calculators/date-life/everyday";
+import { calculatePregnancyDates, calculateTenure, calculateTimeArithmetic } from "@/calculators/date-life/date-extended";
 
 const DAY = 86_400_000;
 
@@ -40,7 +42,7 @@ export const calculateAge: CalculatorFunction = (input) => {
   const r = new Date(reference);
   let age = r.getUTCFullYear() - b.getUTCFullYear();
   if (r.getUTCMonth() < b.getUTCMonth() || (r.getUTCMonth() === b.getUTCMonth() && r.getUTCDate() < b.getUTCDate())) age -= 1;
-  return { results: [{ label: "만 나이", value: age, unit: "세" }], note: "생일이 지나지 않은 해에는 한 살을 빼는 일반적인 만 나이 기준입니다." };
+  return { results: [{ label: "만 나이", value: age, unit: "세" }, { label: "연 나이", value: r.getUTCFullYear() - b.getUTCFullYear(), unit: "세" }, { label: "세는나이(참고)", value: r.getUTCFullYear() - b.getUTCFullYear() + 1, unit: "세" }], note: "대한민국 법·행정상 나이는 만 나이가 기준입니다. 연 나이와 세는나이는 비교를 위한 참고값입니다." };
 };
 
 export const calculateWorkdays: CalculatorFunction = (input) => {
@@ -143,6 +145,14 @@ export const dateLifeCalculators: Record<string, CalculatorFunction> = {
   "fuel-cost": calculateFuelCost,
   "fuel-efficiency": calculateFuelEfficiency,
   "calorie-per-serving": calculateCaloriePerServing,
+  "utility-bill": calculateUtilityBill,
+  "vehicle-cost": calculateVehicleCosts,
+  "taxi-fare": calculateTaxiFare,
+  "trip-split": calculateTripSplit,
+  "tip-calculator": calculateTip,
+  pregnancy: calculatePregnancyDates,
+  tenure: calculateTenure,
+  "time-arithmetic": calculateTimeArithmetic,
 };
 
 export function runDateLifeCalculator(slug: string, input: Record<string, string>): CalculatorOutcome | undefined { return dateLifeCalculators[slug]?.(input); }
