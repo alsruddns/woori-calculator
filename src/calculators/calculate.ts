@@ -3,6 +3,7 @@ import { MAX_LIST_INPUT_LENGTH, MAX_MONEY, MAX_NUMBER_INPUT_LENGTH } from "@/lib
 import { runConversionCalculator } from "@/calculators/conversion/convert";
 import { runDateLifeCalculator } from "@/calculators/date-life/date-calculate";
 import { runFinanceCalculator } from "@/calculators/finance/calculate";
+import { extendedFinance } from "@/calculators/finance/extended";
 import { runMathCalculator } from "@/calculators/math/calculate";
 import { runPolicyCalculator } from "@/calculators/policy/severance";
 import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
@@ -19,6 +20,7 @@ export function calculateBySlug(slug: string, input: Record<string, string>): Ca
   }
   const outcome = runMathCalculator(slug, input)
     ?? runFinanceCalculator(slug, input)
+    ?? extendedFinance[slug]?.(input)
     ?? runTaxCalculator(slug, input)
     ?? runDateLifeCalculator(slug, input)
     ?? runConversionCalculator(slug, input);
