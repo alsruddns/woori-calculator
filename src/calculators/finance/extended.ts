@@ -63,14 +63,17 @@ export const calculateRefinance: CalculatorFunction = (input) => {
   if (!v) return error;
   const [balance, oldRate, oldMonths, newRate, newMonths, fees] = v;
   if (balance <= 0 || balance > 1_000_000_000_000 || oldRate < 0 || oldRate > 100 || newRate < 0 || newRate > 100 || oldMonths < 1 || oldMonths > 1200 || newMonths < 1 || newMonths > 1200 || !Number.isInteger(oldMonths) || !Number.isInteger(newMonths) || fees < 0 || fees > 1_000_000_000) return error;
-  const total = (rate: number, months: number) => {
+  const repayment = (rate: number, months: number) => {
     const r = rate / 1200;
     const p = r === 0 ? balance / months : balance * r / (1 - (1 + r) ** -months);
-    return p * months;
+    return { monthlyPayment: p, totalPayment: p * months };
   };
-  const oldTotal = total(oldRate, oldMonths);
-  const newTotal = total(newRate, newMonths);
-  return { results: [money("기존 대출 잔여 납입액", oldTotal), money("신규 대출 예상 납입액", newTotal), money("전환 비용", fees), money("비용 반영 차이(절감이면 양수)", oldTotal - newTotal - fees)], note: "두 대출 모두 원리금균등 상환으로 단순 비교합니다. 실제 약정, 변동금리, 수수료 조건은 반영되지 않습니다." };
+  const oldLoan = repayment(oldRate, oldMonths), newLoan = repayment(newRate, newMonths);
+  const interestDifference = (oldLoan.totalPayment - balance) - (newLoan.totalPayment - balance);
+  const netSavings = interestDifference - fees;
+  const monthlyPaymentDifference = oldLoan.monthlyPayment - newLoan.monthlyPayment;
+  const breakEvenMonths = netSavings > 0 && monthlyPaymentDifference > 0 ? Math.ceil(fees / monthlyPaymentDifference) : undefined;
+  return { results: [money("기존 대출 잔여 총이자", oldLoan.totalPayment - balance), money("신규 대출 예상 총이자", newLoan.totalPayment - balance), money("전환 비용", fees), money("비용 반영 예상 절감액", netSavings), { label: "월 납입액 차이(기존 − 신규)", value: Math.round(monthlyPaymentDifference), unit: "원" }, { label: "월 납입액 기준 손익분기", value: breakEvenMonths ?? "산출 불가", ...(breakEvenMonths ? { unit: "개월" } : {}) }], note: "두 대출 모두 원리금균등 상환과 고정금리를 가정합니다. 손익분기는 신규 월 납입액이 낮고 절감액이 양수일 때 전환 비용을 월 납입 차이로 나눈 값입니다. 실제 약정과 상품 수수료는 반영되지 않습니다." };
 };
 
 export const calculatePrepaymentFee: CalculatorFunction = (input) => {

@@ -19,7 +19,7 @@ describe("extended static finance calculators", () => {
     expect(calculateProfitLoss({ buy: "0", sell: "1", quantity: "1", buyCost: "0", sellCost: "0" })).toHaveProperty("error");
   });
   it("estimates loan comparison, user-entered fee and affordable principal", () => {
-    expect(calculateRefinance({ balance: "10000000", oldRate: "0", oldMonths: "10", newRate: "0", newMonths: "10", fees: "0" })).toMatchObject({ results: [{ value: 10000000 }, { value: 10000000 }, { value: 0 }, { value: 0 }] });
+    expect(calculateRefinance({ balance: "10000000", oldRate: "0", oldMonths: "10", newRate: "0", newMonths: "10", fees: "0" })).toMatchObject({ results: [{ value: 0 }, { value: 0 }, { value: 0 }, { value: 0 }, { value: 0 }, { value: "산출 불가" }] });
     expect(calculatePrepaymentFee({ amount: "10000000", rate: "1" })).toMatchObject({ results: [{ value: 100000 }] });
     const affordable = calculateAffordableLoan({ payment: "100000", rate: "0", months: "12" });
     expect("results" in affordable && affordable.results[0]?.value).toBe(1200000);
