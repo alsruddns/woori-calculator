@@ -5,6 +5,7 @@ import { runDateLifeCalculator } from "@/calculators/date-life/date-calculate";
 import { runFinanceCalculator } from "@/calculators/finance/calculate";
 import { extendedFinance } from "@/calculators/finance/extended";
 import { runMathCalculator } from "@/calculators/math/calculate";
+import { extendedMath } from "@/calculators/math/extended";
 import { runPolicyCalculator } from "@/calculators/policy/severance";
 import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
@@ -19,6 +20,7 @@ export function calculateBySlug(slug: string, input: Record<string, string>): Ca
     if (raw.trim() && Number.isFinite(numeric) && Math.abs(numeric) > MAX_MONEY) return { error: "숫자 입력은 1,000조 이하로 입력해 주세요.", field };
   }
   const outcome = runMathCalculator(slug, input)
+    ?? extendedMath[slug]?.(input)
     ?? runFinanceCalculator(slug, input)
     ?? extendedFinance[slug]?.(input)
     ?? runTaxCalculator(slug, input)
