@@ -1,5 +1,6 @@
 import { createCalculatorPage } from "@/data/calculator-content/create-page";
 import { calculateAge, calculateArea, calculateBmi, calculateCaloriePerServing, calculateDateDifference, calculateDday, calculateFuelCost, calculatePace, calculateWorkdays } from "@/calculators/date-life/date-calculate";
+import { calculateFuelEfficiency } from "@/calculators/date-life/fuel-efficiency";
 import type { CalculatorPageDefinition } from "@/types/calculator-page";
 
 const date = (name: string, label: string) => ({ name, label, type: "date" as const });
@@ -50,10 +51,36 @@ export const dateLifeCalculatorPages: readonly CalculatorPageDefinition[] = [
     faqs: [{ question: "거리 단위는 마일도 되나요?", answer: "현재 거리는 km 기준입니다. 마일 거리는 km로 환산해 입력해 주세요." }, { question: "운동 시간이 1시간 30분이면 어떻게 입력하나요?", answer: "시간에 1, 분에 30을 입력하면 됩니다." }],
   }),
   createCalculatorPage({
-    slug: "fuel-cost", name: "주유비 계산기", shortName: "주유비", category: "life", description: "주행 거리, 평균 연비와 유가를 이용해 예상 연료량과 주유비를 계산합니다.", title: "주유비 계산기: 거리·연비·유가로 예상 비용", keywords: ["주유비 계산기", "기름값 계산", "연료비 계산"], relatedCalculatorIds: ["unit-price", "pace", "calorie-per-serving"],
+    slug: "fuel-cost", name: "주유비 계산기", shortName: "주유비", category: "life", description: "주행 거리, 평균 연비와 유가를 이용해 예상 연료량과 주유비를 계산합니다.", title: "주유비 계산기: 거리·연비·유가로 예상 비용", keywords: ["주유비 계산기", "기름값 계산", "연료비 계산"], relatedCalculatorIds: ["fuel-efficiency", "unit-price", "pace"],
     fields: [number("distance", "주행 거리", "km", 0, 1), number("efficiency", "평균 연비", "km/L", 0.01, 0.1), number("price", "유가", "원/L", 0, 1)], calculate: calculateFuelCost,
     howTo: "주행 거리, 차량의 평균 연비와 리터당 유가를 입력하세요. 예상 필요 연료와 비용을 계산합니다.", formula: "필요 연료(L) = 거리(km) ÷ 연비(km/L) · 예상 주유비 = 필요 연료 × 유가(원/L)", example: { question: "100km를 연비 10km/L, 리터당 1,700원으로 주행하면?", answer: "필요 연료는 10L, 예상 주유비는 17,000원입니다." },
     notes: ["실제 운전 조건과 주유 시점의 유가에 따라 연료 소비와 비용이 달라집니다."], faqs: [{ question: "왕복 거리를 계산하려면?", answer: "출발지와 목적지 사이 왕복 거리를 합산해 주행 거리로 입력하면 됩니다." }, { question: "연비는 어디서 확인하나요?", answer: "차량 계기판의 평균 연비나 차량 안내 자료를 참고해 입력할 수 있습니다." }],
+  }),
+  createCalculatorPage({
+    slug: "fuel-efficiency", name: "연비 계산기", shortName: "연비", category: "life",
+    description: "주행거리와 연료량으로 자동차 연비를 계산하고, 필요한 연료량과 예상 주행 가능 거리도 확인합니다.",
+    title: "연비 계산기 - km/L·연료 소모량·주행거리 계산 | woori.today",
+    keywords: ["연비 계산기", "자동차 연비 계산", "연료 소모량 계산"], relatedCalculatorIds: ["fuel-cost", "unit-price", "pace"],
+    fields: [
+      { name: "mode", label: "계산 방법", type: "select", defaultValue: "efficiency", options: [{ label: "연비 계산", value: "efficiency" }, { label: "연료 소모량 계산", value: "consumption" }, { label: "주행 가능 거리 계산", value: "range" }] },
+      { name: "distance", label: "주행거리", type: "number", unit: "km", min: 0, step: 1, showWhen: { field: "mode", value: "efficiency" } },
+      { name: "fuelAmount", label: "사용 연료량", type: "number", unit: "L", min: 0, step: 0.1, showWhen: { field: "mode", value: "efficiency" } },
+      { name: "distance", label: "주행거리", type: "number", unit: "km", min: 0, step: 1, showWhen: { field: "mode", value: "consumption" } },
+      { name: "efficiency", label: "차량 연비", type: "number", unit: "km/L", min: 0, step: 0.1, showWhen: { field: "mode", value: "consumption" } },
+      { name: "fuelAmount", label: "현재 연료량", type: "number", unit: "L", min: 0, step: 0.1, showWhen: { field: "mode", value: "range" } },
+      { name: "efficiency", label: "차량 연비", type: "number", unit: "km/L", min: 0, step: 0.1, showWhen: { field: "mode", value: "range" } },
+    ],
+    calculate: calculateFuelEfficiency,
+    howTo: "계산 방법을 선택하고 필요한 거리와 연료량 또는 차량 연비를 입력하세요. 연비, 필요 연료량, 예상 주행거리를 각각 계산할 수 있습니다.",
+    formula: "연비(km/L) = 주행거리(km) ÷ 사용 연료량(L) · 100km당 연료(L/100km) = 사용 연료량 ÷ 주행거리 × 100 · 필요 연료량(L) = 주행거리 ÷ 연비 · 예상 주행거리(km) = 연료량 × 연비",
+    example: { question: "520km를 주행하고 연료 40L를 사용했다면?", answer: "연비는 13km/L이고 100km당 연료 소모량은 약 7.69L입니다." },
+    notes: ["연비(km/L)는 연료 1L로 주행할 수 있는 거리이며, L/100km는 100km 주행에 필요한 연료량입니다.", "실제 연비와 주행 가능 거리는 운전 습관, 도로·교통 상황, 기온, 공회전, 타이어 상태 등에 따라 달라질 수 있습니다."],
+    faqs: [
+      { question: "연비는 어떻게 계산하나요?", answer: "주행거리를 사용한 연료량으로 나누면 km/L 연비를 구할 수 있습니다." },
+      { question: "10km/L는 무슨 뜻인가요?", answer: "연료 1L로 약 10km를 주행한다는 의미입니다." },
+      { question: "계기판 연비와 실제 연비가 왜 다른가요?", answer: "주행 환경, 공회전, 기온, 타이어 상태, 교통 상황 등에 따라 실제 값이 달라질 수 있습니다." },
+      { question: "L/100km는 무엇인가요?", answer: "100km를 주행하는 데 필요한 연료량을 뜻합니다. 수치가 낮을수록 같은 거리를 가는 데 연료를 덜 사용합니다." },
+    ],
   }),
   createCalculatorPage({
     slug: "calorie-per-serving", name: "1회분 칼로리 계산기", shortName: "1회분 칼로리", category: "life", description: "전체 음식의 칼로리와 총 분량, 먹을 분량으로 예상 섭취 열량을 계산합니다.", title: "1회분 칼로리 계산기: 분량별 열량 계산", keywords: ["1회분 칼로리 계산", "분량 칼로리 계산기", "음식 열량 나누기"], relatedCalculatorIds: ["bmi", "pace", "average"],
