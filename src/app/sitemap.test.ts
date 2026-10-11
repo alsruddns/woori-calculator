@@ -9,11 +9,12 @@ describe("calculator sitemap", () => {
     const entries = sitemap();
     const urls = entries.map(({ url }) => url);
     const publicLocalizedCalculators = calculatorRegistry.filter(({ isPublished, slug }) => isPublished && hasLocalizedCalculator(slug));
+    const publicKoreanOnlyCalculators = calculatorRegistry.filter(({ isPublished, slug }) => isPublished && !hasLocalizedCalculator(slug));
     const detailEntries = entries.filter(({ url }) => /\/calculators\/[^/]+$/.test(url));
 
     expect(siteConfig.url).toBe("https://www.woori.today");
-    expect(entries).toHaveLength(publicLocalizedCalculators.length * locales.length + locales.length);
-    expect(detailEntries).toHaveLength(publicLocalizedCalculators.length * locales.length);
+    expect(entries).toHaveLength(publicLocalizedCalculators.length * locales.length + publicKoreanOnlyCalculators.length + locales.length);
+    expect(detailEntries).toHaveLength(publicLocalizedCalculators.length * locales.length + publicKoreanOnlyCalculators.length);
     expect(new Set(urls).size).toBe(urls.length);
     expect(urls.every((url) => url.startsWith("https://www.woori.today/"))).toBe(true);
 
@@ -44,6 +45,15 @@ describe("calculator sitemap", () => {
         zh: `${siteConfig.url}/zh/calculators/${calculator.slug}`,
         "x-default": koreanUrl,
       });
+    }
+
+    for (const calculator of publicKoreanOnlyCalculators) {
+      const entry = entries.find(({ url }) => url === `${siteConfig.url}/ko/calculators/${calculator.slug}`);
+      expect(entry).toBeDefined();
+      expect(entry?.alternates).toBeUndefined();
+      for (const locale of locales.filter((item) => item !== "ko")) {
+        expect(urls).not.toContain(`${siteConfig.url}${localePath(locale, `/calculators/${calculator.slug}`)}`);
+      }
     }
 
     expect(urls.every((url) => /^https:\/\/www\.woori\.today\/(ko|en|ja|zh)\/calculators(?:\/|$)/.test(url))).toBe(true);

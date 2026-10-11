@@ -18,16 +18,17 @@ export function createSitemapEntries(calculators: readonly CalculatorDefinition[
   });
 
   const detailEntries: MetadataRoute.Sitemap = calculators
-    .filter(({ isPublished, slug }) => isPublished && hasLocalizedCalculator(slug))
+    .filter(({ isPublished, slug }) => isPublished && getCalculatorPage(slug) !== undefined)
     .flatMap(({ slug }) => {
       const path = `/calculators/${slug}`;
       const page = getCalculatorPage(slug);
-      return locales.map((locale) => ({
+      const supportedLocales = hasLocalizedCalculator(slug) ? locales : ["ko"] as const;
+      return supportedLocales.map((locale) => ({
         url: `${siteConfig.url}${localePath(locale, path)}`,
         ...(page ? { lastModified: new Date(`${page.updatedAt}T00:00:00.000Z`) } : {}),
         changeFrequency: "monthly" as const,
         priority: 0.7,
-        alternates: { languages: localizedLanguageAlternates(path) },
+        ...(hasLocalizedCalculator(slug) ? { alternates: { languages: localizedLanguageAlternates(path) } } : {}),
       }));
     });
 

@@ -1,4 +1,4 @@
-import type { CalculatorFunction, CalculatorOutcome } from "@/types/calculator-page";
+import type { CalculatorFunction } from "@/types/calculator-page";
 import { parseDateOnly } from "@/lib/calculators/date-only";
 
 const DAY = 86_400_000;
