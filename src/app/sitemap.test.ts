@@ -47,6 +47,9 @@ describe("calculator sitemap", () => {
       });
     }
 
+    expect(calculatorRegistry.find(({ slug }) => slug === "fraction")?.isPublished).toBe(true);
+    expect(urls).toEqual(expect.arrayContaining(locales.map((locale) => `${siteConfig.url}${localePath(locale, "/calculators/fraction")}`)));
+
     for (const calculator of publicKoreanOnlyCalculators) {
       const entry = entries.find(({ url }) => url === `${siteConfig.url}/ko/calculators/${calculator.slug}`);
       expect(entry).toBeDefined();
