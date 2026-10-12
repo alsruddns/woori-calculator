@@ -120,7 +120,12 @@ describe("locale routing and translated calculator catalog", () => {
   it("provides complete standard deviation content and locale SEO metadata", () => {
     for (const locale of ["en", "ja", "zh"] as const) {
       const page = getDictionary(locale).calculators["standard-deviation"]!;
-      expect(page.name).toBe(locale === "en" ? "Standard Deviation Calculator" : locale === "ja" ? "標準偏差計算" : "标准差计算器");
+      expect(page.name).toBe(locale === "en" ? "Standard Deviation Calculator" : locale === "ja" ? "標準偏差計算機" : "标准差计算器");
+      expect(page.title).toBe(locale === "en"
+        ? "Standard Deviation Calculator | Mean, Variance and Standard Deviation"
+        : locale === "ja"
+          ? "標準偏差計算機 | 平均・分散・標準偏差を計算"
+          : "标准差计算器 | 平均值、方差和标准差计算");
       expect(page.title).toContain(page.name);
       expect(page.description.length).toBeGreaterThan(20);
       expect(page.keywords).toContain(locale === "zh" ? "标准差计算器" : locale === "ja" ? "標準偏差 計算" : "standard deviation calculator");

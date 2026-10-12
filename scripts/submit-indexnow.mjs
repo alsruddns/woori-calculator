@@ -34,10 +34,9 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
       landingPages.add(locale);
       continue;
     }
-    const detail = details.get(slug) ?? { locales: new Set(), hasLanguageAlternates: false };
-    detail.locales.add(locale);
-    detail.hasLanguageAlternates ||= /<\w+:link\b[^>]*\bhreflang=["'][^"']+["']/i.test(entry);
-    details.set(slug, detail);
+    const locales = details.get(slug) ?? new Set();
+    locales.add(locale);
+    details.set(slug, locales);
   }
 
   const missingLandingPages = LOCALES.filter((locale) => !landingPages.has(locale));
@@ -45,19 +44,16 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
     throw new Error(`Sitemap is missing calculator landing pages for: ${missingLandingPages.join(", ")}`);
   }
 
-  for (const [slug, detail] of details) {
-    const missingLocales = LOCALES.filter((locale) => !detail.locales.has(locale));
-    const expectsAllLocales = detail.hasLanguageAlternates || detail.locales.size > 1 || !detail.locales.has("ko");
-    if (expectsAllLocales && missingLocales.length) {
+  for (const [slug, locales] of details) {
+    const missingLocales = LOCALES.filter((locale) => !locales.has(locale));
+    if (missingLocales.length) {
       throw new Error(`Published calculator "${slug}" is missing locale URLs: ${missingLocales.join(", ")}`);
     }
   }
 
   const urls = [
     ...LOCALES.map((locale) => `https://${host}/${locale}/calculators`),
-    ...[...details.keys()].sort().flatMap((slug) => LOCALES
-      .filter((locale) => details.get(slug).locales.has(locale))
-      .map((locale) => `https://${host}/${locale}/calculators/${slug}`)),
+    ...[...details.keys()].sort().flatMap((slug) => LOCALES.map((locale) => `https://${host}/${locale}/calculators/${slug}`)),
   ];
   if (urls.length > 10_000) throw new Error(`IndexNow accepts at most 10,000 URLs per request; received ${urls.length}`);
   return [...new Set(urls)];
