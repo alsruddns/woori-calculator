@@ -66,12 +66,16 @@ export function createIndexNowPayload(urlList, key) {
   return { host: DEFAULT_HOST, key, keyLocation, urlList: [...new Set(urlList)] };
 }
 
-export async function submitIndexNow({ key, sitemapUrl = DEFAULT_SITEMAP_URL, dryRun = false, fetchImpl = fetch }) {
+export async function calculatorUrlsFromSitemapUrl({ sitemapUrl = DEFAULT_SITEMAP_URL, fetchImpl = fetch } = {}) {
   const sitemapResponse = await fetchImpl(sitemapUrl);
   if (!sitemapResponse.ok) {
     throw new Error(`Could not load deployed calculator sitemap: HTTP ${sitemapResponse.status}`);
   }
-  const urlList = calculatorUrlsFromSitemap(await sitemapResponse.text());
+  return calculatorUrlsFromSitemap(await sitemapResponse.text());
+}
+
+export async function submitIndexNow({ key, sitemapUrl = DEFAULT_SITEMAP_URL, dryRun = false, fetchImpl = fetch }) {
+  const urlList = await calculatorUrlsFromSitemapUrl({ sitemapUrl, fetchImpl });
   const payload = createIndexNowPayload(urlList, key);
 
   if (dryRun) {
@@ -102,6 +106,12 @@ export async function submitIndexNow({ key, sitemapUrl = DEFAULT_SITEMAP_URL, dr
 }
 
 async function main() {
+  if (process.env.INDEXNOW_VALIDATE_ONLY === "true") {
+    const urlList = await calculatorUrlsFromSitemapUrl();
+    console.log(`IndexNow sitemap validation passed: ${urlList.length} unique calculator URLs`);
+    return;
+  }
+
   const key = process.env.INDEXNOW_KEY;
   if (!key) throw new Error("INDEXNOW_KEY is required");
   await submitIndexNow({ key, dryRun: process.env.INDEXNOW_DRY_RUN === "true" });

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { calculatorUrlsFromSitemap, createIndexNowPayload, submitIndexNow } from "./submit-indexnow.mjs";
+import { calculatorUrlsFromSitemap, calculatorUrlsFromSitemapUrl, createIndexNowPayload, submitIndexNow } from "./submit-indexnow.mjs";
 
 const routes = [
   ...["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators`),
@@ -41,6 +41,16 @@ describe("IndexNow URL preparation", () => {
   it("accepts all four published standard deviation locale URLs", () => {
     const standardDeviationUrls = ["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators/standard-deviation`);
     expect(calculatorUrlsFromSitemap(sitemap([...routes, ...standardDeviationUrls]))).toEqual([...routes, ...standardDeviationUrls]);
+  });
+
+  it("validates a deployed sitemap through the same complete-locale parser", async () => {
+    const standardDeviationUrls = ["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators/standard-deviation`);
+    const fetchImpl = vi.fn().mockResolvedValue({ ok: true, text: async () => sitemap([...routes, ...standardDeviationUrls]) });
+    expect(await calculatorUrlsFromSitemapUrl({ fetchImpl })).toHaveLength(12);
+    expect(fetchImpl).toHaveBeenCalledWith("https://www.woori.today/calculator-sitemap.xml");
+
+    const staleFetch = vi.fn().mockResolvedValue({ ok: true, text: async () => sitemap([...routes, standardDeviationUrls[0]]) });
+    await expect(calculatorUrlsFromSitemapUrl({ fetchImpl: staleFetch })).rejects.toThrow('Published calculator "standard-deviation" is missing locale URLs: en, ja, zh');
   });
 
   it("builds a unique IndexNow payload using the key location", () => {
