@@ -28,6 +28,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(languageSwitchPath("/ko/calculators/social-insurance", "en")).toBe("/en/calculators");
     expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ja/calculators");
     expect(languageSwitchPath("/zh", "ko")).toBe("/ko");
+    expect(languageSwitchPath("/ko/calculators/fraction", "ja")).toBe("/ja/calculators/fraction");
   });
 
   it("provides complete localized content and unique search metadata for all translated calculators", () => {
@@ -89,6 +90,31 @@ describe("locale routing and translated calculator catalog", () => {
     expect(matchesCalculatorSearch({ name: "贷款利息计算器", slug: "loan-interest", keywords: ["贷款"] }, "贷款")).toBe(true);
     expect(matchesCalculatorSearch({ name: "BMI Calculator", slug: "bmi", keywords: ["body mass index"] }, "body mass")).toBe(true);
     expect(matchesCalculatorSearch({ name: "Ratio Calculator", slug: "ratio" }, "unrelated")).toBe(false);
+  });
+
+  it("provides complete natural fraction content, calculator labels, and SEO metadata in all locales", () => {
+    for (const locale of ["en", "ja", "zh"] as const) {
+      const page = getDictionary(locale).calculators.fraction!;
+      expect(page.name).toMatch(locale === "en" ? /Fraction Calculator/ : locale === "ja" ? /分数/ : /分数/);
+      expect(page.title).toContain(page.name);
+      expect(page.description.length).toBeGreaterThan(20);
+      expect(page.howTo).toContain(page.description);
+      expect(page.faqs.length).toBeGreaterThanOrEqual(3);
+      expect(Object.keys(page.fields)).toEqual(expect.arrayContaining(["aNumerator", "aDenominator", "operation", "bNumerator", "bDenominator"]));
+      expect(Object.keys(page.options.operation ?? {})).toEqual(["add", "subtract", "multiply", "divide"]);
+      expect(Object.keys(page.resultLabels).filter((label) => label.startsWith("__result_")).sort()).toEqual(["__result_0", "__result_1", "__result_2"]);
+      expect(page.related).toEqual(expect.arrayContaining(["percentage", "ratio"]));
+      const metadata = localizedMetadata(locale, "/calculators/fraction", page.title, page.description, page.keywords);
+      expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/${locale}/calculators/fraction`);
+      expect(metadata.alternates?.languages).toMatchObject({
+        ko: "https://www.woori.today/ko/calculators/fraction",
+        en: "https://www.woori.today/en/calculators/fraction",
+        ja: "https://www.woori.today/ja/calculators/fraction",
+        zh: "https://www.woori.today/zh/calculators/fraction",
+        "x-default": "https://www.woori.today/ko/calculators/fraction",
+      });
+      expect(metadata.openGraph?.url).toBe(metadata.alternates?.canonical);
+    }
   });
 
   it.each(localizedCalculatorSlugs)("provides search keywords and only localized related links for %s", (slug) => {

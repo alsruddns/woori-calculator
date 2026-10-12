@@ -30,6 +30,14 @@ describe("IndexNow URL preparation", () => {
     expect(() => calculatorUrlsFromSitemap(sitemap(routes.filter((url) => !url.endsWith("/zh/calculators/compound-interest"))))).toThrow("missing locale URLs");
   });
 
+  it("accepts and submits all four published fraction locale URLs", () => {
+    const fractionUrls = ["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators/fraction`);
+    expect(calculatorUrlsFromSitemap(sitemap([...routes, ...fractionUrls]))).toEqual([
+      ...routes,
+      ...fractionUrls,
+    ]);
+  });
+
   it("builds a unique IndexNow payload using the key location", () => {
     expect(createIndexNowPayload([routes[0], routes[0]], "bc52d22e38f7489988b717aa090fbdfb")).toEqual({
       host: "www.woori.today",
