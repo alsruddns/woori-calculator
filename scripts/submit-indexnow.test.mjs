@@ -33,7 +33,7 @@ describe("IndexNow URL preparation", () => {
 
   it("rejects sitemaps without all listing locales or a complete locale set for a detail slug", () => {
     expect(() => calculatorUrlsFromSitemap(sitemap(routes.filter((url) => !url.includes("/zh/calculators"))))).toThrow("missing calculator landing pages");
-    expect(() => calculatorUrlsFromSitemap(sitemap(routes.filter((url) => !url.endsWith("/zh/calculators/compound-interest"))))).toThrow("missing locale URLs");
+    expect(() => calculatorUrlsFromSitemap(sitemap(routes.filter((url) => !url.endsWith("/zh/calculators/compound-interest"))))).toThrow("compound-interest: zh");
   });
 
   it("accepts and submits all four published fraction locale URLs", () => {
@@ -51,12 +51,23 @@ describe("IndexNow URL preparation", () => {
 
   it("rejects Korean-only published calculators", () => {
     const koreanOnlyUrl = "https://www.woori.today/ko/calculators/median";
-    expect(() => calculatorUrlsFromSitemap(sitemap([...routes, koreanOnlyUrl], []))).toThrow('Published calculator "median" is missing locale URLs: en, ja, zh');
+    expect(() => calculatorUrlsFromSitemap(sitemap([...routes, koreanOnlyUrl], []))).toThrow("- median: en, ja, zh");
+  });
+
+  it("reports every published calculator with missing locale URLs in one strict validation error", () => {
+    const incompleteUrls = [
+      "https://www.woori.today/ko/calculators/median",
+      "https://www.woori.today/ko/calculators/percentile",
+      "https://www.woori.today/en/calculators/percentile",
+    ];
+    expect(() => calculatorUrlsFromSitemap(sitemap([...routes, ...incompleteUrls], []))).toThrow(
+      "Published calculator locale validation failed:\n- median: en, ja, zh\n- percentile: ja, zh",
+    );
   });
 
   it("rejects partial translated routes even when a sitemap entry omits hreflang links", () => {
     const partialUrls = ["ko", "en"].map((locale) => `https://www.woori.today/${locale}/calculators/partial-translation`);
-    expect(() => calculatorUrlsFromSitemap(sitemap([...routes, ...partialUrls], [])).filter((url) => url.includes("partial-translation"))).toThrow("missing locale URLs: ja, zh");
+    expect(() => calculatorUrlsFromSitemap(sitemap([...routes, ...partialUrls], [])).filter((url) => url.includes("partial-translation"))).toThrow("partial-translation: ja, zh");
   });
 
   it("validates a deployed sitemap through the same complete-locale parser", async () => {
@@ -66,7 +77,7 @@ describe("IndexNow URL preparation", () => {
     expect(fetchImpl).toHaveBeenCalledWith("https://www.woori.today/calculator-sitemap.xml");
 
     const staleFetch = vi.fn().mockResolvedValue({ ok: true, text: async () => sitemap([...routes, standardDeviationUrls[0]]) });
-    await expect(calculatorUrlsFromSitemapUrl({ fetchImpl: staleFetch })).rejects.toThrow('Published calculator "standard-deviation" is missing locale URLs: en, ja, zh');
+    await expect(calculatorUrlsFromSitemapUrl({ fetchImpl: staleFetch })).rejects.toThrow("- standard-deviation: en, ja, zh");
   });
 
   it("builds a unique IndexNow payload using the key location", () => {

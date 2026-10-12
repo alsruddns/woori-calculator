@@ -25,7 +25,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(languageSwitchPath("/ko/calculators/loan-interest", "en")).toBe("/en/calculators/loan-interest");
     expect(languageSwitchPath("/en/calculators/loan-interest", "ko")).toBe("/ko/calculators/loan-interest");
     expect(languageSwitchPath("/ja/calculators/area", "zh")).toBe("/zh/calculators/area");
-    expect(languageSwitchPath("/ko/calculators/social-insurance", "en")).toBe("/en/calculators");
+    expect(languageSwitchPath("/ko/calculators/social-insurance", "en")).toBe("/en/calculators/social-insurance");
     expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ja/calculators");
     expect(languageSwitchPath("/zh", "ko")).toBe("/ko");
     expect(languageSwitchPath("/ko/calculators/fraction", "ja")).toBe("/ja/calculators/fraction");
@@ -147,6 +147,33 @@ describe("locale routing and translated calculator catalog", () => {
       expect(metadata.openGraph?.url).toBe(metadata.alternates?.canonical);
       expect(metadata.openGraph?.title).toBe(page.title);
       expect(metadata.keywords).toEqual(page.keywords);
+    }
+  });
+
+  it("provides complete median content and locale SEO metadata", () => {
+    for (const locale of ["en", "ja", "zh"] as const) {
+      const page = getDictionary(locale).calculators.median!;
+      expect(page.name).toBe(locale === "en" ? "Median Calculator" : locale === "ja" ? "中央値計算機" : "中位数计算器");
+      expect(page.title).toBe(locale === "en"
+        ? "Median Calculator | Calculate the Median of a Number Set"
+        : locale === "ja"
+          ? "中央値計算機 | 数値データの中央値を計算"
+          : "中位数计算器 | 计算一组数字的中位数");
+      expect(page.shortName.length).toBeGreaterThan(0);
+      expect(page.fields.numbers?.label).toBeTruthy();
+      expect(page.resultLabels).toMatchObject({ "__result_0": expect.any(String), "__result_1": expect.any(String), "__result_2": expect.any(String) });
+      expect(page.faqs.length).toBeGreaterThanOrEqual(2);
+      expect(page.related).toContain("average");
+      const metadata = localizedMetadata(locale, "/calculators/median", page.title, page.description, page.keywords);
+      expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/${locale}/calculators/median`);
+      expect(metadata.alternates?.languages).toMatchObject({
+        ko: "https://www.woori.today/ko/calculators/median",
+        en: "https://www.woori.today/en/calculators/median",
+        ja: "https://www.woori.today/ja/calculators/median",
+        zh: "https://www.woori.today/zh/calculators/median",
+        "x-default": "https://www.woori.today/ko/calculators/median",
+      });
+      expect(metadata.openGraph?.url).toBe(metadata.alternates?.canonical);
     }
   });
 

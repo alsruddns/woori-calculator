@@ -44,11 +44,12 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
     throw new Error(`Sitemap is missing calculator landing pages for: ${missingLandingPages.join(", ")}`);
   }
 
-  for (const [slug, locales] of details) {
-    const missingLocales = LOCALES.filter((locale) => !locales.has(locale));
-    if (missingLocales.length) {
-      throw new Error(`Published calculator "${slug}" is missing locale URLs: ${missingLocales.join(", ")}`);
-    }
+  const incompleteCalculators = [...details.entries()]
+    .map(([slug, locales]) => ({ slug, missingLocales: LOCALES.filter((locale) => !locales.has(locale)) }))
+    .filter(({ missingLocales }) => missingLocales.length > 0);
+  if (incompleteCalculators.length) {
+    const detailsBySlug = incompleteCalculators.map(({ slug, missingLocales }) => `- ${slug}: ${missingLocales.join(", ")}`).join("\n");
+    throw new Error(`Published calculator locale validation failed:\n${detailsBySlug}`);
   }
 
   const urls = [
