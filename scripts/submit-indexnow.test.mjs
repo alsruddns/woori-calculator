@@ -49,9 +49,9 @@ describe("IndexNow URL preparation", () => {
     expect(calculatorUrlsFromSitemap(sitemap([...routes, ...standardDeviationUrls]))).toEqual([...routes, ...standardDeviationUrls]);
   });
 
-  it("keeps Korean-only published calculators without inventing translated URLs", () => {
+  it("rejects Korean-only published calculators", () => {
     const koreanOnlyUrl = "https://www.woori.today/ko/calculators/median";
-    expect(calculatorUrlsFromSitemap(sitemap([...routes, koreanOnlyUrl]))).toEqual([...routes, koreanOnlyUrl]);
+    expect(() => calculatorUrlsFromSitemap(sitemap([...routes, koreanOnlyUrl], []))).toThrow('Published calculator "median" is missing locale URLs: en, ja, zh');
   });
 
   it("rejects partial translated routes even when a sitemap entry omits hreflang links", () => {
