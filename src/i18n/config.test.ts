@@ -117,6 +117,34 @@ describe("locale routing and translated calculator catalog", () => {
     }
   });
 
+  it("provides complete standard deviation content and locale SEO metadata", () => {
+    for (const locale of ["en", "ja", "zh"] as const) {
+      const page = getDictionary(locale).calculators["standard-deviation"]!;
+      expect(page.name).toBe(locale === "en" ? "Standard Deviation Calculator" : locale === "ja" ? "標準偏差計算" : "标准差计算器");
+      expect(page.title).toContain(page.name);
+      expect(page.description.length).toBeGreaterThan(20);
+      expect(page.keywords).toContain(locale === "zh" ? "标准差计算器" : locale === "ja" ? "標準偏差 計算" : "standard deviation calculator");
+      expect(page.fields.numbers?.label).toBeTruthy();
+      expect(page.fields.mode?.label).toBeTruthy();
+      expect(page.options.mode).toMatchObject({ population: expect.any(String), sample: expect.any(String) });
+      expect(page.resultLabels).toMatchObject({ "__result_0": expect.any(String), "__result_1": expect.any(String), "__result_2": expect.any(String), "__result_3": expect.any(String) });
+      expect(page.faqs.length).toBeGreaterThanOrEqual(3);
+      expect(page.related).toContain("average");
+      const metadata = localizedMetadata(locale, "/calculators/standard-deviation", page.title, page.description, page.keywords);
+      expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/${locale}/calculators/standard-deviation`);
+      expect(metadata.alternates?.languages).toMatchObject({
+        ko: "https://www.woori.today/ko/calculators/standard-deviation",
+        en: "https://www.woori.today/en/calculators/standard-deviation",
+        ja: "https://www.woori.today/ja/calculators/standard-deviation",
+        zh: "https://www.woori.today/zh/calculators/standard-deviation",
+        "x-default": "https://www.woori.today/ko/calculators/standard-deviation",
+      });
+      expect(metadata.openGraph?.url).toBe(metadata.alternates?.canonical);
+      expect(metadata.openGraph?.title).toBe(page.title);
+      expect(metadata.keywords).toEqual(page.keywords);
+    }
+  });
+
   it.each(localizedCalculatorSlugs)("provides search keywords and only localized related links for %s", (slug) => {
     for (const locale of ["en", "ja", "zh"] as const) {
       const page = getDictionary(locale).calculators[slug]!;

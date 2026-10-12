@@ -38,6 +38,11 @@ describe("IndexNow URL preparation", () => {
     ]);
   });
 
+  it("accepts all four published standard deviation locale URLs", () => {
+    const standardDeviationUrls = ["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators/standard-deviation`);
+    expect(calculatorUrlsFromSitemap(sitemap([...routes, ...standardDeviationUrls]))).toEqual([...routes, ...standardDeviationUrls]);
+  });
+
   it("builds a unique IndexNow payload using the key location", () => {
     expect(createIndexNowPayload([routes[0], routes[0]], "bc52d22e38f7489988b717aa090fbdfb")).toEqual({
       host: "www.woori.today",
