@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
 import { getDictionary } from "@/i18n/dictionaries";
-import { locales } from "@/i18n/config";
+import { hasLocalizedCalculator, locales } from "@/i18n/config";
 import { siteConfig } from "@/constants/site-config";
 
 describe("calculator registry", () => {
@@ -16,6 +16,11 @@ describe("calculator registry", () => {
     expect(publishedCalculators.every(({ isPublished }) => isPublished)).toBe(true);
     expect(calculatorRegistry.find(({ slug }) => slug === "salary")).toBeUndefined();
     expect(calculatorPages.length).toBe(59);
+  });
+
+  it("provides all four locale routes for every published calculator", () => {
+    const missing = publishedCalculators.filter(({ isPublished, slug }) => isPublished && !hasLocalizedCalculator(slug)).map(({ slug }) => slug);
+    expect(missing, `Published calculators missing locale content: ${missing.join(", ")}`).toEqual([]);
   });
 
   it("keeps related links within the published calculator set and registers calculation logic", () => {

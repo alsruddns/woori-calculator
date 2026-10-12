@@ -15,6 +15,10 @@ export const localizedCalculatorSlugs = [
   "ratio", "average", "weighted-average", "cagr", "unit-price", "unit-converter", "change-rate",
   "simple-interest", "savings-interest", "deposit-interest", "ltv", "dti", "dsr", "margin", "markup", "fraction",
   "dday", "workdays", "bmi", "pace", "fuel-cost", "fuel-efficiency", "calorie-per-serving", "decimal-fraction", "standard-deviation",
+  "median", "percentile", "probability", "stock-average-price", "dividend", "profit-loss", "loan-refinance", "prepayment-fee",
+  "loan-affordability", "salary-conversion", "hourly-wage", "annual-leave-allowance", "product-margin", "withholding-tax-3-3",
+  "tenure", "time-arithmetic", "pregnancy", "utility-bill", "vehicle-cost", "taxi-fare", "trip-split", "tip-calculator",
+  "unemployment-benefit", "minimum-wage", "severance-pay", "social-insurance",
 ] as const;
 export type LocalizedCalculatorSlug = (typeof localizedCalculatorSlugs)[number];
 export const hasLocale = (value: string): value is Locale => locales.includes(value as Locale);
