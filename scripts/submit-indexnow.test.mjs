@@ -5,7 +5,13 @@ const routes = [
   ...["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators`),
   ...["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators/compound-interest`),
 ];
-const sitemap = (urls) => `<urlset>${urls.map((url) => `<url><loc>${url}</loc></url>`).join("")}</urlset>`;
+const sitemap = (urls, localizedSlugs = ["compound-interest", "fraction", "standard-deviation"]) => `<urlset>${urls.map((url) => {
+  const slug = url.match(/\/calculators\/([^/]+)$/)?.[1];
+  const alternates = slug && localizedSlugs.includes(slug)
+    ? ["ko", "en", "ja", "zh", "x-default"].map((locale) => `<xhtml:link rel="alternate" hreflang="${locale}" href="https://www.woori.today/${locale === "x-default" ? "ko" : locale}/calculators/${slug}"/>`).join("")
+    : "";
+  return `<url><loc>${url}</loc>${alternates}</url>`;
+}).join("")}</urlset>`;
 
 describe("IndexNow URL preparation", () => {
   it("keeps only supported calculator listing/detail URLs and deduplicates them", () => {
@@ -41,6 +47,16 @@ describe("IndexNow URL preparation", () => {
   it("accepts all four published standard deviation locale URLs", () => {
     const standardDeviationUrls = ["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators/standard-deviation`);
     expect(calculatorUrlsFromSitemap(sitemap([...routes, ...standardDeviationUrls]))).toEqual([...routes, ...standardDeviationUrls]);
+  });
+
+  it("keeps Korean-only published calculators without inventing translated URLs", () => {
+    const koreanOnlyUrl = "https://www.woori.today/ko/calculators/median";
+    expect(calculatorUrlsFromSitemap(sitemap([...routes, koreanOnlyUrl]))).toEqual([...routes, koreanOnlyUrl]);
+  });
+
+  it("rejects partial translated routes even when a sitemap entry omits hreflang links", () => {
+    const partialUrls = ["ko", "en"].map((locale) => `https://www.woori.today/${locale}/calculators/partial-translation`);
+    expect(() => calculatorUrlsFromSitemap(sitemap([...routes, ...partialUrls], [])).filter((url) => url.includes("partial-translation"))).toThrow("missing locale URLs: ja, zh");
   });
 
   it("validates a deployed sitemap through the same complete-locale parser", async () => {
