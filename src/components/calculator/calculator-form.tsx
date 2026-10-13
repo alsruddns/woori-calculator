@@ -129,6 +129,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                       id={inputId}
                       className={`${field.name === duration?.field ? commonClass.replace("mt-2 ", "") : commonClass} text-base ${(content?.fields[field.name]?.unit ?? field.unit) ? "pr-16" : ""}`}
                       type={field.type === "date" ? "date" : "text"}
+                      max={field.max}
                       maxLength={field.type === "date" ? 10 : 64}
                       inputMode={field.type === "date" ? undefined : "decimal"}
                       value={values[field.name] ?? ""}

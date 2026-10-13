@@ -19,6 +19,9 @@ export type CalculatorDefinition = {
   keywords: readonly string[];
   isPublished: boolean;
   relatedCalculatorIds: readonly string[];
+  countryCode?: string;
+  countryName?: string;
+  countrySpecific?: boolean;
 };
 
 export type PolicySource = {

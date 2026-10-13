@@ -7,6 +7,7 @@ export type CalculatorField = {
   unit?: string;
   placeholder?: string;
   min?: number;
+  max?: number;
   step?: number;
   defaultValue?: string;
   showWhen?: { field: string; value: string };

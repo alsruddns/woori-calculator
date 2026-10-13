@@ -12,6 +12,9 @@ export const calculatorRegistry: readonly CalculatorDefinition[] = publishedCalc
   keywords: page.keywords,
   isPublished: page.isPublished,
   relatedCalculatorIds: page.relatedCalculatorIds,
+  ...(page.countryCode ? { countryCode: page.countryCode } : {}),
+  ...(page.countryName ? { countryName: page.countryName } : {}),
+  ...(page.countrySpecific ? { countrySpecific: true } : {}),
 }));
 
 export const publishedCalculators = calculatorRegistry;
