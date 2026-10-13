@@ -47,6 +47,17 @@ export const localizedCalculatorSlugs = [
   "china-gross-net-salary-calculator", "china-individual-income-tax-calculator", "china-social-insurance-calculator", "china-vat-calculator",
   "taiwan-gross-net-salary-calculator", "taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator",
   "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator",
+  "spain-freelancer-tax-calculator", "france-social-contribution-calculator",
+  "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator",
+  "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator",
+  "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator",
+  "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator",
+  "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator",
+  "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator",
+  "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator",
+  "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator",
+  "uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator",
+  "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator",
 ] as const;
 export type LocalizedCalculatorSlug = (typeof localizedCalculatorSlugs)[number];
 export const hasLocale = (value: string): value is Locale => locales.includes(value as Locale);
@@ -68,13 +79,15 @@ export const phaseFiveTranslatedCalculatorSlugs = [
   "taiwan-gross-net-salary-calculator", "taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator",
   "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator",
 ] as const satisfies readonly LocalizedCalculatorSlug[];
-export const phaseTranslatedCalculatorSlugs = [...phaseOneTranslatedCalculatorSlugs, ...phaseTwoTranslatedCalculatorSlugs, ...phaseThreeTranslatedCalculatorSlugs, ...phaseFourTranslatedCalculatorSlugs, ...phaseFiveTranslatedCalculatorSlugs] as const;
+export const phaseSixTranslatedCalculatorSlugs = ["spain-freelancer-tax-calculator", "france-social-contribution-calculator", "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator", "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator", "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator", "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator", "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator", "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator", "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator", "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator", "uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator", "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const phaseTranslatedCalculatorSlugs = [...phaseOneTranslatedCalculatorSlugs, ...phaseTwoTranslatedCalculatorSlugs, ...phaseThreeTranslatedCalculatorSlugs, ...phaseFourTranslatedCalculatorSlugs, ...phaseFiveTranslatedCalculatorSlugs, ...phaseSixTranslatedCalculatorSlugs] as const;
 export const isPhaseOneTranslatedCalculator = (slug: string): slug is (typeof phaseOneTranslatedCalculatorSlugs)[number] => phaseOneTranslatedCalculatorSlugs.includes(slug as (typeof phaseOneTranslatedCalculatorSlugs)[number]);
 export const isPhaseTwoTranslatedCalculator = (slug: string): slug is (typeof phaseTwoTranslatedCalculatorSlugs)[number] => phaseTwoTranslatedCalculatorSlugs.includes(slug as (typeof phaseTwoTranslatedCalculatorSlugs)[number]);
 export const isPhaseThreeTranslatedCalculator = (slug: string): slug is (typeof phaseThreeTranslatedCalculatorSlugs)[number] => phaseThreeTranslatedCalculatorSlugs.includes(slug as (typeof phaseThreeTranslatedCalculatorSlugs)[number]);
 export const isPhaseFourTranslatedCalculator = (slug: string): slug is (typeof phaseFourTranslatedCalculatorSlugs)[number] => phaseFourTranslatedCalculatorSlugs.includes(slug as (typeof phaseFourTranslatedCalculatorSlugs)[number]);
 export const isPhaseFiveTranslatedCalculator = (slug: string): slug is (typeof phaseFiveTranslatedCalculatorSlugs)[number] => phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]);
-export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug) || isPhaseThreeTranslatedCalculator(slug) || isPhaseFourTranslatedCalculator(slug) || isPhaseFiveTranslatedCalculator(slug);
+export const isPhaseSixTranslatedCalculator = (slug: string): slug is (typeof phaseSixTranslatedCalculatorSlugs)[number] => phaseSixTranslatedCalculatorSlugs.includes(slug as (typeof phaseSixTranslatedCalculatorSlugs)[number]);
+export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug) || isPhaseThreeTranslatedCalculator(slug) || isPhaseFourTranslatedCalculator(slug) || isPhaseFiveTranslatedCalculator(slug) || isPhaseSixTranslatedCalculator(slug);
 export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => hasLocalizedCalculator(slug) ? locales : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: Locale) => supportedLocalesForCalculator(slug).includes(locale);
 export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {
