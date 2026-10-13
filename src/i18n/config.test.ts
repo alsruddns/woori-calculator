@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseOneTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseOneTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -69,7 +69,53 @@ describe("locale routing and translated calculator catalog", () => {
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
     expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
-    expect(supportedLocalesForCalculator("fraction")).toEqual(existingLocales);
+    expect(supportedLocalesForCalculator("median")).toEqual(existingLocales);
+    expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(20);
+  });
+
+  it("provides all Phase 2 calculator translations in every newly added locale", () => {
+    const newLocales = locales.filter((locale) => !existingLocales.includes(locale as typeof existingLocales[number]));
+    expect(phaseTwoTranslatedCalculatorSlugs).toEqual(["dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency"]);
+    for (const locale of newLocales) {
+      const dictionary = getDictionary(locale);
+      for (const slug of phaseTwoTranslatedCalculatorSlugs) {
+        const page = dictionary.calculators[slug]!;
+        const english = getDictionary("en").calculators[slug]!;
+        expect(page.name).not.toBe(english.name);
+        expect(page.title).not.toBe(english.title);
+        expect(page.description).not.toBe(english.description);
+        expect(page.howTo).not.toBe(english.howTo);
+        expect(page.formula).not.toBe(english.formula);
+        expect(page.example.question).not.toBe(english.example.question);
+        expect(page.example.answer).not.toBe(english.example.answer);
+        expect(page.faqs.length).toBeGreaterThan(0);
+        expect(Object.keys(page.fields).length).toBeGreaterThan(0);
+        expect(Object.keys(page.resultLabels).length).toBeGreaterThan(0);
+        expect(page.validation).not.toBe(english.validation);
+        expect(page.resultNote).not.toBe(english.resultNote);
+        expect(page.keywords?.some((keyword) => english.keywords?.includes(keyword))).toBe(false);
+        for (const [key, field] of Object.entries(page.fields)) {
+          expect(field.label).toBeTruthy();
+          expect(field.label).not.toBe(english.fields[key]?.label);
+          if (english.fields[key]?.placeholder) expect(field.placeholder).not.toBe(english.fields[key]?.placeholder);
+        }
+        for (const [field, values] of Object.entries(page.options)) {
+          for (const [value, label] of Object.entries(values)) {
+            expect(label).not.toBe(english.options[field]?.[value]);
+            expect(label).not.toBe("Option");
+          }
+        }
+        for (const [key, label] of Object.entries(page.resultLabels)) {
+          if (english.resultLabels[key] && !/^[A-Z0-9%/²]+$/.test(english.resultLabels[key]!)) expect(label).not.toBe(english.resultLabels[key]);
+        }
+        for (let index = 0; index < page.faqs.length; index += 1) {
+          expect(page.faqs[index]?.question).not.toBe(english.faqs[index]?.question);
+          expect(page.faqs[index]?.answer).not.toBe(english.faqs[index]?.answer);
+        }
+      }
+    }
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(20);
   });
 
   it("uses route locales for canonicals and BCP 47 locale keys for alternates", () => {
@@ -88,7 +134,7 @@ describe("locale routing and translated calculator catalog", () => {
       .filter((locale) => !calculatorSupportsLocale(slug, locale))
       .map((locale) => `${slug}:${locale}`));
     expect(missing.length).toBeGreaterThan(0);
-    expect(missing).toContain("fraction:es");
+    expect(missing).toContain("percentage:es");
   });
 
   it("provides complete localized content and unique search metadata for all translated calculators", () => {

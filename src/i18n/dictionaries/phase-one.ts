@@ -2,6 +2,7 @@ import { calculatorCategoryOrder } from "@/data/calculators/categories";
 import { getCalculatorPage } from "@/data/calculator-content";
 import { localizedIndexSlugs, phaseOneTranslatedCalculatorSlugs, type Locale } from "@/i18n/config";
 import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
+import { phaseTwoLocaleContent } from "@/i18n/dictionaries/phase-two";
 
 export type PhaseOneLocale = Exclude<Locale, "ko" | "en" | "ja" | "zh">;
 
@@ -195,7 +196,7 @@ export function createPhaseOneDictionary(locale: PhaseOneLocale, englishSource: 
     home: { title: text.homeTitle, description: text.description, featured: ui.category, categories: ui.category },
     units: { won: "KRW", number: ui.input, year: ({ es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "năm", id: "tahun", th: "ปี", "zh-tw": "年", it: "anni", nl: "jaar", hi: "वर्ष" })[locale], month: ({ es: "meses", "pt-br": "meses", de: "Monate", fr: "mois", vi: "tháng", id: "bulan", th: "เดือน", "zh-tw": "個月", it: "mesi", nl: "maanden", hi: "महीने" })[locale], durationLabel: ({ es: "Duración", "pt-br": "Duração", de: "Laufzeit", fr: "Durée", vi: "Thời hạn", id: "Durasi", th: "ระยะเวลา", "zh-tw": "期間", it: "Durata", nl: "Looptijd", hi: "अवधि" })[locale] },
     categoriesOrder: calculatorCategoryOrder,
-    calculators: calculators as LocaleDictionary["calculators"],
+    calculators: { ...calculators, ...phaseTwoLocaleContent(locale, englishSource) } as LocaleDictionary["calculators"],
   };
 }
 

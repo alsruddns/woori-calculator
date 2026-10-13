@@ -42,8 +42,12 @@ export const hasLocale = (value: string): value is Locale => locales.includes(va
 export const hasLocalizedCalculator = (slug: string): slug is LocalizedCalculatorSlug => localizedCalculatorSlugs.includes(slug as LocalizedCalculatorSlug);
 
 export const phaseOneTranslatedCalculatorSlugs = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const phaseTwoTranslatedCalculatorSlugs = ["dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const phaseTranslatedCalculatorSlugs = [...phaseOneTranslatedCalculatorSlugs, ...phaseTwoTranslatedCalculatorSlugs] as const;
 export const isPhaseOneTranslatedCalculator = (slug: string): slug is (typeof phaseOneTranslatedCalculatorSlugs)[number] => phaseOneTranslatedCalculatorSlugs.includes(slug as (typeof phaseOneTranslatedCalculatorSlugs)[number]);
-export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => isPhaseOneTranslatedCalculator(slug) ? locales : hasLocalizedCalculator(slug) ? existingLocales : ["ko"];
+export const isPhaseTwoTranslatedCalculator = (slug: string): slug is (typeof phaseTwoTranslatedCalculatorSlugs)[number] => phaseTwoTranslatedCalculatorSlugs.includes(slug as (typeof phaseTwoTranslatedCalculatorSlugs)[number]);
+export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug);
+export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => isPhaseTranslatedCalculator(slug) ? locales : hasLocalizedCalculator(slug) ? existingLocales : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: Locale) => supportedLocalesForCalculator(slug).includes(locale);
 export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {
   return slugs.flatMap((slug) => {
@@ -52,7 +56,7 @@ export function missingCalculatorTranslationReport(slugs: readonly string[]): st
     return missing.length ? [`- ${slug}: ${missing.join(", ")}`] : [];
   });
 }
-export const localizedIndexSlugs = (locale: Locale) => locale === "ko" || existingLocales.includes(locale as ExistingLocale) ? localizedCalculatorSlugs : phaseOneTranslatedCalculatorSlugs;
+export const localizedIndexSlugs = (locale: Locale) => locale === "ko" || existingLocales.includes(locale as ExistingLocale) ? localizedCalculatorSlugs : phaseTranslatedCalculatorSlugs;
 
 export function localePath(locale: Locale, path = "") {
   const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;

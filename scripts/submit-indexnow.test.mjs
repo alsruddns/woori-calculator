@@ -4,15 +4,15 @@ import { calculatorUrlsFromSitemap, calculatorUrlsFromSitemapUrl, createIndexNow
 const oldLocales = ["ko", "en", "ja", "zh"];
 const allLocales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"];
 const hreflang = { "pt-br": "pt-BR", "zh-tw": "zh-TW" };
-const firstPhase = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference"];
+const fullLocales = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference", "dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency"];
 const routes = [
   ...allLocales.map((locale) => `https://www.woori.today/${locale}/calculators`),
-  ...oldLocales.map((locale) => `https://www.woori.today/${locale}/calculators/fraction`),
+  ...oldLocales.map((locale) => `https://www.woori.today/${locale}/calculators/loan-interest`),
 ];
-const sitemap = (urls, localizedSlugs = ["fraction", "standard-deviation"]) => `<urlset>${urls.map((url) => {
+const sitemap = (urls, localizedSlugs = ["loan-interest", "fraction", "standard-deviation"]) => `<urlset>${urls.map((url) => {
   const slug = url.match(/\/calculators\/([^/]+)$/)?.[1];
   const alternates = slug && localizedSlugs.includes(slug)
-    ? [...(firstPhase.includes(slug) ? allLocales : oldLocales).map((locale) => hreflang[locale] ?? locale), "x-default"].map((language) => { const locale = Object.entries(hreflang).find(([, value]) => value === language)?.[0] ?? language; return `<xhtml:link rel="alternate" hreflang="${language}" href="https://www.woori.today/${locale === "x-default" ? "ko" : locale}/calculators/${slug}"/>`; }).join("")
+    ? [...(fullLocales.includes(slug) ? allLocales : oldLocales).map((locale) => hreflang[locale] ?? locale), "x-default"].map((language) => { const locale = Object.entries(hreflang).find(([, value]) => value === language)?.[0] ?? language; return `<xhtml:link rel="alternate" hreflang="${language}" href="https://www.woori.today/${locale === "x-default" ? "ko" : locale}/calculators/${slug}"/>`; }).join("")
     : "";
   return `<url><loc>${url}</loc>${alternates}</url>`;
 }).join("")}</urlset>`;
@@ -22,10 +22,10 @@ describe("IndexNow URL preparation", () => {
     const input = [
       ...routes,
       routes[1],
-      "https://www.woori.today/calculator/fraction",
-      "https://www.woori.today/fr/calculators/fraction",
-      "https://other.example/ko/calculators/fraction",
-      "https://www.woori.today/ko/calculators/fraction?ref=old",
+      "https://www.woori.today/calculator/loan-interest",
+      "https://www.woori.today/fr/calculators/loan-interest",
+      "https://other.example/ko/calculators/loan-interest",
+      "https://www.woori.today/ko/calculators/loan-interest?ref=old",
     ];
     const result = calculatorUrlsFromSitemap(sitemap(input));
 
@@ -37,20 +37,25 @@ describe("IndexNow URL preparation", () => {
 
   it("rejects sitemaps without all listing locales or a complete locale set for a detail slug", () => {
     expect(() => calculatorUrlsFromSitemap(sitemap(routes.filter((url) => !url.includes("/zh/calculators"))))).toThrow("missing calculator landing pages");
-    expect(() => calculatorUrlsFromSitemap(sitemap(routes.filter((url) => !url.endsWith("/zh/calculators/fraction"))))).toThrow("fraction: zh");
+    expect(() => calculatorUrlsFromSitemap(sitemap(routes.filter((url) => !url.endsWith("/zh/calculators/loan-interest"))))).toThrow("loan-interest: zh");
   });
 
-  it("accepts and submits all four published fraction locale URLs", () => {
-    const fractionUrls = ["ko", "en", "ja", "zh"].map((locale) => `https://www.woori.today/${locale}/calculators/fraction`);
-    expect(calculatorUrlsFromSitemap(sitemap([...routes, ...fractionUrls]))).toEqual(routes);
+  it("accepts and submits all fifteen Phase 2 fraction locale URLs with BCP 47 alternates", () => {
+    const fractionUrls = allLocales.map((locale) => `https://www.woori.today/${locale}/calculators/fraction`);
+    const result = calculatorUrlsFromSitemap(sitemap([...routes, ...fractionUrls]));
+    expect(result).toHaveLength(routes.length + 15);
+    expect(result).toEqual([...routes.slice(0, allLocales.length), ...fractionUrls, ...routes.slice(allLocales.length)]);
+    const fractionSitemap = sitemap([...routes, ...fractionUrls]);
+    expect(fractionSitemap).toContain('hreflang="pt-BR" href="https://www.woori.today/pt-br/calculators/fraction"');
+    expect(fractionSitemap).toContain('hreflang="zh-TW" href="https://www.woori.today/zh-tw/calculators/fraction"');
   });
 
   it("includes translated first phase calculators in all 15 route locales and validates standard hreflang", () => {
     const ageUrls = allLocales.map((locale) => `https://www.woori.today/${locale}/calculators/age`);
-    const result = calculatorUrlsFromSitemap(sitemap([...routes, ...ageUrls], ["fraction", "age"]));
+    const result = calculatorUrlsFromSitemap(sitemap([...routes, ...ageUrls], ["loan-interest", "age"]));
     expect(result).toHaveLength(routes.length + allLocales.length);
     expect(result).toEqual([...routes.slice(0, allLocales.length), ...ageUrls, ...routes.slice(allLocales.length)]);
-    const broken = sitemap([...routes, ...ageUrls], ["fraction", "age"]).replace('hreflang="pt-BR" href="https://www.woori.today/pt-br/calculators/age"', 'hreflang="pt-br" href="https://www.woori.today/pt-br/calculators/age"');
+    const broken = sitemap([...routes, ...ageUrls], ["loan-interest", "age"]).replace('hreflang="pt-BR" href="https://www.woori.today/pt-br/calculators/age"', 'hreflang="pt-br" href="https://www.woori.today/pt-br/calculators/age"');
     expect(() => calculatorUrlsFromSitemap(broken)).toThrow("Sitemap hreflang validation failed");
   });
 

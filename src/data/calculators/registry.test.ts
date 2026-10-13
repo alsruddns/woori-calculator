@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
 import { getDictionary } from "@/i18n/dictionaries";
-import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseOneTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseOneTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { siteConfig } from "@/constants/site-config";
 
 describe("calculator registry", () => {
@@ -27,10 +27,11 @@ describe("calculator registry", () => {
     const slugs = publishedCalculators.map(({ slug }) => slug);
     const expectedFirstTen = [...slugs].sort().slice(0, 10);
     expect(phaseOneTranslatedCalculatorSlugs).toEqual(expectedFirstTen);
+    expect(phaseTwoTranslatedCalculatorSlugs).toEqual([...slugs].sort().slice(10, 20));
     const missing = missingCalculatorTranslationReport(slugs);
-    expect(missing).toHaveLength(slugs.length - phaseOneTranslatedCalculatorSlugs.length);
-    expect(missing).toContain("- fraction: es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi");
-    for (const slug of phaseOneTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(locales);
+    expect(missing).toHaveLength(slugs.length - phaseTranslatedCalculatorSlugs.length);
+    expect(missing).toContain("- median: es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi");
+    for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(locales);
   });
 
   it("keeps related links within the published calculator set and registers calculation logic", () => {

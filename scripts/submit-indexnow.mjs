@@ -4,7 +4,7 @@ const DEFAULT_HOST = "www.woori.today";
 const DEFAULT_SITEMAP_URL = "https://www.woori.today/calculator-sitemap.xml";
 const LOCALES = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"];
 const HREFLANG = { "pt-br": "pt-BR", "zh-tw": "zh-TW" };
-const FIRST_PHASE_SLUGS = new Set(["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference"]);
+const FULL_LOCALE_SLUGS = new Set(["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference", "dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency"]);
 const INDEXNOW_ENDPOINT = "https://api.indexnow.org/IndexNow";
 
 export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
@@ -37,7 +37,7 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
       landingPages.add(locale);
       continue;
     }
-    if (!FIRST_PHASE_SLUGS.has(slug) && !LOCALES.slice(0, 4).includes(locale)) continue;
+    if (!FULL_LOCALE_SLUGS.has(slug) && !LOCALES.slice(0, 4).includes(locale)) continue;
     const alternates = new Set([...entry.matchAll(/hreflang="([^"]+)"/gi)].map((item) => item[1]));
     alternateLanguages.set(url.pathname, alternates);
     const locales = details.get(slug) ?? new Set();
@@ -52,7 +52,7 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
 
   const incompleteCalculators = [...details.entries()]
     .map(([slug, presentLocales]) => {
-      const expected = FIRST_PHASE_SLUGS.has(slug) ? LOCALES : LOCALES.slice(0, 4);
+      const expected = FULL_LOCALE_SLUGS.has(slug) ? LOCALES : LOCALES.slice(0, 4);
       return { slug, presentLocales, expected, missingLocales: expected.filter((locale) => !presentLocales.has(locale)) };
     })
     .filter(({ missingLocales }) => missingLocales.length > 0);
@@ -62,7 +62,7 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
   }
 
   const missingAlternates = [...details.entries()].flatMap(([slug]) => {
-    const expected = (FIRST_PHASE_SLUGS.has(slug) ? LOCALES : LOCALES.slice(0, 4)).map((locale) => HREFLANG[locale] ?? locale).concat("x-default");
+    const expected = (FULL_LOCALE_SLUGS.has(slug) ? LOCALES : LOCALES.slice(0, 4)).map((locale) => HREFLANG[locale] ?? locale).concat("x-default");
     return [...details.get(slug)].flatMap((locale) => {
       const present = alternateLanguages.get(`/${locale}/calculators/${slug}`) ?? new Set();
       const missing = expected.filter((language) => !present.has(language));
