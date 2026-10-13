@@ -20,6 +20,7 @@ export type LocalizedCalculatorContent = {
 
 export type LocaleDictionary = {
   locale: Locale;
+  common: { calculate: string; reset: string; copy: string; copied: string; result: string; input: string; formula: string; example: string; faq: string; relatedCalculators: string; search: string; category: string; previous: string; next: string; error: string; invalidInput: string; required: string; copyError: string; resetDone: string; unit: string; noResults: string };
   siteName: string;
   description: string;
   nav: { home: string; calculators: string; menu: string; search: string; close: string; searchEmpty: string; language: string; skip: string };

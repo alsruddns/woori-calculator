@@ -11,15 +11,15 @@ import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictio
 import type { CalculatorField, CalculatorOutcome } from "@/types/calculator-page";
 import { ResultTable } from "@/components/calculator/ResultTable";
 
-type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: Locale; dictionary?: Pick<LocaleDictionary, "detail" | "units">; content?: LocalizedCalculatorContent };
+type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: Locale; dictionary?: Pick<LocaleDictionary, "detail" | "units" | "common">; content?: LocalizedCalculatorContent };
 
 const unitLabels: Record<string, string> = Object.fromEntries(Object.entries(units).map(([key, unit]) => [key, unit.label]));
 function localizedResultUnit(unit: string | undefined, locale: Locale) {
   if (!unit || locale === "ko") return unit;
-  if (unit === "세") return locale === "en" ? "years old" : locale === "ja" ? "歳" : "岁";
-  if (unit === "평") return locale === "en" ? "pyeong" : "坪";
+  if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष" })[locale];
+  if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग" })[locale];
   if (unit.startsWith("일")) {
-    const day = locale === "en" ? "days" : locale === "ja" ? "日" : "天";
+    const day = ({ en: "days", ja: "日", zh: "天", es: "días", "pt-br": "dias", de: "Tage", fr: "jours", vi: "ngày", id: "hari", th: "วัน", "zh-tw": "天", it: "giorni", nl: "dagen", hi: "दिन" })[locale];
     return `${day}${unit.slice(1)}`;
   }
   return unit;
@@ -35,6 +35,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
   const initial = useMemo(() => Object.fromEntries(fields.map((field) => [field.name, field.defaultValue ?? ""])), [fields]);
   const [values, setValues] = useState<Record<string, string>>(initial);
   const [outcome, setOutcome] = useState<CalculatorOutcome | null>(null);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
   const duration = durationForCalculator(slug);
   const [durationUnit, setDurationUnit] = useState<DurationUnit>(duration?.inputUnit ?? "month");
 
@@ -62,6 +63,13 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
       }
     }
     setOutcome(calculateBySlug(slug, normalized));
+  }
+
+  function resetForm() {
+    setValues(initial);
+    setOutcome(null);
+    setCopyState("idle");
+    setDurationUnit(duration?.inputUnit ?? "month");
   }
 
   const error = outcome && "error" in outcome ? outcome : null;
@@ -128,12 +136,20 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
           })}
         </div>
         {error && !error.field ? <p className="mt-5 min-w-0 break-words rounded-lg bg-red-50 px-4 py-3 text-sm leading-5 text-red-800 [overflow-wrap:anywhere]" role="alert">{content ? content.validation : error.error}</p> : null}
-        <button type="submit" className="mt-5 min-h-11 w-full rounded-lg bg-teal-800 px-5 font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:mt-6 sm:w-auto">{dictionary?.detail.calculate ?? (locale === "ko" ? "계산하기" : locale === "ja" ? "計算する" : locale === "zh" ? "计算" : "Calculate")}</button>
+        <div className="mt-5 flex flex-wrap gap-3 sm:mt-6">
+          <button type="submit" className="min-h-11 w-full rounded-lg bg-teal-800 px-5 font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:w-auto">{dictionary?.common.calculate ?? dictionary?.detail.calculate ?? "Calculate"}</button>
+          <button type="button" onClick={resetForm} className="min-h-11 rounded-lg border border-slate-300 bg-white px-5 font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800">{dictionary?.common.reset ?? "Reset"}</button>
+        </div>
       </form>
 
       {success ? (
         <section className="mt-7 rounded-xl bg-teal-50 p-5" aria-live="polite" aria-label={dictionary?.detail.result ?? "Result"}>
           <h2 className="text-base font-bold text-slate-950">{dictionary?.detail.result ?? "Result"}</h2>
+          <button type="button" className="mt-3 min-h-10 rounded-lg border border-teal-800 px-4 text-sm font-semibold text-teal-900 hover:bg-white" onClick={async () => {
+            try { await navigator.clipboard.writeText(success.results.map((item) => `${content?.resultLabels[item.label] ?? item.label}: ${typeof item.value === "number" ? formatNumber(item.value, item.precision ?? 2, locale) : item.value}`).join("\n")); setCopyState("copied"); }
+            catch { setCopyState("error"); }
+          }}>{copyState === "copied" ? dictionary?.common.copied ?? "Copied" : dictionary?.common.copy ?? "Copy"}</button>
+          {copyState !== "idle" ? <p className="mt-2 text-sm" role="status">{copyState === "copied" ? dictionary?.common.copied ?? "Copied" : dictionary?.common.copyError ?? "Could not copy."}</p> : null}
           <dl className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {success.results.map((item, index) => {
               const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "KRW";

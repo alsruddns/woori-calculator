@@ -1,14 +1,31 @@
-export const locales = ["ko", "en", "ja", "zh"] as const;
+export const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"] as const;
 export type Locale = (typeof locales)[number];
-export const dictionaryLocales = ["en", "ja", "zh"] as const satisfies readonly Locale[];
-export type DictionaryLocale = (typeof dictionaryLocales)[number];
+export const existingLocales = ["ko", "en", "ja", "zh"] as const;
+export type ExistingLocale = (typeof existingLocales)[number];
+export const dictionaryLocales = locales.filter((locale) => locale !== "ko") as readonly Exclude<Locale, "ko">[];
+export type DictionaryLocale = Exclude<Locale, "ko">;
 
-export const localeConfig: Record<Locale, { htmlLang: string; ogLocale: string; languageName: string }> = {
-  ko: { htmlLang: "ko", ogLocale: "ko_KR", languageName: "한국어" },
-  en: { htmlLang: "en", ogLocale: "en_US", languageName: "English" },
-  ja: { htmlLang: "ja", ogLocale: "ja_JP", languageName: "日本語" },
-  zh: { htmlLang: "zh-CN", ogLocale: "zh_CN", languageName: "中文" },
+const localeDetails: Record<Locale, { intlLocale: string; hreflang: string; openGraphLocale: string; nativeName: string }> = {
+  ko: { intlLocale: "ko-KR", hreflang: "ko", openGraphLocale: "ko_KR", nativeName: "한국어" },
+  en: { intlLocale: "en-US", hreflang: "en", openGraphLocale: "en_US", nativeName: "English" },
+  ja: { intlLocale: "ja-JP", hreflang: "ja", openGraphLocale: "ja_JP", nativeName: "日本語" },
+  zh: { intlLocale: "zh-CN", hreflang: "zh", openGraphLocale: "zh_CN", nativeName: "简体中文" },
+  es: { intlLocale: "es-ES", hreflang: "es", openGraphLocale: "es_ES", nativeName: "Español" },
+  "pt-br": { intlLocale: "pt-BR", hreflang: "pt-BR", openGraphLocale: "pt_BR", nativeName: "Português (Brasil)" },
+  de: { intlLocale: "de-DE", hreflang: "de", openGraphLocale: "de_DE", nativeName: "Deutsch" },
+  fr: { intlLocale: "fr-FR", hreflang: "fr", openGraphLocale: "fr_FR", nativeName: "Français" },
+  vi: { intlLocale: "vi-VN", hreflang: "vi", openGraphLocale: "vi_VN", nativeName: "Tiếng Việt" },
+  id: { intlLocale: "id-ID", hreflang: "id", openGraphLocale: "id_ID", nativeName: "Bahasa Indonesia" },
+  th: { intlLocale: "th-TH", hreflang: "th", openGraphLocale: "th_TH", nativeName: "ไทย" },
+  "zh-tw": { intlLocale: "zh-TW", hreflang: "zh-TW", openGraphLocale: "zh_TW", nativeName: "繁體中文" },
+  it: { intlLocale: "it-IT", hreflang: "it", openGraphLocale: "it_IT", nativeName: "Italiano" },
+  nl: { intlLocale: "nl-NL", hreflang: "nl", openGraphLocale: "nl_NL", nativeName: "Nederlands" },
+  hi: { intlLocale: "hi-IN", hreflang: "hi", openGraphLocale: "hi_IN", nativeName: "हिन्दी" },
 };
+export const localeConfig = Object.fromEntries(locales.map((routeLocale) => {
+  const detail = localeDetails[routeLocale];
+  return [routeLocale, { routeLocale, ...detail, htmlLang: routeLocale === "zh" ? "zh-CN" : detail.intlLocale, ogLocale: detail.openGraphLocale, languageName: detail.nativeName }];
+})) as Record<Locale, { routeLocale: Locale; hreflang: string; nativeName: string; intlLocale: string; openGraphLocale: string; htmlLang: string; ogLocale: string; languageName: string }>;
 
 export const localizedCalculatorSlugs = [
   "percentage", "discount", "loan-interest", "compound-interest", "vat", "date-difference", "age", "area",
@@ -24,6 +41,19 @@ export type LocalizedCalculatorSlug = (typeof localizedCalculatorSlugs)[number];
 export const hasLocale = (value: string): value is Locale => locales.includes(value as Locale);
 export const hasLocalizedCalculator = (slug: string): slug is LocalizedCalculatorSlug => localizedCalculatorSlugs.includes(slug as LocalizedCalculatorSlug);
 
+export const phaseOneTranslatedCalculatorSlugs = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const isPhaseOneTranslatedCalculator = (slug: string): slug is (typeof phaseOneTranslatedCalculatorSlugs)[number] => phaseOneTranslatedCalculatorSlugs.includes(slug as (typeof phaseOneTranslatedCalculatorSlugs)[number]);
+export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => isPhaseOneTranslatedCalculator(slug) ? locales : hasLocalizedCalculator(slug) ? existingLocales : ["ko"];
+export const calculatorSupportsLocale = (slug: string, locale: Locale) => supportedLocalesForCalculator(slug).includes(locale);
+export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {
+  return slugs.flatMap((slug) => {
+    const supported = new Set(supportedLocalesForCalculator(slug));
+    const missing = locales.filter((locale) => !supported.has(locale));
+    return missing.length ? [`- ${slug}: ${missing.join(", ")}`] : [];
+  });
+}
+export const localizedIndexSlugs = (locale: Locale) => locale === "ko" || existingLocales.includes(locale as ExistingLocale) ? localizedCalculatorSlugs : phaseOneTranslatedCalculatorSlugs;
+
 export function localePath(locale: Locale, path = "") {
   const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
   const normalized = withLeadingSlash === "/" ? "" : withLeadingSlash.replace(/\/+$/, "");
@@ -31,8 +61,11 @@ export function localePath(locale: Locale, path = "") {
 }
 
 export function languageSwitchPath(pathname: string, target: Locale) {
-  const path = pathname.replace(/^\/(ko|en|ja|zh)(?=\/|$)/, "") || "/";
+  const path = pathname.replace(/^\/(ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi)(?=\/|$)/, "") || "/";
   const slug = path.match(/^\/calculators\/([^/]+)/)?.[1];
-  if ((slug && !hasLocalizedCalculator(slug)) || /^\/(about|privacy|terms)(\/|$)/.test(path)) return localePath(target, "/calculators");
+  if ((slug && !calculatorSupportsLocale(slug, target)) || /^\/(about|privacy|terms)(\/|$)/.test(path)) {
+    const fallback: Locale = slug && calculatorSupportsLocale(slug, "en") ? "en" : "ko";
+    return localePath(fallback, slug ? `/calculators/${slug}` : "/calculators");
+  }
   return localePath(target, path);
 }

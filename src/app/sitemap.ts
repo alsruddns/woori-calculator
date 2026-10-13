@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/constants/site-config";
 import { getCalculatorPage } from "@/data/calculator-content";
 import { calculatorRegistry } from "@/data/calculators/registry";
-import { hasLocalizedCalculator, localePath, locales } from "@/i18n/config";
+import { localePath, locales, supportedLocalesForCalculator } from "@/i18n/config";
 import { localizedLanguageAlternates } from "@/lib/i18n/seo";
 import type { CalculatorDefinition } from "@/types/calculator";
 
@@ -22,13 +22,13 @@ export function createSitemapEntries(calculators: readonly CalculatorDefinition[
     .flatMap(({ slug }) => {
       const path = `/calculators/${slug}`;
       const page = getCalculatorPage(slug);
-      const supportedLocales = hasLocalizedCalculator(slug) ? locales : ["ko"] as const;
+      const supportedLocales = supportedLocalesForCalculator(slug);
       return supportedLocales.map((locale) => ({
         url: `${siteConfig.url}${localePath(locale, path)}`,
         ...(page ? { lastModified: new Date(`${page.updatedAt}T00:00:00.000Z`) } : {}),
         changeFrequency: "monthly" as const,
         priority: 0.7,
-        ...(hasLocalizedCalculator(slug) ? { alternates: { languages: localizedLanguageAlternates(path) } } : {}),
+        alternates: { languages: localizedLanguageAlternates(path, supportedLocales) },
       }));
     });
 

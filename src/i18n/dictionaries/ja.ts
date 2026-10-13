@@ -3,6 +3,7 @@ import { calculatorCategoryOrder } from "@/data/calculators/categories";
 
 export const ja: LocaleDictionary = {
   locale: "ja", siteName: "今日を暮らすツール", description: "毎日に役立つ計算ツールを、簡単・スピーディーに。",
+  common: { calculate: "計算する", reset: "リセット", copy: "コピー", copied: "コピーしました", result: "計算結果", input: "入力", formula: "計算式", example: "計算例", faq: "よくある質問", relatedCalculators: "関連する計算ツール", search: "検索", category: "カテゴリ", previous: "前へ", next: "次へ", error: "エラー", invalidInput: "入力値を確認してください。", required: "必須", copyError: "コピーできませんでした。", resetDone: "入力をリセットしました。", unit: "単位", noResults: "該当する計算ツールがありません。" },
   nav: { home: "ホーム", calculators: "計算ツール", menu: "計算ツールメニュー", search: "計算ツールを検索", close: "メニューを閉じる", searchEmpty: "一致する計算ツールはありません。", language: "言語", skip: "本文へ移動" },
   categories: { math: "数学・単位変換", finance: "金融", tax: "税金・価格", "date-time": "日付・時間", life: "暮らし", salary: "給与・仕事" },
   calculatorList: { title: "計算ツール", description: "目的に合った計算ツールを選んですぐに使えます。入力値はブラウザー内で計算されます。", breadcrumbHome: "ホーム", breadcrumbCalculators: "計算ツール", count: "件", noResults: "一致する計算ツールはありません。" },

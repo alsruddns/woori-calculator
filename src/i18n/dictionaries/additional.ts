@@ -1,5 +1,5 @@
 import { getCalculatorPage } from "@/data/calculator-content";
-import { localizedCalculatorSlugs, type Locale, type LocalizedCalculatorSlug } from "@/i18n/config";
+import { localizedCalculatorSlugs, type ExistingLocale, type LocalizedCalculatorSlug } from "@/i18n/config";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { en as baseEn } from "@/i18n/dictionaries/en";
 import { ja as baseJa } from "@/i18n/dictionaries/ja";
@@ -186,7 +186,7 @@ Object.assign(zh, {
   "social-insurance": { name: "韩国社会保险计算器", shortName: "社会保险", title: "韩国社会保险计算器 | 2026年员工缴费估算", description: "根据输入的月度投保工资，估算韩国2026年员工承担的国民年金、健康保险、长期护理和就业保险费用。", keywords: ["韩国社会保险计算器", "2026韩国员工保险", "韩国工资保险缴费估算"], formula: "各项员工缴费 = 输入月投保工资 × 韩国2026年适用费率；长期护理费根据健康保险费及相应费率计算。", example: { question: "结果是否包含所得税或工伤保险？", answer: "不包含。所得税另行计算，工伤保险由雇主承担。" }, faq: { question: "费率适用于韩国以外地区吗？", answer: "不适用。本工具采用韩国2026年职场参保制度数据。" }, results: ["国民年金 (员工承担)", "健康保险 (员工承担)", "长期护理保险 (员工承担)", "就业保险 (员工承担)", "工伤保险 (员工承担)", "员工缴费合计"] },
 });
 
-const fieldLabels: Record<Locale, Record<string, string>> = {
+const fieldLabels: Record<ExistingLocale, Record<string, string>> = {
   ko: {},
   en: { old: "Original value", current: "New value", a: "Value A", b: "Value B", aNumerator: "First numerator", aDenominator: "First denominator", bNumerator: "Second numerator", bDenominator: "Second denominator", numerator: "Numerator", denominator: "Denominator", decimal: "Decimal", operation: "Operation", known: "Known value for A", numbers: "Numbers to average", values: "Values", weights: "Weights", initial: "Initial value", final: "Final value", years: "Term", mode: "Calculation", total: "Total price", unitPrice: "Price per unit", quantity: "Quantity", category: "Unit category", value: "Value to convert", fromUnit: "From", toUnit: "To", principal: "Principal", rate: "Annual interest rate", monthly: "Monthly deposit", months: "Term", homePrice: "Property value", loan: "Loan amount", income: "Annual income", mortgage: "Annual mortgage principal and interest", otherInterest: "Annual interest on other debt", repayment: "Annual repayments on all debt", cost: "Cost", sale: "Selling price", reference: "Reference date", referenceDate: "Custom reference date", target: "Target date", start: "Start date", end: "End date", includeStart: "Include start date", includeEnd: "Include end date", height: "Height", weight: "Weight", distance: "Distance", hours: "Hours", minutes: "Minutes", efficiency: "Fuel economy", price: "Fuel price", calories: "Total calories", servings: "Total quantity", portion: "Amount eaten" },
   ja: { old: "変更前の値", current: "変更後の値", a: "値 A", b: "値 B", aNumerator: "1つ目の分子", aDenominator: "1つ目の分母", bNumerator: "2つ目の分子", bDenominator: "2つ目の分母", numerator: "分子", denominator: "分母", decimal: "小数", operation: "演算", known: "基準となる A の値", numbers: "平均する数値", values: "値の一覧", weights: "重みの一覧", initial: "初期値", final: "最終値", years: "期間", mode: "計算方法", total: "合計金額", unitPrice: "単価", quantity: "数量", category: "単位の種類", value: "変換する値", fromUnit: "変換元", toUnit: "変換先", principal: "元金", rate: "年利", monthly: "毎月の積立額", months: "期間", homePrice: "物件価格", loan: "借入額", income: "年収", mortgage: "住宅ローンの年間元利返済額", otherInterest: "その他ローンの年間利息", repayment: "全ローンの年間返済額", cost: "原価", sale: "販売価格", reference: "基準日", referenceDate: "指定した基準日", target: "目標日", start: "開始日", end: "終了日", includeStart: "開始日を含める", includeEnd: "終了日を含める", height: "身長", weight: "体重", distance: "距離", hours: "時間", minutes: "分", efficiency: "燃費", price: "燃料価格", calories: "全体のカロリー", servings: "全体量", portion: "食べる量" },
@@ -213,7 +213,7 @@ fieldLabels.en.fuelAmount = "Fuel amount";
 fieldLabels.ja.fuelAmount = "燃料量";
 fieldLabels.zh.fuelAmount = "燃油量";
 
-const optionLabels: Record<Locale, Record<string, string>> = {
+const optionLabels: Record<ExistingLocale, Record<string, string>> = {
   ko: {},
   en: { "fraction.operation.add": "Add", "fraction.operation.subtract": "Subtract", "fraction.operation.multiply": "Multiply", "fraction.operation.divide": "Divide", "decimal-fraction.mode.decimal-to-fraction": "Decimal to fraction", "decimal-fraction.mode.fraction-to-decimal": "Fraction to decimal", "unit-price.mode.unit": "Find unit price", "unit-price.mode.total": "Find total price", "unit-converter.category.length": "Length", "unit-converter.category.weight": "Weight", "unit-converter.category.volume": "Volume", "unit-converter.category.temperature": "Temperature", "dday.reference.today": "Today", "dday.reference.custom": "Choose a date", "workdays.includeStart.true": "Include", "workdays.includeStart.false": "Exclude", "workdays.includeEnd.true": "Include", "workdays.includeEnd.false": "Exclude" },
   ja: { "fraction.operation.add": "足し算", "fraction.operation.subtract": "引き算", "fraction.operation.multiply": "掛け算", "fraction.operation.divide": "割り算", "decimal-fraction.mode.decimal-to-fraction": "小数から分数へ", "decimal-fraction.mode.fraction-to-decimal": "分数から小数へ", "unit-price.mode.unit": "単価を計算", "unit-price.mode.total": "合計金額を計算", "unit-converter.category.length": "長さ", "unit-converter.category.weight": "重さ", "unit-converter.category.volume": "容量", "unit-converter.category.temperature": "温度", "dday.reference.today": "今日", "dday.reference.custom": "日付を指定", "workdays.includeStart.true": "含める", "workdays.includeStart.false": "含めない", "workdays.includeEnd.true": "含める", "workdays.includeEnd.false": "含めない" },
@@ -250,25 +250,25 @@ for (const locale of ["en", "ja", "zh"] as const) {
   optionLabels[locale]["fuel-efficiency.mode.range"] = locale === "en" ? "Driving range" : locale === "ja" ? "走行可能距離" : "预计续航距离";
 }
 
-const unitNames: Record<Exclude<Locale, "ko">, Record<string, string>> = {
+const unitNames: Record<Exclude<ExistingLocale, "ko">, Record<string, string>> = {
   en: { mm: "Millimeters (mm)", cm: "Centimeters (cm)", m: "Meters (m)", km: "Kilometers (km)", inch: "Inches (in)", ft: "Feet (ft)", yard: "Yards (yd)", mile: "Miles (mi)", mg: "Milligrams (mg)", g: "Grams (g)", kg: "Kilograms (kg)", oz: "Ounces (oz)", lb: "Pounds (lb)", ml: "Milliliters (mL)", l: "Liters (L)", c: "Celsius (°C)", f: "Fahrenheit (°F)" },
   ja: { mm: "ミリメートル (mm)", cm: "センチメートル (cm)", m: "メートル (m)", km: "キロメートル (km)", inch: "インチ (in)", ft: "フィート (ft)", yard: "ヤード (yd)", mile: "マイル (mi)", mg: "ミリグラム (mg)", g: "グラム (g)", kg: "キログラム (kg)", oz: "オンス (oz)", lb: "ポンド (lb)", ml: "ミリリットル (mL)", l: "リットル (L)", c: "摂氏 (°C)", f: "華氏 (°F)" },
   zh: { mm: "毫米 (mm)", cm: "厘米 (cm)", m: "米 (m)", km: "千米 (km)", inch: "英寸 (in)", ft: "英尺 (ft)", yard: "码 (yd)", mile: "英里 (mi)", mg: "毫克 (mg)", g: "克 (g)", kg: "千克 (kg)", oz: "盎司 (oz)", lb: "磅 (lb)", ml: "毫升 (mL)", l: "升 (L)", c: "摄氏度 (°C)", f: "华氏度 (°F)" },
 };
 
-const alternateFaq: Record<Exclude<Locale, "ko">, { question: string; answer: string }> = {
+const alternateFaq: Record<Exclude<ExistingLocale, "ko">, { question: string; answer: string }> = {
   en: { question: "Are my entries stored?", answer: "No. The calculation runs in your browser, and this page does not save the values you enter." },
   ja: { question: "入力した値は保存されますか？", answer: "いいえ。計算はブラウザー内で行われ、入力値をこのページに保存しません。" },
   zh: { question: "输入的数据会被保存吗？", answer: "不会。计算在浏览器中完成，本页面不会保存你输入的数值。" },
 };
 
-const genericNotes: Record<Exclude<Locale, "ko">, string> = {
+const genericNotes: Record<Exclude<ExistingLocale, "ko">, string> = {
   en: "The result is calculated from the values entered and the formula shown. It is an estimate where product or lender rules may differ.",
   ja: "入力値と表示した計算式による結果です。商品条件や金融機関の基準によって実際の結果と異なる場合があります。",
   zh: "结果根据输入值和页面公式计算。具体产品或贷款机构规则可能会导致实际结果不同。",
 };
 
-const fuelEfficiencyFaqs: Record<Exclude<Locale, "ko">, readonly { question: string; answer: string }[]> = {
+const fuelEfficiencyFaqs: Record<Exclude<ExistingLocale, "ko">, readonly { question: string; answer: string }[]> = {
   en: [
     { question: "How do I calculate fuel economy?", answer: "Divide the distance driven by the amount of fuel used to get km/L." },
     { question: "What does 10 km/L mean?", answer: "The vehicle travels about 10 kilometers on one liter of fuel." },
@@ -300,7 +300,7 @@ function sampleInput(slug: string) {
   }));
 }
 
-function localizedFields(locale: Exclude<Locale, "ko">, slug: string) {
+function localizedFields(locale: Exclude<ExistingLocale, "ko">, slug: string) {
   const page = getCalculatorPage(slug)!;
   const result: LocalizedCalculatorContent["fields"] = {};
   for (const field of page.fields) {
@@ -337,7 +337,7 @@ function localizedFields(locale: Exclude<Locale, "ko">, slug: string) {
   return result;
 }
 
-function localizedOptions(locale: Exclude<Locale, "ko">, slug: string) {
+function localizedOptions(locale: Exclude<ExistingLocale, "ko">, slug: string) {
   const page = getCalculatorPage(slug)!;
   const options: Record<string, Record<string, string>> = {};
   for (const field of page.fields) {
@@ -382,7 +382,7 @@ function captureResultLabels(
   return labels;
 }
 
-function createContent(locale: Exclude<Locale, "ko">, slug: LocalizedCalculatorSlug): LocalizedCalculatorContent {
+function createContent(locale: Exclude<ExistingLocale, "ko">, slug: LocalizedCalculatorSlug): LocalizedCalculatorContent {
   const copy = (locale === "en" ? en : locale === "ja" ? ja : zh)[slug];
   if (!copy) throw new Error(`Missing ${locale} content: ${slug}`);
   const source = getCalculatorPage(slug)!;
@@ -402,7 +402,7 @@ function createContent(locale: Exclude<Locale, "ko">, slug: LocalizedCalculatorS
   };
 }
 
-export const additionalCalculatorContent: Record<Exclude<Locale, "ko">, Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>> = {
+export const additionalCalculatorContent: Record<Exclude<ExistingLocale, "ko">, Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>> = {
   en: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !(slug in baseEn.calculators)).map((slug) => [slug, createContent("en", slug)])),
   ja: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !(slug in baseJa.calculators)).map((slug) => [slug, createContent("ja", slug)])),
   zh: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !(slug in baseZh.calculators)).map((slug) => [slug, createContent("zh", slug)])),

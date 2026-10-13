@@ -3,6 +3,7 @@ import { calculatorCategoryOrder } from "@/data/calculators/categories";
 
 export const zh: LocaleDictionary = {
   locale: "zh", siteName: "今日生活工具", description: "简单、快捷地使用日常计算器和生活工具。",
+  common: { calculate: "计算", reset: "重置", copy: "复制", copied: "已复制", result: "计算结果", input: "输入", formula: "计算公式", example: "计算示例", faq: "常见问题", relatedCalculators: "相关计算器", search: "搜索", category: "类别", previous: "上一页", next: "下一页", error: "错误", invalidInput: "请检查输入值。", required: "必填", copyError: "无法复制。", resetDone: "已重置输入值。", unit: "单位", noResults: "没有匹配的计算器。" },
   nav: { home: "首页", calculators: "计算器", menu: "计算器菜单", search: "搜索计算器", close: "关闭菜单", searchEmpty: "没有找到匹配的计算器。", language: "语言", skip: "跳转到正文" },
   categories: { math: "数学与单位换算", finance: "金融", tax: "税费与价格", "date-time": "日期与时间", life: "生活", salary: "薪资与工作" },
   calculatorList: { title: "计算器与生活工具", description: "选择所需的计算器即可使用。输入内容仅在浏览器中计算。", breadcrumbHome: "首页", breadcrumbCalculators: "计算器", count: "项", noResults: "没有找到匹配的计算器。" },

@@ -1,9 +1,11 @@
-export function formatNumber(value: number, maximumFractionDigits = 2, locale: "ko" | "en" | "ja" | "zh" = "ko"): string {
+import { localeConfig, type Locale } from "@/i18n/config";
+
+export function formatNumber(value: number, maximumFractionDigits = 2, locale: Locale = "ko"): string {
   if (!Number.isFinite(value)) return "—";
   const requestedDigits = Number.isFinite(maximumFractionDigits) ? Math.trunc(maximumFractionDigits) : 2;
   const digits = Math.max(0, Math.min(20, requestedDigits));
   const normalized = Object.is(value, -0) || Math.abs(value) < 0.5 * 10 ** -digits ? 0 : value;
-  const localeTag = locale === "ko" ? "ko-KR" : locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : "en-US";
+  const localeTag = localeConfig[locale].intlLocale;
   return new Intl.NumberFormat(localeTag, { maximumFractionDigits: digits }).format(normalized);
 }
 
@@ -17,8 +19,10 @@ export function formatInputNumber(value: string): string {
   return `${negative ? "-" : ""}${grouped}${fractionParts.length ? `.${fraction}` : ""}`;
 }
 
-export function formatKrw(value: number, maximumFractionDigits = 0, locale: "ko" | "en" | "ja" | "zh" = "ko"): string {
+export function formatKrw(value: number, maximumFractionDigits = 0, locale: Locale = "ko"): string {
   if (!Number.isFinite(value)) return "—";
   const formatted = formatNumber(value, maximumFractionDigits, locale);
-  return locale === "ko" ? `${formatted}원` : `KRW ${formatted}`;
+  if (locale === "ko") return `${formatted}원`;
+  if (locale === "en" || locale === "ja" || locale === "zh") return `KRW ${formatted}`;
+  return new Intl.NumberFormat(localeConfig[locale].intlLocale, { style: "currency", currency: "KRW", maximumFractionDigits }).format(value);
 }

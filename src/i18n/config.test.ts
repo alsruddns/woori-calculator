@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseOneTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -7,7 +7,10 @@ import { matchesCalculatorSearch } from "@/lib/i18n/search";
 describe("locale routing and translated calculator catalog", () => {
   it("accepts only supported locale keys and localized calculator slugs", () => {
     for (const locale of locales) expect(hasLocale(locale)).toBe(true);
-    expect(hasLocale("fr")).toBe(false);
+    expect(hasLocale("fr")).toBe(true);
+    expect(locales).toHaveLength(15);
+    expect(localeConfig["pt-br"].hreflang).toBe("pt-BR");
+    expect(localeConfig["zh-tw"].hreflang).toBe("zh-TW");
     for (const slug of localizedCalculatorSlugs) expect(hasLocalizedCalculator(slug)).toBe(true);
     expect(hasLocalizedCalculator("salary")).toBe(false);
   });
@@ -22,13 +25,70 @@ describe("locale routing and translated calculator catalog", () => {
   });
 
   it("switches language to the same translated tool or a safe localized landing", () => {
-    expect(languageSwitchPath("/ko/calculators/loan-interest", "en")).toBe("/en/calculators/loan-interest");
+    expect(languageSwitchPath("/ko/calculators/loan-interest", "es")).toBe("/en/calculators/loan-interest");
     expect(languageSwitchPath("/en/calculators/loan-interest", "ko")).toBe("/ko/calculators/loan-interest");
-    expect(languageSwitchPath("/ja/calculators/area", "zh")).toBe("/zh/calculators/area");
+    expect(languageSwitchPath("/ja/calculators/area", "zh-tw")).toBe("/zh-tw/calculators/area");
     expect(languageSwitchPath("/ko/calculators/social-insurance", "en")).toBe("/en/calculators/social-insurance");
-    expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ja/calculators");
+    expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ko/calculators");
     expect(languageSwitchPath("/zh", "ko")).toBe("/ko");
     expect(languageSwitchPath("/ko/calculators/fraction", "ja")).toBe("/ja/calculators/fraction");
+  });
+
+  it("provides complete translated UI and all first ten calculator pages in the 11 added locales", () => {
+    const newLocales = locales.filter((locale) => !existingLocales.includes(locale as typeof existingLocales[number]));
+    const commonKeys = Object.keys(getDictionary("en").common).sort();
+    for (const locale of newLocales) {
+      const dictionary = getDictionary(locale);
+      expect(Object.keys(dictionary.common).sort()).toEqual(commonKeys);
+      expect(dictionary.calculatorList.title).not.toBe(getDictionary("en").calculatorList.title);
+      for (const slug of phaseOneTranslatedCalculatorSlugs) {
+        const page = dictionary.calculators[slug]!;
+        const english = getDictionary("en").calculators[slug]!;
+        expect(page.title).toBeTruthy();
+        expect(page.description).toBeTruthy();
+        expect(page.name).toBeTruthy();
+        expect(page.howTo).toBeTruthy();
+        expect(page.formula).toBeTruthy();
+        expect(page.example.question).toBeTruthy();
+        expect(page.faqs.length).toBeGreaterThan(0);
+        expect(Object.keys(page.fields).length).toBeGreaterThan(0);
+        expect(page.name).not.toBe(english.name);
+        expect(page.title).not.toBe(english.title);
+        expect(page.description).not.toBe(english.description);
+        expect(page.howTo).not.toBe(english.howTo);
+        expect(page.formula).not.toBe(english.formula);
+        expect(page.example.question).not.toBe(english.example.question);
+        expect(page.example.answer).not.toBe(english.example.answer);
+        for (const key of Object.keys(page.fields)) expect(page.fields[key]?.label).not.toBe(english.fields[key]?.label);
+        for (const key of Object.keys(page.resultLabels)) {
+          const sourceLabel = english.resultLabels[key];
+          if (!sourceLabel || /^[A-Z0-9%/²]+$/.test(sourceLabel)) continue;
+          expect(page.resultLabels[key]).not.toBe(sourceLabel);
+        }
+      }
+    }
+    expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
+    expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
+    expect(supportedLocalesForCalculator("fraction")).toEqual(existingLocales);
+  });
+
+  it("uses route locales for canonicals and BCP 47 locale keys for alternates", () => {
+    for (const slug of phaseOneTranslatedCalculatorSlugs) {
+      const content = getDictionary("pt-br").calculators[slug]!;
+      const meta = localizedMetadata("pt-br", `/calculators/${slug}`, content.title, content.description, content.keywords, locales);
+      expect(meta.alternates?.canonical).toBe(`https://www.woori.today/pt-br/calculators/${slug}`);
+      expect(meta.alternates?.languages?.["pt-BR"]).toBe(`https://www.woori.today/pt-br/calculators/${slug}`);
+      expect(meta.alternates?.languages?.["zh-TW"]).toBe(`https://www.woori.today/zh-tw/calculators/${slug}`);
+      expect(meta.alternates?.languages?.["x-default"]).toBe(`https://www.woori.today/ko/calculators/${slug}`);
+    }
+  });
+
+  it("reports every published calculator with locale support metadata", () => {
+    const missing = localizedCalculatorSlugs.flatMap((slug) => locales
+      .filter((locale) => !calculatorSupportsLocale(slug, locale))
+      .map((locale) => `${slug}:${locale}`));
+    expect(missing.length).toBeGreaterThan(0);
+    expect(missing).toContain("fraction:es");
   });
 
   it("provides complete localized content and unique search metadata for all translated calculators", () => {
