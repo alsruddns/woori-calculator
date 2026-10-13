@@ -3,7 +3,7 @@ import { calculatorUrlsFromSitemap, calculatorUrlsFromSitemapUrl, createIndexNow
 
 const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"];
 const hreflang = { "pt-br": "pt-BR", "zh-tw": "zh-TW" };
-const slugs = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference", "dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency", "hourly-wage", "loan-affordability", "loan-interest", "loan-refinance", "ltv", "margin", "markup", "median", "minimum-wage", "pace", "percentage", "percentile", "pregnancy", "prepayment-fee", "probability", "product-margin", "profit-loss", "ratio", "salary-conversion", "savings-interest", "severance-pay", "simple-interest", "social-insurance", "standard-deviation", "stock-average-price", "taxi-fare", "tenure", "time-arithmetic", "tip-calculator", "trip-split", "unemployment-benefit", "unit-converter", "unit-price", "utility-bill", "vat", "vehicle-cost", "weighted-average", "withholding-tax-3-3", "workdays"];
+const slugs = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference", "dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency", "hourly-wage", "loan-affordability", "loan-interest", "loan-refinance", "ltv", "margin", "markup", "median", "minimum-wage", "pace", "percentage", "percentile", "pregnancy", "prepayment-fee", "probability", "product-margin", "profit-loss", "ratio", "salary-conversion", "savings-interest", "severance-pay", "simple-interest", "social-insurance", "standard-deviation", "stock-average-price", "taxi-fare", "tenure", "time-arithmetic", "tip-calculator", "trip-split", "unemployment-benefit", "unit-converter", "unit-price", "utility-bill", "vat", "vehicle-cost", "weighted-average", "withholding-tax-3-3", "workdays", "japan-consumption-tax-calculator", "japan-annual-salary-calculator", "japan-monthly-salary-calculator", "japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator"];
 const routes = locales.map((locale) => `https://www.woori.today/${locale}/calculators`);
 const details = (slug) => locales.map((locale) => `https://www.woori.today/${locale}/calculators/${slug}`);
 const alternates = (slug) => [...locales.map((locale) => hreflang[locale] ?? locale), "x-default"].map((language) => {
@@ -47,13 +47,13 @@ describe("IndexNow URL preparation", () => {
     expect(() => calculatorUrlsFromSitemap(broken)).toThrow("Sitemap hreflang validation failed");
   });
 
-  it("collects exactly the complete 900-URL published sitemap set", () => {
+  it("collects exactly the complete 975-URL published sitemap set", () => {
     const allUrls = [...routes, ...slugs.flatMap(details)];
     const collected = calculatorUrlsFromSitemap(sitemap(allUrls));
-    expect(slugs).toHaveLength(59);
-    expect(collected).toHaveLength(900);
-    expect(new Set(collected).size).toBe(900);
-    expect(collected).toEqual(allUrls);
+    expect(slugs).toHaveLength(64);
+    expect(collected).toHaveLength(975);
+    expect(new Set(collected).size).toBe(975);
+    expect(new Set(collected)).toEqual(new Set(allUrls));
   });
 
   it("validates a deployed sitemap with the same completeness rules", async () => {

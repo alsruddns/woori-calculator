@@ -5,6 +5,7 @@ import { everydayPages } from "@/data/calculator-content/everyday";
 import { financeCalculatorPages } from "@/data/calculator-content/finance";
 import { annualLeaveAllowancePage, extendedFinancePages, hourlyWagePage, salaryConversionPage } from "@/data/calculator-content/finance-extended";
 import { employmentCalculatorPages } from "@/data/calculator-content/employment";
+import { japanCalculatorPages } from "@/data/calculator-content/japan";
 import { mathCalculatorPages } from "@/data/calculator-content/math";
 import { mathExtendedPages } from "@/data/calculator-content/math-extended";
 import { policyCalculatorPages } from "@/data/calculator-content/policy";
@@ -26,6 +27,7 @@ export const calculatorPages: readonly CalculatorPageDefinition[] = [
   ...conversionCalculatorPages,
   ...employmentCalculatorPages,
   ...policyCalculatorPages,
+  ...japanCalculatorPages,
 ];
 
 export const publishedCalculatorPages = calculatorPages.filter((page) => page.isPublished);

@@ -6,6 +6,7 @@ import { additionalCalculatorContent } from "@/i18n/dictionaries/additional";
 import type { LocaleDictionary } from "@/i18n/dictionaries/types";
 import type { Locale } from "@/i18n/config";
 import { phaseOneLocaleDictionary } from "@/i18n/dictionaries/phase-one";
+import { phaseFourLocaleContent } from "@/i18n/dictionaries/phase-four";
 
 const ko: LocaleDictionary = {
   locale: "ko", siteName: "우리의 오늘", description: "일상에 필요한 계산과 생활 도구를 쉽고 빠르게 이용하세요.",
@@ -40,7 +41,7 @@ const seedKeywords = {
 
 const sources = { en, ja, zh } as const;
 export function getDictionary(locale: Locale): LocaleDictionary {
-  if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko } };
+  if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko }, calculators: { ...ko.calculators, ...phaseFourLocaleContent("ko") } };
   if (locale !== "en" && locale !== "ja" && locale !== "zh") return phaseOneLocaleDictionary(locale, getDictionary("en"))!;
   const source = sources[locale];
   const translatedSeeds = Object.fromEntries(Object.entries(source.calculators).map(([slug, page]) => [slug, { ...page, keywords: page.keywords ?? seedKeywords[locale][slug as keyof (typeof seedKeywords)[typeof locale]] ?? [page.name] }]));
@@ -49,6 +50,6 @@ export function getDictionary(locale: Locale): LocaleDictionary {
     home: { ...source.home, ...landingLabels[locale] },
     categories: { ...source.categories, ...categoryOverrides[locale] },
     common: source.common,
-    calculators: { ...translatedSeeds, ...additionalCalculatorContent[locale] },
+    calculators: { ...translatedSeeds, ...additionalCalculatorContent[locale], ...phaseFourLocaleContent(locale) },
   };
 }
