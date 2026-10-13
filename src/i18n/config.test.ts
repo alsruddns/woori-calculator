@@ -72,7 +72,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
     expect(supportedLocalesForCalculator("median")).toEqual(locales);
     expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(106);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(154);
   });
 
   it("provides all Phase 2 calculator translations in every newly added locale", () => {
@@ -118,7 +118,7 @@ describe("locale routing and translated calculator catalog", () => {
     }
     expect(phaseThreeTranslatedCalculatorSlugs).toHaveLength(39);
     expect(phaseFourTranslatedCalculatorSlugs).toHaveLength(5);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(106);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(154);
   });
 
   it("provides localized content for every published calculator in all fifteen locales", () => {
@@ -159,7 +159,7 @@ describe("locale routing and translated calculator catalog", () => {
       }
     }
     expect(misses, `Missing localized content across all calculators:\n${misses.join("\n")}`).toEqual([]);
-    expect(localizedCalculatorSlugs).toHaveLength(106);
+    expect(localizedCalculatorSlugs).toHaveLength(154);
     expect(locales).toHaveLength(15);
     expect(localizedCalculatorSlugs.flatMap((slug) => locales.map((locale) => `${slug}:${locale}`))).toHaveLength(localizedCalculatorSlugs.length * locales.length);
   });

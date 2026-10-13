@@ -12,6 +12,7 @@ import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-
 import { runTaxCalculator } from "@/calculators/tax/calculate";
 import { calculateJapanAnnualSalary, calculateJapanConsumptionTax, calculateJapanMonthlySalary, calculateJapanNightHolidayPay, calculateJapanOvertimePay } from "@/calculators/policy/japan";
 import { calculateCountrySpecific } from "@/calculators/policy/country-specific";
+import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-specific-global";
 
 const japanCalculators = {
   "japan-consumption-tax-calculator": calculateJapanConsumptionTax,
@@ -30,6 +31,8 @@ export function calculateBySlug(slug: string, input: Record<string, string>): Ca
     if (raw.trim() && Number.isFinite(numeric) && Math.abs(numeric) > MAX_MONEY) return { error: "숫자 입력은 1,000조 이하로 입력해 주세요.", field };
   }
   if (slug in japanCalculators) return japanCalculators[slug as keyof typeof japanCalculators](input);
+  const globalCountryOutcome = calculateGlobalCountrySpecific(slug, input);
+  if (globalCountryOutcome) return globalCountryOutcome;
   const countryOutcome = calculateCountrySpecific(slug, input);
   if (countryOutcome) return countryOutcome;
   const outcome = runMathCalculator(slug, input)

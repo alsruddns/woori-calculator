@@ -1,5 +1,5 @@
 import { getCalculatorPage } from "@/data/calculator-content";
-import { localizedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseFiveTranslatedCalculatorSlugs, type ExistingLocale, type LocalizedCalculatorSlug } from "@/i18n/config";
+import { localizedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseFiveTranslatedCalculatorSlugs, phaseSixTranslatedCalculatorSlugs, type ExistingLocale, type LocalizedCalculatorSlug } from "@/i18n/config";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { en as baseEn } from "@/i18n/dictionaries/en";
 import { ja as baseJa } from "@/i18n/dictionaries/ja";
@@ -403,7 +403,7 @@ function createContent(locale: Exclude<ExistingLocale, "ko">, slug: LocalizedCal
 }
 
 export const additionalCalculatorContent: Record<Exclude<ExistingLocale, "ko">, Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>> = {
-  en: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !phaseFourTranslatedCalculatorSlugs.includes(slug as (typeof phaseFourTranslatedCalculatorSlugs)[number]) && !phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]) && !(slug in baseEn.calculators)).map((slug) => [slug, createContent("en", slug)])),
-  ja: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !phaseFourTranslatedCalculatorSlugs.includes(slug as (typeof phaseFourTranslatedCalculatorSlugs)[number]) && !phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]) && !(slug in baseJa.calculators)).map((slug) => [slug, createContent("ja", slug)])),
-  zh: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !phaseFourTranslatedCalculatorSlugs.includes(slug as (typeof phaseFourTranslatedCalculatorSlugs)[number]) && !phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]) && !(slug in baseZh.calculators)).map((slug) => [slug, createContent("zh", slug)])),
+  en: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !phaseFourTranslatedCalculatorSlugs.includes(slug as (typeof phaseFourTranslatedCalculatorSlugs)[number]) && !phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]) && !phaseSixTranslatedCalculatorSlugs.includes(slug as (typeof phaseSixTranslatedCalculatorSlugs)[number]) && !(slug in baseEn.calculators)).map((slug) => [slug, createContent("en", slug)])),
+  ja: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !phaseFourTranslatedCalculatorSlugs.includes(slug as (typeof phaseFourTranslatedCalculatorSlugs)[number]) && !phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]) && !phaseSixTranslatedCalculatorSlugs.includes(slug as (typeof phaseSixTranslatedCalculatorSlugs)[number]) && !(slug in baseJa.calculators)).map((slug) => [slug, createContent("ja", slug)])),
+  zh: Object.fromEntries(localizedCalculatorSlugs.filter((slug) => !phaseFourTranslatedCalculatorSlugs.includes(slug as (typeof phaseFourTranslatedCalculatorSlugs)[number]) && !phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]) && !phaseSixTranslatedCalculatorSlugs.includes(slug as (typeof phaseSixTranslatedCalculatorSlugs)[number]) && !(slug in baseZh.calculators)).map((slug) => [slug, createContent("zh", slug)])),
 };

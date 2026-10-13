@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
 import { getDictionary } from "@/i18n/dictionaries";
-import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseFiveTranslatedCalculatorSlugs, phaseSixTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { siteConfig } from "@/constants/site-config";
 
 describe("calculator registry", () => {
@@ -15,7 +15,7 @@ describe("calculator registry", () => {
     expect(new Set(publishedCalculators.map(({ slug }) => slug)).size).toBe(publishedCalculators.length);
     expect(publishedCalculators.every(({ isPublished }) => isPublished)).toBe(true);
     expect(calculatorRegistry.find(({ slug }) => slug === "salary")).toBeUndefined();
-    expect(calculatorPages.length).toBe(106);
+    expect(calculatorPages.length).toBe(154);
   });
 
   it("provides all fifteen locale routes for every published calculator", () => {
@@ -31,9 +31,10 @@ describe("calculator registry", () => {
     expect(phaseThreeTranslatedCalculatorSlugs.every((slug) => slugs.includes(slug))).toBe(true);
     expect(phaseFourTranslatedCalculatorSlugs).toHaveLength(5);
     expect(phaseFiveTranslatedCalculatorSlugs).toHaveLength(42);
+    expect(phaseSixTranslatedCalculatorSlugs).toHaveLength(48);
     const missing = missingCalculatorTranslationReport(slugs);
     expect(missing, `Missing published calculator translations:\n${missing.join("\n")}`).toEqual([]);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(106);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(154);
     expect([...phaseTranslatedCalculatorSlugs].sort()).toEqual([...slugs].sort());
     for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(locales);
   });
