@@ -11,8 +11,8 @@ describe("calculator sitemap locale completeness", () => {
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
     expect(published).toHaveLength(59);
-    expect(expectedDetailCount).toBe(456);
-    expect(entries).toHaveLength(471);
+    expect(expectedDetailCount).toBe(885);
+    expect(entries).toHaveLength(900);
     expect(entries).toHaveLength(expectedDetailCount + locales.length);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of locales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
@@ -29,10 +29,10 @@ describe("calculator sitemap locale completeness", () => {
       for (const locale of supported) expect(alternateMap[localeConfig[locale].hreflang]).toBe(`${siteConfig.url}${localePath(locale, `/calculators/${slug}`)}`);
       expect(alternateMap["x-default"]).toBe(`${siteConfig.url}/ko/calculators/${slug}`);
     }
-    expect(supportedLocalesForCalculator("median")).toEqual(["ko", "en", "ja", "zh"]);
+    expect(supportedLocalesForCalculator("median")).toEqual(locales);
     expect(supportedLocalesForCalculator("age")).toEqual(locales);
     expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
-    expect(urls).not.toContain(`${siteConfig.url}/es/calculators/median`);
+    expect(urls).toContain(`${siteConfig.url}/es/calculators/median`);
     expect(urls).toContain(`${siteConfig.url}/es/calculators/fraction`);
     expect(urls).toContain(`${siteConfig.url}/pt-br/calculators/compound-interest`);
     expect(entries.find(({ url }) => url.endsWith("/pt-br/calculators/fraction"))?.alternates?.languages?.["pt-BR"]).toBe(`${siteConfig.url}/pt-br/calculators/fraction`);
@@ -47,11 +47,15 @@ describe("calculator sitemap locale completeness", () => {
     expect(entries.some(({ url }) => url.includes("unsupported-test"))).toBe(false);
   });
 
-  it("has exactly twenty completed calculator translations for each added locale", () => {
+  it("has all fifty-nine published calculator translations for each added locale", () => {
+    const urls = sitemap().map(({ url }) => url);
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(20);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(59);
     for (const locale of locales.filter((value) => !["ko", "en", "ja", "zh"].includes(value))) {
-      for (const slug of phaseTranslatedCalculatorSlugs) expect(calculatorSupportsLocale(slug, locale)).toBe(true);
+      for (const slug of phaseTranslatedCalculatorSlugs) {
+        expect(calculatorSupportsLocale(slug, locale)).toBe(true);
+        expect(urls).toContain(`${siteConfig.url}${localePath(locale, `/calculators/${slug}`)}`);
+      }
     }
   });
 });

@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
 import { getDictionary } from "@/i18n/dictionaries";
-import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseOneTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { siteConfig } from "@/constants/site-config";
 
 describe("calculator registry", () => {
@@ -23,14 +23,15 @@ describe("calculator registry", () => {
     expect(missing, `Published calculators missing locale content: ${missing.join(", ")}`).toEqual([]);
   });
 
-  it("reports all remaining phase one locale gaps across the full published registry", () => {
+  it("validates complete fifteen-locale coverage across the full published registry", () => {
     const slugs = publishedCalculators.map(({ slug }) => slug);
     const expectedFirstTen = [...slugs].sort().slice(0, 10);
     expect(phaseOneTranslatedCalculatorSlugs).toEqual(expectedFirstTen);
     expect(phaseTwoTranslatedCalculatorSlugs).toEqual([...slugs].sort().slice(10, 20));
+    expect(phaseThreeTranslatedCalculatorSlugs).toEqual([...slugs].sort().slice(20));
     const missing = missingCalculatorTranslationReport(slugs);
-    expect(missing).toHaveLength(slugs.length - phaseTranslatedCalculatorSlugs.length);
-    expect(missing).toContain("- median: es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi");
+    expect(missing, `Missing published calculator translations:\n${missing.join("\n")}`).toEqual([]);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(59);
     for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(locales);
   });
 

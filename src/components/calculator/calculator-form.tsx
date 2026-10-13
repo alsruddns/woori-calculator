@@ -24,11 +24,33 @@ function localizedResultUnit(unit: string | undefined, locale: Locale) {
   }
   return unit;
 }
-const optionsFor = (field: CalculatorField, values: Record<string, string>) => {
+const conversionUnitLabels: Record<Locale, Record<string, string>> = {
+  ko: { c: "섭씨 (°C)", f: "화씨 (°F)" }, en: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, ja: { c: "摂氏 (°C)", f: "華氏 (°F)" }, zh: { c: "摄氏 (°C)", f: "华氏 (°F)" },
+  es: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, "pt-br": { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, de: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, fr: { c: "Celsius (°C)", f: "Fahrenheit (°F)" },
+  vi: { c: "Độ C (°C)", f: "Độ F (°F)" }, id: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, th: { c: "เซลเซียส (°C)", f: "ฟาเรนไฮต์ (°F)" }, "zh-tw": { c: "攝氏 (°C)", f: "華氏 (°F)" },
+  it: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, nl: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, hi: { c: "सेल्सियस (°C)", f: "फ़ारेनहाइट (°F)" },
+};
+const linearUnitLabels: Record<Exclude<Locale, "ko">, Record<LinearUnit, string>> = {
+  en: { mm: "Millimeters (mm)", cm: "Centimeters (cm)", m: "Meters (m)", km: "Kilometers (km)", inch: "Inches (in)", ft: "Feet (ft)", yard: "Yards (yd)", mile: "Miles (mi)", mg: "Milligrams (mg)", g: "Grams (g)", kg: "Kilograms (kg)", oz: "Ounces (oz)", lb: "Pounds (lb)", ml: "Milliliters (mL)", l: "Liters (L)" },
+  ja: { mm: "ミリメートル (mm)", cm: "センチメートル (cm)", m: "メートル (m)", km: "キロメートル (km)", inch: "インチ (in)", ft: "フィート (ft)", yard: "ヤード (yd)", mile: "マイル (mi)", mg: "ミリグラム (mg)", g: "グラム (g)", kg: "キログラム (kg)", oz: "オンス (oz)", lb: "ポンド (lb)", ml: "ミリリットル (mL)", l: "リットル (L)" },
+  zh: { mm: "毫米 (mm)", cm: "厘米 (cm)", m: "米 (m)", km: "千米 (km)", inch: "英寸 (in)", ft: "英尺 (ft)", yard: "码 (yd)", mile: "英里 (mi)", mg: "毫克 (mg)", g: "克 (g)", kg: "千克 (kg)", oz: "盎司 (oz)", lb: "磅 (lb)", ml: "毫升 (mL)", l: "升 (L)" },
+  es: { mm: "Milímetros (mm)", cm: "Centímetros (cm)", m: "Metros (m)", km: "Kilómetros (km)", inch: "Pulgadas (in)", ft: "Pies (ft)", yard: "Yardas (yd)", mile: "Millas (mi)", mg: "Miligramos (mg)", g: "Gramos (g)", kg: "Kilogramos (kg)", oz: "Onzas (oz)", lb: "Libras (lb)", ml: "Mililitros (mL)", l: "Litros (L)" },
+  "pt-br": { mm: "Milímetros (mm)", cm: "Centímetros (cm)", m: "Metros (m)", km: "Quilômetros (km)", inch: "Polegadas (in)", ft: "Pés (ft)", yard: "Jardas (yd)", mile: "Milhas (mi)", mg: "Miligramas (mg)", g: "Gramas (g)", kg: "Quilogramas (kg)", oz: "Onças (oz)", lb: "Libras (lb)", ml: "Mililitros (mL)", l: "Litros (L)" },
+  de: { mm: "Millimeter (mm)", cm: "Zentimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Zoll (in)", ft: "Fuß (ft)", yard: "Yard (yd)", mile: "Meilen (mi)", mg: "Milligramm (mg)", g: "Gramm (g)", kg: "Kilogramm (kg)", oz: "Unzen (oz)", lb: "Pfund (lb)", ml: "Milliliter (mL)", l: "Liter (L)" },
+  fr: { mm: "Millimètres (mm)", cm: "Centimètres (cm)", m: "Mètres (m)", km: "Kilomètres (km)", inch: "Pouces (in)", ft: "Pieds (ft)", yard: "Verges (yd)", mile: "Milles (mi)", mg: "Milligrammes (mg)", g: "Grammes (g)", kg: "Kilogrammes (kg)", oz: "Onces (oz)", lb: "Livres (lb)", ml: "Millilitres (mL)", l: "Litres (L)" },
+  vi: { mm: "Milimét (mm)", cm: "Xentimét (cm)", m: "Mét (m)", km: "Kilômét (km)", inch: "Inch (in)", ft: "Feet (ft)", yard: "Yard (yd)", mile: "Dặm (mi)", mg: "Miligam (mg)", g: "Gam (g)", kg: "Kilôgam (kg)", oz: "Ounce (oz)", lb: "Pound (lb)", ml: "Mililít (mL)", l: "Lít (L)" },
+  id: { mm: "Milimeter (mm)", cm: "Sentimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Inci (in)", ft: "Kaki (ft)", yard: "Yard (yd)", mile: "Mil (mi)", mg: "Miligram (mg)", g: "Gram (g)", kg: "Kilogram (kg)", oz: "Ons (oz)", lb: "Pon (lb)", ml: "Mililiter (mL)", l: "Liter (L)" },
+  th: { mm: "มิลลิเมตร (mm)", cm: "เซนติเมตร (cm)", m: "เมตร (m)", km: "กิโลเมตร (km)", inch: "นิ้ว (in)", ft: "ฟุต (ft)", yard: "หลา (yd)", mile: "ไมล์ (mi)", mg: "มิลลิกรัม (mg)", g: "กรัม (g)", kg: "กิโลกรัม (kg)", oz: "ออนซ์ (oz)", lb: "ปอนด์ (lb)", ml: "มิลลิลิตร (mL)", l: "ลิตร (L)" },
+  "zh-tw": { mm: "毫米 (mm)", cm: "公分 (cm)", m: "公尺 (m)", km: "公里 (km)", inch: "英吋 (in)", ft: "英尺 (ft)", yard: "碼 (yd)", mile: "英里 (mi)", mg: "毫克 (mg)", g: "公克 (g)", kg: "公斤 (kg)", oz: "盎司 (oz)", lb: "磅 (lb)", ml: "毫升 (mL)", l: "公升 (L)" },
+  it: { mm: "Millimetri (mm)", cm: "Centimetri (cm)", m: "Metri (m)", km: "Chilometri (km)", inch: "Pollici (in)", ft: "Piedi (ft)", yard: "Iarde (yd)", mile: "Miglia (mi)", mg: "Milligrammi (mg)", g: "Grammi (g)", kg: "Chilogrammi (kg)", oz: "Once (oz)", lb: "Libbre (lb)", ml: "Millilitri (mL)", l: "Litri (L)" },
+  nl: { mm: "Millimeter (mm)", cm: "Centimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Inch (in)", ft: "Voet (ft)", yard: "Yard (yd)", mile: "Mijl (mi)", mg: "Milligram (mg)", g: "Gram (g)", kg: "Kilogram (kg)", oz: "Ons (oz)", lb: "Pond (lb)", ml: "Milliliter (mL)", l: "Liter (L)" },
+  hi: { mm: "मिलीमीटर (mm)", cm: "सेंटीमीटर (cm)", m: "मीटर (m)", km: "किलोमीटर (km)", inch: "इंच (in)", ft: "फुट (ft)", yard: "गज (yd)", mile: "मील (mi)", mg: "मिलीग्राम (mg)", g: "ग्राम (g)", kg: "किलोग्राम (kg)", oz: "औंस (oz)", lb: "पाउंड (lb)", ml: "मिलीलीटर (mL)", l: "लीटर (L)" },
+};
+const optionsFor = (field: CalculatorField, values: Record<string, string>, locale: Locale) => {
   if (field.name !== "fromUnit" && field.name !== "toUnit") return field.options ?? [];
   const category = values.category ?? "length";
-  if (category === "temperature") return [{ label: "섭씨 (°C)", value: "c" }, { label: "화씨 (°F)", value: "f" }];
-  return (Object.keys(units) as LinearUnit[]).filter((key) => units[key].category === category).map((key) => ({ label: unitLabels[key]!, value: key }));
+  if (category === "temperature") return [{ label: conversionUnitLabels[locale].c!, value: "c" }, { label: conversionUnitLabels[locale].f!, value: "f" }];
+  return (Object.keys(units) as LinearUnit[]).filter((key) => units[key].category === category).map((key) => ({ label: locale === "ko" ? unitLabels[key]! : linearUnitLabels[locale][key], value: key }));
 };
 
 export function CalculatorForm({ slug, fields, locale = "ko", dictionary, content }: CalculatorFormProps) {
@@ -89,14 +111,14 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                 {slug === "fuel-efficiency" && field.name === "mode" ? <span id={`${inputId}-label`} className="block text-sm font-semibold text-slate-800">{content?.fields[field.name]?.label ?? field.label}</span> : <label htmlFor={inputId} className="block text-sm font-semibold text-slate-800">{field.name === duration?.field ? (dictionary?.units.durationLabel ?? "기간") : (content?.fields[field.name]?.label ?? field.label)}</label>}
                 {slug === "fuel-efficiency" && field.name === "mode" ? (
                   <div role="group" aria-labelledby={`${inputId}-label`} aria-describedby={describedBy} className="mt-2 grid grid-cols-3 gap-2">
-                    {optionsFor(field, values).map((option) => {
+                    {optionsFor(field, values, locale).map((option) => {
                       const selected = values[field.name] === option.value;
                       return <button key={option.value} type="button" aria-pressed={selected} className={`min-h-12 min-w-0 rounded-lg border px-2 py-2 text-center text-xs font-semibold leading-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:text-sm ${selected ? "border-teal-800 bg-teal-50 text-teal-950" : "border-slate-300 bg-white text-slate-700 hover:border-teal-700"}`} onClick={() => changeValue(field.name, option.value)}>{content?.options[field.name]?.[option.value] ?? option.label}</button>;
                     })}
                   </div>
                 ) : field.type === "select" ? (
                   <select id={inputId} className={`${commonClass} text-sm sm:text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} aria-describedby={describedBy}>
-                    {optionsFor(field, values).map((option) => <option key={option.value} value={option.value}>{content?.options[field.name]?.[option.value] ?? option.label}</option>)}
+                    {optionsFor(field, values, locale).map((option) => <option key={option.value} value={option.value}>{content?.options[field.name]?.[option.value] ?? option.label}</option>)}
                   </select>
                 ) : field.type === "textarea" ? (
                   <textarea id={inputId} maxLength={30_000} className={`${commonClass} min-h-28 py-3 text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />

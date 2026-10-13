@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseOneTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -25,13 +25,14 @@ describe("locale routing and translated calculator catalog", () => {
   });
 
   it("switches language to the same translated tool or a safe localized landing", () => {
-    expect(languageSwitchPath("/ko/calculators/loan-interest", "es")).toBe("/en/calculators/loan-interest");
+    expect(languageSwitchPath("/ko/calculators/loan-interest", "es")).toBe("/es/calculators/loan-interest");
     expect(languageSwitchPath("/en/calculators/loan-interest", "ko")).toBe("/ko/calculators/loan-interest");
     expect(languageSwitchPath("/ja/calculators/area", "zh-tw")).toBe("/zh-tw/calculators/area");
-    expect(languageSwitchPath("/ko/calculators/social-insurance", "en")).toBe("/en/calculators/social-insurance");
+    expect(languageSwitchPath("/ko/calculators/social-insurance", "hi")).toBe("/hi/calculators/social-insurance");
     expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ko/calculators");
     expect(languageSwitchPath("/zh", "ko")).toBe("/ko");
     expect(languageSwitchPath("/ko/calculators/fraction", "ja")).toBe("/ja/calculators/fraction");
+    for (const slug of localizedCalculatorSlugs) for (const locale of locales) expect(languageSwitchPath(`/ko/calculators/${slug}`, locale)).toBe(`/${locale}/calculators/${slug}`);
   });
 
   it("provides complete translated UI and all first ten calculator pages in the 11 added locales", () => {
@@ -69,9 +70,9 @@ describe("locale routing and translated calculator catalog", () => {
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
     expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
-    expect(supportedLocalesForCalculator("median")).toEqual(existingLocales);
+    expect(supportedLocalesForCalculator("median")).toEqual(locales);
     expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(20);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(59);
   });
 
   it("provides all Phase 2 calculator translations in every newly added locale", () => {
@@ -115,11 +116,55 @@ describe("locale routing and translated calculator catalog", () => {
         }
       }
     }
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(20);
+    expect(phaseThreeTranslatedCalculatorSlugs).toHaveLength(39);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(59);
+  });
+
+  it("provides localized content for every published calculator in all fifteen locales", () => {
+    const englishDictionary = getDictionary("en");
+    const commonKeys = Object.keys(englishDictionary.common).sort();
+    const misses: string[] = [];
+    for (const locale of locales.filter((value) => !existingLocales.includes(value as typeof existingLocales[number]))) {
+      const dictionary = getDictionary(locale);
+      expect(Object.keys(dictionary.common).sort()).toEqual(commonKeys);
+      for (const slug of localizedCalculatorSlugs) {
+        const page = dictionary.calculators[slug];
+        const english = englishDictionary.calculators[slug];
+        if (!page) {
+          misses.push(`${slug}:${locale}:content`);
+          continue;
+        }
+        if (!supportedLocalesForCalculator(slug).includes(locale)) misses.push(`${slug}:${locale}:supportedLocales`);
+        for (const field of ["name", "title", "description", "howTo", "formula", "validation", "resultNote"] as const) {
+          if (!page[field]?.trim() || page[field] === english?.[field]) misses.push(`${slug}:${locale}:${field}`);
+        }
+        if (!page.example.question.trim() || page.example.question === english?.example.question) misses.push(`${slug}:${locale}:example.question`);
+        if (!page.example.answer.trim() || page.example.answer === english?.example.answer) misses.push(`${slug}:${locale}:example.answer`);
+        if (page.faqs.length === 0) misses.push(`${slug}:${locale}:faqs`);
+        for (let index = 0; index < page.faqs.length; index += 1) {
+          if (page.faqs[index]?.question === english?.faqs[index]?.question || page.faqs[index]?.answer === english?.faqs[index]?.answer) misses.push(`${slug}:${locale}:faq[${index}]`);
+        }
+        const technicalUnits = new Set(["KRW", "KRW/L", "KRW/km", "KRW/min", "KRW / unit", "%", "km", "km/L", "L", "°C", "°F", "mm", "cm", "kg", "g", "mg", "oz", "lb", "m", "mL", "mi", "ft", "yd", "kcal", "W", "kWh", "min"]);
+        for (const [key, field] of Object.entries(page.fields)) {
+          if (!field.label.trim() || field.label === english?.fields[key]?.label) misses.push(`${slug}:${locale}:field.${key}.label`);
+          if (field.placeholder && field.placeholder === english?.fields[key]?.placeholder) misses.push(`${slug}:${locale}:field.${key}.placeholder`);
+          if (field.unit && !technicalUnits.has(field.unit) && field.unit === english?.fields[key]?.unit) misses.push(`${slug}:${locale}:field.${key}.unit`);
+        }
+        for (const [fieldKey, options] of Object.entries(page.options)) for (const [optionKey, label] of Object.entries(options)) {
+          const sharedUnitNames = new Set(["Celsius (°C)", "Fahrenheit (°F)", "Yards (yd)", "Feet (ft)"]);
+          if (!label.trim() || (label === english?.options[fieldKey]?.[optionKey] && !sharedUnitNames.has(label))) misses.push(`${slug}:${locale}:option.${fieldKey}.${optionKey}`);
+        }
+        for (const [key, label] of Object.entries(page.resultLabels)) if (!label.trim() || (label === english?.resultLabels[key] && !/^[A-Z0-9%/²]+$/.test(label))) misses.push(`${slug}:${locale}:result.${key}`);
+      }
+    }
+    expect(misses, `Missing localized content across all calculators:\n${misses.join("\n")}`).toEqual([]);
+    expect(localizedCalculatorSlugs).toHaveLength(59);
+    expect(locales).toHaveLength(15);
+    expect(localizedCalculatorSlugs.flatMap((slug) => locales.map((locale) => `${slug}:${locale}`))).toHaveLength(885);
   });
 
   it("uses route locales for canonicals and BCP 47 locale keys for alternates", () => {
-    for (const slug of phaseOneTranslatedCalculatorSlugs) {
+    for (const slug of localizedCalculatorSlugs) {
       const content = getDictionary("pt-br").calculators[slug]!;
       const meta = localizedMetadata("pt-br", `/calculators/${slug}`, content.title, content.description, content.keywords, locales);
       expect(meta.alternates?.canonical).toBe(`https://www.woori.today/pt-br/calculators/${slug}`);
@@ -133,8 +178,7 @@ describe("locale routing and translated calculator catalog", () => {
     const missing = localizedCalculatorSlugs.flatMap((slug) => locales
       .filter((locale) => !calculatorSupportsLocale(slug, locale))
       .map((locale) => `${slug}:${locale}`));
-    expect(missing.length).toBeGreaterThan(0);
-    expect(missing).toContain("percentage:es");
+    expect(missing, `Missing supported calculator locales: ${missing.join(", ")}`).toEqual([]);
   });
 
   it("provides complete localized content and unique search metadata for all translated calculators", () => {

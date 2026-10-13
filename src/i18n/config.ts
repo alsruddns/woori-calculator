@@ -43,11 +43,13 @@ export const hasLocalizedCalculator = (slug: string): slug is LocalizedCalculato
 
 export const phaseOneTranslatedCalculatorSlugs = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference"] as const satisfies readonly LocalizedCalculatorSlug[];
 export const phaseTwoTranslatedCalculatorSlugs = ["dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency"] as const satisfies readonly LocalizedCalculatorSlug[];
-export const phaseTranslatedCalculatorSlugs = [...phaseOneTranslatedCalculatorSlugs, ...phaseTwoTranslatedCalculatorSlugs] as const;
+export const phaseThreeTranslatedCalculatorSlugs = ["hourly-wage", "loan-affordability", "loan-interest", "loan-refinance", "ltv", "margin", "markup", "median", "minimum-wage", "pace", "percentage", "percentile", "pregnancy", "prepayment-fee", "probability", "product-margin", "profit-loss", "ratio", "salary-conversion", "savings-interest", "severance-pay", "simple-interest", "social-insurance", "standard-deviation", "stock-average-price", "taxi-fare", "tenure", "time-arithmetic", "tip-calculator", "trip-split", "unemployment-benefit", "unit-converter", "unit-price", "utility-bill", "vat", "vehicle-cost", "weighted-average", "withholding-tax-3-3", "workdays"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const phaseTranslatedCalculatorSlugs = [...phaseOneTranslatedCalculatorSlugs, ...phaseTwoTranslatedCalculatorSlugs, ...phaseThreeTranslatedCalculatorSlugs] as const;
 export const isPhaseOneTranslatedCalculator = (slug: string): slug is (typeof phaseOneTranslatedCalculatorSlugs)[number] => phaseOneTranslatedCalculatorSlugs.includes(slug as (typeof phaseOneTranslatedCalculatorSlugs)[number]);
 export const isPhaseTwoTranslatedCalculator = (slug: string): slug is (typeof phaseTwoTranslatedCalculatorSlugs)[number] => phaseTwoTranslatedCalculatorSlugs.includes(slug as (typeof phaseTwoTranslatedCalculatorSlugs)[number]);
-export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug);
-export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => isPhaseTranslatedCalculator(slug) ? locales : hasLocalizedCalculator(slug) ? existingLocales : ["ko"];
+export const isPhaseThreeTranslatedCalculator = (slug: string): slug is (typeof phaseThreeTranslatedCalculatorSlugs)[number] => phaseThreeTranslatedCalculatorSlugs.includes(slug as (typeof phaseThreeTranslatedCalculatorSlugs)[number]);
+export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug) || isPhaseThreeTranslatedCalculator(slug);
+export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => hasLocalizedCalculator(slug) ? locales : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: Locale) => supportedLocalesForCalculator(slug).includes(locale);
 export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {
   return slugs.flatMap((slug) => {
@@ -56,7 +58,10 @@ export function missingCalculatorTranslationReport(slugs: readonly string[]): st
     return missing.length ? [`- ${slug}: ${missing.join(", ")}`] : [];
   });
 }
-export const localizedIndexSlugs = (locale: Locale) => locale === "ko" || existingLocales.includes(locale as ExistingLocale) ? localizedCalculatorSlugs : phaseTranslatedCalculatorSlugs;
+export const localizedIndexSlugs = (locale: Locale) => {
+  void locale;
+  return localizedCalculatorSlugs;
+};
 
 export function localePath(locale: Locale, path = "") {
   const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;

@@ -1,8 +1,9 @@
 import { calculatorCategoryOrder } from "@/data/calculators/categories";
 import { getCalculatorPage } from "@/data/calculator-content";
-import { localizedIndexSlugs, phaseOneTranslatedCalculatorSlugs, type Locale } from "@/i18n/config";
+import { localizedIndexSlugs, phaseOneTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, type Locale } from "@/i18n/config";
 import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { phaseTwoLocaleContent } from "@/i18n/dictionaries/phase-two";
+import { phaseThreeLocaleContent } from "@/i18n/dictionaries/phase-three";
 
 export type PhaseOneLocale = Exclude<Locale, "ko" | "en" | "ja" | "zh">;
 
@@ -196,7 +197,7 @@ export function createPhaseOneDictionary(locale: PhaseOneLocale, englishSource: 
     home: { title: text.homeTitle, description: text.description, featured: ui.category, categories: ui.category },
     units: { won: "KRW", number: ui.input, year: ({ es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "năm", id: "tahun", th: "ปี", "zh-tw": "年", it: "anni", nl: "jaar", hi: "वर्ष" })[locale], month: ({ es: "meses", "pt-br": "meses", de: "Monate", fr: "mois", vi: "tháng", id: "bulan", th: "เดือน", "zh-tw": "個月", it: "mesi", nl: "maanden", hi: "महीने" })[locale], durationLabel: ({ es: "Duración", "pt-br": "Duração", de: "Laufzeit", fr: "Durée", vi: "Thời hạn", id: "Durasi", th: "ระยะเวลา", "zh-tw": "期間", it: "Durata", nl: "Looptijd", hi: "अवधि" })[locale] },
     categoriesOrder: calculatorCategoryOrder,
-    calculators: { ...calculators, ...phaseTwoLocaleContent(locale, englishSource) } as LocaleDictionary["calculators"],
+    calculators: { ...calculators, ...phaseTwoLocaleContent(locale, englishSource), ...phaseThreeLocaleContent(locale, englishSource) } as LocaleDictionary["calculators"],
   };
 }
 
@@ -204,4 +205,4 @@ export function phaseOneLocaleDictionary(locale: Locale, englishSource: LocaleDi
   return locale === "es" || locale === "pt-br" || locale === "de" || locale === "fr" || locale === "vi" || locale === "id" || locale === "th" || locale === "zh-tw" || locale === "it" || locale === "nl" || locale === "hi" ? createPhaseOneDictionary(locale, englishSource) : undefined;
 }
 
-export function phaseOneAvailableSlugs(locale: Locale) { return localizedIndexSlugs(locale).filter((slug) => phaseOneTranslatedCalculatorSlugs.includes(slug as (typeof phaseOneTranslatedCalculatorSlugs)[number])); }
+export function phaseOneAvailableSlugs(locale: Locale) { return localizedIndexSlugs(locale).filter((slug) => phaseTranslatedCalculatorSlugs.includes(slug as (typeof phaseTranslatedCalculatorSlugs)[number])); }
