@@ -188,6 +188,53 @@ describe("locale routing and translated calculator catalog", () => {
     }
   });
 
+  it("keeps all five Japan calculator surfaces localized in every locale", () => {
+    const japaneseNames = ["消費税計算機", "年収手取り計算機", "月給手取り計算機", "残業代計算機", "深夜・休日手当計算機"];
+    const koNames = ["일본 소비세 계산기", "일본 연봉 실수령액 계산기", "일본 월급 실수령액 계산기", "일본 잔업수당 계산기", "일본 심야·휴일수당 계산기"];
+    const korean = getDictionary("ko");
+    expect(korean.common.calculate).toBe("계산하기");
+    expect(korean.common.reset).toBe("초기화");
+    phaseFourTranslatedCalculatorSlugs.forEach((slug, index) => {
+      const page = korean.calculators[slug]!;
+      expect(page.name).toBe(koNames[index]);
+      expect(page.title).not.toContain(japaneseNames[index]!);
+      expect(page.description).not.toMatch(/[\u3040-\u30ff\u4e00-\u9faf]/);
+      expect(page.howTo).not.toMatch(/[\u3040-\u30ff]/);
+      expect(page.formula).not.toMatch(/[\u3040-\u30ff]/);
+      expect(page.example.question).not.toMatch(/[\u3040-\u30ff]/);
+      expect([...page.faqs.map(({ question, answer }) => question + answer)].join(" ")).not.toMatch(/[\u3040-\u30ff]/);
+      expect(page.name).not.toMatch(/Calculate|Reset/);
+    });
+    expect(korean.calculators["japan-overtime-pay-calculator"]!.name).toContain("잔업수당");
+
+    for (const locale of locales) {
+      const dictionary = getDictionary(locale);
+      expect(dictionary.common.calculate.trim()).toBeTruthy();
+      expect(dictionary.common.reset.trim()).toBeTruthy();
+      for (const slug of phaseFourTranslatedCalculatorSlugs) {
+        const page = dictionary.calculators[slug]!;
+        expect(page.name.trim()).toBeTruthy();
+        expect(page.shortName.trim()).toBeTruthy();
+        expect(page.title).toContain(page.name);
+        expect(page.description.trim()).toBeTruthy();
+        expect(page.howTo.trim()).toBeTruthy();
+        expect(page.fields).not.toEqual({});
+        expect(page.example.question.trim()).toBeTruthy();
+        expect(page.example.answer.trim()).toBeTruthy();
+        expect(page.faqs.length).toBeGreaterThan(0);
+        expect(page.related.length).toBeGreaterThan(0);
+        if (locale === "ja") expect(page.name).toBe(japaneseNames[phaseFourTranslatedCalculatorSlugs.indexOf(slug)]);
+        if (locale === "en") expect(page.name).toMatch(/Japan/);
+        if (locale === "ko") {
+          expect(page.name).not.toMatch(/[\u3040-\u30ff]/);
+          expect(page.description + page.howTo + page.formula + page.validation).not.toMatch(/\bCalculate\b|\bReset\b/);
+        } else {
+          expect(page.name).not.toMatch(/[\uAC00-\uD7AF]/);
+        }
+      }
+    }
+  });
+
   it("reports every published calculator with locale support metadata", () => {
     const missing = localizedCalculatorSlugs.flatMap((slug) => locales
       .filter((locale) => !calculatorSupportsLocale(slug, locale))
