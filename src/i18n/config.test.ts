@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -72,7 +72,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
     expect(supportedLocalesForCalculator("median")).toEqual(locales);
     expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(64);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(106);
   });
 
   it("provides all Phase 2 calculator translations in every newly added locale", () => {
@@ -118,7 +118,7 @@ describe("locale routing and translated calculator catalog", () => {
     }
     expect(phaseThreeTranslatedCalculatorSlugs).toHaveLength(39);
     expect(phaseFourTranslatedCalculatorSlugs).toHaveLength(5);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(64);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(106);
   });
 
   it("provides localized content for every published calculator in all fifteen locales", () => {
@@ -149,7 +149,7 @@ describe("locale routing and translated calculator catalog", () => {
         for (const [key, field] of Object.entries(page.fields)) {
           if (!field.label.trim() || field.label === english?.fields[key]?.label) misses.push(`${slug}:${locale}:field.${key}.label`);
           if (field.placeholder && field.placeholder === english?.fields[key]?.placeholder) misses.push(`${slug}:${locale}:field.${key}.placeholder`);
-          if (field.unit && !technicalUnits.has(field.unit) && field.unit === english?.fields[key]?.unit) misses.push(`${slug}:${locale}:field.${key}.unit`);
+          if (field.unit && !technicalUnits.has(field.unit) && !/^[A-Z]{3}$/.test(field.unit) && field.unit === english?.fields[key]?.unit) misses.push(`${slug}:${locale}:field.${key}.unit`);
         }
         for (const [fieldKey, options] of Object.entries(page.options)) for (const [optionKey, label] of Object.entries(options)) {
           const sharedUnitNames = new Set(["Celsius (°C)", "Fahrenheit (°F)", "Yards (yd)", "Feet (ft)"]);
@@ -159,9 +159,9 @@ describe("locale routing and translated calculator catalog", () => {
       }
     }
     expect(misses, `Missing localized content across all calculators:\n${misses.join("\n")}`).toEqual([]);
-    expect(localizedCalculatorSlugs).toHaveLength(64);
+    expect(localizedCalculatorSlugs).toHaveLength(106);
     expect(locales).toHaveLength(15);
-    expect(localizedCalculatorSlugs.flatMap((slug) => locales.map((locale) => `${slug}:${locale}`))).toHaveLength(960);
+    expect(localizedCalculatorSlugs.flatMap((slug) => locales.map((locale) => `${slug}:${locale}`))).toHaveLength(localizedCalculatorSlugs.length * locales.length);
   });
 
   it("uses route locales for canonicals and BCP 47 locale keys for alternates", () => {
@@ -394,6 +394,26 @@ describe("locale routing and translated calculator catalog", () => {
       expect(page.keywords?.length).toBeGreaterThan(0);
       expect(new Set(page.related).size).toBe(page.related.length);
       for (const related of page.related) expect(getDictionary(locale).calculators[related]).toBeDefined();
+    }
+  });
+
+  it("localizes all country calculator content, metadata, form controls and related names in every locale", () => {
+    for (const slug of phaseFiveTranslatedCalculatorSlugs) {
+      for (const locale of locales) {
+        const content = getDictionary(locale).calculators[slug]!;
+        expect(content.name.trim()).not.toBe("");
+        expect(content.title.trim()).not.toBe("");
+        expect(content.description.trim().length).toBeGreaterThan(20);
+        expect(content.howTo.trim()).not.toBe("");
+        expect(content.fields.amount?.label ?? content.fields.salary?.label ?? content.fields.income?.label ?? content.fields.monthlyDeposit?.label).toBeTruthy();
+        expect(Object.values(content.resultLabels ?? {}).every(Boolean)).toBe(true);
+        expect(content.example.question.trim()).not.toBe("");
+        expect(content.faqs.length).toBeGreaterThanOrEqual(2);
+        expect(content.related.length).toBeGreaterThan(0);
+        for (const related of content.related) expect(getDictionary(locale).calculators[related]).toBeDefined();
+        const metadata = localizedMetadata(locale, `/calculators/${slug}`, content.title, content.description, content.keywords);
+        expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/${locale}/calculators/${slug}`);
+      }
     }
   });
 

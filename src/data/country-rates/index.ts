@@ -1,0 +1,12 @@
+import { brazilRates } from "./brazil";
+import { chinaRates } from "./china";
+import { franceRates } from "./france";
+import { germanyRates } from "./germany";
+import { indiaRates } from "./india";
+import { italyRates } from "./italy";
+import { netherlandsRates } from "./netherlands";
+import { spainRates } from "./spain";
+import { taiwanRates } from "./taiwan";
+import { vietnamRates } from "./vietnam";
+import type { CountryRateConfig } from "./types";
+export const countryRates: Readonly<Record<string, CountryRateConfig>> = { DE: germanyRates, ES: spainRates, FR: franceRates, NL: netherlandsRates, IN: indiaRates, BR: brazilRates, VN: vietnamRates, CN: chinaRates, TW: taiwanRates, IT: italyRates };

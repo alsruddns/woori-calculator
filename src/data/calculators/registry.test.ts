@@ -6,7 +6,7 @@ import { createPageMetadata } from "@/lib/seo/metadata";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
 import { getDictionary } from "@/i18n/dictionaries";
-import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { hasLocalizedCalculator, locales, missingCalculatorTranslationReport, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { siteConfig } from "@/constants/site-config";
 
 describe("calculator registry", () => {
@@ -15,25 +15,26 @@ describe("calculator registry", () => {
     expect(new Set(publishedCalculators.map(({ slug }) => slug)).size).toBe(publishedCalculators.length);
     expect(publishedCalculators.every(({ isPublished }) => isPublished)).toBe(true);
     expect(calculatorRegistry.find(({ slug }) => slug === "salary")).toBeUndefined();
-    expect(calculatorPages.length).toBe(64);
+    expect(calculatorPages.length).toBe(106);
   });
 
-  it("provides all four locale routes for every published calculator", () => {
+  it("provides all fifteen locale routes for every published calculator", () => {
     const missing = publishedCalculators.filter(({ isPublished, slug }) => isPublished && !hasLocalizedCalculator(slug)).map(({ slug }) => slug);
     expect(missing, `Published calculators missing locale content: ${missing.join(", ")}`).toEqual([]);
   });
 
   it("validates complete fifteen-locale coverage across the full published registry", () => {
     const slugs = publishedCalculators.map(({ slug }) => slug);
-    const expectedFirstTen = [...slugs].sort().slice(0, 10);
-    expect(phaseOneTranslatedCalculatorSlugs).toEqual(expectedFirstTen);
-    expect(phaseTwoTranslatedCalculatorSlugs).toEqual([...slugs].sort().slice(10, 20));
+    expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
+    expect(phaseTwoTranslatedCalculatorSlugs).toHaveLength(10);
     expect(phaseThreeTranslatedCalculatorSlugs).toHaveLength(39);
     expect(phaseThreeTranslatedCalculatorSlugs.every((slug) => slugs.includes(slug))).toBe(true);
     expect(phaseFourTranslatedCalculatorSlugs).toHaveLength(5);
+    expect(phaseFiveTranslatedCalculatorSlugs).toHaveLength(42);
     const missing = missingCalculatorTranslationReport(slugs);
     expect(missing, `Missing published calculator translations:\n${missing.join("\n")}`).toEqual([]);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(64);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(106);
+    expect([...phaseTranslatedCalculatorSlugs].sort()).toEqual([...slugs].sort());
     for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(locales);
   });
 

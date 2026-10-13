@@ -6,6 +6,7 @@ import { financeCalculatorPages } from "@/data/calculator-content/finance";
 import { annualLeaveAllowancePage, extendedFinancePages, hourlyWagePage, salaryConversionPage } from "@/data/calculator-content/finance-extended";
 import { employmentCalculatorPages } from "@/data/calculator-content/employment";
 import { japanCalculatorPages } from "@/data/calculator-content/japan";
+import { countrySpecificCalculatorPages } from "@/data/calculator-content/country-specific";
 import { mathCalculatorPages } from "@/data/calculator-content/math";
 import { mathExtendedPages } from "@/data/calculator-content/math-extended";
 import { policyCalculatorPages } from "@/data/calculator-content/policy";
@@ -28,6 +29,7 @@ export const calculatorPages: readonly CalculatorPageDefinition[] = [
   ...employmentCalculatorPages,
   ...policyCalculatorPages,
   ...japanCalculatorPages,
+  ...countrySpecificCalculatorPages,
 ];
 
 export const publishedCalculatorPages = calculatorPages.filter((page) => page.isPublished);
