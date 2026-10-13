@@ -5,20 +5,22 @@ import { localizedMetadata } from "@/lib/i18n/seo";
 import { localePath } from "@/i18n/config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
+import { getDictionary } from "@/i18n/dictionaries";
 
 export const metadata: Metadata = localizedMetadata("ko", "/calculators", "계산기와 생활 도구", "일상에 필요한 계산기를 골라 바로 결과를 확인하세요. 계산은 브라우저에서 처리됩니다.", ["계산기", "생활 계산기"]);
 
 export default function CalculatorsPage() {
+  const dictionary = getDictionary("ko");
   const populatedCategories = calculatorCategoryOrder
     .map((category) => ({
       category,
       label: calculatorCategories[category],
-      items: publishedCalculatorPages.filter((calculator) => calculator.category === category),
+      items: publishedCalculatorPages.filter((calculator) => calculator.category === category).map((calculator) => ({ ...calculator, ...dictionary.calculators[calculator.slug as keyof typeof dictionary.calculators] })),
     }))
     .filter(({ items }) => items.length > 0);
 
   return (
-    <CalculatorWorkspace categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} basePath={localePath("ko", "/calculators")} labels={{ menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", empty: "검색 결과가 없습니다." }}>
+    <CalculatorWorkspace localizedItems={publishedCalculatorPages.map((item) => ({ slug: item.slug, name: dictionary.calculators[item.slug as keyof typeof dictionary.calculators]?.name ?? item.name, keywords: item.keywords, category: item.category }))} categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} basePath={localePath("ko", "/calculators")} labels={{ menu: dictionary.nav.menu, search: dictionary.nav.search, close: dictionary.nav.close, empty: dictionary.nav.searchEmpty }}>
     <section className="min-w-0 py-4 sm:py-10">
       <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6"><Link className="inline-flex min-h-11 items-center hover:text-teal-800" href={localePath("ko")}>홈</Link><span aria-hidden="true">/</span><span aria-current="page">계산기</span></nav>
       <header>
