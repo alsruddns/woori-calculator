@@ -5,9 +5,11 @@ import { calculatorCategoryOrder } from "@/data/calculators/categories";
 import { additionalCalculatorContent } from "@/i18n/dictionaries/additional";
 import type { LocaleDictionary } from "@/i18n/dictionaries/types";
 import type { Locale } from "@/i18n/config";
+import { phaseOneLocaleDictionary } from "@/i18n/dictionaries/phase-one";
 
 const ko: LocaleDictionary = {
   locale: "ko", siteName: "우리의 오늘", description: "일상에 필요한 계산과 생활 도구를 쉽고 빠르게 이용하세요.",
+  common: { calculate: "계산하기", reset: "초기화", copy: "복사", copied: "복사했습니다", result: "계산 결과", input: "입력", formula: "계산 공식", example: "예제", faq: "자주 묻는 질문", relatedCalculators: "관련 계산기", search: "검색", category: "분야", previous: "이전", next: "다음", error: "오류", invalidInput: "입력값을 확인해 주세요.", required: "필수 입력", copyError: "복사하지 못했습니다.", resetDone: "입력값을 초기화했습니다.", unit: "단위", noResults: "검색 결과가 없습니다." },
   nav: { home: "홈", calculators: "계산기", menu: "계산기 메뉴", search: "계산기 검색", close: "메뉴 닫기", searchEmpty: "검색 결과가 없습니다.", language: "언어", skip: "본문으로 건너뛰기" },
   categories: { math: "수학·도구", finance: "금융", tax: "세금·가격", "date-time": "날짜·시간", life: "생활", salary: "급여·직장" },
   calculatorList: { title: "계산기와 생활 도구", description: "필요한 계산기를 골라 바로 계산해 보세요.", breadcrumbHome: "홈", breadcrumbCalculators: "계산기", count: "개", noResults: "검색 결과가 없습니다." },
@@ -39,12 +41,14 @@ const seedKeywords = {
 const sources = { en, ja, zh } as const;
 export function getDictionary(locale: Locale): LocaleDictionary {
   if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko } };
+  if (locale !== "en" && locale !== "ja" && locale !== "zh") return phaseOneLocaleDictionary(locale, getDictionary("en"))!;
   const source = sources[locale];
   const translatedSeeds = Object.fromEntries(Object.entries(source.calculators).map(([slug, page]) => [slug, { ...page, keywords: page.keywords ?? seedKeywords[locale][slug as keyof (typeof seedKeywords)[typeof locale]] ?? [page.name] }]));
   return {
     ...source,
     home: { ...source.home, ...landingLabels[locale] },
     categories: { ...source.categories, ...categoryOverrides[locale] },
+    common: source.common,
     calculators: { ...translatedSeeds, ...additionalCalculatorContent[locale] },
   };
 }

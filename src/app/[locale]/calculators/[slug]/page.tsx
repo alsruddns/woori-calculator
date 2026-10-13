@@ -6,26 +6,26 @@ import { CalculatorWorkspace } from "@/components/calculator/calculator-workspac
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/constants/site-config";
 import { getCalculatorPage } from "@/data/calculator-content";
-import { hasLocale, localeConfig, localePath, localizedCalculatorSlugs, type Locale } from "@/i18n/config";
+import { calculatorSupportsLocale, hasLocale, localeConfig, localePath, localizedCalculatorSlugs, localizedIndexSlugs, dictionaryLocales, supportedLocalesForCalculator, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const categoryFor = (slug: string) => getCalculatorPage(slug)?.category ?? "math";
 
-export function generateStaticParams() { return ["en", "ja", "zh"].flatMap((locale) => localizedCalculatorSlugs.map((slug) => ({ locale, slug }))); }
+export function generateStaticParams() { return dictionaryLocales.flatMap((locale) => localizedCalculatorSlugs.filter((slug) => calculatorSupportsLocale(slug, locale)).map((slug) => ({ locale, slug }))); }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: key, slug } = await params;
-  if (!hasLocale(key) || key === "ko" || !localizedCalculatorSlugs.includes(slug as (typeof localizedCalculatorSlugs)[number])) return {};
+  if (!hasLocale(key) || key === "ko" || !calculatorSupportsLocale(slug, key)) return {};
   const page = getDictionary(key).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
   if (!page) return {};
-  return localizedMetadata(key, `/calculators/${slug}`, page.title, page.description, page.keywords);
+  return localizedMetadata(key, `/calculators/${slug}`, page.title, page.description, page.keywords, supportedLocalesForCalculator(slug));
 }
 
 export default async function LocalizedCalculatorPage({ params }: Props) {
   const { locale: key, slug } = await params;
-  if (!hasLocale(key) || key === "ko" || !localizedCalculatorSlugs.includes(slug as (typeof localizedCalculatorSlugs)[number])) notFound();
+  if (!hasLocale(key) || key === "ko" || !calculatorSupportsLocale(slug, key)) notFound();
   const locale = key as Exclude<Locale, "ko">;
   const dictionary = getDictionary(locale);
   const content = dictionary.calculators[slug as keyof typeof dictionary.calculators]!;
@@ -33,13 +33,13 @@ export default async function LocalizedCalculatorPage({ params }: Props) {
   if (!source) notFound();
   const category = categoryFor(slug);
   const path = localePath(locale, `/calculators/${slug}`);
-  return <CalculatorWorkspace localizedItems={localizedCalculatorSlugs.map((id) => ({ slug: id, name: dictionary.calculators[id]!.name, keywords: dictionary.calculators[id]!.keywords, category: categoryFor(id) }))} categories={dictionary.categories} categoryOrder={dictionary.categoriesOrder} basePath={localePath(locale, "/calculators")} labels={{ menu: dictionary.nav.menu, search: dictionary.nav.search, close: dictionary.nav.close, empty: dictionary.nav.searchEmpty }}>
+  return <CalculatorWorkspace localizedItems={localizedIndexSlugs(locale).map((id) => ({ slug: id, name: dictionary.calculators[id]!.name, keywords: dictionary.calculators[id]!.keywords, category: categoryFor(id) }))} categories={dictionary.categories} categoryOrder={dictionary.categoriesOrder} basePath={localePath(locale, "/calculators")} labels={{ menu: dictionary.nav.menu, search: dictionary.nav.search, close: dictionary.nav.close, empty: dictionary.nav.searchEmpty }}>
     <article className="min-w-0 py-4">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: dictionary.detail.home, item: `${siteConfig.serviceBaseUrl}${localePath(locale)}` }, { "@type": "ListItem", position: 2, name: dictionary.detail.calculators, item: `${siteConfig.serviceBaseUrl}${localePath(locale, "/calculators")}` }, { "@type": "ListItem", position: 3, name: content.name, item: `${siteConfig.serviceBaseUrl}${path}` }] }} />
       <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", "@id": `${siteConfig.serviceBaseUrl}${path}#webpage`, name: content.title, description: content.description, url: `${siteConfig.serviceBaseUrl}${path}`, isPartOf: { "@id": `${siteConfig.serviceBaseUrl}${localePath(locale)}#website` }, inLanguage: localeConfig[locale].htmlLang }} />
       <nav aria-label={dictionary.calculatorList.breadcrumbCalculators} className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6"><Link className="inline-flex min-h-11 items-center" href={localePath(locale)}>{dictionary.detail.home}</Link><span aria-hidden="true">/</span><Link className="inline-flex min-h-11 items-center" href={localePath(locale, "/calculators")}>{dictionary.detail.calculators}</Link><span aria-hidden="true">/</span><span aria-current="page">{content.name}</span></nav>
       <header className="mb-7 min-w-0 max-w-3xl"><p className="text-sm font-semibold text-teal-800">{dictionary.categories[category]}</p><h1 className="mt-2 break-words text-2xl font-bold tracking-tight text-slate-950 [overflow-wrap:anywhere] sm:text-3xl lg:text-4xl">{content.name}</h1><p className="mt-4 break-words leading-7 text-slate-600 [overflow-wrap:anywhere]">{content.description}</p></header>
-      <CalculatorForm key={`${locale}-${slug}`} slug={slug} fields={source.fields} locale={locale} dictionary={{ detail: dictionary.detail, units: dictionary.units }} content={content} />
+      <CalculatorForm key={`${locale}-${slug}`} slug={slug} fields={source.fields} locale={locale} dictionary={{ detail: dictionary.detail, units: dictionary.units, common: dictionary.common }} content={content} />
       <div className="mt-12 grid min-w-0 gap-10 xl:grid-cols-[minmax(0,1fr)_16rem]"><div className="min-w-0 space-y-10">
         <section><h2 className="text-xl font-bold">{dictionary.detail.howTo}</h2><p className="mt-3 leading-7 text-slate-700">{content.howTo}</p></section>
         <section><h2 className="text-xl font-bold">{dictionary.detail.formula}</h2><p className="mt-3 min-w-0 break-words rounded-xl bg-slate-100 px-3 py-4 font-medium leading-7 [overflow-wrap:anywhere] sm:px-4">{content.formula}</p></section>

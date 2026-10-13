@@ -3,6 +3,7 @@ import { calculatorCategoryOrder } from "@/data/calculators/categories";
 
 export const en: LocaleDictionary = {
   locale: "en", siteName: "Everyday Tools", description: "Simple calculators and everyday tools for clear, quick answers.",
+  common: { calculate: "Calculate", reset: "Reset", copy: "Copy", copied: "Copied", result: "Result", input: "Input", formula: "Formula", example: "Example", faq: "Frequently asked questions", relatedCalculators: "Related calculators", search: "Search", category: "Category", previous: "Previous", next: "Next", error: "Error", invalidInput: "Check the entered values.", required: "Required", copyError: "Could not copy.", resetDone: "Inputs have been reset.", unit: "Unit", noResults: "No matching calculators." },
   nav: { home: "Home", calculators: "Calculators", menu: "Calculator menu", search: "Search calculators", close: "Close menu", searchEmpty: "No matching calculators.", language: "Language", skip: "Skip to content" },
   categories: { math: "Math & Conversion", finance: "Finance", tax: "Tax & Pricing", "date-time": "Date & Time", life: "Lifestyle", salary: "Salary & Work" },
   calculatorList: { title: "Calculators & Everyday Tools", description: "Choose a calculator and get an answer right away. Calculations run in your browser.", breadcrumbHome: "Home", breadcrumbCalculators: "Calculators", count: "tools", noResults: "No matching calculators." },

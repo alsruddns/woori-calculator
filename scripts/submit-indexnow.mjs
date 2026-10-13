@@ -2,14 +2,17 @@ import { pathToFileURL } from "node:url";
 
 const DEFAULT_HOST = "www.woori.today";
 const DEFAULT_SITEMAP_URL = "https://www.woori.today/calculator-sitemap.xml";
-const LOCALES = ["ko", "en", "ja", "zh"];
+const LOCALES = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"];
+const HREFLANG = { "pt-br": "pt-BR", "zh-tw": "zh-TW" };
+const FULL_LOCALE_SLUGS = new Set(["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference", "dday", "decimal-fraction", "deposit-interest", "discount", "dividend", "dsr", "dti", "fraction", "fuel-cost", "fuel-efficiency", "hourly-wage", "loan-affordability", "loan-interest", "loan-refinance", "ltv", "margin", "markup", "median", "minimum-wage", "pace", "percentage", "percentile", "pregnancy", "prepayment-fee", "probability", "product-margin", "profit-loss", "ratio", "salary-conversion", "savings-interest", "severance-pay", "simple-interest", "social-insurance", "standard-deviation", "stock-average-price", "taxi-fare", "tenure", "time-arithmetic", "tip-calculator", "trip-split", "unemployment-benefit", "unit-converter", "unit-price", "utility-bill", "vat", "vehicle-cost", "weighted-average", "withholding-tax-3-3", "workdays"]);
 const INDEXNOW_ENDPOINT = "https://api.indexnow.org/IndexNow";
 
 export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
   const landingPages = new Set();
   const details = new Map();
+  const alternateLanguages = new Map();
   const seen = new Set();
-  const allowedPath = /^\/(ko|en|ja|zh)\/calculators(?:\/([a-z0-9]+(?:-[a-z0-9]+)*))?$/;
+  const allowedPath = /^\/(ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi)\/calculators(?:\/([a-z0-9]+(?:-[a-z0-9]+)*))?$/;
 
   for (const match of xml.matchAll(/<url\b[^>]*>([\s\S]*?)<\/url>/gi)) {
     const entry = match[1] ?? "";
@@ -34,6 +37,9 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
       landingPages.add(locale);
       continue;
     }
+    if (!FULL_LOCALE_SLUGS.has(slug) && !LOCALES.slice(0, 4).includes(locale)) continue;
+    const alternates = new Set([...entry.matchAll(/hreflang="([^"]+)"/gi)].map((item) => item[1]));
+    alternateLanguages.set(url.pathname, alternates);
     const locales = details.get(slug) ?? new Set();
     locales.add(locale);
     details.set(slug, locales);
@@ -45,16 +51,29 @@ export function calculatorUrlsFromSitemap(xml, host = DEFAULT_HOST) {
   }
 
   const incompleteCalculators = [...details.entries()]
-    .map(([slug, locales]) => ({ slug, missingLocales: LOCALES.filter((locale) => !locales.has(locale)) }))
+    .map(([slug, presentLocales]) => {
+      const expected = FULL_LOCALE_SLUGS.has(slug) ? LOCALES : LOCALES.slice(0, 4);
+      return { slug, presentLocales, expected, missingLocales: expected.filter((locale) => !presentLocales.has(locale)) };
+    })
     .filter(({ missingLocales }) => missingLocales.length > 0);
   if (incompleteCalculators.length) {
     const detailsBySlug = incompleteCalculators.map(({ slug, missingLocales }) => `- ${slug}: ${missingLocales.join(", ")}`).join("\n");
     throw new Error(`Published calculator locale validation failed:\n${detailsBySlug}`);
   }
 
+  const missingAlternates = [...details.entries()].flatMap(([slug]) => {
+    const expected = (FULL_LOCALE_SLUGS.has(slug) ? LOCALES : LOCALES.slice(0, 4)).map((locale) => HREFLANG[locale] ?? locale).concat("x-default");
+    return [...details.get(slug)].flatMap((locale) => {
+      const present = alternateLanguages.get(`/${locale}/calculators/${slug}`) ?? new Set();
+      const missing = expected.filter((language) => !present.has(language));
+      return missing.length ? [`- ${slug} (${locale}): ${missing.join(", ")}`] : [];
+    });
+  });
+  if (missingAlternates.length) throw new Error(`Sitemap hreflang validation failed:\n${missingAlternates.join("\n")}`);
+
   const urls = [
     ...LOCALES.map((locale) => `https://${host}/${locale}/calculators`),
-    ...[...details.keys()].sort().flatMap((slug) => LOCALES.map((locale) => `https://${host}/${locale}/calculators/${slug}`)),
+    ...[...details.entries()].sort(([a], [b]) => a.localeCompare(b)).flatMap(([slug, present]) => [...present].sort((a, b) => LOCALES.indexOf(a) - LOCALES.indexOf(b)).map((locale) => `https://${host}/${locale}/calculators/${slug}`)),
   ];
   if (urls.length > 10_000) throw new Error(`IndexNow accepts at most 10,000 URLs per request; received ${urls.length}`);
   return [...new Set(urls)];
