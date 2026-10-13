@@ -10,6 +10,15 @@ import { runPolicyCalculator } from "@/calculators/policy/severance";
 import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { runTaxCalculator } from "@/calculators/tax/calculate";
+import { calculateJapanAnnualSalary, calculateJapanConsumptionTax, calculateJapanMonthlySalary, calculateJapanNightHolidayPay, calculateJapanOvertimePay } from "@/calculators/policy/japan";
+
+const japanCalculators = {
+  "japan-consumption-tax-calculator": calculateJapanConsumptionTax,
+  "japan-annual-salary-calculator": calculateJapanAnnualSalary,
+  "japan-monthly-salary-calculator": calculateJapanMonthlySalary,
+  "japan-overtime-pay-calculator": calculateJapanOvertimePay,
+  "japan-night-holiday-pay-calculator": calculateJapanNightHolidayPay,
+};
 
 export function calculateBySlug(slug: string, input: Record<string, string>): CalculatorOutcome {
   for (const [field, raw] of Object.entries(input)) {
@@ -19,6 +28,7 @@ export function calculateBySlug(slug: string, input: Record<string, string>): Ca
     const numeric = Number(raw.replace(/,/g, "").trim());
     if (raw.trim() && Number.isFinite(numeric) && Math.abs(numeric) > MAX_MONEY) return { error: "숫자 입력은 1,000조 이하로 입력해 주세요.", field };
   }
+  if (slug in japanCalculators) return japanCalculators[slug as keyof typeof japanCalculators](input);
   const outcome = runMathCalculator(slug, input)
     ?? extendedMath[slug]?.(input)
     ?? runFinanceCalculator(slug, input)

@@ -3,7 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { calculateBySlug } from "@/calculators/calculate";
 import { units, type LinearUnit } from "@/calculators/conversion/convert";
-import { formatInputNumber, formatKrw, formatNumber } from "@/lib/formatter/number";
+import { formatInputNumber, formatJpy, formatKrw, formatNumber } from "@/lib/formatter/number";
 import { normalizeDuration, durationForCalculator, type DurationUnit } from "@/lib/calculators/duration";
 import { numberToKoreanText } from "@/lib/formatter/korean-number";
 import type { Locale } from "@/i18n/config";
@@ -174,9 +174,10 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
           {copyState !== "idle" ? <p className="mt-2 text-sm" role="status">{copyState === "copied" ? dictionary?.common.copied ?? "Copied" : dictionary?.common.copyError ?? "Could not copy."}</p> : null}
           <dl className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {success.results.map((item, index) => {
+              const isJpy = item.unit === "円";
               const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "KRW";
               const resultUnit = localizedResultUnit(item.unit, locale);
-              const value = typeof item.value === "number" ? (isMoney ? formatKrw(item.value, item.precision ?? 0, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${resultUnit ? ` ${resultUnit}` : ""}`) : item.value;
+              const value = typeof item.value === "number" ? (isJpy ? formatJpy(item.value, item.precision ?? 0, locale) : isMoney ? formatKrw(item.value, item.precision ?? 0, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${resultUnit ? ` ${resultUnit}` : ""}`) : item.value;
               return <div key={`${item.label}-${index}`} className="min-w-0 rounded-lg bg-white px-3 py-3 sm:px-4"><dt className="break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]">{content?.resultLabels[item.label] ?? content?.resultLabels[`__result_${index}`] ?? item.label}</dt><dd className="mt-1 break-words text-lg font-bold tabular-nums text-teal-900 [overflow-wrap:anywhere] sm:text-xl">{value}</dd></div>;
             })}
           </dl>

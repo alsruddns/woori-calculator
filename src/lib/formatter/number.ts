@@ -26,3 +26,8 @@ export function formatKrw(value: number, maximumFractionDigits = 0, locale: Loca
   if (locale === "en" || locale === "ja" || locale === "zh") return `KRW ${formatted}`;
   return new Intl.NumberFormat(localeConfig[locale].intlLocale, { style: "currency", currency: "KRW", maximumFractionDigits }).format(value);
 }
+
+export function formatJpy(value: number, maximumFractionDigits = 0, locale: Locale = "ko"): string {
+  if (!Number.isFinite(value)) return "—";
+  return new Intl.NumberFormat(localeConfig[locale].intlLocale, { style: "currency", currency: "JPY", maximumFractionDigits }).format(Object.is(value, -0) ? 0 : value);
+}
