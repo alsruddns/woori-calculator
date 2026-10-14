@@ -20,7 +20,7 @@ export function FamilySiteSwitcher({ locale }: { locale: Locale }) {
         aria-label={copy.label}
         aria-describedby="family-sites-new-tab"
         title={copy.label}
-        className="h-11 w-[7.25rem] max-w-[40vw] min-w-0 shrink-0 rounded-lg border border-slate-300 bg-white px-2 text-xs leading-5 text-slate-700 focus-visible:outline-2 focus-visible:outline-teal-700 sm:w-auto sm:max-w-[17rem] sm:text-sm"
+        className="h-11 w-[6.5rem] max-w-[28vw] min-w-0 shrink-0 rounded-lg border border-slate-300 bg-white px-1.5 text-[10px] leading-5 text-slate-700 focus-visible:outline-2 focus-visible:outline-teal-700 sm:w-auto sm:max-w-[17rem] sm:px-2 sm:text-sm"
         defaultValue=""
         onChange={(event) => {
           const site = sites.find(({ href }) => href === event.currentTarget.value);

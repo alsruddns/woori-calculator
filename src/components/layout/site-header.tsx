@@ -18,7 +18,7 @@ export function SiteHeader({ locale = "ko", dictionary }: { locale?: Locale; dic
           <Image className="h-auto w-[100px] sm:w-[160px]" src="/_assets/calculator/images/brand/woori-logo.png" alt="woori.today" width={419} height={99} priority sizes="(max-width: 640px) 100px, 160px" />
           <span className="hidden whitespace-nowrap text-sm font-normal text-slate-500 sm:inline">{siteConfig.name}</span>
         </Link>
-        <nav aria-label={familySitesCopy[locale].label} className="flex w-full min-w-0 flex-wrap items-center justify-end gap-2 lg:w-auto lg:flex-nowrap lg:gap-2">
+        <nav aria-label={familySitesCopy[locale].label} className="flex w-full min-w-0 flex-nowrap items-center justify-end gap-2 lg:w-auto lg:gap-2">
           <FamilySiteSwitcher locale={locale} />
           <LanguageSwitcher locale={locale} label={dictionary?.nav.language ?? "언어"} />
         </nav>
