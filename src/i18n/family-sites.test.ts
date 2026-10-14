@@ -1,4 +1,5 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { locales, localePath } from "@/i18n/config";
 import { familySitesCopy } from "@/i18n/family-sites";
 
@@ -20,6 +21,15 @@ describe("family site switcher", () => {
       expect(localePath(locale, "/tools")).toBe("/" + locale + "/tools");
       expect(localePath(locale, "/money")).toBe("/" + locale + "/money");
     }
+  });
+
+  it("keeps a translated family-site trigger and resets it after opening a destination", () => {
+    const source = readFileSync("src/components/layout/family-site-switcher.tsx", "utf8");
+    expect(source).toMatch(/defaultValue=""/);
+    expect(source).toMatch(/<option value="" disabled>\{copy.label\}<\/option>/);
+    expect(source).toMatch(/window\.open\(site\.href, "_blank", "noopener,noreferrer"\)/);
+    expect(source).toMatch(/event.currentTarget.value = ""/);
+    expect(source).not.toMatch(/<span[^>]*>\{copy\.label\}<\/span>/);
   });
 
   it("opens the selected family destination securely in a new tab", () => {
