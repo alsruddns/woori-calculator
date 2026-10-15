@@ -1,19 +1,19 @@
-﻿import type { Locale } from "./config";
+import type { Locale } from "./config";
 
-export const familySitesCopy: Record<Locale, { label: string; portal: string; calculator: string; tools: string; moneyBook: string; newTab: string }> = {
-  ko: { label: "패밀리사이트", portal: "포탈", calculator: "계산기", tools: "온라인 도구", moneyBook: "무료 공유 가계부", newTab: "선택한 서비스가 새 탭에서 열립니다." },
-  en: { label: "Family Sites", portal: "Portal", calculator: "Calculator", tools: "Online Tools", moneyBook: "Free Shared Money Book", newTab: "The selected service opens in a new tab." },
-  ja: { label: "関連サービス", portal: "ポータル", calculator: "計算機", tools: "オンラインツール", moneyBook: "無料の共有家計簿", newTab: "選択したサービスは新しいタブで開きます。" },
-  zh: { label: "相关服务", portal: "门户", calculator: "计算器", tools: "在线工具", moneyBook: "免费共享记账本", newTab: "所选服务将在新标签页中打开。" },
-  es: { label: "Servicios relacionados", portal: "Portal", calculator: "Calculadora", tools: "Herramientas en línea", moneyBook: "Libro de finanzas compartido gratis", newTab: "El servicio seleccionado se abrirá en una pestaña nueva." },
-  "pt-br": { label: "Serviços relacionados", portal: "Portal", calculator: "Calculadora", tools: "Ferramentas online", moneyBook: "Livro de finanças compartilhado grátis", newTab: "O serviço selecionado será aberto em uma nova aba." },
-  de: { label: "Verbundene Dienste", portal: "Portal", calculator: "Rechner", tools: "Online-Tools", moneyBook: "Kostenloses gemeinsames Haushaltsbuch", newTab: "Der ausgewählte Dienst wird in einem neuen Tab geöffnet." },
-  fr: { label: "Services associés", portal: "Portail", calculator: "Calculatrice", tools: "Outils en ligne", moneyBook: "Carnet de comptes partagé gratuit", newTab: "Le service choisi s’ouvrira dans un nouvel onglet." },
-  vi: { label: "Dịch vụ liên kết", portal: "Cổng thông tin", calculator: "Máy tính", tools: "Công cụ trực tuyến", moneyBook: "Sổ thu chi dùng chung miễn phí", newTab: "Dịch vụ đã chọn sẽ mở trong tab mới." },
-  id: { label: "Layanan terkait", portal: "Portal", calculator: "Kalkulator", tools: "Alat online", moneyBook: "Buku keuangan bersama gratis", newTab: "Layanan yang dipilih akan terbuka di tab baru." },
-  th: { label: "บริการที่เกี่ยวข้อง", portal: "พอร์ทัล", calculator: "เครื่องคิดเลข", tools: "เครื่องมือออนไลน์", moneyBook: "สมุดบัญชีใช้ร่วมกันฟรี", newTab: "บริการที่เลือกจะเปิดในแท็บใหม่" },
-  "zh-tw": { label: "相關服務", portal: "入口網站", calculator: "計算機", tools: "線上工具", moneyBook: "免費共享記帳本", newTab: "所選服務將在新分頁中開啟。" },
-  it: { label: "Servizi correlati", portal: "Portale", calculator: "Calcolatrice", tools: "Strumenti online", moneyBook: "Registro spese condiviso gratuito", newTab: "Il servizio selezionato si aprirà in una nuova scheda." },
-  nl: { label: "Verwante diensten", portal: "Portaal", calculator: "Rekenmachine", tools: "Online hulpmiddelen", moneyBook: "Gratis gedeeld huishoudboekje", newTab: "De gekozen dienst wordt in een nieuw tabblad geopend." },
-  hi: { label: "संबंधित सेवाएँ", portal: "पोर्टल", calculator: "कैलकुलेटर", tools: "ऑनलाइन टूल", moneyBook: "मुफ़्त साझा खर्च खाता", newTab: "चुनी गई सेवा नए टैब में खुलेगी।" },
+export const familySitesCopy: Record<Locale, { label: string; menu: string; portal: string; calculator: string; tools: string; moneyBook: string; documents: string; quiz: string; newTab: string }> = {
+  ko: { label: "Family Sites", menu: "서비스 메뉴", portal: "포탈", calculator: "계산기", tools: "온라인 도구", moneyBook: "무료 공유 가계부", documents: "문서·양식", quiz: "퀴즈·테스트", newTab: "선택한 서비스가 새 탭에서 열립니다." },
+  en: { label: "Family Sites", menu: "Services", portal: "Portal", calculator: "Calculator", tools: "Online Tools", moneyBook: "Free Shared Money Book", documents: "Documents & Forms", quiz: "Quizzes & Tests", newTab: "The selected service opens in a new tab." },
+  ja: { label: "ファミリーサービス", menu: "サービスメニュー", portal: "ポータル", calculator: "計算機", tools: "オンラインツール", moneyBook: "無料の共有家計簿", documents: "文書・書式", quiz: "クイズ・テスト", newTab: "選択したサービスは新しいタブで開きます。" },
+  zh: { label: "家庭服务", menu: "服务菜单", portal: "门户", calculator: "计算器", tools: "在线工具", moneyBook: "免费共享记账本", documents: "文档与表格", quiz: "问答与测试", newTab: "所选服务将在新标签页中打开。" },
+  es: { label: "Servicios familiares", menu: "Servicios", portal: "Portal", calculator: "Calculadora", tools: "Herramientas en línea", moneyBook: "Libro de finanzas compartido gratis", documents: "Documentos y formularios", quiz: "Cuestionarios y pruebas", newTab: "El servicio seleccionado se abrirá en una pestaña nueva." },
+  "pt-br": { label: "Serviços da família", menu: "Serviços", portal: "Portal", calculator: "Calculadora", tools: "Ferramentas online", moneyBook: "Livro de finanças compartilhado grátis", documents: "Documentos e formulários", quiz: "Questionários e testes", newTab: "O serviço selecionado será aberto em uma nova aba." },
+  de: { label: "Familiendienste", menu: "Dienste", portal: "Portal", calculator: "Rechner", tools: "Online-Tools", moneyBook: "Kostenloses gemeinsames Haushaltsbuch", documents: "Dokumente und Formulare", quiz: "Quiz und Tests", newTab: "Der ausgewählte Dienst wird in einem neuen Tab geöffnet." },
+  fr: { label: "Services associés", menu: "Services", portal: "Portail", calculator: "Calculatrice", tools: "Outils en ligne", moneyBook: "Livre de comptes partagé gratuit", documents: "Documents et formulaires", quiz: "Quiz et tests", newTab: "Le service sélectionné s’ouvrira dans un nouvel onglet." },
+  vi: { label: "Dịch vụ gia đình", menu: "Dịch vụ", portal: "Cổng thông tin", calculator: "Máy tính", tools: "Công cụ trực tuyến", moneyBook: "Sổ chi tiêu dùng chung miễn phí", documents: "Tài liệu và biểu mẫu", quiz: "Câu đố và bài kiểm tra", newTab: "Dịch vụ đã chọn sẽ mở trong tab mới." },
+  id: { label: "Layanan keluarga", menu: "Layanan", portal: "Portal", calculator: "Kalkulator", tools: "Alat online", moneyBook: "Buku keuangan bersama gratis", documents: "Dokumen dan formulir", quiz: "Kuis dan tes", newTab: "Layanan yang dipilih akan terbuka di tab baru." },
+  th: { label: "บริการในเครือ", menu: "เมนูบริการ", portal: "พอร์ทัล", calculator: "เครื่องคำนวณ", tools: "เครื่องมือออนไลน์", moneyBook: "สมุดบัญชีใช้ร่วมกันฟรี", documents: "เอกสารและแบบฟอร์ม", quiz: "แบบทดสอบและควิซ", newTab: "บริการที่เลือกจะเปิดในแท็บใหม่" },
+  "zh-tw": { label: "家庭服務", menu: "服務選單", portal: "入口網站", calculator: "計算機", tools: "線上工具", moneyBook: "免費共享記帳本", documents: "文件與表單", quiz: "問答與測驗", newTab: "所選服務將在新分頁中開啟。" },
+  it: { label: "Servizi della famiglia", menu: "Servizi", portal: "Portale", calculator: "Calcolatrice", tools: "Strumenti online", moneyBook: "Libro contabile condiviso gratuito", documents: "Documenti e moduli", quiz: "Quiz e test", newTab: "Il servizio selezionato si aprirà in una nuova scheda." },
+  nl: { label: "Familiediensten", menu: "Diensten", portal: "Portaal", calculator: "Rekenmachine", tools: "Onlinehulpmiddelen", moneyBook: "Gratis gedeeld huishoudboekje", documents: "Documenten en formulieren", quiz: "Quizzen en tests", newTab: "De geselecteerde dienst wordt geopend in een nieuw tabblad." },
+  hi: { label: "परिवार सेवाएँ", menu: "सेवाएँ", portal: "पोर्टल", calculator: "कैलकुलेटर", tools: "ऑनलाइन टूल", moneyBook: "मुफ़्त साझा मनीबुक", documents: "दस्तावेज़ और फ़ॉर्म", quiz: "क्विज़ और टेस्ट", newTab: "चुनी गई सेवा नए टैब में खुलेगी।" },
 };
