@@ -108,9 +108,9 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
             const commonClass = "mt-2 min-h-12 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
             return (
               <div key={field.name} className={`min-w-0 ${field.type === "textarea" ? "sm:col-span-2" : ""}`}>
-                {slug === "fuel-efficiency" && field.name === "mode" ? <span id={`${inputId}-label`} className="block text-sm font-semibold text-slate-800">{content?.fields[field.name]?.label ?? field.label}</span> : <label htmlFor={inputId} className="block text-sm font-semibold text-slate-800">{field.name === duration?.field ? (dictionary?.units.durationLabel ?? "기간") : (content?.fields[field.name]?.label ?? field.label)}</label>}
-                {slug === "fuel-efficiency" && field.name === "mode" ? (
-                  <div role="group" aria-labelledby={`${inputId}-label`} aria-describedby={describedBy} className="mt-2 grid grid-cols-3 gap-2">
+                {(slug === "fuel-efficiency" || slug === "ratio") && field.name === "mode" ? <span id={`${inputId}-label`} className="block text-sm font-semibold text-slate-800">{content?.fields[field.name]?.label ?? field.label}</span> : <label htmlFor={inputId} className="block text-sm font-semibold text-slate-800">{field.name === duration?.field ? (dictionary?.units.durationLabel ?? "기간") : (content?.fields[field.name]?.label ?? field.label)}</label>}
+                {(slug === "fuel-efficiency" || slug === "ratio") && field.name === "mode" ? (
+                  <div role="group" aria-labelledby={`${inputId}-label`} aria-describedby={describedBy} className={`mt-2 grid gap-2 ${slug === "ratio" ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"}`}>
                     {optionsFor(field, values, locale).map((option) => {
                       const selected = values[field.name] === option.value;
                       return <button key={option.value} type="button" aria-pressed={selected} className={`min-h-12 min-w-0 rounded-lg border px-2 py-2 text-center text-xs font-semibold leading-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800 sm:text-sm ${selected ? "border-teal-800 bg-teal-50 text-teal-950" : "border-slate-300 bg-white text-slate-700 hover:border-teal-700"}`} onClick={() => changeValue(field.name, option.value)}>{content?.options[field.name]?.[option.value] ?? option.label}</button>;
@@ -121,7 +121,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                     {optionsFor(field, values, locale).map((option) => <option key={option.value} value={option.value}>{content?.options[field.name]?.[option.value] ?? option.label}</option>)}
                   </select>
                 ) : field.type === "textarea" ? (
-                  <textarea id={inputId} maxLength={30_000} className={`${commonClass} min-h-28 py-3 text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
+                  <textarea id={inputId} maxLength={slug === "ratio" ? 128 : 30_000} className={`${commonClass} min-h-28 py-3 text-base`} value={values[field.name] ?? ""} onChange={(event) => changeValue(field.name, event.target.value)} placeholder={content?.fields[field.name]?.placeholder ?? field.placeholder} aria-describedby={describedBy} />
                 ) : (
                   <div className={field.name === duration?.field ? "mt-2 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2" : "relative"}>
                     <div className="relative min-w-0">

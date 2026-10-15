@@ -9,6 +9,7 @@ import { japanCalculatorPages } from "@/data/calculator-content/japan";
 import { countrySpecificCalculatorPages } from "@/data/calculator-content/country-specific";
 import { globalCountryCalculatorPages } from "@/data/calculator-content/country-specific-global";
 import { mathCalculatorPages } from "@/data/calculator-content/math";
+import { ratioToolPages } from "@/data/calculator-content/ratio-tools";
 import { mathExtendedPages } from "@/data/calculator-content/math-extended";
 import { newCalculatorPages } from "@/data/calculator-content/new-tools";
 import { policyCalculatorPages } from "@/data/calculator-content/policy";
@@ -17,6 +18,7 @@ import type { CalculatorPageDefinition } from "@/types/calculator-page";
 
 export const calculatorPages: readonly CalculatorPageDefinition[] = [
   ...mathCalculatorPages,
+  ...ratioToolPages,
   ...mathExtendedPages,
   ...newCalculatorPages,
   ...financeCalculatorPages,

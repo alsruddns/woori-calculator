@@ -23,7 +23,7 @@ describe("service catalog coverage", () => {
       if (page.isPublished) expect(calculatorRegistry.some(({ slug }) => slug === page.slug)).toBe(true);
       if (!page.isPublished) expect(row[3]).toMatch(/^close - .+/);
     }
-    expect(publishedCalculatorPages.length).toBe(166);
+    expect(publishedCalculatorPages.length).toBe(169);
   });
 
   it("records a year and linked source for every policy-sensitive calculator", () => {

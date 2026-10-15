@@ -72,7 +72,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
     expect(supportedLocalesForCalculator("median")).toEqual(locales);
     expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(166);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
   });
 
   it("provides all Phase 2 calculator translations in every newly added locale", () => {
@@ -118,7 +118,7 @@ describe("locale routing and translated calculator catalog", () => {
     }
     expect(phaseThreeTranslatedCalculatorSlugs).toHaveLength(39);
     expect(phaseFourTranslatedCalculatorSlugs).toHaveLength(5);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(166);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
   });
 
   it("provides localized content for every published calculator in all fifteen locales", () => {
@@ -148,18 +148,18 @@ describe("locale routing and translated calculator catalog", () => {
         const technicalUnits = new Set(["KRW", "KRW/L", "KRW/km", "KRW/min", "KRW / unit", "%", "km", "km/L", "L", "°C", "°F", "mm", "cm", "kg", "g", "mg", "oz", "lb", "m", "mL", "mi", "ft", "yd", "kcal", "W", "kWh", "min", "円", "時間", "yen", "yenes", "ienes", "Yen", "yens", "yên", "เยน", "日元", "日圓", "येन", "hours", "horas", "Stunden", "heures", "giờ", "jam", "ชั่วโมง", "小时", "小時", "ore", "uur", "घंटे"]);
         for (const [key, field] of Object.entries(page.fields)) {
           if (!field.label.trim() || field.label === english?.fields[key]?.label) misses.push(`${slug}:${locale}:field.${key}.label`);
-          if (field.placeholder && field.placeholder === english?.fields[key]?.placeholder) misses.push(`${slug}:${locale}:field.${key}.placeholder`);
+          if (field.placeholder && field.placeholder === english?.fields[key]?.placeholder && !/^\d+(?::\d+)+$/.test(field.placeholder)) misses.push(`${slug}:${locale}:field.${key}.placeholder`);
           if (field.unit && !technicalUnits.has(field.unit) && !/^[A-Z]{3}$/.test(field.unit) && field.unit === english?.fields[key]?.unit) misses.push(`${slug}:${locale}:field.${key}.unit`);
         }
         for (const [fieldKey, options] of Object.entries(page.options)) for (const [optionKey, label] of Object.entries(options)) {
           const sharedUnitNames = new Set(["Celsius (°C)", "Fahrenheit (°F)", "Yards (yd)", "Feet (ft)"]);
-          if (!label.trim() || (label === english?.options[fieldKey]?.[optionKey] && !sharedUnitNames.has(label))) misses.push(`${slug}:${locale}:option.${fieldKey}.${optionKey}`);
+          if (!label.trim() || (label === english?.options[fieldKey]?.[optionKey] && !sharedUnitNames.has(label) && label !== "cm" && label !== "m")) misses.push(`${slug}:${locale}:option.${fieldKey}.${optionKey}`);
         }
         for (const [key, label] of Object.entries(page.resultLabels)) if (!label.trim() || (label === english?.resultLabels[key] && !/^[A-Z0-9%/²]+$/.test(label))) misses.push(`${slug}:${locale}:result.${key}`);
       }
     }
     expect(misses, `Missing localized content across all calculators:\n${misses.join("\n")}`).toEqual([]);
-    expect(localizedCalculatorSlugs).toHaveLength(166);
+    expect(localizedCalculatorSlugs).toHaveLength(169);
     expect(locales).toHaveLength(15);
     expect(localizedCalculatorSlugs.flatMap((slug) => locales.map((locale) => `${slug}:${locale}`))).toHaveLength(localizedCalculatorSlugs.length * locales.length);
   });
