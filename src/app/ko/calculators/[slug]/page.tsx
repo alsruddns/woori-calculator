@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalculatorForm } from "@/components/calculator/calculator-form";
+import { RatioExamples } from "@/components/calculator/ratio-examples";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/constants/site-config";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
@@ -87,13 +88,13 @@ export default async function CalculatorPage({ params }: PageProps) {
             <h2 id="formula" className="text-xl font-bold text-slate-950">계산 공식</h2>
             <p className="mt-3 min-w-0 break-words rounded-xl bg-slate-100 px-3 py-4 font-medium leading-7 text-slate-800 [overflow-wrap:anywhere] sm:px-4">{localized?.formula ?? calculator.formula}</p>
           </section>
-          <section aria-labelledby="example">
+          {slug === "ratio" ? <RatioExamples locale="ko" heading="계산 예제" /> : <section aria-labelledby="example">
             <h2 id="example" className="text-xl font-bold text-slate-950">계산 예제</h2>
             <div className="mt-3 rounded-xl border border-slate-200 bg-white p-5">
               <p className="break-words font-semibold text-slate-900 [overflow-wrap:anywhere]">{localized?.example.question ?? calculator.example.question}</p>
               <p className="mt-2 break-words leading-7 text-slate-700 [overflow-wrap:anywhere]">{localized?.example.answer ?? calculator.example.answer}</p>
             </div>
-          </section>
+          </section>}
           {calculator.notes?.length ? <section aria-labelledby="notes"><h2 id="notes" className="text-xl font-bold text-slate-950">알아둘 점</h2><ul className="mt-3 list-disc space-y-2 pl-5 leading-7 text-slate-700">{calculator.notes.map((note) => <li key={note}>{note}</li>)}</ul></section> : null}
           <section aria-labelledby="faq">
             <h2 id="faq" className="text-xl font-bold text-slate-950">자주 묻는 질문</h2>

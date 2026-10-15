@@ -1,5 +1,6 @@
 import type { CalculatorFunction, CalculatorOutcome } from "@/types/calculator-page";
 import { MAX_RATE, readNumber, result, splitNumbers } from "@/lib/calculators/input";
+import { calculateAspectRatio, calculateProportion, calculateRatioHub, calculateScaleRatio } from "@/calculators/math/ratio-tools";
 
 function values(input: Record<string, string>, names: Record<string, string>): { error: string; field: string } | { values: Record<string, number> } {
   const found: Record<string, number> = {};
@@ -86,6 +87,10 @@ export const calculateRatio: CalculatorFunction = (input) => {
   return { results: [result("단순화한 A", Math.round(a * precision) / divisor), result("단순화한 B", Math.round(b * precision) / divisor), result("기준 A일 때 B", derived)] };
 };
 
+export const calculateExpandedRatio: CalculatorFunction = (input) => input.mode === undefined && input.known !== undefined
+  ? calculateRatio(input)
+  : calculateRatioHub(input);
+
 export const calculateAverage: CalculatorFunction = (input) => {
   const numbers = splitNumbers(input.numbers ?? "");
   if (!numbers) return { error: "숫자 목록은 30,000자와 500개 항목 이내로 입력해 주세요.", field: "numbers" };
@@ -123,7 +128,10 @@ export const mathCalculators: Record<string, CalculatorFunction> = {
   percentage: calculatePercentage,
   discount: calculateDiscount,
   "change-rate": calculateChangeRate,
-  ratio: calculateRatio,
+  ratio: calculateExpandedRatio,
+  proportion: calculateProportion,
+  "aspect-ratio": calculateAspectRatio,
+  "scale-ratio": calculateScaleRatio,
   average: calculateAverage,
   "weighted-average": calculateWeightedAverage,
   cagr: calculateCagr,

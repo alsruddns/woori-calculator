@@ -1,5 +1,6 @@
 import { createCalculatorPage } from "@/data/calculator-content/create-page";
-import { calculateAverage, calculateCagr, calculateChangeRate, calculateDiscount, calculatePercentage, calculateRatio, calculateWeightedAverage } from "@/calculators/math/calculate";
+import { calculateAverage, calculateCagr, calculateChangeRate, calculateDiscount, calculatePercentage, calculateWeightedAverage } from "@/calculators/math/calculate";
+import { ratioCalculatorPage } from "@/data/calculator-content/ratio-tools";
 import type { CalculatorPageDefinition } from "@/types/calculator-page";
 
 const input = (name: string, label: string, extra: object = {}) => ({ name, label, type: "number" as const, min: 0, step: 0.01, ...extra });
@@ -24,12 +25,7 @@ export const mathCalculatorPages: readonly CalculatorPageDefinition[] = [
     howTo: "기존 값과 비교할 변경 값을 입력하세요. 감소율은 음수로 나타내어 변화 방향을 구분합니다.", formula: "변화량 = 변경 값 − 기존 값 · 변화율(%) = 변화량 ÷ |기존 값| × 100", example: { question: "100에서 120으로 바뀌었다면?", answer: "20 증가했고 증가율은 20%입니다." },
     faqs: [{ question: "기존 값이 0이면 왜 계산할 수 없나요?", answer: "변화율은 기존 값을 분모로 나누므로 기준값이 0이면 정의되지 않습니다." }, { question: "감소율은 어떻게 표시되나요?", answer: "감소량은 양수 크기로 표시하고 감소율에는 음수 부호를 붙여 방향을 알 수 있게 합니다." }],
   }),
-  createCalculatorPage({
-    slug: "ratio", name: "비율 계산기", shortName: "비율", category: "math", description: "A:B 비율을 단순화하고 A를 기준으로 비례하는 B 값을 계산합니다.", title: "비율 계산기: 비율 단순화와 비례값", keywords: ["비율 계산기", "비율 단순화", "비례식 계산"], relatedCalculatorIds: ["percentage", "average", "weighted-average"],
-    fields: [input("a", "비율 A"), input("b", "비율 B"), input("known", "기준 A 값")], calculate: calculateRatio,
-    howTo: "비율 A와 B를 입력하면 간단한 정수 비율과 기준 A 값에 대응하는 B 값을 계산합니다.", formula: "단순 비율 = A와 B를 최대공약수로 나눈 값 · 대응 B = 기준 A × B ÷ A", example: { question: "12:18을 단순화하면?", answer: "최대공약수 6으로 나누면 2:3입니다. A가 10일 때 B는 15입니다." },
-    faqs: [{ question: "비율의 두 값이 소수여도 되나요?", answer: "소수 비율은 계산기에 입력할 수 있으며, 단순화 결과는 숫자로 표시됩니다." }, { question: "비율과 퍼센트는 같은가요?", answer: "비율은 두 값의 상대 관계이고, 퍼센트는 기준값 대비 비율을 100을 기준으로 표현한 값입니다." }],
-  }),
+  ratioCalculatorPage,
   createCalculatorPage({
     slug: "average", name: "평균 계산기", shortName: "평균", category: "math", description: "여러 숫자의 합계와 개수, 산술평균을 한 번에 계산합니다.", title: "평균 계산기: 여러 숫자의 합계와 평균", keywords: ["평균 계산기", "산술 평균", "숫자 평균"], relatedCalculatorIds: ["weighted-average", "ratio", "cagr"],
     fields: [{ name: "numbers", label: "계산할 숫자", type: "textarea", placeholder: "예: 1,000; 2,000; 2,400" }], calculate: calculateAverage,
