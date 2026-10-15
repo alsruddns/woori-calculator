@@ -5,6 +5,15 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
 
+const SIDEBAR_SCROLL_KEY = "woori-calculator:sidebar-scroll";
+
+export function restoredSidebarScrollTop(saved: unknown, basePath: string, maxScrollTop: number) {
+  if (!saved || typeof saved !== "object") return null;
+  const value = saved as { basePath?: unknown; scrollTop?: unknown };
+  if (value.basePath !== basePath || typeof value.scrollTop !== "number" || !Number.isFinite(value.scrollTop) || value.scrollTop < 0) return null;
+  return Math.min(value.scrollTop, Math.max(0, maxScrollTop));
+}
+
 export type SidebarCalculator = { slug: string; name: string; category: string; keywords?: readonly string[] };
 
 type Props = {
@@ -22,7 +31,42 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
+  const desktopSidebarRef = useRef<HTMLElement>(null);
   const filtered = calculators.filter((item) => matchesCalculatorSearch(item, query));
+
+  useEffect(() => {
+    const sidebar = desktopSidebarRef.current;
+    if (!sidebar) return;
+
+    // The workspace is rendered by each calculator page, so App Router replaces
+    // this sidebar on slug navigation. Restore only within the same locale.
+    let saved: unknown = null;
+    try {
+      const value = sessionStorage.getItem(SIDEBAR_SCROLL_KEY);
+      saved = value ? JSON.parse(value) as unknown : null;
+    } catch {
+      sessionStorage.removeItem(SIDEBAR_SCROLL_KEY);
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      const maxScrollTop = Math.max(0, sidebar.scrollHeight - sidebar.clientHeight);
+      const scrollTop = restoredSidebarScrollTop(saved, basePath, maxScrollTop);
+      if (scrollTop !== null) sidebar.scrollTop = scrollTop;
+    });
+    const saveScroll = () => {
+      try {
+        sessionStorage.setItem(SIDEBAR_SCROLL_KEY, JSON.stringify({ basePath, scrollTop: sidebar.scrollTop }));
+      } catch {
+        // Storage may be unavailable; navigation still works normally.
+      }
+    };
+    sidebar.addEventListener("scroll", saveScroll, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      saveScroll();
+      sidebar.removeEventListener("scroll", saveScroll);
+    };
+  }, [basePath]);
 
   useEffect(() => {
     if (!open) return;
@@ -68,7 +112,7 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
   </nav>;
 
   return <>
-    <aside className="sticky top-5 hidden max-h-[calc(100vh-2.5rem)] w-64 min-w-0 self-start overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:block" aria-label={labels.menu}>{list("desktop-calculator-menu-search")}</aside>
+    <aside ref={desktopSidebarRef} className="sticky top-5 hidden max-h-[calc(100vh-2.5rem)] w-64 min-w-0 self-start overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:block" aria-label={labels.menu}>{list("desktop-calculator-menu-search")}</aside>
     <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="calculator-mobile-menu" onClick={() => setOpen(true)} className="mb-1 min-h-11 self-start rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 lg:hidden">{labels.menu}</button>
     {open ? <div className="fixed inset-0 z-50 lg:hidden" role="presentation">
       <button type="button" tabIndex={-1} aria-label={labels.close} onClick={() => setOpen(false)} className="absolute inset-0 h-full w-full bg-slate-950/40" />
