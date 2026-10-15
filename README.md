@@ -35,7 +35,7 @@ pnpm start      # production 서버 (3001)
 
 ## 계산기 구조
 
-현재는 35개 계산기를 공개하고 있습니다. 결과 숫자는 공통 formatter로 천 단위 쉼표와 원화 `원` 접미사를 적용합니다. 사용자 입력은 브라우저에서만 계산합니다.
+현재는 166개 계산기를 공개하고 있습니다. 전체 서비스와 정책 대상은 [서비스 카탈로그](docs/service-catalog.md)를 참고하세요. 결과 숫자는 공통 formatter로 천 단위 쉼표와 원화 `원` 접미사를 적용합니다. 사용자 입력은 브라우저에서만 계산합니다.
 
 숫자 입력은 최대 1,000조, 목록 입력은 최대 500개 항목과 30,000자로 제한합니다. 대출 상환 계산은 최대 1,200개월, 저축 납입 계산은 최대 2,400개월이며, 날짜 범위는 최대 200년입니다. 반복 계산은 가능한 경우 수학식으로 계산하고 결과의 유한성 및 안전 정수 범위를 검사합니다.
 
@@ -62,6 +62,8 @@ src/
 
 공개 계산기의 계산 예제는 실제 계산 함수 결과와 일치해야 합니다. 0으로 나누는 경우, 잘못된 기간·단위, 반올림, 경계 날짜 등을 테스트하고 정책형 계산기는 확인 가능한 공식 출처와 적용기간을 기록합니다.
 
+전체 서비스 인벤토리는 [docs/service-catalog.md](docs/service-catalog.md)에서 관리합니다. 새 Calculator 추가/삭제/공개/비공개 전환, 정책 기준 변경 시 service-catalog를 반드시 함께 수정합니다. 정책형 계산기 목록은 `pnpm list:policy-calculators`로 확인합니다.
+
 SEO는 각 계산기의 실제 URL, 고유 metadata/canonical/H1, 공식과 설명, 예제, FAQ 및 관련 링크를 하나의 기능으로 관리합니다. sitemap에는 공개된 페이지만 들어갑니다.
 
 ## Docker
@@ -79,11 +81,11 @@ docker run --rm -p 3001:3001 woori-tools
 
 ## Internationalized URLs and content
 
-- Supported locales: Korean (`ko`), English (`en`), Japanese (`ja`), and Simplified Chinese (`zh`).
-- Calculator routes use a locale prefix: `/ko/calculators/...`, `/en/calculators/...`, `/ja/calculators/...`, and `/zh/calculators/...`.
+- Supported locales: `ko`, `en`, `ja`, `zh`, `es`, `pt-br`, `de`, `fr`, `vi`, `id`, `th`, `zh-tw`, `it`, `nl`, and `hi`.
+- Calculator routes use `/{locale}/calculators/...`, with localized listing and detail pages in all fifteen locales.
 - Locale roots (`/ko`, `/en`, `/ja`, `/zh`) and the domain-level `/robots.txt` belong to the Portal service.
 - Legacy Korean calculator routes without `/ko` permanently redirect to their `/ko/calculators` equivalents when they reach this app.
-- `src/i18n/config.ts` lists calculators with complete translated pages. Policy calculators based on Korean rules remain Korean-only until a separately reviewed translation clearly identifies the South Korea basis.
+- `src/i18n/config.ts` lists calculators with complete translated pages. Policy pages identify the country or jurisdiction their calculation uses, regardless of the selected display language.
 - Add locale content under `src/i18n/dictionaries/` with a unique title, description, keywords, instructions, formula, example, FAQ, and translated input/result labels before publishing its slug.
 - Each localized page uses its own canonical URL and hreflang links only to available translations. Do not publish incomplete or mixed-language pages.
 
@@ -102,7 +104,7 @@ docker run --rm -p 3001:3001 woori-tools
 
 ### IndexNow
 
-- The main-branch deploy workflow submits the calculator listing/detail URLs from the deployed calculator sitemap after the public calculator route and sitemap respond successfully. The sitemap is generated from the published calculator registry; the submitter filters to the four locale-first calculator routes and removes duplicates.
+- The main-branch deploy workflow submits the calculator listing/detail URLs from the deployed calculator sitemap after the public calculator route and sitemap respond successfully. The sitemap is generated from the published calculator registry; the submitter validates all fifteen locale routes and removes duplicates.
 - `public/bc52d22e38f7489988b717aa090fbdfb.txt` hosts the verification key. The public host must serve it at the configured root URL before an IndexNow request can be sent.
 - For a no-submit preview, run `INDEXNOW_KEY=<key> INDEXNOW_DRY_RUN=true node scripts/submit-indexnow.mjs` after the deployed sitemap is reachable.
 
