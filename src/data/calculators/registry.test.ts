@@ -15,7 +15,7 @@ describe("calculator registry", () => {
     expect(new Set(publishedCalculators.map(({ slug }) => slug)).size).toBe(publishedCalculators.length);
     expect(publishedCalculators.every(({ isPublished }) => isPublished)).toBe(true);
     expect(calculatorRegistry.find(({ slug }) => slug === "salary")).toBeUndefined();
-    expect(calculatorPages.length).toBe(154);
+    expect(calculatorPages.length).toBe(166);
   });
 
   it("provides all fifteen locale routes for every published calculator", () => {
@@ -34,7 +34,7 @@ describe("calculator registry", () => {
     expect(phaseSixTranslatedCalculatorSlugs).toHaveLength(48);
     const missing = missingCalculatorTranslationReport(slugs);
     expect(missing, `Missing published calculator translations:\n${missing.join("\n")}`).toEqual([]);
-    expect(phaseTranslatedCalculatorSlugs).toHaveLength(154);
+    expect(phaseTranslatedCalculatorSlugs).toHaveLength(166);
     expect([...phaseTranslatedCalculatorSlugs].sort()).toEqual([...slugs].sort());
     for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(locales);
   });

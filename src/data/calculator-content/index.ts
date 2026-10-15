@@ -10,6 +10,7 @@ import { countrySpecificCalculatorPages } from "@/data/calculator-content/countr
 import { globalCountryCalculatorPages } from "@/data/calculator-content/country-specific-global";
 import { mathCalculatorPages } from "@/data/calculator-content/math";
 import { mathExtendedPages } from "@/data/calculator-content/math-extended";
+import { newCalculatorPages } from "@/data/calculator-content/new-tools";
 import { policyCalculatorPages } from "@/data/calculator-content/policy";
 import { taxCalculatorPages } from "@/data/calculator-content/tax";
 import type { CalculatorPageDefinition } from "@/types/calculator-page";
@@ -17,6 +18,7 @@ import type { CalculatorPageDefinition } from "@/types/calculator-page";
 export const calculatorPages: readonly CalculatorPageDefinition[] = [
   ...mathCalculatorPages,
   ...mathExtendedPages,
+  ...newCalculatorPages,
   ...financeCalculatorPages,
   ...extendedFinancePages,
   salaryConversionPage,

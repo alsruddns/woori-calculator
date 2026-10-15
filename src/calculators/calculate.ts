@@ -4,6 +4,7 @@ import { runConversionCalculator } from "@/calculators/conversion/convert";
 import { runDateLifeCalculator } from "@/calculators/date-life/date-calculate";
 import { runFinanceCalculator } from "@/calculators/finance/calculate";
 import { extendedFinance } from "@/calculators/finance/extended";
+import { calculateBreakEven, calculateDividendGrowth, calculateEarlyRepayment, calculateElectricityCost, calculateFireTarget, calculateFreelancerRate, calculatePositionSize, calculateRealReturn, calculateRentVsBuy, calculateStockNetProfit, calculateStopTarget, calculateTravelBudget } from "@/calculators/finance/new-tools";
 import { runMathCalculator } from "@/calculators/math/calculate";
 import { extendedMath } from "@/calculators/math/extended";
 import { runPolicyCalculator } from "@/calculators/policy/severance";
@@ -22,6 +23,21 @@ const japanCalculators = {
   "japan-night-holiday-pay-calculator": calculateJapanNightHolidayPay,
 };
 
+const newTools = {
+  "fire-retirement-calculator": calculateFireTarget,
+  "dividend-growth-calculator": calculateDividendGrowth,
+  "inflation-adjusted-return-calculator": calculateRealReturn,
+  "position-size-calculator": calculatePositionSize,
+  "stop-loss-take-profit-calculator": calculateStopTarget,
+  "stock-profit-after-fees-calculator": calculateStockNetProfit,
+  "loan-early-repayment-calculator": calculateEarlyRepayment,
+  "rent-vs-buy-calculator": calculateRentVsBuy,
+  "electricity-cost-calculator": calculateElectricityCost,
+  "travel-budget-calculator": calculateTravelBudget,
+  "freelancer-hourly-rate-calculator": calculateFreelancerRate,
+  "break-even-point-calculator": calculateBreakEven,
+};
+
 export function calculateBySlug(slug: string, input: Record<string, string>): CalculatorOutcome {
   for (const [field, raw] of Object.entries(input)) {
     const isList = field === "numbers" || field === "values" || field === "weights";
@@ -31,6 +47,7 @@ export function calculateBySlug(slug: string, input: Record<string, string>): Ca
     if (raw.trim() && Number.isFinite(numeric) && Math.abs(numeric) > MAX_MONEY) return { error: "숫자 입력은 1,000조 이하로 입력해 주세요.", field };
   }
   if (slug in japanCalculators) return japanCalculators[slug as keyof typeof japanCalculators](input);
+  if (slug in newTools) return newTools[slug as keyof typeof newTools](input);
   const globalCountryOutcome = calculateGlobalCountrySpecific(slug, input);
   if (globalCountryOutcome) return globalCountryOutcome;
   const countryOutcome = calculateCountrySpecific(slug, input);

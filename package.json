@@ -8,6 +8,7 @@
     "start": "node scripts/start.mjs",
     "lint": "eslint",
     "test": "vitest run",
+    "list:policy-calculators": "node scripts/list-policy-calculators.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

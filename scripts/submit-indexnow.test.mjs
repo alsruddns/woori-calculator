@@ -47,6 +47,13 @@ describe("IndexNow URL preparation", () => {
     expect(() => calculatorUrlsFromSitemap(broken)).toThrow("Sitemap hreflang validation failed");
   });
 
+  it("includes all fifteen locale routes for newly published calculators", () => {
+    const newSlugs = ["fire-retirement-calculator", "dividend-growth-calculator", "inflation-adjusted-return-calculator", "position-size-calculator", "stop-loss-take-profit-calculator", "stock-profit-after-fees-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "freelancer-hourly-rate-calculator", "break-even-point-calculator"];
+    for (const slug of newSlugs) expect(FULL_LOCALE_SLUGS.has(slug)).toBe(true);
+    const urls = [...routes, ...newSlugs.flatMap(details)];
+    expect(calculatorUrlsFromSitemap(sitemap(urls))).toHaveLength(routes.length + newSlugs.length * locales.length);
+  });
+
   it("collects the complete published sitemap set based on the registered calculator slugs", () => {
     const allUrls = [...routes, ...slugs.flatMap(details)];
     const collected = calculatorUrlsFromSitemap(sitemap(allUrls));
