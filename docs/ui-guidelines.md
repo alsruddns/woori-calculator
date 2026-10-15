@@ -7,6 +7,8 @@
 - 높이와 정렬 일치
 
 ## Family Sites
+Desktop header는 수평 패밀리 서비스 링크를 보여주고, 모바일 header는 서비스 메뉴를 열어 6개 서비스를 보여준다. Calculator 서비스에서는 계산기 항목을 active로 표시한다.
+
 표시 순서:
 1. 포탈
 2. 계산기
@@ -14,6 +16,8 @@
 4. 무료 공유 가계부
 5. 문서·양식
 6. 퀴즈·테스트
+
+각 locale 경로를 유지한다: `/{locale}`, `/{locale}/calculators`, `/{locale}/tools`, `/{locale}/money`, `/{locale}/docs`, `/{locale}/quiz`.
 
 현재 locale을 유지한다.
 
