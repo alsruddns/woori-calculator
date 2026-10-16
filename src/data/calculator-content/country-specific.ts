@@ -2,6 +2,7 @@ import { calculateCountrySpecific } from "@/calculators/policy/country-specific"
 import { countryRates } from "@/data/country-rates";
 import { createCalculatorPage } from "@/data/calculator-content/create-page";
 import type { CalculatorField, CalculatorPageDefinition } from "@/types/calculator-page";
+import { calculatorExample } from "@/lib/content-quality/examples";
 
 type Row = { slug: string; code: string; type: string; en: string; ko: string; related: string[] };
 const rows: Row[] = [
@@ -64,6 +65,7 @@ function fieldsFor(row: Row): CalculatorField[] {
   if (row.type === "fund") return [amount("salary", "Monthly gross salary", "3000")];
   if (row.type === "thirteenth") return [amount("salary", "Monthly gross salary", "3000"), { name: "months", label: "Eligible months worked", type: "number", min: 0, max: 12, step: 1, defaultValue: "12" }];
   if (row.type === "contribution") return [amount("salary", "Monthly contribution base", "3000"), percentage("rate", "Employee contribution rate", countryRates[row.code]!.socialEmployeeRate ?? 0)];
+  if (row.slug === "brazil-irrf-calculator") return [amount("salary", "Monthly gross salary", "5000")];
   if (row.type === "incomeTax") return [amount("income", "Annual taxable income", "50000"), ...(countryRates[row.code]!.annualTaxBrackets ? [] : [percentage("rate", "Estimated effective tax rate", 15)])];
   return [amount("salary", "Gross salary", "50000"), { name: "frequency", label: "Pay frequency", type: "select", defaultValue: "annual", options: [{ label: "Annual", value: "annual" }, { label: "Monthly", value: "monthly" }] }, percentage("socialRate", "Employee contribution assumption", countryRates[row.code]!.socialEmployeeRate ?? 0), ...(!countryRates[row.code]!.annualTaxBrackets ? [percentage("taxRate", "Estimated effective income tax rate", row.code === "ES" ? 15 : row.code === "VN" ? 10 : 15)] : [])];
 }
@@ -85,6 +87,15 @@ export const countrySpecificCalculatorPages: readonly CalculatorPageDefinition[]
     notes: [rate.notes], faqs: [{ question: "Does changing locale change the calculation country?", answer: `No. The interface language may change, but the calculation remains based on ${rate.countryName}.` }, { question: "Is this an official payroll or tax determination?", answer: "No. This is an estimate. Verify current rules and individual circumstances with the relevant authority or a qualified professional." }],
     sources: rate.sources.map((source) => ({ ...source, checkedAt: rate.updatedAt })),
   });
+}).map((page) => {
+  const example = calculatorExample(page, "en");
+  const inputs = page.fields.map((field) => field.label).join(", ");
+  return {
+    ...page,
+    howTo: `${page.name} uses ${inputs}. Check the ${page.policyYear} reference year and the source notes before comparing the estimate with a payslip, tax bill or account statement.`,
+    example: example ? { question: `What does ${page.name} return for ${example.input}?`, answer: `${example.result}. This is an estimate using the shown inputs and the ${page.policyYear} reference assumptions.` } : page.example,
+    faqs: [{ question: `Which inputs affect ${page.name}?`, answer: `This calculation uses ${inputs}. Only the fields shown on this page are included; personal or regional factors outside these inputs may change the actual outcome.` }, page.faqs[1]!],
+  };
 });
 
 export const countrySpecificCalculatorSlugs = rows.map(({ slug }) => slug);

@@ -19,7 +19,13 @@ const pages: CalculatorPageDefinition[] = [
   createCalculatorPage({ slug: "break-even-point-calculator", name: "손익분기점 계산기", shortName: "손익분기점", category: "tax", title: "손익분기점 계산기 - 고정비와 단위당 공헌이익", description: "고정비, 판매 단가와 단위당 변동비로 손익분기 판매수량과 매출을 계산합니다.", keywords: ["손익분기점 계산기", "BEP 계산", "손익분기 판매량"], relatedCalculatorIds: ["product-margin", "margin", "unit-price"], fields: [n("fixedCosts", "총 고정비", "통화 단위", 0, 100), n("pricePerUnit", "단위당 판매가", "통화 단위", 0, 0.01), n("variableCostPerUnit", "단위당 변동비", "통화 단위", 0, 0.01)], calculate: calculateBreakEven, howTo: "분석 기간에 맞는 총 고정비와 단위당 판매가·변동비를 같은 통화로 입력합니다.", formula: "단위당 공헌이익 = 판매가 − 변동비. 손익분기 수량 = 올림(고정비 ÷ 단위당 공헌이익)", example: { question: "고정비 1,000, 단가 25, 변동비 15이면?", answer: "단위당 공헌이익은 10, 손익분기 수량은 100개, 매출은 2,500입니다." }, faqs: commonFaq("손익분기점에서 이익이 발생하나요?", "모델상 이익과 손실이 0이 되는 최소 정수 판매량입니다. 세금, 재고 손실, 가격 변동은 반영하지 않습니다.") }),
 ];
 
-export const newCalculatorPages = pages;
+export const newCalculatorPages = pages.map((page) => ({
+  ...page,
+  faqs: [...page.faqs, {
+    question: `${page.name}에는 어떤 입력이 필요한가요?`,
+    answer: `${page.fields.map((field) => field.label).join(", ")}을(를) 입력합니다. 결과는 이 페이지의 공식에 표시된 항목만 사용하며, 별도 자료를 자동으로 조회하지 않습니다.`,
+  }],
+}));
 
 
 

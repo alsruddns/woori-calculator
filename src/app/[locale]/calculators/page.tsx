@@ -5,7 +5,9 @@ import { hasLocale, localePath, localizedIndexSlugs } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { CalculatorCatalog } from "@/components/calculator/calculator-catalog";
+import { CatalogGuidance } from "@/components/calculator/catalog-guidance";
 import { getCalculatorPage } from "@/data/calculator-content";
+import { catalogGuidance } from "@/i18n/catalog-guidance";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: key } = await params;
@@ -22,7 +24,8 @@ export default async function LocaleCalculators({ params }: { params: Promise<{ 
   const sidebarItems = items.map(({ slug, name, category, keywords }) => ({ slug, name, category, keywords }));
   return <CalculatorWorkspace localizedItems={sidebarItems} categories={dict.categories} categoryOrder={dict.categoriesOrder} basePath={localePath(key, "/calculators")} labels={{ menu: dict.nav.menu, search: dict.nav.search, close: dict.nav.close, empty: dict.nav.searchEmpty }}>
     <section className="min-w-0 py-3 sm:py-4"><nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6"><Link className="inline-flex min-h-11 items-center" href={`/${key}`}>{dict.calculatorList.breadcrumbHome}</Link><span aria-hidden="true">/</span><span aria-current="page">{dict.calculatorList.breadcrumbCalculators}</span></nav><header className="min-w-0"><h1 className="break-words text-2xl font-bold tracking-tight text-slate-950 [overflow-wrap:anywhere] sm:text-3xl">{dict.calculatorList.title}</h1><p className="mt-3 max-w-2xl break-words leading-7 text-slate-600 [overflow-wrap:anywhere]">{dict.calculatorList.description}</p></header>
-      <CalculatorCatalog items={items} categories={dict.categories} categoryOrder={dict.categoriesOrder} searchLabel={dict.nav.search} emptyLabel={dict.calculatorList.noResults} basePath={localePath(key, "/calculators")} />
+      <CatalogGuidance locale={key} names={Object.fromEntries(items.map(({ slug, name }) => [slug, name]))} />
+      <CalculatorCatalog items={items} categories={dict.categories} categoryDescriptions={catalogGuidance(key).categories} categoryOrder={dict.categoriesOrder} searchLabel={dict.nav.search} emptyLabel={dict.calculatorList.noResults} basePath={localePath(key, "/calculators")} />
     </section>
   </CalculatorWorkspace>;
 }

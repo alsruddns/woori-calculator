@@ -3,6 +3,9 @@ import { countryRates } from "@/data/country-rates";
 import { getCalculatorPage } from "@/data/calculator-content";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import type { Locale } from "@/i18n/config";
+import { contentPatterns } from "@/i18n/dictionaries/content-patterns";
+import { calculatorExample } from "@/lib/content-quality/examples";
+import { purposeSentence } from "@/i18n/dictionaries/purpose-sentence";
 
 type Copy = { country: string; tax: string; salary: string; vat: string; overtime: string; allowance: string; severance: string; investment: string; insurance: string; ruling: string; intro: string; howTo: string; formula: string; example: string; answer: string; faq: string; faqAnswer: string; warning: string; fieldAmount: string; fieldSalary: string; fieldIncome: string; fieldFrequency: string; fieldRate: string; fieldHours: string; fieldMultiplier: string; fieldDirection: string; fieldYears: string; fieldDays: string; fieldMonths: string; fieldBase: string; optionAnnual: string; optionMonthly: string; optionAdd: string; optionExtract: string; resultTaxBase: string; resultTax: string; resultTotal: string; resultGross: string; resultContrib: string; resultNet: string; resultMonthlyNet: string; resultAverageRate: string; resultHours: string; resultBasePay: string; resultPremium: string; resultAllowance: string; resultService: string; resultSeverance: string; resultInvested: string; resultGains: string; resultBalance: string; resultExempt: string; resultTaxable: string; resultFund: string; resultAnnualFund: string; resultMonths: string; resultRate: string };
 const copy: Record<Locale, Copy> = {
@@ -61,7 +64,7 @@ const resultLabels = (text: Copy) => ({ "Tax-exclusive amount": text.resultTaxBa
 
 export function phaseFiveLocaleContent(locale: Locale): Partial<Record<(typeof countrySpecificCalculatorSlugs)[number], LocalizedCalculatorContent>> {
   const text = copy[locale];
-  return Object.fromEntries(countrySpecificCalculatorSlugs.map((slug) => {
+  const localized = Object.fromEntries(countrySpecificCalculatorSlugs.map((slug) => {
     const page = getCalculatorPage(slug)!;
     const code = countryCodeFromSlug(slug);
     const localizedCountry = countryNames[code]![locale];
@@ -74,5 +77,20 @@ export function phaseFiveLocaleContent(locale: Locale): Partial<Record<(typeof c
     const dayWord: Record<Locale, string> = { ko: "일", en: "days", ja: "日", zh: "天", es: "días", "pt-br": "dias", de: "Tage", fr: "jours", vi: "ngày", id: "hari", th: "วัน", "zh-tw": "天", it: "giorni", nl: "dagen", hi: "दिन" };
     const options = Object.fromEntries(page.fields.filter((field) => field.options).map((field) => [field.name, Object.fromEntries(field.options!.map((option) => [option.value, field.name === "daysPerYear" ? `${option.value} ${dayWord[locale]}` : option.value === "annual" ? text.optionAnnual : option.value === "monthly" ? text.optionMonthly : option.value === "exclusive" ? text.optionAdd : option.value === "inclusive" ? text.optionExtract : option.label]))]));
     return [slug, { name, shortName: name, title: `${name} (${source.policyYear})`, description: `${name}. ${policyStatements[locale]} ${text.warning}`, keywords: [name, `${localizedCountry} ${concept(slug, text, locale)}`], howTo: `${text.howTo} ${policyStatements[locale]} ${text.warning}`, formula: text.formula, example: { question: text.example, answer: text.answer }, faqs: [{ question: text.faq, answer: text.faqAnswer }, { question: locale === "ko" ? "언어를 바꾸면 계산 국가도 바뀌나요?" : locale === "ja" ? "言語を変更すると計算対象国も変わりますか？" : locale === "zh" ? "更改语言会改变计算国家吗？" : locale === "es" ? "¿Cambiar el idioma cambia el país del cálculo?" : locale === "fr" ? "La langue modifie-t-elle le pays du calcul ?" : locale === "de" ? "Ändert ein Sprachwechsel das Berechnungsland?" : locale === "nl" ? "Verandert de taal het rekenland?" : locale === "it" ? "La lingua cambia il Paese di calcolo?" : locale === "pt-br" ? "Mudar o idioma altera o país do cálculo?" : locale === "vi" ? "Đổi ngôn ngữ có đổi quốc gia tính toán không?" : locale === "id" ? "Apakah bahasa mengubah negara perhitungan?" : locale === "th" ? "เปลี่ยนภาษาแล้วประเทศที่คำนวณเปลี่ยนหรือไม่" : locale === "zh-tw" ? "切換語言會改變計算國家嗎？" : locale === "hi" ? "क्या भाषा बदलने से गणना का देश बदलता है?" : "Does changing language change the calculation country?", answer: policyStatements[locale] }], related: page.relatedCalculatorIds as LocalizedCalculatorContent["related"], fields, options, resultLabels: resultLabels(text), validation: text.warning, resultNote: text.warning } satisfies LocalizedCalculatorContent];
+  })) as Partial<Record<(typeof countrySpecificCalculatorSlugs)[number], LocalizedCalculatorContent>>;
+  const labels = contentPatterns[locale];
+  return Object.fromEntries(countrySpecificCalculatorSlugs.map((slug) => {
+    const page = getCalculatorPage(slug)!;
+    const content = localized[slug]!;
+    const fieldNames = page.fields.map((field) => content.fields[field.name]?.label ?? field.label).join(", ");
+    const localizedFields = Object.fromEntries(Object.entries(content.fields).map(([key, value]) => [key, value.label]));
+    const example = calculatorExample(page, locale, localizedFields, content.resultLabels);
+    return [slug, {
+      ...content,
+      description: example ? `${purposeSentence(locale, page.fields.slice(0, 3).map((field) => content.fields[field.name]?.label ?? field.label), [example.primaryLabel])} ${content.description}` : content.description,
+      howTo: `${content.name}: ${labels.inputs}: ${fieldNames}. ${content.howTo}`,
+      example: example ? { question: `${content.name} — ${labels.exampleInput}: ${example.input}`, answer: `${labels.exampleResult}: ${example.result}. ${content.resultNote}` } : content.example,
+      faqs: [{ question: `${content.name}: ${labels.inputQuestion}`, answer: `${labels.inputAnswer} ${fieldNames}. ${content.resultNote}` }, content.faqs[0]!],
+    } satisfies LocalizedCalculatorContent];
   })) as Partial<Record<(typeof countrySpecificCalculatorSlugs)[number], LocalizedCalculatorContent>>;
 }
