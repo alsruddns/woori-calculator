@@ -64,6 +64,8 @@ src/
 
 전체 서비스 인벤토리는 [docs/service-catalog.md](docs/service-catalog.md)에서 관리합니다. 새 Calculator 추가/삭제/공개/비공개 전환, 정책 기준 변경 시 service-catalog를 반드시 함께 수정합니다. 정책형 계산기 목록은 `pnpm list:policy-calculators`로 확인합니다.
 
+계산기별 콘텐츠 검토 대상과 남은 편집 과제는 [콘텐츠 품질 감사](docs/content-quality-audit.md)에 기록합니다.
+
 SEO는 각 계산기의 실제 URL, 고유 metadata/canonical/H1, 공식과 설명, 예제, FAQ 및 관련 링크를 하나의 기능으로 관리합니다. sitemap에는 공개된 페이지만 들어갑니다.
 
 ## Docker

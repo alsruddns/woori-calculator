@@ -3,7 +3,8 @@ import { ja } from "@/i18n/dictionaries/ja";
 import { zh } from "@/i18n/dictionaries/zh";
 import { calculatorCategoryOrder } from "@/data/calculators/categories";
 import { additionalCalculatorContent } from "@/i18n/dictionaries/additional";
-import type { LocaleDictionary } from "@/i18n/dictionaries/types";
+import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
+import { contentPatterns } from "@/i18n/dictionaries/content-patterns";
 import type { Locale } from "@/i18n/config";
 import { phaseOneLocaleDictionary } from "@/i18n/dictionaries/phase-one";
 import { phaseFourLocaleContent } from "@/i18n/dictionaries/phase-four";
@@ -11,6 +12,9 @@ import { phaseFiveLocaleContent } from "@/i18n/dictionaries/phase-five";
 import { phaseSixLocaleContent } from "@/i18n/dictionaries/phase-six";
 import { newToolsLocaleContent } from "@/i18n/dictionaries/new-tools";
 import { ratioLocaleContent } from "@/i18n/dictionaries/ratio-tools";
+import { improveKoreanContent } from "@/i18n/dictionaries/korean-content-improvements";
+import { publishedCalculatorPages } from "@/data/calculator-content";
+import { improveLocalizedQualityContent } from "@/i18n/dictionaries/locale-quality-followup";
 
 const ko: LocaleDictionary = {
   locale: "ko", siteName: "우리의 오늘", description: "일상에 필요한 계산과 생활 도구를 쉽고 빠르게 이용하세요.",
@@ -44,7 +48,7 @@ const seedKeywords = {
 } as const;
 
 const sources = { en, ja, zh } as const;
-export function getDictionary(locale: Locale): LocaleDictionary {
+function buildDictionary(locale: Locale): LocaleDictionary {
   if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko }, calculators: { ...ko.calculators, ...phaseFourLocaleContent("ko"), ...phaseFiveLocaleContent("ko"), ...phaseSixLocaleContent("ko"), ...newToolsLocaleContent("ko"), ...ratioLocaleContent("ko") } };
   if (locale !== "en" && locale !== "ja" && locale !== "zh") {
     const base = phaseOneLocaleDictionary(locale, getDictionary("en"))!;
@@ -59,4 +63,49 @@ export function getDictionary(locale: Locale): LocaleDictionary {
     common: source.common,
     calculators: { ...translatedSeeds, ...additionalCalculatorContent[locale], ...phaseFourLocaleContent(locale), ...phaseFiveLocaleContent(locale), ...phaseSixLocaleContent(locale), ...newToolsLocaleContent(locale), ...ratioLocaleContent(locale) },
   };
+}
+
+const dictionaryCache = new Map<Locale, LocaleDictionary>();
+function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictionary {
+  const entries = Object.entries(dictionary.calculators).filter((entry): entry is [string, LocalizedCalculatorContent] => Boolean(entry[1]));
+  const counts = (select: (content: LocalizedCalculatorContent) => string) => {
+    const values = new Map<string, number>();
+    for (const [, content] of entries) {
+      const key = select(content);
+      values.set(key, (values.get(key) ?? 0) + 1);
+    }
+    return values;
+  };
+  const guideCounts = counts((content) => content.howTo);
+  const faqCounts = counts((content) => content.faqs.map(({ question, answer }) => `${question}:${answer}`).join("|"));
+  const labels = contentPatterns[dictionary.locale];
+  const calculators = Object.fromEntries(entries.map(([slug, content]) => {
+    const fields = Object.values(content.fields).map((field) => field.label).join(", ");
+    const repeatedGuide = (guideCounts.get(content.howTo) ?? 0) > 1;
+    const repeatedFaq = (faqCounts.get(content.faqs.map(({ question, answer }) => `${question}:${answer}`).join("|")) ?? 0) > 1;
+    return [slug, {
+      ...content,
+      howTo: repeatedGuide ? `${content.howTo} ${content.name}: ${labels.inputs}: ${fields}.` : content.howTo,
+      faqs: repeatedFaq ? [{ question: `${content.name}: ${labels.inputQuestion}`, answer: `${labels.inputAnswer} ${fields}.` }, ...content.faqs] : content.faqs,
+    } satisfies LocalizedCalculatorContent];
+  })) as LocaleDictionary["calculators"];
+  return { ...dictionary, calculators };
+}
+export function getDictionary(locale: Locale): LocaleDictionary {
+  const cached = dictionaryCache.get(locale);
+  if (cached) return cached;
+  const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
+  let dictionary = distinguished;
+  if (locale === "ko") {
+    const completeKoreanContent = Object.fromEntries(publishedCalculatorPages.map((page) => [
+      page.slug,
+      distinguished.calculators[page.slug as keyof typeof distinguished.calculators]
+        ?? { ...Object.fromEntries(Object.entries(page).filter(([key]) => key !== "calculate")), related: page.relatedCalculatorIds, options: {} },
+    ])) as LocaleDictionary["calculators"];
+    dictionary = { ...distinguished, calculators: improveKoreanContent(completeKoreanContent) };
+  } else {
+    dictionary = { ...distinguished, calculators: improveLocalizedQualityContent(locale, distinguished.calculators) };
+  }
+  dictionaryCache.set(locale, dictionary);
+  return dictionary;
 }

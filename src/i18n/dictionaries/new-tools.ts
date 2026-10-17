@@ -1,6 +1,10 @@
 ﻿import type { Locale } from "@/i18n/config";
 import { newCalculatorPages } from "@/data/calculator-content/new-tools";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
+import { contentPatterns } from "@/i18n/dictionaries/content-patterns";
+import { calculatorExample } from "@/lib/content-quality/examples";
+import { primaryNewToolResult } from "@/i18n/dictionaries/new-tool-results";
+import { purposeSentence } from "@/i18n/dictionaries/purpose-sentence";
 
 const slugs = newCalculatorPages.map(({ slug }) => slug);
 type Slug = (typeof slugs)[number];
@@ -26,6 +30,14 @@ const copy: Record<Locale, Copy> = {
 
 const outputKeys: Record<Slug, readonly string[]> = {
   "fire-retirement-calculator": ["fireTarget", "remainingGap", "targetProgress"], "dividend-growth-calculator": ["currentAnnualDividend", "futureAnnualDividend", "futureMonthlyAverage"], "inflation-adjusted-return-calculator": ["nominalAnnualizedReturn", "inflationAdjustedAnnualizedReturn", "inflationAdjustedFinalValue"],  "position-size-calculator": ["maximumRiskAmount", "positionUnits", "positionValue"], "stop-loss-take-profit-calculator": ["stopPrice", "targetPrice", "potentialLoss", "potentialGain", "rewardRiskRatio"], "stock-profit-after-fees-calculator": ["grossProfitLoss", "totalFees", "netProfitLoss", "netReturnPercent"], "loan-early-repayment-calculator": ["regularMonthlyPayment", "interestWithoutExtraPayments", "interestWithExtraPayments", "interestSaved", "monthsSaved"], "rent-vs-buy-calculator": ["rentPayments", "estimatedOwnerCosts", "rentMinusOwnerCosts", "remainingLoanBalance"], "electricity-cost-calculator": ["energyUse", "estimatedCost"], "travel-budget-calculator": ["subtotal", "contingencyAmount", "totalBudget", "budgetPerPerson"], "freelancer-hourly-rate-calculator": ["annualBillableHours", "minimumHourlyRate", "suggestedHourlyRate"], "break-even-point-calculator": ["contributionPerUnit", "breakEvenUnits", "breakEvenRevenue"],
+};
+const primaryResultKeys: Record<Slug, string> = {
+  "fire-retirement-calculator": "fireTarget", "dividend-growth-calculator": "futureAnnualDividend",
+  "inflation-adjusted-return-calculator": "inflationAdjustedAnnualizedReturn", "position-size-calculator": "positionUnits",
+  "stop-loss-take-profit-calculator": "stopPrice", "stock-profit-after-fees-calculator": "netProfitLoss",
+  "loan-early-repayment-calculator": "interestSaved", "rent-vs-buy-calculator": "rentMinusOwnerCosts",
+  "electricity-cost-calculator": "energyUse", "travel-budget-calculator": "totalBudget",
+  "freelancer-hourly-rate-calculator": "minimumHourlyRate", "break-even-point-calculator": "breakEvenUnits",
 };
 
 const defaultFieldTranslations: Record<Locale, Record<string, string>> = {
@@ -62,6 +74,7 @@ const labelsFor = (locale: Locale, slug: Slug) => {
     return [field.name, { label: defaultFieldTranslations[locale][field.name] ?? copy[locale].fields[field.name] ?? field.label, ...(unit ? { unit } : {}) }];
   }));
   const resultLabels = Object.fromEntries(outputKeys[slug].map((key, index) => [key, copy[locale].results[key] ?? `${resultWord[locale]} ${index + 1}`]));
+  resultLabels[primaryResultKeys[slug]] = primaryNewToolResult(locale, slugs.indexOf(slug));
   const f = (key: string) => fields[key]?.label ?? key;
   const formulas: Record<Slug, string> = {
     "fire-retirement-calculator": `${f("annualExpenses")} × 100 ÷ ${f("withdrawalRate")}`,
@@ -91,9 +104,22 @@ const labelsFor = (locale: Locale, slug: Slug) => {
     "freelancer-hourly-rate-calculator": { targetAnnualRevenue:"60000",annualBusinessCosts:"10000",billableHoursPerWeek:"20",workingWeeks:"50",bufferPercent:"10" },
     "break-even-point-calculator": { fixedCosts:"1000",pricePerUnit:"25",variableCostPerUnit:"15" },
   };
-  const outcome = page.calculate(exampleInputs[slug]);
-  const exampleResult = "results" in outcome ? outcome.results.slice(0, 2).map((item, index) => `${resultLabels[item.label] ?? `${resultWord[locale]} ${index + 1}`}: ${new Intl.NumberFormat(locale, { maximumFractionDigits: 4 }).format(Number(item.value))}${item.unit ? ` ${item.unit}` : ""}`).join("; ") : "";
-  return { name: names[slug], shortName: names[slug], title: names[slug], description: `${names[slug]}. ${copy[locale].description}`, keywords: [names[slug]], howTo: copy[locale].howTo, formula: formulas[slug], example: { question: names[slug], answer: `${copy[locale].example} ${exampleResult}` }, faqs: [{ question: copy[locale].faq, answer: copy[locale].faqAnswer }], related: page.relatedCalculatorIds as LocalizedCalculatorContent["related"], fields, options: {}, resultLabels, validation: copy[locale].faqAnswer, resultNote: copy[locale].description } satisfies LocalizedCalculatorContent;
+  const labels = contentPatterns[locale];
+    const fieldNames = page.fields.map((field) => fields[field.name]?.label ?? field.label).join(", ");
+    const fieldLabels = Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, value.label]));
+    const fieldUnits = Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, value.unit ?? ""]));
+    const example = calculatorExample(page, locale, fieldLabels, resultLabels, exampleInputs[slug], fieldUnits);
+  return {
+    name: names[slug], shortName: names[slug], title: names[slug],
+    description: `${purposeSentence(locale, page.fields.slice(0, 3).map((field) => fields[field.name]?.label ?? field.label), [resultLabels[primaryResultKeys[slug]]!])} ${copy[locale].description}`,
+    keywords: [names[slug]],
+    howTo: `${copy[locale].howTo} ${labels.inputs}: ${fieldNames}.`,
+    formula: formulas[slug],
+    example: { question: `${names[slug]} — ${labels.exampleInput}: ${example?.input ?? ""}`, answer: `${labels.exampleResult}: ${example?.result ?? ""}. ${copy[locale].example}` },
+    faqs: [{ question: `${names[slug]}: ${labels.inputQuestion}`, answer: `${labels.inputAnswer} ${fieldNames}.` }, { question: copy[locale].faq, answer: copy[locale].faqAnswer }],
+    related: page.relatedCalculatorIds as LocalizedCalculatorContent["related"], fields, options: {}, resultLabels,
+    validation: copy[locale].faqAnswer, resultNote: copy[locale].description,
+  } satisfies LocalizedCalculatorContent;
 };
 
 export function newToolsLocaleContent(locale: Locale): Partial<Record<Slug, LocalizedCalculatorContent>> {
