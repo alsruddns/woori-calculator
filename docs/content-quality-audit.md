@@ -6,17 +6,18 @@ Google asks publishers to provide original, useful content and warns against pag
 
 ## Baseline and changes
 
-| Check | Before | After |
-| --- | ---: | ---: |
-| Public calculators | 169 | 169 |
-| Korean page review signals | 112 | 53 |
-| Exact duplicate Korean descriptions | 0 groups | 0 groups |
-| Exact duplicate Korean how-to blocks | 3 groups | 0 groups |
-| Exact duplicate Korean FAQ bundles | 3 groups | 0 groups |
-| Missing example, formula, description or FAQ | 0 | 0 |
-| Broken calculator registry links | 0 | 0 |
+| Check | Original baseline | After first audit | Follow-up |
+| --- | ---: | ---: | ---: |
+| Public calculators | 169 | 169 | 169 |
+| Korean page review signals | 112 | 53 | 0 |
+| Exact duplicate Korean descriptions | 0 groups | 0 groups | 0 groups |
+| Exact duplicate Korean how-to blocks | 3 groups | 0 groups | 0 groups |
+| Exact duplicate Korean FAQ bundles | 3 groups | 0 groups | 0 groups |
+| Exact duplicate examples, all locales | not checked | not checked | 0 groups |
+| Missing example, formula, description or FAQ | 0 | 0 | 0 |
+| Broken calculator registry links | 0 | 0 | 0 |
 
-The baseline signal is raised when a description has fewer than 45 characters, a how-to paragraph fewer than 45, a formula fewer than 25, an example answer fewer than 30, or a page has fewer than two FAQs. Some short mathematical explanations are complete; these rows need editorial review, not automatic expansion. The audit does not assess whether a policy rate is current or whether an AdSense reviewer will accept a page.
+The original baseline signal is raised when a description has fewer than 45 characters, a how-to paragraph fewer than 45, a formula fewer than 25, an example answer fewer than 30, or a page has fewer than two FAQs. Later checks use the locale-aware thresholds listed below and treat a valid concise equation as complete. Some short mathematical explanations are complete; these rows need editorial review, not automatic expansion. The audit does not assess whether a policy rate is current or whether an AdSense reviewer will accept a page.
 
 The largest duplicated groups were policy calculators whose translated how-to and FAQ text was shared across countries, plus 12 newer general calculators with one generic FAQ. The current content includes calculator-specific input guidance and examples computed by the existing pure functions. Policy source links and reference years are visible on localized detail pages. The catalog now explains categories and offers task-based and recent links in every locale.
 
@@ -141,7 +142,91 @@ This list records the 112 Korean pages flagged before the changes. A signal indi
 
 ## Remaining review work
 
-The automated review still raises 53 Korean short-content signals. Character counts are particularly unreliable for Chinese and Japanese: current counts are `ko 53`, `en 7`, `ja 61`, `zh 67`, `es 4`, `pt-br 4`, `de 4`, `fr 4`, `vi 4`, `id 4`, `th 4`, `zh-tw 110`, `it 4`, `nl 4`, and `hi 4`. These are review queues, not confirmed policy violations. A human editor should assess whether each brief formula and example is complete in its language, especially for `zh-tw`.
+## Follow-up: Korean review queue
+
+Follow-up date: 2026-10-17. The 53 Korean slugs from the prior quality test were confirmed and individually given a use case, input guidance, result interpretation, and a calculator-specific FAQ. The two compact formula signals were also resolved with the actual weighted-average and FIRE target-asset equations. The updated test reports **0 Korean thin-content signals**.
+
+| Slug | Original signal classification |
+| --- | --- |
+| percentage | 설명 짧음, 예시 부족 |
+| discount | 설명 짧음 |
+| change-rate | 설명 짧음, 예시 부족 |
+| average | 설명 짧음, 예시 부족 |
+| weighted-average | 설명 짧음, 공식 설명 부족, 예시 부족 |
+| cagr | 설명 짧음, 예시 부족 |
+| proportion | 입력/사용 방법 부족, 예시 부족 |
+| aspect-ratio | 설명 짧음, 입력/사용 방법 부족 |
+| scale-ratio | 입력/사용 방법 부족 |
+| fraction | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| decimal-fraction | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| standard-deviation | 설명 짧음, 예시 부족 |
+| median | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| percentile | 설명 짧음, 입력/사용 방법 부족 |
+| probability | 예시 부족 |
+| fire-retirement-calculator | 공식 설명 부족 |
+| compound-interest | 설명 짧음 |
+| simple-interest | 설명 짧음, 입력/사용 방법 부족 |
+| savings-interest | 설명 짧음 |
+| deposit-interest | 설명 짧음 |
+| ltv | 설명 짧음, 예시 부족 |
+| dti | 예시 부족 |
+| dsr | 설명 짧음, 예시 부족 |
+| dividend | 예시 부족 |
+| profit-loss | 설명 짧음 |
+| loan-refinance | 설명 짧음, 입력/사용 방법 부족 |
+| prepayment-fee | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| loan-affordability | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| salary-conversion | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| hourly-wage | 예시 부족 |
+| annual-leave-allowance | 입력/사용 방법 부족, 예시 부족 |
+| vat | 설명 짧음, 예시 부족 |
+| unit-price | 설명 짧음, 예시 부족 |
+| margin | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| markup | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| date-difference | 설명 짧음 |
+| dday | 설명 짧음, 예시 부족 |
+| age | 설명 짧음, 예시 부족 |
+| workdays | 설명 짧음, 예시 부족 |
+| bmi | 설명 짧음, 예시 부족 |
+| area | 설명 짧음, 예시 부족 |
+| pace | 설명 짧음 |
+| fuel-cost | 설명 짧음 |
+| calorie-per-serving | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| tenure | 입력/사용 방법 부족 |
+| time-arithmetic | 설명 짧음, 입력/사용 방법 부족, 예시 부족 |
+| pregnancy | 입력/사용 방법 부족 |
+| utility-bill | 입력/사용 방법 부족, 예시 부족 |
+| vehicle-cost | 설명 짧음, 입력/사용 방법 부족 |
+| taxi-fare | 설명 짧음, 입력/사용 방법 부족 |
+| trip-split | 설명 짧음, 입력/사용 방법 부족 |
+| tip-calculator | 설명 짧음, 입력/사용 방법 부족 |
+| unit-converter | 설명 짧음, 예시 부족 |
+
+These were short-section signals, not 53 confirmed doorway pages. The follow-up edits make the copy explain what the calculator does in its own use case, what its inputs mean, how to interpret its output, and a question users ask about that specific calculation. Similar pairs such as margin/markup, simple/compound interest, DTI/DSR/LTV, and date difference/D-day are described by their distinct denominator, assumptions, or date-counting purpose. No slug was merged or removed.
+
+## Locale-aware check results
+
+The quality test checks exact duplicate descriptions, how-to text, FAQ sets, and examples across all 15 locales. It also checks required sections, raw keys, and broken registry links. Korean and Latin-script locales retain the 45/45/25/30 character review floors for description/how-to/formula/example. Japanese and Chinese use 20/20/10/14 because a smaller number of CJK characters conveys comparable information; concise equations with an equality, operator, and operand are accepted as complete formulas. This is a language-calibrated review heuristic, not a pass/fail AdSense rule.
+
+| Locale | Remaining short-section signals |
+| --- | ---: |
+| ko | 0 |
+| en | 7 |
+| ja | 2 |
+| zh | 4 |
+| es | 0 |
+| pt-br | 0 |
+| de | 0 |
+| fr | 0 |
+| vi | 0 |
+| id | 0 |
+| th | 2 |
+| zh-tw | 5 |
+| it | 0 |
+| nl | 0 |
+| hi | 0 |
+
+The remaining non-Korean signals are mostly brief example answers in English, Japanese, and Simplified Chinese, plus short descriptions in Simplified Chinese, Thai, and Traditional Chinese. They are retained as review candidates rather than being hidden by a lower global threshold. The automated test requires zero Korean signals and reports the other locale queues for further editorial review.
 
 The remaining country-policy pages still share some explanation structure because their calculations use related tax or payroll concepts. Country, policy year, actual input fields, computed example values and source links now distinguish the pages, but subject-matter review is still needed before claiming that every localized policy explanation is fully independent or current. No calculator was unpublished or merged in this change.
 

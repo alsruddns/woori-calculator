@@ -12,6 +12,8 @@ import { phaseFiveLocaleContent } from "@/i18n/dictionaries/phase-five";
 import { phaseSixLocaleContent } from "@/i18n/dictionaries/phase-six";
 import { newToolsLocaleContent } from "@/i18n/dictionaries/new-tools";
 import { ratioLocaleContent } from "@/i18n/dictionaries/ratio-tools";
+import { improveKoreanContent } from "@/i18n/dictionaries/korean-content-improvements";
+import { publishedCalculatorPages } from "@/data/calculator-content";
 
 const ko: LocaleDictionary = {
   locale: "ko", siteName: "우리의 오늘", description: "일상에 필요한 계산과 생활 도구를 쉽고 빠르게 이용하세요.",
@@ -91,7 +93,16 @@ function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictio
 export function getDictionary(locale: Locale): LocaleDictionary {
   const cached = dictionaryCache.get(locale);
   if (cached) return cached;
-  const dictionary = distinguishRepeatedGuidance(buildDictionary(locale));
+  const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
+  let dictionary = distinguished;
+  if (locale === "ko") {
+    const completeKoreanContent = Object.fromEntries(publishedCalculatorPages.map((page) => [
+      page.slug,
+      distinguished.calculators[page.slug as keyof typeof distinguished.calculators]
+        ?? { ...Object.fromEntries(Object.entries(page).filter(([key]) => key !== "calculate")), related: page.relatedCalculatorIds, options: {} },
+    ])) as LocaleDictionary["calculators"];
+    dictionary = { ...distinguished, calculators: improveKoreanContent(completeKoreanContent) };
+  }
   dictionaryCache.set(locale, dictionary);
   return dictionary;
 }
