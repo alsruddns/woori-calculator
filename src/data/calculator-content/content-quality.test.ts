@@ -4,6 +4,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
+import { localeContentFollowupTargets } from "@/i18n/dictionaries/locale-quality-followup";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -66,11 +67,18 @@ describe("calculator content quality", () => {
     expect(publicSlugs.size).toBe(publishedCalculatorPages.length);
     expect(koreanContentImprovementSlugs).toHaveLength(53);
     expect(koreanContentImprovementSlugs.every((slug) => publicSlugs.has(slug))).toBe(true);
+    expect(Object.values(localeContentFollowupTargets).flat()).toHaveLength(20);
+    for (const [locale, slugs] of Object.entries(localeContentFollowupTargets)) {
+      expect(slugs.every((slug) => publicSlugs.has(slug))).toBe(true);
+      const localizedContent = getDictionary(locale as (typeof locales)[number]).calculators;
+      expect(slugs.every((slug) => Boolean(localizedContent[slug as keyof typeof localizedContent]))).toBe(true);
+    }
     expect(missing).toEqual([]);
     expect(brokenLinks).toEqual([]);
     expect(rawKeys).toEqual([]);
     expect(duplicateBlocks).toEqual([]);
     expect(Object.keys(koreanSignals)).toEqual([]);
+    expect(localeSignals).toEqual(Object.fromEntries(locales.map((locale) => [locale, 0])));
   });
 
   it("uses calculator output for country-policy examples", () => {

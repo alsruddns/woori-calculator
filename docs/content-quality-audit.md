@@ -208,7 +208,7 @@ These were short-section signals, not 53 confirmed doorway pages. The follow-up 
 
 The quality test checks exact duplicate descriptions, how-to text, FAQ sets, and examples across all 15 locales. It also checks required sections, raw keys, and broken registry links. Korean and Latin-script locales retain the 45/45/25/30 character review floors for description/how-to/formula/example. Japanese and Chinese use 20/20/10/14 because a smaller number of CJK characters conveys comparable information; concise equations with an equality, operator, and operand are accepted as complete formulas. This is a language-calibrated review heuristic, not a pass/fail AdSense rule.
 
-| Locale | Remaining short-section signals |
+| Locale | Signals after Korean follow-up |
 | --- | ---: |
 | ko | 0 |
 | en | 7 |
@@ -226,7 +226,54 @@ The quality test checks exact duplicate descriptions, how-to text, FAQ sets, and
 | nl | 0 |
 | hi | 0 |
 
-The remaining non-Korean signals are mostly brief example answers in English, Japanese, and Simplified Chinese, plus short descriptions in Simplified Chinese, Thai, and Traditional Chinese. They are retained as review candidates rather than being hidden by a lower global threshold. The automated test requires zero Korean signals and reports the other locale queues for further editorial review.
+The counts above were captured after the Korean follow-up and before the final locale edits. The exact 20-page queue was:
+
+| Locale | Slug | Signal and edit |
+| --- | --- | --- |
+| en | percentage | 예시 부족 — 퍼센트 금액과 증감 후 총액의 차이 설명 |
+| en | weighted-average | 예시 부족 — 가중치가 평균에 미치는 영향 설명 |
+| en | median | 예시 부족 — 정렬과 짝수 개 자료의 가운데 두 값 설명 |
+| en | probability | 예시 부족 — 모든 경우의 가능성이 같다는 전제 설명 |
+| en | unit-price | 예시 부족 — 같은 단위 비교와 계산에 포함되지 않는 조건 설명 |
+| en | area | 예시 부족 — 한국 평 단위 환산과 표시 반올림 설명 |
+| en | utility-bill | 예시 부족 — 사용량 기준 추정액과 실제 고지액의 차이 설명 |
+| ja | workdays | 예시 부족 — 날짜 포함 설정과 사업장별 휴무일 설명 |
+| ja | area | 예시 부족 — 평이 한국에서 쓰는 면적 단위임을 설명 |
+| zh | median | 예시 부족 — 정렬과 짝수 개 자료의 중앙값 설명 |
+| zh | age | 설명 부족 — 생일 반영과 윤년 생일 처리 설명 |
+| zh | workdays | 예시 부족 — 날짜 경계와 별도 휴무일 설명 |
+| zh | area | 예시 부족 — 평 단위와 공식 면적 표기 설명 |
+| th | average | 설명 부족 — 산술평균과 가중평균의 차이 설명 |
+| th | bmi | 설명 부족 — BMI가 측정하는 범위와 비진단적 성격 설명 |
+| zh-tw | average | 설명 부족 — 산술평균과 가중평균의 차이 설명 |
+| zh-tw | cagr | 설명 부족 — 연환산 복리 성장률과 중간 변동 미포함 설명 |
+| zh-tw | age | 설명 부족 — 생일이 지난 만 나이와 기준일 변경 설명 |
+| zh-tw | bmi | 설명 부족 — BMI가 측정하지 않는 항목 설명 |
+| zh-tw | calorie-per-serving | 설명 부족 — 레시피 총열량을 인분으로 나누는 방식 설명 |
+
+The final locale pass adds a calculation-specific interpretation to each of the 13 short examples and one purpose or limitation sentence to each of the 7 short descriptions. Existing numerical examples are retained; this pass does not alter formulas, inputs, or calculation outputs.
+
+## Final locale quality status
+
+After the locale-specific edits, `pnpm check:content-quality` reports zero short-section signals in every locale. Exact duplicate descriptions, how-to text, FAQ sets, and examples remain at zero. These figures are project review signals, not an AdSense approval prediction.
+
+| Locale | Final signals |
+| --- | ---: |
+| ko | 0 |
+| en | 0 |
+| ja | 0 |
+| zh | 0 |
+| es | 0 |
+| pt-br | 0 |
+| de | 0 |
+| fr | 0 |
+| vi | 0 |
+| id | 0 |
+| th | 0 |
+| zh-tw | 0 |
+| it | 0 |
+| nl | 0 |
+| hi | 0 |
 
 The remaining country-policy pages still share some explanation structure because their calculations use related tax or payroll concepts. Country, policy year, actual input fields, computed example values and source links now distinguish the pages, but subject-matter review is still needed before claiming that every localized policy explanation is fully independent or current. No calculator was unpublished or merged in this change.
 
