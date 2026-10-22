@@ -59,6 +59,25 @@ export const roGlobalCountryResultLabels: Record<string, string> = {
   "Employee rate": "Cota angajatului",
 };
 
+export const roUsResultLabels = [
+  "Sumă fără taxe", "Impozit", "Total cu taxe incluse", "Venit impozabil", "Impozit pe venit estimat", "Cotă medie de impozitare",
+  "Venit brut anual", "Contribuții ale angajatului", "Alte rețineri estimate", "Venit net anual estimat", "Venit net lunar estimat",
+  "Contribuție lunară National Insurance", "Contribuție anuală National Insurance", "Taxă estimată de transfer al proprietății",
+  "Contribuții ale angajatorului", "Creștere estimată a investiției", "Sold estimat", "Câștig de capital impozabil",
+  "Impozit federal estimat pe câștigurile de capital", "Impozit statal introdus", "GST federal", "Componentă provincială suplimentară",
+  "Total la cota GST/HST selectată", "Contribuție CPP a angajatului", "Contribuție CPP2 a angajatului", "Contribuție EI a angajatului",
+  "Contribuții CPP și EI ale angajatorului", "Contribuție CPF a angajatului", "Contribuție CPF a angajatorului", "Total CPF lunar",
+  "Contribuție MPF a angajatului", "Contribuție MPF a angajatorului", "Contribuții MPF totale", "Contribuție EPF a angajatului",
+  "Contribuție EPF a angajatorului", "Contribuții EPF totale", "Contribuție SOCSO estimată a angajatului", "Baza salarială pentru contribuții",
+  "Contribuție SSS a angajatului", "Contribuție SSS a angajatorului", "Partea PhilHealth a angajatului", "Partea PhilHealth a angajatorului",
+  "Primă totală", "Contribuție Pag-IBIG a angajatului", "Contribuție Pag-IBIG a angajatorului", "Economii lunare totale",
+  "Ani de serviciu eligibili", "Indemnizație estimată", "Salariu lunar de bază", "Beneficiu pentru primii cinci ani",
+  "Beneficiu pentru anii suplimentari de serviciu", "Indemnizație plafonată la încetarea activității", "Profit impozabil",
+  "Impozit pe profit estimat", "CSG deductibilă", "CSG nedeductibilă", "Contribuție de rambursare a datoriei sociale (CRDS)", "Contribuție de bază pentru pensia de limită de vârstă",
+  "Contribuții totale estimate", "Venit net estimat înainte de impozitul pe venit", "Profit impozabil estimat din activitate independentă",
+  "IRPF estimat", "Contribuții sociale anuale estimate", "Estimare după impozite și contribuții",
+] as const;
+
 const catalogs: Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>[] = [
   en.calculators, additionalCalculatorContent.en, phaseFourLocaleContent("en"), phaseFiveLocaleContent("en"),
   phaseSixLocaleContent("en"), newToolsLocaleContent("en"), ratioLocaleContent("en"),
@@ -108,4 +127,13 @@ export function roCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<Romanian
     return translation;
   });
   return roPage(slug, { ...spec, results });
+}
+
+export function roUsCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<RomanianPageSpec, "results">): LocalizedCalculatorContent {
+  const source = catalogs.map((catalog) => catalog[slug]).find((page) => page !== undefined);
+  if (!source) throw new Error(`Missing English calculator source: ${slug}`);
+  if (Object.keys(source.resultLabels).length !== roUsResultLabels.length) {
+    throw new Error(`Romanian US result schema mismatch: ${slug}`);
+  }
+  return roPage(slug, { ...spec, results: roUsResultLabels });
 }
