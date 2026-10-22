@@ -5,7 +5,7 @@ import type { LocalizedCalculatorSlug } from "@/i18n/config";
 import { sharedExpandedCountryResultsFil } from "@/i18n/dictionaries/fil-country-results-expanded";
 
 export type CountryPageSpec = {
-  country: "Germany" | "Spain" | "France" | "Netherlands" | "India" | "Brazil" | "Vietnam" | "China" | "Taiwan" | "Italy" | "United States" | "United Kingdom" | "Canada" | "Australia" | "Singapore";
+  country: "Germany" | "Spain" | "France" | "Netherlands" | "India" | "Brazil" | "Vietnam" | "China" | "Taiwan" | "Italy" | "United States" | "United Kingdom" | "Canada" | "Australia" | "Singapore" | "Hong Kong" | "Malaysia" | "Philippines" | "United Arab Emirates" | "New Zealand";
   results?: readonly string[];
   name: string;
   title: string;
@@ -25,6 +25,9 @@ export function countryPage(slug: LocalizedCalculatorSlug, spec: CountryPageSpec
     "uk-stamp-duty-calculator", "uk-pension-calculator", "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator",
     "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator",
     "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator",
+    "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator", "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator",
+    "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator",
+    "uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator", "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator",
   ];
   return filPage(slug, {
     ...spec,
@@ -34,6 +37,18 @@ export function countryPage(slug: LocalizedCalculatorSlug, spec: CountryPageSpec
     resultNote: spec.country + " ang policy basis. Hindi ito Philippine tax o employment calculation; i-verify ang policy year, personal details at opisyal na source.",
     faq: { question: "Nalalapat ba ang resultang ito sa Pilipinas?", answer: "Hindi. " + spec.country + " policy assumptions ang ginagamit; para sa Pilipinas, tingnan ang naaangkop na lokal na batas at opisyal na guidance." },
   });
+}
+
+export function philippinesPolicyPage(slug: LocalizedCalculatorSlug, spec: Omit<CountryPageSpec, "country">): LocalizedCalculatorContent {
+  const page = countryPage(slug, { ...spec, country: "Philippines" });
+  return {
+    ...page,
+    resultNote: "Batay ang pagtatantiyang ito sa mga nakasaad na palagay para sa Pilipinas. Maaaring mag-iba ang aktuwal na obligasyon ayon sa kasalukuyang batas, detalye ng trabaho at tax year; tiyakin sa opisyal na source.",
+    faqs: [
+      { question: "Opisyal na tax filing o payroll result ba ito?", answer: "Hindi. Pagtatantiya lamang ito batay sa mga inilagay na halaga at naka-configure na palagay para sa Pilipinas." },
+      ...page.faqs.slice(1),
+    ],
+  };
 }
 
 export const filBatchTen: Record<string, LocalizedCalculatorContent> = {

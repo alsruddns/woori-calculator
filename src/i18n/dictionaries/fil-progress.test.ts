@@ -4,10 +4,10 @@ import { filipinoCalculatorContent, remainingFilipinoCalculatorSlugs, translated
 
 describe("Filipino translation progress", () => {
   it("tracks every calculator exactly once without publishing incomplete content", () => {
-    expect(Object.keys(filipinoCalculatorContent).length).toBe(137);
-    expect(translatedFilipinoCalculatorSlugs.length).toBe(137);
-    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 137);
+    expect(Object.keys(filipinoCalculatorContent).length).toBe(169);
+    expect(translatedFilipinoCalculatorSlugs.length).toBe(169);
+    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 169);
     expect(new Set([...translatedFilipinoCalculatorSlugs, ...remainingFilipinoCalculatorSlugs]).size).toBe(localizedCalculatorSlugs.length);
-    expect(remainingFilipinoCalculatorSlugs[0]).toBe("hong-kong-salary-tax-calculator");
+    expect(remainingFilipinoCalculatorSlugs).toHaveLength(0);
   });
 });

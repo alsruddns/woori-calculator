@@ -15,6 +15,8 @@ import { filBatchThirteen } from "@/i18n/dictionaries/fil-batch-13";
 import { filBatchFourteen } from "@/i18n/dictionaries/fil-batch-14";
 import { filBatchFifteen } from "@/i18n/dictionaries/fil-batch-15";
 import { filBatchSixteen } from "@/i18n/dictionaries/fil-batch-16";
+import { filBatchSeventeen } from "@/i18n/dictionaries/fil-batch-17";
+import { filBatchEighteen } from "@/i18n/dictionaries/fil-batch-18";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
 // Translation workbench only. It is deliberately not connected to public routing.
@@ -35,6 +37,8 @@ export const filipinoCalculatorContent: Partial<Record<(typeof localizedCalculat
   ...filBatchFourteen,
   ...filBatchFifteen,
   ...filBatchSixteen,
+  ...filBatchSeventeen,
+  ...filBatchEighteen,
 };
 
 export const translatedFilipinoCalculatorSlugs = localizedCalculatorSlugs.filter(
