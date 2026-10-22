@@ -103,7 +103,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(turkish.locale).toBe("tr");
     expect(turkish.nav.language).toBe("Dil");
     expect(localizedIndexSlugs("tr")).toEqual(turkishTranslatedCalculatorSlugs);
-    expect(turkishTranslatedCalculatorSlugs).toHaveLength(36);
+    expect(turkishTranslatedCalculatorSlugs).toHaveLength(46);
     expect(languageSwitchPath("/ko/calculators/percentage", "tr")).toBe("/tr/calculators/percentage");
     for (const slug of turkishTranslatedCalculatorSlugs) {
       const page = turkish.calculators[slug]!;
@@ -115,7 +115,10 @@ describe("locale routing and translated calculator catalog", () => {
       expect(Object.keys(page.options).sort()).toEqual(Object.keys(source.options).sort());
       expect(Object.keys(page.resultLabels).sort()).toEqual(expect.arrayContaining(Object.keys(source.resultLabels).sort()));
       for (const [key, field] of Object.entries(page.fields)) expect(field.label).not.toBe(source.fields[key]?.label);
-      for (const [key, choices] of Object.entries(page.options)) for (const [option, label] of Object.entries(choices)) expect(label).not.toBe(source.options[key]?.[option]);
+      for (const [key, choices] of Object.entries(page.options)) for (const [option, label] of Object.entries(choices)) {
+        if (label === "cm" || label === "m") continue;
+        expect(label).not.toBe(source.options[key]?.[option]);
+      }
       for (const [key, label] of Object.entries(page.resultLabels)) if (source.resultLabels[key] !== "Pyeong") expect(label).not.toBe(source.resultLabels[key]);
       for (const related of page.related) expect(turkish.calculators[related]).toBeDefined();
       expect(page.faqs.length).toBeGreaterThan(0);
@@ -126,6 +129,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(supportedLocalesForCalculator("bmi")).toEqual([...locales, "ru", "tr"]);
     expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr"]);
     expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr"]);
+    expect(supportedLocalesForCalculator("loan-refinance")).toEqual([...locales, "ru", "tr"]);
   });
 
   it("validates every Russian batch page against source field, option, and result keys", () => {

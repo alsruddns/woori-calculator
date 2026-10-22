@@ -45,11 +45,11 @@
 | 34 | 주식·코인 물타기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `stock-average-price` |
 | 35 | 배당금·배당수익률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `dividend` |
 | 36 | 손익 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `profit-loss` |
-| 37 | 대출 갈아타기 비교 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `loan-refinance` |
+| 37 | 대출 갈아타기 비교 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `loan-refinance` |
 | 38 | 중도상환수수료 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `prepayment-fee` |
 | 39 | 월 상환액 기준 대출원금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `loan-affordability` |
-| 40 | 월급·연봉 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `salary-conversion` |
-| 41 | 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `hourly-wage` |
+| 40 | 월급·연봉 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `salary-conversion` |
+| 41 | 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `hourly-wage` |
 | 42 | 연차수당 간편 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `annual-leave-allowance` |
 | 43 | 부가세 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `vat` |
 | 44 | 단가 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `unit-price` |
@@ -66,15 +66,15 @@
 | 55 | 러닝 페이스 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `pace` |
 | 56 | 주유비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `fuel-cost` |
 | 57 | 연비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `fuel-efficiency` |
-| 58 | 1회분 칼로리 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `calorie-per-serving` |
-| 59 | 근속기간 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `tenure` |
+| 58 | 1회분 칼로리 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `calorie-per-serving` |
+| 59 | 근속기간 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `tenure` |
 | 60 | 시간 더하기·빼기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `time-arithmetic` |
-| 61 | 출산 예정일·임신 주수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `pregnancy` |
+| 61 | 출산 예정일·임신 주수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `pregnancy` |
 | 62 | 수도·가스 요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `utility-bill` |
-| 63 | 차량 유지비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `vehicle-cost` |
+| 63 | 차량 유지비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `vehicle-cost` |
 | 64 | 택시비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `taxi-fare` |
 | 65 | 여행 경비 나누기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `trip-split` |
-| 66 | 팁 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `tip-calculator` |
+| 66 | 팁 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `tip-calculator` |
 | 67 | 단위 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `unit-converter` |
 | 68 | 실업급여 계산기 | open | true | 2026 | [고용노동부 1350 — 2026년 구직급여 상·하한 및 소정급여일수 안내](https://1350.moel.go.kr/rtmview.do?id=1000324861)<br>[고용보험 — 구직급여 지급액 안내](https://edrm.ei.go.kr/ei/eih/eg/pb/pbPersonBnef/retrievePb0203Info.do)<br>[최저임금위원회 — 2026년 적용 최저임금](https://www.minimumwage.go.kr/index.jsp) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `unemployment-benefit` |
 | 69 | 2026 최저임금 계산기 | open | true | 2026 | [최저임금위원회 — 2026년 적용 최저임금](https://www.minimumwage.go.kr/index.jsp) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `minimum-wage` |
@@ -176,8 +176,8 @@
 | 165 | 스페인 프리랜서 세금 계산기 | open | true | 2026 | [Agencia Tributaria — VAT rates 2026](https://www3.agenciatributaria.gob.es/Sede/iva/calculo-iva-repercutido-clientes/tipos-impositivos-iva.html)<br>[Agencia Tributaria — IRPF withholding 2026](https://sede.agenciatributaria.gob.es/Sede/Retenciones.shtml) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `spain-freelancer-tax-calculator` |
 | 166 | 프랑스 사회기여금 계산기 | open | true | 2026 | [French Tax Authority — 2026 tax guide (2025 income)](https://www.impots.gouv.fr/sites/default/files/media/1_metier/5_international/actualite/dossier-de-presse-dinr-revenus-2025_03_2026.pdf)<br>[French Tax Authority — VAT statistics](https://www.impots.gouv.fr/dgfip-statistiques-la-tva-economique-augmente-de-10-en-2025) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `france-social-contribution-calculator` |
 | 167 | 비례식 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `proportion` |
-| 168 | 화면 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `aspect-ratio` |
-| 169 | 축척 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `scale-ratio` |
+| 168 | 화면 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `aspect-ratio` |
+| 169 | 축척 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `scale-ratio` |
 
 ## 후보 검토 및 중복 제외
 
