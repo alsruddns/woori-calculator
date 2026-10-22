@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { localePath, locales } from "@/i18n/config";
+import { localePath, supportedLocales } from "@/i18n/config";
 import { sharedUiCopy } from "@/i18n/shared-ui";
 
 describe("shared header and contact translations", () => {
   it("provides translated family navigation and contact content for all locales", () => {
-    expect(Object.keys(sharedUiCopy).sort()).toEqual([...locales].sort());
-    for (const locale of locales) {
+    expect(Object.keys(sharedUiCopy).sort()).toEqual([...supportedLocales].sort());
+    for (const locale of supportedLocales) {
       const copy = sharedUiCopy[locale];
       expect(copy.logoLabel).toBeTruthy();
       expect(copy.familySite).toBeTruthy();

@@ -1,16 +1,17 @@
 export const routingLocales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi", "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const;
 export type RoutingLocale = (typeof routingLocales)[number];
 
-/** Locales with complete dictionaries and published calculator routes. */
-export const supportedLocales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"] as const satisfies readonly RoutingLocale[];
-export const locales = supportedLocales;
-export type SupportedLocale = (typeof supportedLocales)[number];
-export type TranslatedLocale = SupportedLocale;
+/** Locales whose general dictionary catalog is complete; partial publications are listed separately below. */
+export const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"] as const satisfies readonly RoutingLocale[];
+export type TranslatedLocale = (typeof locales)[number];
 /** Backwards-compatible name for a locale whose shared UI and page catalogue are complete. */
-export type Locale = SupportedLocale;
+export type Locale = TranslatedLocale;
+/** Public locales can include languages with a deliberately partial set of fully translated pages. */
+export const supportedLocales = [...locales, "ru"] as const satisfies readonly RoutingLocale[];
+export type SupportedLocale = (typeof supportedLocales)[number];
 export const existingLocales = ["ko", "en", "ja", "zh"] as const;
 export type ExistingLocale = (typeof existingLocales)[number];
-export const dictionaryLocales = locales.filter((locale) => locale !== "ko") as readonly Exclude<Locale, "ko">[];
+export const dictionaryLocales = supportedLocales.filter((locale) => locale !== "ko") as readonly Exclude<SupportedLocale, "ko">[];
 export type DictionaryLocale = Exclude<Locale, "ko">;
 
 const localeDetails: Record<RoutingLocale, { intlLocale: string; hreflang: string; openGraphLocale: string; nativeName: string }> = {
@@ -114,8 +115,9 @@ export const isPhaseFourTranslatedCalculator = (slug: string): slug is (typeof p
 export const isPhaseFiveTranslatedCalculator = (slug: string): slug is (typeof phaseFiveTranslatedCalculatorSlugs)[number] => phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]);
 export const isPhaseSixTranslatedCalculator = (slug: string): slug is (typeof phaseSixTranslatedCalculatorSlugs)[number] => phaseSixTranslatedCalculatorSlugs.includes(slug as (typeof phaseSixTranslatedCalculatorSlugs)[number]);
 export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug) || isPhaseThreeTranslatedCalculator(slug) || isPhaseFourTranslatedCalculator(slug) || isPhaseFiveTranslatedCalculator(slug) || isPhaseSixTranslatedCalculator(slug) || phaseSevenTranslatedCalculatorSlugs.includes(slug as (typeof phaseSevenTranslatedCalculatorSlugs)[number]) || phaseEightTranslatedCalculatorSlugs.includes(slug as (typeof phaseEightTranslatedCalculatorSlugs)[number]);
-export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => hasLocalizedCalculator(slug) ? locales : ["ko"];
-export const calculatorSupportsLocale = (slug: string, locale: Locale) => supportedLocalesForCalculator(slug).includes(locale);
+export const russianTranslatedCalculatorSlugs = ["compound-interest"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : [])] : ["ko"];
+export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);
 export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {
   return slugs.flatMap((slug) => {
     const supported = new Set(supportedLocalesForCalculator(slug));
@@ -123,22 +125,21 @@ export function missingCalculatorTranslationReport(slugs: readonly string[]): st
     return missing.length ? [`- ${slug}: ${missing.join(", ")}`] : [];
   });
 }
-export const localizedIndexSlugs = (locale: Locale) => {
-  void locale;
-  return localizedCalculatorSlugs;
+export const localizedIndexSlugs = (locale: SupportedLocale) => {
+  return locale === "ru" ? russianTranslatedCalculatorSlugs : localizedCalculatorSlugs;
 };
 
-export function localePath(locale: Locale, path = "") {
+export function localePath(locale: SupportedLocale, path = "") {
   const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
   const normalized = withLeadingSlash === "/" ? "" : withLeadingSlash.replace(/\/+$/, "");
   return `/${locale}${normalized}`;
 }
 
-export function languageSwitchPath(pathname: string, target: Locale) {
-  const path = pathname.replace(/^\/(ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi)(?=\/|$)/, "") || "/";
+export function languageSwitchPath(pathname: string, target: SupportedLocale) {
+  const path = pathname.replace(/^\/(ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi|ru)(?=\/|$)/, "") || "/";
   const slug = path.match(/^\/calculators\/([^/]+)/)?.[1];
   if ((slug && !calculatorSupportsLocale(slug, target)) || /^\/(about|privacy|terms)(\/|$)/.test(path)) {
-    const fallback: Locale = slug && calculatorSupportsLocale(slug, "en") ? "en" : "ko";
+    const fallback: SupportedLocale = slug && calculatorSupportsLocale(slug, "en") ? "en" : "ko";
     return localePath(fallback, slug ? `/calculators/${slug}` : "/calculators");
   }
   return localePath(target, path);

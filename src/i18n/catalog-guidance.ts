@@ -1,10 +1,10 @@
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 import type { CalculatorCategory } from "@/types/calculator";
 
 type Copy = { intro: string; recommended: string; recent: string; categories: string };
 const categoryOrder: readonly CalculatorCategory[] = ["finance", "tax", "salary", "life", "date-time", "math"];
 
-const copy: Record<Locale, Copy> = {
+const copy: Partial<Record<SupportedLocale, Copy>> = {
   ko: { intro: "대출 조건과 투자 수익을 비교하거나, 세금·급여의 기준을 확인하고, 일상 수치를 빠르게 계산할 수 있습니다. 계산기마다 입력값과 적용 가정을 확인한 뒤 결과를 해석하세요.", recommended: "상황별로 시작하기", recent: "최근 추가한 계산기", categories: "대출 상환액, 이자, 투자 성장과 손익을 비교할 때 사용합니다.|세전·세후 금액과 소비세를 계산하고 적용 연도와 지역을 확인합니다.|급여, 근로시간, 수당과 국가별 공제액을 추정합니다.|건강 지표, 이동 비용, 에너지 사용량 등 일상 수치를 살펴봅니다.|두 날짜 사이의 기간, 마감일과 근무일을 계산합니다.|비율·퍼센트·평균을 비교하고 단위를 변환합니다." },
   en: { intro: "Compare borrowing and investing scenarios, estimate taxes or pay, and work through everyday numbers. Check each tool's inputs and assumptions before using its result.", recommended: "Start with a common task", recent: "Recently added calculators", categories: "Compare loan payments, interest, investment growth and gains.|Estimate taxes and tax-inclusive prices; check the applicable year and region.|Explore pay, working time, allowances and country-specific deductions.|Work with health measures, travel costs and household energy use.|Count days between dates, deadlines and working days.|Compare ratios, percentages and averages or convert units." },
   ja: { intro: "借入や投資の条件を比較し、税金・給与や日常の数値を計算できます。結果を使う前に入力項目と前提条件を確認してください。", recommended: "目的から探す", recent: "最近追加した計算ツール", categories: "返済額、利息、投資の成長と損益を比較します。|税額や税込価格を試算し、適用年と地域を確認します。|給与、労働時間、手当と国別の控除を見積もります。|健康指標、移動費、家庭の電力使用量を計算します。|日付の間隔、期限までの日数、営業日を数えます。|比率、割合、平均を比較し、単位を換算します。" },
@@ -20,10 +20,11 @@ const copy: Record<Locale, Copy> = {
   it: { intro: "Confronta prestiti e investimenti, stima imposte e stipendi e risolvi calcoli quotidiani. Controlla dati e ipotesi prima di usare i risultati.", recommended: "Inizia dal tuo obiettivo", recent: "Calcolatori aggiunti di recente", categories: "Confronta rate, interessi, crescita degli investimenti e profitti.|Stima imposte e prezzi comprensivi di tasse; verifica anno e zona.|Calcola stipendi, ore, indennità e trattenute per paese.|Esamina salute, trasporti e consumo elettrico domestico.|Conta giorni tra date, scadenze e giorni lavorativi.|Confronta rapporti, percentuali e medie o converti unità." },
   nl: { intro: "Vergelijk leningen en beleggingen, schat belastingen en lonen en bereken alledaagse waarden. Controleer invoer en aannames voordat je resultaten gebruikt.", recommended: "Begin bij je vraag", recent: "Onlangs toegevoegde rekenhulpen", categories: "Vergelijk termijnen, rente, beleggingsgroei en winst.|Schat belasting en prijzen inclusief btw; controleer jaar en regio.|Bereken loon, werktijd, toeslagen en inhoudingen per land.|Bekijk gezondheid, reiskosten en stroomverbruik.|Tel dagen tussen datums, termijnen en werkdagen.|Vergelijk verhoudingen, percentages en gemiddelden of reken eenheden om." },
   hi: { intro: "ऋण और निवेश की तुलना करें, कर और वेतन का अनुमान लगाएँ और रोज़मर्रा की गणनाएँ करें। परिणाम इस्तेमाल करने से पहले इनपुट और मान्यताएँ जाँचें।", recommended: "अपनी ज़रूरत से शुरू करें", recent: "हाल में जोड़े गए कैलकुलेटर", categories: "किस्त, ब्याज, निवेश वृद्धि और लाभ-हानि की तुलना करें।|कर और कर-सहित कीमत का अनुमान लगाएँ; वर्ष और क्षेत्र जाँचें।|वेतन, काम के घंटे, भत्ते और देश के अनुसार कटौती गणना करें।|स्वास्थ्य माप, यात्रा खर्च और बिजली उपयोग देखें।|दो तिथियों के बीच दिन, समय सीमा और कार्यदिवस गिनें।|अनुपात, प्रतिशत और औसत की तुलना करें या इकाइयाँ बदलें।" },
+  ru: { intro: "Сравнивайте условия кредитов и вкладов, оценивайте налоги и зарплату и решайте повседневные задачи. Перед использованием результата проверьте исходные данные и допущения.", recommended: "Выберите нужную задачу", recent: "Недавно добавленные калькуляторы", categories: "Сравните платежи по кредиту, проценты, рост вложений и прибыль.|Оцените налоги и цены с учётом налога; проверьте применимый год и регион.|Рассчитайте зарплату, рабочее время и выплаты с учётом правил страны.|Проверьте показатели здоровья, транспортные расходы и потребление энергии.|Рассчитайте дни между датами, сроки и рабочие дни.|Сравните отношения, проценты и средние значения или переведите единицы измерения." },
 };
 
-export function catalogGuidance(locale: Locale) {
-  const value = copy[locale];
+export function catalogGuidance(locale: SupportedLocale) {
+  const value = copy[locale] ?? copy.en!;
   const descriptions = value.categories.split("|");
   if (descriptions.length !== categoryOrder.length) throw new Error(`Missing category guidance: ${locale}`);
   return { ...value, categories: Object.fromEntries(categoryOrder.map((category, index) => [category, descriptions[index]!])) as Record<CalculatorCategory, string> };

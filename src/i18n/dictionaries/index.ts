@@ -5,7 +5,6 @@ import { calculatorCategoryOrder } from "@/data/calculators/categories";
 import { additionalCalculatorContent } from "@/i18n/dictionaries/additional";
 import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { contentPatterns } from "@/i18n/dictionaries/content-patterns";
-import type { Locale } from "@/i18n/config";
 import { phaseOneLocaleDictionary } from "@/i18n/dictionaries/phase-one";
 import { phaseFourLocaleContent } from "@/i18n/dictionaries/phase-four";
 import { phaseFiveLocaleContent } from "@/i18n/dictionaries/phase-five";
@@ -15,6 +14,8 @@ import { ratioLocaleContent } from "@/i18n/dictionaries/ratio-tools";
 import { improveKoreanContent } from "@/i18n/dictionaries/korean-content-improvements";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { improveLocalizedQualityContent } from "@/i18n/dictionaries/locale-quality-followup";
+import { ru } from "@/i18n/dictionaries/ru";
+import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
   locale: "ko", siteName: "우리의 오늘", description: "일상에 필요한 계산과 생활 도구를 쉽고 빠르게 이용하세요.",
@@ -48,7 +49,8 @@ const seedKeywords = {
 } as const;
 
 const sources = { en, ja, zh } as const;
-function buildDictionary(locale: Locale): LocaleDictionary {
+function buildDictionary(locale: SupportedLocale): LocaleDictionary {
+  if (locale === "ru") return ru;
   if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko }, calculators: { ...ko.calculators, ...phaseFourLocaleContent("ko"), ...phaseFiveLocaleContent("ko"), ...phaseSixLocaleContent("ko"), ...newToolsLocaleContent("ko"), ...ratioLocaleContent("ko") } };
   if (locale !== "en" && locale !== "ja" && locale !== "zh") {
     const base = phaseOneLocaleDictionary(locale, getDictionary("en"))!;
@@ -65,8 +67,9 @@ function buildDictionary(locale: Locale): LocaleDictionary {
   };
 }
 
-const dictionaryCache = new Map<Locale, LocaleDictionary>();
+const dictionaryCache = new Map<SupportedLocale, LocaleDictionary>();
 function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictionary {
+  if (dictionary.locale === "ru") return dictionary;
   const entries = Object.entries(dictionary.calculators).filter((entry): entry is [string, LocalizedCalculatorContent] => Boolean(entry[1]));
   const counts = (select: (content: LocalizedCalculatorContent) => string) => {
     const values = new Map<string, number>();
@@ -91,9 +94,13 @@ function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictio
   })) as LocaleDictionary["calculators"];
   return { ...dictionary, calculators };
 }
-export function getDictionary(locale: Locale): LocaleDictionary {
+export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   const cached = dictionaryCache.get(locale);
   if (cached) return cached;
+  if (locale === "ru") {
+    dictionaryCache.set(locale, ru);
+    return ru;
+  }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;
   if (locale === "ko") {

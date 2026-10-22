@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { calculatorPages, publishedCalculatorPages } from "@/data/calculator-content";
 import { calculatorRegistry } from "@/data/calculators/registry";
-import { locales, supportedLocalesForCalculator } from "@/i18n/config";
+import { supportedLocalesForCalculator } from "@/i18n/config";
 
 const catalog = readFileSync(resolve(process.cwd(), "docs/service-catalog.md"), "utf8");
 const indexNow = readFileSync(resolve(process.cwd(), "scripts/submit-indexnow.mjs"), "utf8");
@@ -34,8 +34,8 @@ describe("service catalog coverage", () => {
     }
   });
 
-  it("contains complete fifteen-locale references and no duplicate paths", () => {
-    for (const row of rows) expect(row[7]?.split(", ")).toEqual([...locales]);
+  it("lists exactly the locales published for each page without duplicate paths", () => {
+    for (const page of calculatorPages) expect(entry.get(page.slug)?.[7]?.split(", ")).toEqual([...supportedLocalesForCalculator(page.slug)]);
     expect(catalog).toContain("| dca-calculator | 제외 | india-sip-calculator");
     for (const page of publishedCalculatorPages) expect(indexNow).toContain(`"${page.slug}"`);
   });

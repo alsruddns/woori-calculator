@@ -4,7 +4,7 @@ import { useState } from "react";
 import { formatNumber } from "@/lib/formatter/number";
 import { formatCurrency, defaultCurrencyByLocale, type CurrencyCode } from "@/lib/formatter/currency";
 import type { CalculatorTable } from "@/types/calculator-page";
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
 const labels = {
@@ -14,7 +14,7 @@ const labels = {
   zh: { periodDetails: "分期明细", repaymentSchedule: "每月还款明细", yearlyForecast: "年度预测", period: "期间", openingBalance: "期初金额", monthlyDeposit: "每月存入", cumulativePrincipal: "累计本金", periodInterest: "本期利息", cumulativeInterest: "累计利息", endingBalance: "期末金额", payment: "还款额", principal: "本金", interest: "利息", remainingBalance: "剩余本金", amount: "预测金额", change: "较上年增加", showAll: "显示全部", showLess: "收起部分", cagrAssumption: "此数学推算假设每期保持相同CAGR，不代表实际投资表现。" },
 } as const;
 
-export function ResultTable({ table, locale = "ko", currency = defaultCurrencyByLocale[locale] }: { table: CalculatorTable; locale?: Locale; currency?: CurrencyCode }) {
+export function ResultTable({ table, locale = "ko", currency = defaultCurrencyByLocale[locale] }: { table: CalculatorTable; locale?: SupportedLocale; currency?: CurrencyCode }) {
   const [expanded, setExpanded] = useState(false);
   const text = labels[locale as keyof typeof labels] ?? {
     periodDetails: getDictionary(locale).common.result, repaymentSchedule: getDictionary(locale).common.result,

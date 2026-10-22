@@ -2,18 +2,18 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/constants/site-config";
 import { getCalculatorPage } from "@/data/calculator-content";
 import { calculatorRegistry } from "@/data/calculators/registry";
-import { localePath, locales, supportedLocalesForCalculator } from "@/i18n/config";
+import { localePath, supportedLocales, supportedLocalesForCalculator } from "@/i18n/config";
 import { localizedLanguageAlternates } from "@/lib/i18n/seo";
 import type { CalculatorDefinition } from "@/types/calculator";
 
 export function createSitemapEntries(calculators: readonly CalculatorDefinition[] = calculatorRegistry): MetadataRoute.Sitemap {
-  const landingEntries: MetadataRoute.Sitemap = locales.map((locale) => {
+  const landingEntries: MetadataRoute.Sitemap = supportedLocales.map((locale) => {
     const path = "/calculators";
     return {
       url: `${siteConfig.url}${localePath(locale, path)}`,
       changeFrequency: "monthly" as const,
       priority: 0.6,
-      alternates: { languages: localizedLanguageAlternates(path) },
+      alternates: { languages: localizedLanguageAlternates(path, supportedLocales) },
     };
   });
 

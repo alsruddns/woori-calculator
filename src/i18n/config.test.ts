@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, hasRoutingLocale, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, routingLocaleConfig, routingLocales, supportedLocales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, hasRoutingLocale, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, localizedIndexSlugs, locales, routingLocaleConfig, routingLocales, supportedLocales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -9,12 +9,14 @@ describe("locale routing and translated calculator catalog", () => {
     for (const locale of locales) expect(hasLocale(locale)).toBe(true);
     expect(hasLocale("fr")).toBe(true);
     expect(locales).toHaveLength(15);
-    expect(supportedLocales).toEqual(locales);
+    expect(supportedLocales).toHaveLength(16);
+    expect(supportedLocales.slice(0, locales.length)).toEqual(locales);
+    expect(supportedLocales.at(-1)).toBe("ru");
     expect(routingLocales).toHaveLength(26);
     expect(new Set(routingLocales).size).toBe(26);
     for (const locale of routingLocales) expect(hasRoutingLocale(locale)).toBe(true);
     for (const locale of ["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const) {
-      expect(hasLocale(locale)).toBe(false);
+      expect(hasLocale(locale)).toBe(locale === "ru");
       expect(routingLocaleConfig[locale].intlLocale).toBeTruthy();
     }
     expect(localeConfig["pt-br"].hreflang).toBe("pt-BR");
@@ -30,6 +32,26 @@ describe("locale routing and translated calculator catalog", () => {
     expect(localePath("zh", "/calculators/area")).toBe("/zh/calculators/area");
     expect(localePath("ko")).toBe("/ko");
     expect(localePath("en", "/")).toBe("/en");
+  });
+
+  it("publishes only the fully translated Russian compound-interest calculator", () => {
+    const russian = getDictionary("ru");
+    const page = russian.calculators["compound-interest"]!;
+    const english = getDictionary("en").calculators["compound-interest"]!;
+    expect(localizedIndexSlugs("ru")).toEqual(["compound-interest"]);
+    expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
+    expect(calculatorSupportsLocale("percentage", "ru")).toBe(false);
+    expect(languageSwitchPath("/en/calculators/compound-interest", "ru")).toBe("/ru/calculators/compound-interest");
+    expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/en/calculators/percentage");
+    for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) {
+      expect(value).toBeTruthy();
+    }
+    expect(page.title).not.toBe(english.title);
+    expect(page.faqs.length).toBeGreaterThan(0);
+    expect(Object.keys(page.fields)).toEqual(["principal", "rate", "years", "frequency"]);
+    expect(page.related).toEqual([]);
+    expect(localePath("ru", "/calculators/compound-interest")).toBe("/ru/calculators/compound-interest");
+    expect(localizedMetadata("ru", "/calculators/compound-interest", page.title, page.description, page.keywords, supportedLocalesForCalculator("compound-interest")).alternates?.canonical).toBe("https://www.woori.today/ru/calculators/compound-interest");
   });
 
   it("switches language to the same translated tool or a safe localized landing", () => {
@@ -77,7 +99,7 @@ describe("locale routing and translated calculator catalog", () => {
       }
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
-    expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
+    expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru"]);
     expect(supportedLocalesForCalculator("median")).toEqual(locales);
     expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);

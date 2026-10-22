@@ -1,8 +1,8 @@
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 import { localePath } from "@/i18n/config";
 import { familySitesCopy } from "@/i18n/family-sites";
 
-export function FamilySiteSwitcher({ locale }: { locale: Locale }) {
+export function FamilySiteSwitcher({ locale }: { locale: SupportedLocale }) {
   const copy = familySitesCopy[locale];
   const sites = [
     { href: localePath(locale), label: copy.portal },

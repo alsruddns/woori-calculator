@@ -15,6 +15,7 @@ describe("currency configuration and display", () => {
     expect(formatCurrency(1_000_000, "KRW", "ko")).toContain("1,000,000");
     expect(formatCurrency(1_000_000, "USD", "en")).toContain("1,000,000.00");
     expect(formatCurrency(1_000_000, "JPY", "ja")).toContain("1,000,000");
+    expect(formatCurrency(1_000_000, "RUB", "ru")).toContain("1 000 000,00");
     expect(formatCurrency(Number.NaN, "USD", "en")).toBe("—");
     expect(formatCurrency(-0, "USD", "en")).not.toContain("-");
   });
@@ -23,6 +24,7 @@ describe("currency configuration and display", () => {
     expect(parseLocalizedNumber("1.234,56", "de")).toBe(1234.56);
     expect(parseLocalizedNumber("1 234,56", "fr")).toBe(1234.56);
     expect(parseLocalizedNumber("1,234.56", "en")).toBe(1234.56);
+    expect(parseLocalizedNumber("1 234,56", "ru")).toBe(1234.56);
     expect(parseLocalizedNumber("12,34,567.89", "hi")).toBe(1234567.89);
     expect(parseLocalizedNumber("-", "en")).toBeUndefined();
     expect(parseLocalizedNumber("1,2,3", "en")).toBeUndefined();

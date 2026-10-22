@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
-import { hasLocale, localePath, localizedIndexSlugs } from "@/i18n/config";
+import { hasLocale, localePath, localizedIndexSlugs, supportedLocales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { CalculatorCatalog } from "@/components/calculator/calculator-catalog";
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale: key } = await params;
   if (!hasLocale(key) || key === "ko") return {};
   const dict = getDictionary(key);
-  return localizedMetadata(key, "/calculators", dict.calculatorList.title, dict.calculatorList.description);
+  return localizedMetadata(key, "/calculators", dict.calculatorList.title, dict.calculatorList.description, undefined, supportedLocales);
 }
 
 export default async function LocaleCalculators({ params }: { params: Promise<{ locale: string }> }) {

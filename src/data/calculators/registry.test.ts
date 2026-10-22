@@ -36,7 +36,7 @@ describe("calculator registry", () => {
     expect(missing, `Missing published calculator translations:\n${missing.join("\n")}`).toEqual([]);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
     expect([...phaseTranslatedCalculatorSlugs].sort()).toEqual([...slugs].sort());
-    for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(locales);
+    for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(slug === "compound-interest" ? [...locales, "ru"] : locales);
   });
 
   it("keeps related links within the published calculator set and registers calculation logic", () => {

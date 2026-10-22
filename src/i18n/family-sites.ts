@@ -1,6 +1,6 @@
-import type { Locale } from "./config";
+import type { SupportedLocale } from "./config";
 
-export const familySitesCopy: Record<Locale, { label: string; menu: string; portal: string; calculator: string; tools: string; moneyBook: string; documents: string; quiz: string; newTab: string }> = {
+export const familySitesCopy: Record<SupportedLocale, { label: string; menu: string; portal: string; calculator: string; tools: string; moneyBook: string; documents: string; quiz: string; newTab: string }> = {
   ko: { label: "Family Sites", menu: "서비스 메뉴", portal: "포탈", calculator: "계산기", tools: "온라인 도구", moneyBook: "무료 공유 가계부", documents: "문서·양식", quiz: "퀴즈·테스트", newTab: "선택한 서비스가 새 탭에서 열립니다." },
   en: { label: "Family Sites", menu: "Services", portal: "Portal", calculator: "Calculator", tools: "Online Tools", moneyBook: "Free Shared Money Book", documents: "Documents & Forms", quiz: "Quizzes & Tests", newTab: "The selected service opens in a new tab." },
   ja: { label: "ファミリーサービス", menu: "サービスメニュー", portal: "ポータル", calculator: "計算機", tools: "オンラインツール", moneyBook: "無料の共有家計簿", documents: "文書・書式", quiz: "クイズ・テスト", newTab: "選択したサービスは新しいタブで開きます。" },
@@ -16,4 +16,5 @@ export const familySitesCopy: Record<Locale, { label: string; menu: string; port
   it: { label: "Servizi della famiglia", menu: "Servizi", portal: "Portale", calculator: "Calcolatrice", tools: "Strumenti online", moneyBook: "Libro contabile condiviso gratuito", documents: "Documenti e moduli", quiz: "Quiz e test", newTab: "Il servizio selezionato si aprirà in una nuova scheda." },
   nl: { label: "Familiediensten", menu: "Diensten", portal: "Portaal", calculator: "Rekenmachine", tools: "Onlinehulpmiddelen", moneyBook: "Gratis gedeeld huishoudboekje", documents: "Documenten en formulieren", quiz: "Quizzen en tests", newTab: "De geselecteerde dienst wordt geopend in een nieuw tabblad." },
   hi: { label: "परिवार सेवाएँ", menu: "सेवाएँ", portal: "पोर्टल", calculator: "कैलकुलेटर", tools: "ऑनलाइन टूल", moneyBook: "मुफ़्त साझा मनीबुक", documents: "दस्तावेज़ और फ़ॉर्म", quiz: "क्विज़ और टेस्ट", newTab: "चुनी गई सेवा नए टैब में खुलेगी।" },
+  ru: { label: "Сервисы woori.today", menu: "Меню сервисов", portal: "Портал", calculator: "Калькулятор", tools: "Онлайн-инструменты", moneyBook: "MoneyBook", documents: "Документы и формы", quiz: "Викторины и тесты", newTab: "Выбранный сервис откроется в новой вкладке." },
 };

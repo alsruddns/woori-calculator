@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import sitemap, { createSitemapEntries } from "@/app/sitemap";
 import { siteConfig } from "@/constants/site-config";
 import { calculatorRegistry } from "@/data/calculators/registry";
-import { calculatorSupportsLocale, localeConfig, localePath, locales, phaseOneTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, localeConfig, localePath, locales, supportedLocales, phaseOneTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 
 describe("calculator sitemap locale completeness", () => {
   it("includes only supported routes and links only supported hreflang alternates", () => {
@@ -10,10 +10,10 @@ describe("calculator sitemap locale completeness", () => {
     const urls = entries.map(({ url }) => url);
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
-    expect(expectedDetailCount).toBe(published.length * locales.length);
-    expect(entries).toHaveLength(expectedDetailCount + locales.length);
+    expect(expectedDetailCount).toBe(published.length * locales.length + 1);
+    expect(entries).toHaveLength(expectedDetailCount + supportedLocales.length);
     expect(new Set(urls).size).toBe(urls.length);
-    for (const locale of locales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
+    for (const locale of supportedLocales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
 
     for (const { slug, isPublished } of published) {
       if (!isPublished) continue;
@@ -33,6 +33,8 @@ describe("calculator sitemap locale completeness", () => {
     expect(urls).toContain(`${siteConfig.url}/es/calculators/median`);
     expect(urls).toContain(`${siteConfig.url}/es/calculators/fraction`);
     expect(urls).toContain(`${siteConfig.url}/pt-br/calculators/compound-interest`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/compound-interest`);
+    expect(urls).not.toContain(`${siteConfig.url}/ru/calculators/percentage`);
     expect(entries.find(({ url }) => url.endsWith("/pt-br/calculators/fraction"))?.alternates?.languages?.["pt-BR"]).toBe(`${siteConfig.url}/pt-br/calculators/fraction`);
     expect(entries.find(({ url }) => url.endsWith("/zh-tw/calculators/fraction"))?.alternates?.languages?.["zh-TW"]).toBe(`${siteConfig.url}/zh-tw/calculators/fraction`);
     expect(urls.every((url) => url.startsWith("https://www.woori.today/"))).toBe(true);

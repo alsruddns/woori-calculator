@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { LocaleDictionary } from "@/i18n/dictionaries/types";
-import { localePath, type Locale } from "@/i18n/config";
+import { localePath, type SupportedLocale } from "@/i18n/config";
 import { ContactTrigger } from "@/components/layout/contact-trigger";
 import { sharedUiCopy } from "@/i18n/shared-ui";
 
-const legalLinkCopy: Record<Locale, { about: string; privacy: string; terms: string }> = {
+const legalLinkCopy: Record<SupportedLocale, { about: string; privacy: string; terms: string }> = {
   ko: { about: "서비스 소개", privacy: "개인정보처리방침", terms: "이용약관" },
   en: { about: "About (Korean)", privacy: "Privacy (Korean)", terms: "Terms (Korean)" },
   ja: { about: "サービス紹介（韓国語）", privacy: "プライバシー（韓国語）", terms: "利用規約（韓国語）" },
@@ -20,9 +20,10 @@ const legalLinkCopy: Record<Locale, { about: string; privacy: string; terms: str
   it: { about: "Informazioni (in coreano)", privacy: "Privacy (in coreano)", terms: "Termini (in coreano)" },
   nl: { about: "Over ons (in het Koreaans)", privacy: "Privacy (in het Koreaans)", terms: "Voorwaarden (in het Koreaans)" },
   hi: { about: "परिचय (कोरियाई में)", privacy: "गोपनीयता (कोरियाई में)", terms: "नियम (कोरियाई में)" },
+  ru: { about: "О сервисе (на корейском)", privacy: "Конфиденциальность (на корейском)", terms: "Условия использования (на корейском)" },
 };
 
-export function localizedFooterLinks(locale: Locale) {
+export function localizedFooterLinks(locale: SupportedLocale) {
   const labels = legalLinkCopy[locale];
   return [
     { href: localePath(locale, "/about"), label: labels.about },

@@ -1,4 +1,4 @@
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 
 export type SharedUiCopy = {
   logoLabel: string;
@@ -20,7 +20,7 @@ export type SharedUiCopy = {
   };
 };
 
-export const sharedUiCopy: Record<Locale, SharedUiCopy> = {
+export const sharedUiCopy: Record<SupportedLocale, SharedUiCopy> = {
   ko: {
     logoLabel: "woori.today 포털로 이동", familySite: "패밀리 사이트", portal: "포털", moneyBook: "머니북", calculator: "계산기", tools: "도구", footerNavigation: "하단 메뉴",
     contact: { title: "문의 사항", intro: "woori.today 서비스 이용 중 궁금한 점이나 요청사항이 있으신가요?", details: "일반 문의 및 기능 요청, 협업 문의, 광고 문의 및 제안, 서비스 이용 중 발견한 버그 제보를 받고 있습니다. 아래 이메일로 문의해 주세요.", emailLabel: "이메일", email: "krdd125@gmail.com", reply: "문의 내용을 확인한 후 가능한 범위에서 답변드리겠습니다.", close: "닫기", types: ["일반 문의 및 요청사항", "협업 문의", "광고 문의 및 제안", "버그 제보"] },
@@ -80,5 +80,9 @@ export const sharedUiCopy: Record<Locale, SharedUiCopy> = {
   hi: {
     logoLabel: "woori.today पोर्टल पर जाएँ", familySite: "संबंधित साइटें", portal: "पोर्टल", moneyBook: "MoneyBook", calculator: "कैलकुलेटर", tools: "टूल", footerNavigation: "फुटर नेविगेशन",
     contact: { title: "संपर्क करें", intro: "क्या woori.today के उपयोग से जुड़ा कोई सवाल या अनुरोध है?", details: "हम सामान्य सवाल और फ़ीचर अनुरोध, सहयोग संबंधी पूछताछ, विज्ञापन संबंधी पूछताछ और प्रस्ताव, तथा सेवा में मिली त्रुटियों की रिपोर्ट स्वीकार करते हैं। कृपया नीचे दिए ईमेल पर संपर्क करें।", emailLabel: "ईमेल", email: "krdd125@gmail.com", reply: "हम आपके संदेश की समीक्षा करेंगे और संभव होने पर जवाब देंगे।", close: "बंद करें", types: ["सामान्य सवाल और अनुरोध", "सहयोग संबंधी पूछताछ", "विज्ञापन संबंधी पूछताछ और प्रस्ताव", "त्रुटि रिपोर्ट"] },
+  },
+  ru: {
+    logoLabel: "Перейти на портал woori.today", familySite: "Другие сервисы", portal: "Портал", moneyBook: "MoneyBook", calculator: "Калькулятор", tools: "Инструменты", footerNavigation: "Навигация внизу страницы",
+    contact: { title: "Связаться с нами", intro: "Есть вопросы или предложения по работе woori.today?", details: "Мы принимаем общие вопросы и предложения по функциям, запросы о сотрудничестве и рекламе, а также сообщения об ошибках. Напишите нам по адресу ниже.", emailLabel: "Электронная почта", email: "krdd125@gmail.com", reply: "Мы рассмотрим обращение и ответим, если это будет возможно.", close: "Закрыть", types: ["Общие вопросы и предложения", "Сотрудничество", "Реклама и предложения", "Сообщения об ошибках"] },
   },
 };

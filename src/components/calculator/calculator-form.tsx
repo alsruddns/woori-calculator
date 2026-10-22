@@ -8,17 +8,18 @@ import { formatCurrency, formatLocalizedInput, isCurrencyCode, parseLocalizedNum
 import { CurrencySelector, saveCurrency, useSelectedCurrency } from "@/components/calculator/currency-selector";
 import { normalizeDuration, durationForCalculator, type DurationUnit } from "@/lib/calculators/duration";
 import { numberToKoreanText } from "@/lib/formatter/korean-number";
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import type { CalculatorField, CalculatorOutcome } from "@/types/calculator-page";
 import { ResultTable } from "@/components/calculator/ResultTable";
 
-type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: Locale; dictionary?: Pick<LocaleDictionary, "detail" | "units" | "common">; content?: LocalizedCalculatorContent };
+type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: SupportedLocale; dictionary?: Pick<LocaleDictionary, "detail" | "units" | "common">; content?: LocalizedCalculatorContent };
 
 const unitLabels: Record<string, string> = Object.fromEntries(Object.entries(units).map(([key, unit]) => [key, unit.label]));
 const currencyFieldNames = new Set(["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent", "cost", "unitPrice", "existingAveragePrice", "additionalPrice", "currentAveragePrice", "currentPrice", "shipping", "otherCost", "mortgage", "repayment", "otherInterest", "annualExpenses", "annualDividendPerShare", "currentSavings", "targetValue", "accountSize", "entryPrice", "stopPrice", "buyPrice", "sellPrice", "lumpSum", "purchaseCosts", "transport", "lodgingPerNight", "dailyFoodPerPerson", "activities", "localTransport", "other", "targetAnnualRevenue", "annualBusinessCosts", "fixedCosts", "pricePerUnit", "variableCostPerUnit"]);
-function localizedResultUnit(unit: string | undefined, locale: Locale) {
+function localizedResultUnit(unit: string | undefined, locale: SupportedLocale) {
   if (!unit || locale === "ko") return unit;
+  if (locale === "ru") return unit;
   if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष" })[locale];
   if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग" })[locale];
   if (unit.startsWith("일")) {
@@ -27,13 +28,13 @@ function localizedResultUnit(unit: string | undefined, locale: Locale) {
   }
   return unit;
 }
-const conversionUnitLabels: Record<Locale, Record<string, string>> = {
+const conversionUnitLabels: Partial<Record<SupportedLocale, Record<string, string>>> = {
   ko: { c: "섭씨 (°C)", f: "화씨 (°F)" }, en: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, ja: { c: "摂氏 (°C)", f: "華氏 (°F)" }, zh: { c: "摄氏 (°C)", f: "华氏 (°F)" },
   es: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, "pt-br": { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, de: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, fr: { c: "Celsius (°C)", f: "Fahrenheit (°F)" },
   vi: { c: "Độ C (°C)", f: "Độ F (°F)" }, id: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, th: { c: "เซลเซียส (°C)", f: "ฟาเรนไฮต์ (°F)" }, "zh-tw": { c: "攝氏 (°C)", f: "華氏 (°F)" },
   it: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, nl: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, hi: { c: "सेल्सियस (°C)", f: "फ़ारेनहाइट (°F)" },
 };
-const linearUnitLabels: Record<Exclude<Locale, "ko">, Record<LinearUnit, string>> = {
+const linearUnitLabels: Partial<Record<SupportedLocale, Record<LinearUnit, string>>> = {
   en: { mm: "Millimeters (mm)", cm: "Centimeters (cm)", m: "Meters (m)", km: "Kilometers (km)", inch: "Inches (in)", ft: "Feet (ft)", yard: "Yards (yd)", mile: "Miles (mi)", mg: "Milligrams (mg)", g: "Grams (g)", kg: "Kilograms (kg)", oz: "Ounces (oz)", lb: "Pounds (lb)", ml: "Milliliters (mL)", l: "Liters (L)" },
   ja: { mm: "ミリメートル (mm)", cm: "センチメートル (cm)", m: "メートル (m)", km: "キロメートル (km)", inch: "インチ (in)", ft: "フィート (ft)", yard: "ヤード (yd)", mile: "マイル (mi)", mg: "ミリグラム (mg)", g: "グラム (g)", kg: "キログラム (kg)", oz: "オンス (oz)", lb: "ポンド (lb)", ml: "ミリリットル (mL)", l: "リットル (L)" },
   zh: { mm: "毫米 (mm)", cm: "厘米 (cm)", m: "米 (m)", km: "千米 (km)", inch: "英寸 (in)", ft: "英尺 (ft)", yard: "码 (yd)", mile: "英里 (mi)", mg: "毫克 (mg)", g: "克 (g)", kg: "千克 (kg)", oz: "盎司 (oz)", lb: "磅 (lb)", ml: "毫升 (mL)", l: "升 (L)" },
@@ -49,11 +50,12 @@ const linearUnitLabels: Record<Exclude<Locale, "ko">, Record<LinearUnit, string>
   nl: { mm: "Millimeter (mm)", cm: "Centimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Inch (in)", ft: "Voet (ft)", yard: "Yard (yd)", mile: "Mijl (mi)", mg: "Milligram (mg)", g: "Gram (g)", kg: "Kilogram (kg)", oz: "Ons (oz)", lb: "Pond (lb)", ml: "Milliliter (mL)", l: "Liter (L)" },
   hi: { mm: "मिलीमीटर (mm)", cm: "सेंटीमीटर (cm)", m: "मीटर (m)", km: "किलोमीटर (km)", inch: "इंच (in)", ft: "फुट (ft)", yard: "गज (yd)", mile: "मील (mi)", mg: "मिलीग्राम (mg)", g: "ग्राम (g)", kg: "किलोग्राम (kg)", oz: "औंस (oz)", lb: "पाउंड (lb)", ml: "मिलीलीटर (mL)", l: "लीटर (L)" },
 };
-const optionsFor = (field: CalculatorField, values: Record<string, string>, locale: Locale) => {
+const optionsFor = (field: CalculatorField, values: Record<string, string>, locale: SupportedLocale) => {
   if (field.name !== "fromUnit" && field.name !== "toUnit") return field.options ?? [];
   const category = values.category ?? "length";
-  if (category === "temperature") return [{ label: conversionUnitLabels[locale].c!, value: "c" }, { label: conversionUnitLabels[locale].f!, value: "f" }];
-  return (Object.keys(units) as LinearUnit[]).filter((key) => units[key].category === category).map((key) => ({ label: locale === "ko" ? unitLabels[key]! : linearUnitLabels[locale][key], value: key }));
+  if (category === "temperature") { const labels = conversionUnitLabels[locale] ?? conversionUnitLabels.en!; return [{ label: labels.c!, value: "c" }, { label: labels.f!, value: "f" }]; }
+  const labels = locale === "ko" ? unitLabels : (linearUnitLabels[locale] ?? linearUnitLabels.en!);
+  return (Object.keys(units) as LinearUnit[]).filter((key) => units[key].category === category).map((key) => ({ label: labels[key]!, value: key }));
 };
 
 export function CalculatorForm({ slug, fields, locale = "ko", dictionary, content }: CalculatorFormProps) {
