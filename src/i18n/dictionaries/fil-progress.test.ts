@@ -4,10 +4,10 @@ import { filipinoCalculatorContent, remainingFilipinoCalculatorSlugs, translated
 
 describe("Filipino translation progress", () => {
   it("tracks every calculator exactly once without publishing incomplete content", () => {
-    expect(Object.keys(filipinoCalculatorContent).length).toBe(106);
-    expect(translatedFilipinoCalculatorSlugs.length).toBe(106);
-    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 106);
+    expect(Object.keys(filipinoCalculatorContent).length).toBe(109);
+    expect(translatedFilipinoCalculatorSlugs.length).toBe(109);
+    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 109);
     expect(new Set([...translatedFilipinoCalculatorSlugs, ...remainingFilipinoCalculatorSlugs]).size).toBe(localizedCalculatorSlugs.length);
-    expect(remainingFilipinoCalculatorSlugs[0]).toBe("italy-gross-net-salary-calculator");
+    expect(remainingFilipinoCalculatorSlugs[0]).toBe("us-paycheck-calculator");
   });
 });
