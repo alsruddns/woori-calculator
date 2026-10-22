@@ -121,6 +121,9 @@ export function roPage(slug: LocalizedCalculatorSlug, spec: RomanianPageSpec): L
 export function roCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<RomanianPageSpec, "results">): LocalizedCalculatorContent {
   const source = catalogs.map((catalog) => catalog[slug]).find((page) => page !== undefined);
   if (!source) throw new Error(`Missing English calculator source: ${slug}`);
+  if (Object.keys(source.resultLabels).length === roUsResultLabels.length) {
+    return roPage(slug, { ...spec, results: roUsResultLabels });
+  }
   const results = Object.keys(source.resultLabels).map((label) => {
     const translation = roGlobalCountryResultLabels[label];
     if (!translation) throw new Error(`Missing Romanian country result label: ${label}`);
@@ -130,10 +133,5 @@ export function roCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<Romanian
 }
 
 export function roUsCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<RomanianPageSpec, "results">): LocalizedCalculatorContent {
-  const source = catalogs.map((catalog) => catalog[slug]).find((page) => page !== undefined);
-  if (!source) throw new Error(`Missing English calculator source: ${slug}`);
-  if (Object.keys(source.resultLabels).length !== roUsResultLabels.length) {
-    throw new Error(`Romanian US result schema mismatch: ${slug}`);
-  }
-  return roPage(slug, { ...spec, results: roUsResultLabels });
+  return roCountryPage(slug, spec);
 }

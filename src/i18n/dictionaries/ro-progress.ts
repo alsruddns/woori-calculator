@@ -21,6 +21,7 @@ import { roBatchEighteen } from "@/i18n/dictionaries/ro-batch-18";
 import { roBatchNineteen } from "@/i18n/dictionaries/ro-batch-19";
 import { roBatchTwenty } from "@/i18n/dictionaries/ro-batch-20";
 import { roBatchTwentyOne } from "@/i18n/dictionaries/ro-batch-21";
+import { roBatchTwentyTwo } from "@/i18n/dictionaries/ro-batch-22";
 
 export const romanianCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
   ...roBatchOne,
@@ -44,6 +45,7 @@ export const romanianCalculatorContent: Partial<Record<(typeof localizedCalculat
   ...roBatchNineteen,
   ...roBatchTwenty,
   ...roBatchTwentyOne,
+  ...roBatchTwentyTwo,
 };
 
 export const translatedRomanianCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in romanianCalculatorContent);
