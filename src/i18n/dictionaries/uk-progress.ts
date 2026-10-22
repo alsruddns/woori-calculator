@@ -8,6 +8,7 @@ import { ukBatchFive } from "@/i18n/dictionaries/uk-batch-5";
 import { ukBatchSix } from "@/i18n/dictionaries/uk-batch-6";
 import { ukBatchSeven } from "@/i18n/dictionaries/uk-batch-7";
 import { ukBatchEight } from "@/i18n/dictionaries/uk-batch-8";
+import { ukBatchNine } from "@/i18n/dictionaries/uk-batch-9";
 
 // Workbench only: keep Ukrainian pages unpublished until all calculator pages and shared UI are complete.
 export const ukrainianCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
@@ -19,6 +20,7 @@ export const ukrainianCalculatorContent: Partial<Record<(typeof localizedCalcula
   ...ukBatchSix,
   ...ukBatchSeven,
   ...ukBatchEight,
+  ...ukBatchNine,
 };
 export const translatedUkrainianCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in ukrainianCalculatorContent);
 export const remainingUkrainianCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => !(slug in ukrainianCalculatorContent));
