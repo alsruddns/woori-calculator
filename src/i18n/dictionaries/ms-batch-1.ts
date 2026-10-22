@@ -93,7 +93,7 @@ export const msBatchOne: Record<string, LocalizedCalculatorContent> = {
     related: ["date-difference", "discount", "percentage"],
   }),
   area: msPage("area", {
-    name: "Penukar Meter Persegi dan Ekar Korea",
+    name: "Penukar Meter Persegi dan Pyeong",
     title: "Penukar Keluasan: Meter Persegi kepada Pyeong dan Sebaliknya",
     description: "Tukar keluasan antara meter persegi dan pyeong. Pyeong ialah unit tradisional Korea dan bukan unit keluasan rasmi di Malaysia.",
     keywords: ["meter persegi kepada pyeong", "penukar pyeong", "kalkulator keluasan"],
