@@ -36,7 +36,7 @@ describe("calculator registry", () => {
     expect(missing, `Missing published calculator translations:\n${missing.join("\n")}`).toEqual([]);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
     expect([...phaseTranslatedCalculatorSlugs].sort()).toEqual([...slugs].sort());
-    const russianPages = ["compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest", "median", "percentile", "probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic"];
+    const russianPages = ["compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest", "median", "percentile", "probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic", "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss", "margin", "markup", "calorie-per-serving"];
     for (const slug of phaseTranslatedCalculatorSlugs) expect(supportedLocalesForCalculator(slug)).toEqual(russianPages.includes(slug) ? [...locales, "ru"] : locales);
   });
 
