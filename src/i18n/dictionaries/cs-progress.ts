@@ -23,6 +23,7 @@ import { csBatchTwenty } from "@/i18n/dictionaries/cs-batch-20";
 import { csBatchTwentyOne } from "@/i18n/dictionaries/cs-batch-21";
 import { csBatchTwentyTwo } from "@/i18n/dictionaries/cs-batch-22";
 import { csBatchTwentyThree } from "@/i18n/dictionaries/cs-batch-23";
+import { csBatchTwentyFour } from "@/i18n/dictionaries/cs-batch-24";
 
 export const czechCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
   ...csBatchOne,
@@ -48,6 +49,7 @@ export const czechCalculatorContent: Partial<Record<(typeof localizedCalculatorS
   ...csBatchTwentyOne,
   ...csBatchTwentyTwo,
   ...csBatchTwentyThree,
+  ...csBatchTwentyFour,
 };
 
 export const translatedCzechCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in czechCalculatorContent);
