@@ -19,6 +19,7 @@ import { tr } from "@/i18n/dictionaries/tr";
 import { pl } from "@/i18n/dictionaries/pl";
 import { fil } from "@/i18n/dictionaries/fil";
 import { buildBengaliDictionary } from "@/i18n/dictionaries/bn";
+import { uk } from "@/i18n/dictionaries/uk";
 import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
@@ -54,6 +55,7 @@ const seedKeywords = {
 
 const sources = { en, ja, zh } as const;
 function buildDictionary(locale: SupportedLocale): LocaleDictionary {
+  if (locale === "uk") return uk;
   if (locale === "ru") return ru;
   if (locale === "tr") return tr;
   if (locale === "pl") return pl;
@@ -125,6 +127,10 @@ export function getDictionary(locale: SupportedLocale): LocaleDictionary {
     const bengali = buildBengaliDictionary(getDictionary("en"));
     dictionaryCache.set(locale, bengali);
     return bengali;
+  }
+  if (locale === "uk") {
+    dictionaryCache.set(locale, uk);
+    return uk;
   }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;

@@ -21,6 +21,11 @@ function localizedResultUnit(unit: string | undefined, locale: SupportedLocale) 
   if (!unit || locale === "ko") return unit;
   if (locale === "fil") return unit.includes("year") ? "taon" : unit.replace("days", "araw");
   if (locale === "ru") return unit;
+  if (locale === "uk") {
+    if (unit === "years old") return "років";
+    if (unit === "pyeong") return "пхьон";
+    return unit.replace("years", "років").replace("year", "рік").replace("days", "днів").replace("day", "день");
+  }
   if (locale === "bn") return unit.replace("years", "বছর").replace("year", "বছর").replace("days", "দিন").replace("day", "দিন");
   if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष", tr: "yaş", pl: "lat" })[locale];
   if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग", tr: "pyeong", pl: "pyeong" })[locale];
@@ -34,9 +39,10 @@ const conversionUnitLabels: Partial<Record<SupportedLocale, Record<string, strin
   ko: { c: "섭씨 (°C)", f: "화씨 (°F)" }, en: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, ja: { c: "摂氏 (°C)", f: "華氏 (°F)" }, zh: { c: "摄氏 (°C)", f: "华氏 (°F)" },
   es: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, "pt-br": { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, de: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, fr: { c: "Celsius (°C)", f: "Fahrenheit (°F)" },
   vi: { c: "Độ C (°C)", f: "Độ F (°F)" }, id: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, th: { c: "เซลเซียส (°C)", f: "ฟาเรนไฮต์ (°F)" }, "zh-tw": { c: "攝氏 (°C)", f: "華氏 (°F)" },
-  it: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, nl: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, hi: { c: "सेल्सियस (°C)", f: "फ़ारेनहाइट (°F)" },
+  it: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, nl: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, hi: { c: "सेल्सियस (°C)", f: "फ़ारेनहाइट (°F)" }, uk: { c: "Градуси Цельсія (°C)", f: "Градуси Фаренгейта (°F)" },
 };
 const linearUnitLabels: Partial<Record<SupportedLocale, Record<LinearUnit, string>>> = {
+  uk: { mm: "Міліметри (мм)", cm: "Сантиметри (см)", m: "Метри (м)", km: "Кілометри (км)", inch: "Дюйми (in)", ft: "Фути (ft)", yard: "Ярди (yd)", mile: "Милі (mi)", mg: "Міліграми (мг)", g: "Грами (г)", kg: "Кілограми (кг)", oz: "Унції (oz)", lb: "Фунти (lb)", ml: "Мілілітри (мл)", l: "Літри (л)" },
   en: { mm: "Millimeters (mm)", cm: "Centimeters (cm)", m: "Meters (m)", km: "Kilometers (km)", inch: "Inches (in)", ft: "Feet (ft)", yard: "Yards (yd)", mile: "Miles (mi)", mg: "Milligrams (mg)", g: "Grams (g)", kg: "Kilograms (kg)", oz: "Ounces (oz)", lb: "Pounds (lb)", ml: "Milliliters (mL)", l: "Liters (L)" },
   ja: { mm: "ミリメートル (mm)", cm: "センチメートル (cm)", m: "メートル (m)", km: "キロメートル (km)", inch: "インチ (in)", ft: "フィート (ft)", yard: "ヤード (yd)", mile: "マイル (mi)", mg: "ミリグラム (mg)", g: "グラム (g)", kg: "キログラム (kg)", oz: "オンス (oz)", lb: "ポンド (lb)", ml: "ミリリットル (mL)", l: "リットル (L)" },
   zh: { mm: "毫米 (mm)", cm: "厘米 (cm)", m: "米 (m)", km: "千米 (km)", inch: "英寸 (in)", ft: "英尺 (ft)", yard: "码 (yd)", mile: "英里 (mi)", mg: "毫克 (mg)", g: "克 (g)", kg: "千克 (kg)", oz: "盎司 (oz)", lb: "磅 (lb)", ml: "毫升 (mL)", l: "升 (L)" },
