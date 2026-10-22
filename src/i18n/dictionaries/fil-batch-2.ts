@@ -1,5 +1,6 @@
 import { en } from "@/i18n/dictionaries/en";
 import { additionalCalculatorContent } from "@/i18n/dictionaries/additional";
+import { ratioLocaleContent } from "@/i18n/dictionaries/ratio-tools";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
 type PageSpec = {
@@ -21,7 +22,7 @@ type PageSpec = {
 };
 
 export function filPage(slug: keyof typeof en.calculators, spec: PageSpec): LocalizedCalculatorContent {
-  const source = en.calculators[slug] ?? additionalCalculatorContent.en[slug]!;
+  const source = en.calculators[slug] ?? additionalCalculatorContent.en[slug] ?? ratioLocaleContent("en")[slug]!;
   const fields = Object.fromEntries(Object.entries(source.fields).map(([key, field]) => [
     key,
     { ...field, label: spec.fields[key] ?? field.label },
