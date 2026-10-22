@@ -4,9 +4,9 @@ import { malayCalculatorContent, remainingMalayCalculatorSlugs, translatedMalayC
 
 describe("Malay translation workbench progress", () => {
   it("tracks translated and remaining calculators without publishing incomplete coverage", () => {
-    expect(translatedMalayCalculatorSlugs).toHaveLength(107);
-    expect(remainingMalayCalculatorSlugs).toHaveLength(62);
-    expect(new Set(Object.keys(malayCalculatorContent)).size).toBe(107);
+    expect(translatedMalayCalculatorSlugs).toHaveLength(118);
+    expect(remainingMalayCalculatorSlugs).toHaveLength(51);
+    expect(new Set(Object.keys(malayCalculatorContent)).size).toBe(118);
     expect(translatedMalayCalculatorSlugs.length + remainingMalayCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length);
   });
 });

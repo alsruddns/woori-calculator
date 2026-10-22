@@ -9,6 +9,7 @@ import { msBatchSix } from "@/i18n/dictionaries/ms-batch-6";
 import { msBatchSeven } from "@/i18n/dictionaries/ms-batch-7";
 import { msBatchEight } from "@/i18n/dictionaries/ms-batch-8";
 import { msBatchNine } from "@/i18n/dictionaries/ms-batch-9";
+import { msBatchTen } from "@/i18n/dictionaries/ms-batch-10";
 
 // Translation workbench only. Malay remains unpublished until all calculator pages and shared UI are complete.
 export const malayCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
@@ -21,6 +22,7 @@ export const malayCalculatorContent: Partial<Record<(typeof localizedCalculatorS
   ...msBatchSeven,
   ...msBatchEight,
   ...msBatchNine,
+  ...msBatchTen,
 };
 export const translatedMalayCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in malayCalculatorContent);
 export const remainingMalayCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => !(slug in malayCalculatorContent));
