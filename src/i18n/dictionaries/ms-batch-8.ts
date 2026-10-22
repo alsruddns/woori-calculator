@@ -1,9 +1,10 @@
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
+import type { LocalizedCalculatorSlug } from "@/i18n/config";
 import { msPage } from "@/i18n/dictionaries/ms-page";
 import { msSharedCountryResultLabels } from "@/i18n/dictionaries/ms-batch-7";
 
-function localizedPolicyPage(slug: string, name: string, title: string, description: string, keywords: readonly string[], howTo: string, formula: string, fields: Record<string, string>, options: Record<string, Record<string, string>>, related: LocalizedCalculatorContent["related"]): LocalizedCalculatorContent {
-  return msPage(slug as Parameters<typeof msPage>[0], {
+export function localizedPolicyPage(slug: LocalizedCalculatorSlug, name: string, title: string, description: string, keywords: readonly string[], howTo: string, formula: string, fields: Record<string, string>, options: Record<string, Record<string, string>>, related: LocalizedCalculatorContent["related"]): LocalizedCalculatorContent {
+  return msPage(slug, {
     name, title, description, keywords, howTo, formula,
     example: { question: "Adakah hasil ini terpakai kepada negara lain?", answer: "Tidak. Kiraan ini menggunakan rangka kerja negara yang dinyatakan pada halaman; peraturan Malaysia berbeza." },
     fields, options, results: msSharedCountryResultLabels, related,
