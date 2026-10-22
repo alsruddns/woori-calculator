@@ -3,8 +3,8 @@ import { filPage } from "@/i18n/dictionaries/fil-batch-2";
 import { sharedCountryResultLabelsFil } from "@/i18n/dictionaries/fil-batch-9";
 import type { LocalizedCalculatorSlug } from "@/i18n/config";
 
-type CountryPageSpec = {
-  country: "Germany" | "Spain" | "France";
+export type CountryPageSpec = {
+  country: "Germany" | "Spain" | "France" | "Netherlands" | "India";
   name: string;
   title: string;
   description: string;
@@ -16,7 +16,7 @@ type CountryPageSpec = {
   options?: Record<string, Record<string, string>>;
   related: LocalizedCalculatorContent["related"];
 };
-function countryPage(slug: LocalizedCalculatorSlug, spec: CountryPageSpec): LocalizedCalculatorContent {
+export function countryPage(slug: LocalizedCalculatorSlug, spec: CountryPageSpec): LocalizedCalculatorContent {
   return filPage(slug, {
     ...spec,
     shortName: spec.name,
