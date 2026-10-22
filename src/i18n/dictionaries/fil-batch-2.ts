@@ -23,19 +23,30 @@ type PageSpec = {
 
 export function filPage(slug: keyof typeof en.calculators, spec: PageSpec): LocalizedCalculatorContent {
   const source = en.calculators[slug] ?? additionalCalculatorContent.en[slug] ?? ratioLocaleContent("en")[slug]!;
+  for (const [key, field] of Object.entries(source.fields)) {
+    if (!spec.fields[key] || spec.fields[key] === field.label) throw new Error("Missing Filipino field translation: " + slug + "." + key);
+  }
+  if (Object.keys(spec.fields).length !== Object.keys(source.fields).length) throw new Error("Unexpected Filipino field key: " + slug);
+  for (const [group, choices] of Object.entries(source.options)) {
+    for (const [key, label] of Object.entries(choices)) {
+      if (!spec.options?.[group]?.[key] || spec.options[group][key] === label) throw new Error("Missing Filipino option translation: " + slug + "." + group + "." + key);
+    }
+  }
+  if (Object.keys(spec.options ?? {}).length !== Object.keys(source.options).length) throw new Error("Unexpected Filipino option group: " + slug);
+  if (spec.results.length !== Object.keys(source.resultLabels).length || spec.results.some((label) => !label)) throw new Error("Filipino result label count mismatch: " + slug);
   const fields = Object.fromEntries(Object.entries(source.fields).map(([key, field]) => [
     key,
-    { ...field, label: spec.fields[key] ?? field.label },
+    { ...field, label: spec.fields[key]! },
   ]));
   const options = Object.fromEntries(Object.entries(source.options).map(([group, choices]) => [
     group,
-    Object.fromEntries(Object.entries(choices).map(([key, label]) => [
+    Object.fromEntries(Object.keys(choices).map((key) => [
       key,
-      spec.options?.[group]?.[key] ?? label,
+      spec.options![group]![key],
     ])),
   ]));
   const resultLabels = Object.fromEntries(
-    Object.keys(source.resultLabels).map((key, index) => [key, spec.results[index] ?? spec.results[spec.results.length - 1] ?? "Result"]),
+    Object.keys(source.resultLabels).map((key, index) => [key, spec.results[index]!]),
   );
   return {
     name: spec.name,
@@ -222,7 +233,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     related: ["vehicle-cost", "fuel-cost", "unit-converter"],
     fields: { mode: "Uri ng pagkukuwenta", distance: "Distansiya", fuelAmount: "Dami ng gasolina", efficiency: "Fuel efficiency" },
     options: { mode: { efficiency: "Kuwentahin ang fuel efficiency", consumption: "Kuwentahin ang konsumo kada 100 km", range: "Tantiyahin ang distansiya" } },
-    results: ["Fuel efficiency", "Konsumo kada 100 km", "Kailangang gasolina", "Tinatayang distansiya"],
+    results: ["Fuel efficiency", "Tinatayang distansiya", "Konsumo kada 100 km", "Fuel na nagamit kada 100 km", "Kailangang gasolina", "Tinatayang distansiya"],
     validation: "Gumamit ng positibong distansiya, fuel amount, o efficiency ayon sa napiling uri ng pagkukuwenta.",
     resultNote: "Tantiya ito batay sa inilagay na datos; nag-iiba ang aktuwal na konsumo ayon sa sasakyan at kondisyon ng biyahe.",
     faq: { question: "Pareho ba ang km/L at L/100 km?", answer: "Magkaugnay ang mga ito ngunit baligtad ang direksiyon ng pagsukat: mas mataas na km/L o mas mababang L/100 km ang karaniwang nangangahulugan ng mas kaunting fuel bawat distansiya." },
