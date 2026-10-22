@@ -25,6 +25,31 @@ export type GreekPageSpec = {
   resultNote: string;
 };
 
+export const elGlobalCountryResultLabels: Record<string, string> = {
+  "Tax-exclusive amount": "Ποσό προ φόρου",
+  "Estimated tax": "Εκτιμώμενος φόρος",
+  "Tax-inclusive total": "Σύνολο με φόρο",
+  "Gross annual salary": "Μικτός ετήσιος μισθός",
+  "Estimated employee contributions": "Εκτιμώμενες εισφορές εργαζομένου",
+  "Estimated annual take-home pay": "Εκτιμώμενο καθαρό ετήσιο εισόδημα",
+  "Estimated monthly take-home pay": "Εκτιμώμενο καθαρό μηνιαίο εισόδημα",
+  "Average tax rate": "Μέσος φορολογικός συντελεστής",
+  "Base pay": "Βασική αμοιβή",
+  "Overtime premium": "Προσαύξηση υπερωρίας",
+  "Estimated allowance": "Εκτιμώμενο επίδομα",
+  "Applied rate": "Εφαρμοζόμενος συντελεστής",
+  "Service years": "Έτη υπηρεσίας",
+  "Estimated severance": "Εκτιμώμενη αποζημίωση αποχώρησης",
+  "Total contributions": "Συνολικές εισφορές",
+  "Estimated gains": "Εκτιμώμενα κέρδη",
+  "Projected balance": "Προβλεπόμενο υπόλοιπο",
+  "Potential tax-free allowance": "Πιθανό αφορολόγητο ποσό",
+  "Taxable salary remainder": "Φορολογητέο υπόλοιπο μισθού",
+  "Monthly employer deposit": "Μηνιαία κατάθεση εργοδότη",
+  "Annual employer deposits": "Ετήσιες καταθέσεις εργοδότη",
+  "Eligible months": "Επιλέξιμοι μήνες",
+};
+
 const sourceCatalogs: Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>[] = [
   en.calculators, additionalCalculatorContent.en, phaseFourLocaleContent("en"), phaseFiveLocaleContent("en"),
   phaseSixLocaleContent("en"), newToolsLocaleContent("en"), ratioLocaleContent("en"),
@@ -70,4 +95,15 @@ export function elPage(slug: LocalizedCalculatorSlug, spec: GreekPageSpec): Loca
     validation: spec.validation,
     resultNote: spec.resultNote,
   };
+}
+
+export function elCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<GreekPageSpec, "results">): LocalizedCalculatorContent {
+  const source = sourceCatalogs.map((catalog) => catalog[slug]).find((page) => page !== undefined);
+  if (!source) throw new Error(`Missing English calculator source: ${slug}`);
+  const results = Object.values(source.resultLabels).map((label) => {
+    const translation = elGlobalCountryResultLabels[label];
+    if (!translation) throw new Error(`Missing Greek country result label: ${label}`);
+    return translation;
+  });
+  return elPage(slug, { ...spec, results });
 }
