@@ -10,7 +10,7 @@ describe("calculator sitemap locale completeness", () => {
     const urls = entries.map(({ url }) => url);
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
-    expect(expectedDetailCount).toBe(published.length * locales.length + 61);
+    expect(expectedDetailCount).toBe(published.length * locales.length + 66);
     expect(entries).toHaveLength(expectedDetailCount + supportedLocales.length);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of supportedLocales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
@@ -43,6 +43,11 @@ describe("calculator sitemap locale completeness", () => {
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/pace`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/standard-deviation`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/stock-average-price`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/stop-loss-take-profit-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/loan-early-repayment-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/rent-vs-buy-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/electricity-cost-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/travel-budget-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/ratio`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/scale-ratio`);
     expect(urls).not.toContain(`${siteConfig.url}/ru/calculators/minimum-wage`);

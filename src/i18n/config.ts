@@ -123,6 +123,7 @@ export const russianTranslatedCalculatorSlugs = [
   "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy", "fire-retirement-calculator", "dividend-growth-calculator", "stock-profit-after-fees-calculator", "position-size-calculator", "freelancer-hourly-rate-calculator",
   "ratio", "proportion", "aspect-ratio", "scale-ratio",
   "vat", "pace", "standard-deviation", "stock-average-price",
+  "stop-loss-take-profit-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator",
 ] as const satisfies readonly LocalizedCalculatorSlug[];
 export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : [])] : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);

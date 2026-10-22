@@ -26,12 +26,12 @@
 | 15 | 배당 성장 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `dividend-growth-calculator` |
 | 16 | 물가 반영 수익률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `inflation-adjusted-return-calculator` |
 | 17 | 포지션 크기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `position-size-calculator` |
-| 18 | 손절·익절 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `stop-loss-take-profit-calculator` |
+| 18 | 손절·익절 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `stop-loss-take-profit-calculator` |
 | 19 | 수수료 반영 주식 손익 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `stock-profit-after-fees-calculator` |
-| 20 | 대출 조기상환 절감액 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `loan-early-repayment-calculator` |
-| 21 | 월세·구매 비용 비교 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `rent-vs-buy-calculator` |
-| 22 | 전기 사용량·요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `electricity-cost-calculator` |
-| 23 | 여행 예산 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `travel-budget-calculator` |
+| 20 | 대출 조기상환 절감액 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `loan-early-repayment-calculator` |
+| 21 | 월세·구매 비용 비교 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `rent-vs-buy-calculator` |
+| 22 | 전기 사용량·요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `electricity-cost-calculator` |
+| 23 | 여행 예산 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `travel-budget-calculator` |
 | 24 | 프리랜서 목표 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `freelancer-hourly-rate-calculator` |
 | 25 | 손익분기점 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `break-even-point-calculator` |
 | 26 | 복리 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `compound-interest` |

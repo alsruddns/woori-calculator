@@ -51,7 +51,7 @@ describe("ratio calculator localization and SEO", () => {
 
   it("publishes locale-first canonical, hreflang, sitemap and IndexNow URLs for new pages", () => {
     const urls = createSitemapEntries().map(({ url }) => url);
-    expect(urls).toHaveLength(169 * 15 + 16 + 61);
+    expect(urls).toHaveLength(169 * 15 + 16 + 66);
     expect(new Set(urls).size).toBe(urls.length);
     for (const slug of slugs.slice(1)) {
       expect(FULL_LOCALE_SLUGS.has(slug)).toBe(true);
