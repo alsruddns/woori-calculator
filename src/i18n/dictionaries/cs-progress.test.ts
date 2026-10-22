@@ -4,9 +4,9 @@ import { czechCalculatorContent, remainingCzechCalculatorSlugs, translatedCzechC
 
 describe("Czech translation progress", () => {
   it("tracks only the calculator pages with completed Czech content", () => {
-    expect(translatedCzechCalculatorSlugs).toHaveLength(17);
-    expect(remainingCzechCalculatorSlugs).toHaveLength(152);
-    expect(Object.keys(czechCalculatorContent)).toHaveLength(17);
+    expect(translatedCzechCalculatorSlugs).toHaveLength(21);
+    expect(remainingCzechCalculatorSlugs).toHaveLength(148);
+    expect(Object.keys(czechCalculatorContent)).toHaveLength(21);
     expect(translatedCzechCalculatorSlugs.length + remainingCzechCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length);
   });
 });
