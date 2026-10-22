@@ -132,7 +132,7 @@ export function elCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<GreekPag
   return elPage(slug, { ...spec, results });
 }
 
-export function elUsCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<GreekPageSpec, "results">): LocalizedCalculatorContent {
+export function elPhaseSixCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<GreekPageSpec, "results">): LocalizedCalculatorContent {
   const source = sourceCatalogs.map((catalog) => catalog[slug]).find((page) => page !== undefined);
   if (!source) throw new Error(`Missing English calculator source: ${slug}`);
   const results = Object.values(source.resultLabels).map((label) => {
@@ -142,3 +142,5 @@ export function elUsCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<GreekP
   });
   return elPage(slug, { ...spec, results });
 }
+
+export const elUsCountryPage = elPhaseSixCountryPage;
