@@ -4,9 +4,9 @@ import { bengaliCalculatorContent, remainingBengaliCalculatorSlugs, translatedBe
 
 describe("Bengali translation progress", () => {
   it("tracks workbench translations without making incomplete pages public", () => {
-    expect(Object.keys(bengaliCalculatorContent)).toHaveLength(24);
-    expect(translatedBengaliCalculatorSlugs).toHaveLength(24);
-    expect(remainingBengaliCalculatorSlugs).toHaveLength(localizedCalculatorSlugs.length - 24);
+    expect(Object.keys(bengaliCalculatorContent)).toHaveLength(33);
+    expect(translatedBengaliCalculatorSlugs).toHaveLength(33);
+    expect(remainingBengaliCalculatorSlugs).toHaveLength(localizedCalculatorSlugs.length - 33);
     expect(new Set([...translatedBengaliCalculatorSlugs, ...remainingBengaliCalculatorSlugs]).size).toBe(localizedCalculatorSlugs.length);
   });
 });
