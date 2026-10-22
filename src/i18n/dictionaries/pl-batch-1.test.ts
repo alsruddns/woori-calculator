@@ -11,6 +11,7 @@ import { plBatchEight } from "@/i18n/dictionaries/pl-batch-8";
 import { plBatchNine } from "@/i18n/dictionaries/pl-batch-9";
 import { plBatchTen } from "@/i18n/dictionaries/pl-batch-10";
 import { plBatchEleven } from "@/i18n/dictionaries/pl-batch-11";
+import { plBatchTwelve } from "@/i18n/dictionaries/pl-batch-12";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
 const slugs = ["compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest", "median", "percentile"] as const;
@@ -24,6 +25,7 @@ const slugsEight = ["taiwan-income-tax-calculator", "taiwan-labor-insurance-calc
 const slugsNine = ["uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator", "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator", "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator", "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator"] as const;
 const slugsTen = ["singapore-cpf-calculator", "singapore-gst-calculator", "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator", "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator", "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator", "uae-gratuity-calculator"] as const;
 const slugsEleven = ["uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator", "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator", "spain-freelancer-tax-calculator", "france-social-contribution-calculator", "fire-retirement-calculator", "dividend-growth-calculator", "position-size-calculator", "stop-loss-take-profit-calculator", "stock-profit-after-fees-calculator", "loan-early-repayment-calculator"] as const;
+const slugsTwelve = ["rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "freelancer-hourly-rate-calculator"] as const;
 
 describe("Polish calculator translation batch one", () => {
   it("contains complete Polish page content and matching source form/result keys", () => {
@@ -39,6 +41,7 @@ describe("Polish calculator translation batch one", () => {
     expect(Object.keys(plBatchNine).sort()).toEqual([...slugsNine].sort());
     expect(Object.keys(plBatchTen).sort()).toEqual([...slugsTen].sort());
     expect(Object.keys(plBatchEleven).sort()).toEqual([...slugsEleven].sort());
+    expect(Object.keys(plBatchTwelve).sort()).toEqual([...slugsTwelve].sort());
     const entries = [
       ...slugs.map((slug) => [slug, plBatchOne[slug]] as const),
       ...slugsTwo.map((slug) => [slug, plBatchTwo[slug]] as const),
@@ -51,6 +54,7 @@ describe("Polish calculator translation batch one", () => {
       ...slugsNine.map((slug) => [slug, plBatchNine[slug]] as const),
       ...slugsTen.map((slug) => [slug, plBatchTen[slug]] as const),
       ...slugsEleven.map((slug) => [slug, plBatchEleven[slug]] as const),
+      ...slugsTwelve.map((slug) => [slug, plBatchTwelve[slug]] as const),
     ];
     for (const [slug, content] of entries) {
       const page: LocalizedCalculatorContent = content!;
@@ -64,7 +68,7 @@ describe("Polish calculator translation batch one", () => {
       for (const [field, options] of Object.entries(source.options)) {
         expect(Object.keys(page.options[field] ?? {}).sort()).toEqual(Object.keys(options).sort());
       }
-      expect(Object.keys(page.resultLabels).sort()).toEqual(expect.arrayContaining(Object.keys(source.resultLabels).sort()));
+      expect(Object.keys(page.resultLabels).sort(), slug).toEqual(expect.arrayContaining(Object.keys(source.resultLabels).sort()));
       expect(page.faqs.length).toBeGreaterThan(0);
       expect(page.howTo).toBeTruthy();
       expect(page.formula).toBeTruthy();
