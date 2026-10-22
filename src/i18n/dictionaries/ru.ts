@@ -13,6 +13,7 @@ import { ruBatchTen } from "@/i18n/dictionaries/ru-batch-10";
 import { ruBatchEleven } from "@/i18n/dictionaries/ru-batch-11";
 import { ruBatchTwelve } from "@/i18n/dictionaries/ru-batch-12";
 import { ruBatchThirteen } from "@/i18n/dictionaries/ru-batch-13";
+import { ruBatchFourteen } from "@/i18n/dictionaries/ru-batch-14";
 
 export const ru: LocaleDictionary = {
   locale: "ru",
@@ -40,6 +41,7 @@ export const ru: LocaleDictionary = {
     ...ruBatchEleven,
     ...ruBatchTwelve,
     ...ruBatchThirteen,
+    ...ruBatchFourteen,
     "compound-interest": {
       name: "Калькулятор сложных процентов",
       shortName: "Сложные проценты",
