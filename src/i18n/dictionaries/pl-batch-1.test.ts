@@ -4,12 +4,14 @@ import { plBatchOne } from "@/i18n/dictionaries/pl-batch-1";
 import { plBatchTwo } from "@/i18n/dictionaries/pl-batch-2";
 import { plBatchThree } from "@/i18n/dictionaries/pl-batch-3";
 import { plBatchFour } from "@/i18n/dictionaries/pl-batch-4";
+import { plBatchFive } from "@/i18n/dictionaries/pl-batch-5";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
 const slugs = ["compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest", "median", "percentile"] as const;
 const slugsTwo = ["probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic", "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss"] as const;
 const slugsThree = ["loan-interest", "deposit-interest", "loan-refinance", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "break-even-point-calculator", "inflation-adjusted-return-calculator", "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy"] as const;
 const slugsFour = ["vat", "ratio", "proportion", "aspect-ratio", "scale-ratio", "margin", "markup", "pace", "calorie-per-serving", "standard-deviation", "stock-average-price", "annual-leave-allowance", "product-margin", "withholding-tax-3-3", "utility-bill"] as const;
+const slugsFive = ["unemployment-benefit", "minimum-wage", "severance-pay", "social-insurance", "japan-consumption-tax-calculator", "japan-annual-salary-calculator", "japan-monthly-salary-calculator", "japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator", "germany-gross-net-salary-calculator", "germany-income-tax-calculator", "germany-vat-calculator", "germany-overtime-pay-calculator", "germany-vacation-pay-calculator", "spain-gross-net-salary-calculator"] as const;
 
 describe("Polish calculator translation batch one", () => {
   it("contains complete Polish page content and matching source form/result keys", () => {
@@ -18,11 +20,13 @@ describe("Polish calculator translation batch one", () => {
     expect(Object.keys(plBatchTwo).sort()).toEqual([...slugsTwo].sort());
     expect(Object.keys(plBatchThree).sort()).toEqual([...slugsThree].sort());
     expect(Object.keys(plBatchFour).sort()).toEqual([...slugsFour].sort());
+    expect(Object.keys(plBatchFive).sort()).toEqual([...slugsFive].sort());
     const entries = [
       ...slugs.map((slug) => [slug, plBatchOne[slug]] as const),
       ...slugsTwo.map((slug) => [slug, plBatchTwo[slug]] as const),
       ...slugsThree.map((slug) => [slug, plBatchThree[slug]] as const),
       ...slugsFour.map((slug) => [slug, plBatchFour[slug]] as const),
+      ...slugsFive.map((slug) => [slug, plBatchFive[slug]] as const),
     ];
     for (const [slug, content] of entries) {
       const page: LocalizedCalculatorContent = content!;
