@@ -21,6 +21,7 @@ import { fil } from "@/i18n/dictionaries/fil";
 import { buildBengaliDictionary } from "@/i18n/dictionaries/bn";
 import { uk } from "@/i18n/dictionaries/uk";
 import { buildMalayDictionary } from "@/i18n/dictionaries/ms";
+import { buildSwedishDictionary } from "@/i18n/dictionaries/sv";
 import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
@@ -58,6 +59,7 @@ const sources = { en, ja, zh } as const;
 function buildDictionary(locale: SupportedLocale): LocaleDictionary {
   if (locale === "uk") return uk;
   if (locale === "ms") return buildMalayDictionary(getDictionary("en"));
+  if (locale === "sv") return buildSwedishDictionary(getDictionary("en"));
   if (locale === "ru") return ru;
   if (locale === "tr") return tr;
   if (locale === "pl") return pl;
@@ -138,6 +140,11 @@ export function getDictionary(locale: SupportedLocale): LocaleDictionary {
     const malay = buildMalayDictionary(getDictionary("en"));
     dictionaryCache.set(locale, malay);
     return malay;
+  }
+  if (locale === "sv") {
+    const swedish = buildSwedishDictionary(getDictionary("en"));
+    dictionaryCache.set(locale, swedish);
+    return swedish;
   }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;

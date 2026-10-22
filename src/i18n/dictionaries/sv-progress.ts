@@ -10,8 +10,9 @@ import { svBatchSeven } from "@/i18n/dictionaries/sv-batch-7";
 import { svBatchEight } from "@/i18n/dictionaries/sv-batch-8";
 import { svBatchNine } from "@/i18n/dictionaries/sv-batch-9";
 import { svBatchTen } from "@/i18n/dictionaries/sv-batch-10";
+import { svBatchEleven } from "@/i18n/dictionaries/sv-batch-11";
 
-// Swedish stays unpublished until all calculator pages and shared UI are translated.
+// The complete Swedish calculator catalog is assembled from validated translation batches.
 export const swedishCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
   ...svBatchOne,
   ...svBatchTwo,
@@ -23,6 +24,7 @@ export const swedishCalculatorContent: Partial<Record<(typeof localizedCalculato
   ...svBatchEight,
   ...svBatchNine,
   ...svBatchTen,
+  ...svBatchEleven,
 };
 export const translatedSwedishCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in swedishCalculatorContent);
 export const remainingSwedishCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => !(slug in swedishCalculatorContent));

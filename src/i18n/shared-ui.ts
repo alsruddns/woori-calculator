@@ -94,4 +94,8 @@ export const sharedUiCopy: Record<SupportedLocale, SharedUiCopy> = {
     logoLabel: "Pergi ke portal woori.today", familySite: "Perkhidmatan Woori", portal: "Portal", moneyBook: "MoneyBook", calculator: "Kalkulator", tools: "Alat", footerNavigation: "Navigasi kaki halaman",
     contact: { title: "Hubungi kami", intro: "Ada soalan atau permintaan tentang woori.today?", details: "Kami menerima pertanyaan umum dan cadangan ciri, pertanyaan kerjasama, pertanyaan atau cadangan pengiklanan serta laporan pepijat. Hubungi kami melalui e-mel di bawah.", emailLabel: "E-mel", email: "krdd125@gmail.com", reply: "Kami akan menyemak mesej anda dan membalas jika dapat.", close: "Tutup", types: ["Pertanyaan dan permintaan umum", "Pertanyaan kerjasama", "Pertanyaan dan cadangan pengiklanan", "Laporan pepijat"] },
   },
+  sv: {
+    logoLabel: "Gå till woori.today-portalen", familySite: "Wooris tjänster", portal: "Portal", moneyBook: "MoneyBook", calculator: "Kalkylator", tools: "Verktyg", footerNavigation: "Sidfotsnavigering",
+    contact: { title: "Kontakta oss", intro: "Har du frågor eller önskemål om woori.today?", details: "Vi tar gärna emot allmänna frågor och önskemål om funktioner, samarbetsförfrågningar, frågor och förslag om annonsering samt felrapporter. Mejla oss på adressen nedan.", emailLabel: "E-post", email: "krdd125@gmail.com", reply: "Vi går igenom ditt meddelande och svarar när vi har möjlighet.", close: "Stäng", types: ["Allmänna frågor och önskemål", "Samarbete", "Annonsering och förslag", "Felrapport"] },
+  },
 };

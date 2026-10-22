@@ -27,10 +27,10 @@ function localizedResultUnit(unit: string | undefined, locale: SupportedLocale) 
     return unit.replace("years", "років").replace("year", "рік").replace("days", "днів").replace("day", "день");
   }
   if (locale === "bn") return unit.replace("years", "বছর").replace("year", "বছর").replace("days", "দিন").replace("day", "দিন");
-  if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष", tr: "yaş", pl: "lat", ms: "tahun" })[locale];
-  if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग", tr: "pyeong", pl: "pyeong", ms: "pyeong" })[locale];
+  if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष", tr: "yaş", pl: "lat", ms: "tahun", sv: "år" })[locale];
+  if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग", tr: "pyeong", pl: "pyeong", ms: "pyeong", sv: "pyeong" })[locale];
   if (unit.startsWith("일")) {
-    const day = ({ en: "days", ja: "日", zh: "天", es: "días", "pt-br": "dias", de: "Tage", fr: "jours", vi: "ngày", id: "hari", th: "วัน", "zh-tw": "天", it: "giorni", nl: "dagen", hi: "दिन", tr: "gün", pl: "dni", ms: "hari" })[locale];
+    const day = ({ en: "days", ja: "日", zh: "天", es: "días", "pt-br": "dias", de: "Tage", fr: "jours", vi: "ngày", id: "hari", th: "วัน", "zh-tw": "天", it: "giorni", nl: "dagen", hi: "दिन", tr: "gün", pl: "dni", ms: "hari", sv: "dagar" })[locale];
     return `${day}${unit.slice(1)}`;
   }
   return unit;
@@ -40,6 +40,7 @@ const conversionUnitLabels: Partial<Record<SupportedLocale, Record<string, strin
   es: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, "pt-br": { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, de: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, fr: { c: "Celsius (°C)", f: "Fahrenheit (°F)" },
   vi: { c: "Độ C (°C)", f: "Độ F (°F)" }, id: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, th: { c: "เซลเซียส (°C)", f: "ฟาเรนไฮต์ (°F)" }, "zh-tw": { c: "攝氏 (°C)", f: "華氏 (°F)" },
   it: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, nl: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, hi: { c: "सेल्सियस (°C)", f: "फ़ारेनहाइट (°F)" }, uk: { c: "Градуси Цельсія (°C)", f: "Градуси Фаренгейта (°F)" },
+  sv: { c: "Celsius (°C)", f: "Fahrenheit (°F)" },
 };
 const linearUnitLabels: Partial<Record<SupportedLocale, Record<LinearUnit, string>>> = {
   uk: { mm: "Міліметри (мм)", cm: "Сантиметри (см)", m: "Метри (м)", km: "Кілометри (км)", inch: "Дюйми (in)", ft: "Фути (ft)", yard: "Ярди (yd)", mile: "Милі (mi)", mg: "Міліграми (мг)", g: "Грами (г)", kg: "Кілограми (кг)", oz: "Унції (oz)", lb: "Фунти (lb)", ml: "Мілілітри (мл)", l: "Літри (л)" },
@@ -57,6 +58,7 @@ const linearUnitLabels: Partial<Record<SupportedLocale, Record<LinearUnit, strin
   it: { mm: "Millimetri (mm)", cm: "Centimetri (cm)", m: "Metri (m)", km: "Chilometri (km)", inch: "Pollici (in)", ft: "Piedi (ft)", yard: "Iarde (yd)", mile: "Miglia (mi)", mg: "Milligrammi (mg)", g: "Grammi (g)", kg: "Chilogrammi (kg)", oz: "Once (oz)", lb: "Libbre (lb)", ml: "Millilitri (mL)", l: "Litri (L)" },
   nl: { mm: "Millimeter (mm)", cm: "Centimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Inch (in)", ft: "Voet (ft)", yard: "Yard (yd)", mile: "Mijl (mi)", mg: "Milligram (mg)", g: "Gram (g)", kg: "Kilogram (kg)", oz: "Ons (oz)", lb: "Pond (lb)", ml: "Milliliter (mL)", l: "Liter (L)" },
   hi: { mm: "मिलीमीटर (mm)", cm: "सेंटीमीटर (cm)", m: "मीटर (m)", km: "किलोमीटर (km)", inch: "इंच (in)", ft: "फुट (ft)", yard: "गज (yd)", mile: "मील (mi)", mg: "मिलीग्राम (mg)", g: "ग्राम (g)", kg: "किलोग्राम (kg)", oz: "औंस (oz)", lb: "पाउंड (lb)", ml: "मिलीलीटर (mL)", l: "लीटर (L)" },
+  sv: { mm: "Millimeter (mm)", cm: "Centimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Tum (in)", ft: "Fot (ft)", yard: "Yard (yd)", mile: "Engelska mil (mi)", mg: "Milligram (mg)", g: "Gram (g)", kg: "Kilogram (kg)", oz: "Uns (oz)", lb: "Pund (lb)", ml: "Milliliter (mL)", l: "Liter (L)" },
 };
 const optionsFor = (field: CalculatorField, values: Record<string, string>, locale: SupportedLocale) => {
   if (field.name !== "fromUnit" && field.name !== "toUnit") return field.options ?? [];
