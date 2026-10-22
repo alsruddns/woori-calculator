@@ -6,7 +6,7 @@ import { localizedCalculatorSlugs } from "@/i18n/config";
 describe("Malay calculator translation batch one", () => {
   it("contains complete, non-English localized content and matching source schemas", () => {
     const english = getDictionary("en");
-    const expected = ["percentage", "discount", "loan-interest", "compound-interest", "vat", "date-difference", "age", "area"] as const;
+    const expected = ["percentage", "discount", "loan-interest", "compound-interest", "vat", "date-difference", "age", "area", "simple-interest", "savings-interest", "change-rate", "average", "weighted-average", "cagr", "median"] as const;
     expect(Object.keys(msBatchOne).sort()).toEqual([...expected].sort());
     for (const slug of expected) {
       const page = msBatchOne[slug]!;
