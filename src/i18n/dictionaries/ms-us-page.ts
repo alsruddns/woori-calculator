@@ -7,3 +7,5 @@ type UsPageSpec = Parameters<typeof msPage>[1];
 export function msUsPage(slug: LocalizedCalculatorSlug, spec: Omit<UsPageSpec, "results">): LocalizedCalculatorContent {
   return msPage(slug, { ...spec, results: msGlobalResultLabels64 });
 }
+
+export const msGlobalResultPage = msUsPage;
