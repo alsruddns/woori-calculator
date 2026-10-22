@@ -9,6 +9,7 @@ import { bnBatchSix } from "@/i18n/dictionaries/bn-batch-6";
 import { bnBatchSeven } from "@/i18n/dictionaries/bn-batch-7";
 import { bnBatchEight } from "@/i18n/dictionaries/bn-batch-8";
 import { bnBatchNine } from "@/i18n/dictionaries/bn-batch-9";
+import { bnBatchTen } from "@/i18n/dictionaries/bn-batch-10";
 
 // Translation workbench only. Publish only after the shared Bengali UI and all pages are complete.
 export const bengaliCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
@@ -21,6 +22,7 @@ export const bengaliCalculatorContent: Partial<Record<(typeof localizedCalculato
   ...bnBatchSeven,
   ...bnBatchEight,
   ...bnBatchNine,
+  ...bnBatchTen,
 };
 export const translatedBengaliCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in bengaliCalculatorContent);
 export const remainingBengaliCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => !(slug in bengaliCalculatorContent));
