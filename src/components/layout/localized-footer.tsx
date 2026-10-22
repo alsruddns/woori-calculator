@@ -30,6 +30,7 @@ const legalLinkCopy: Record<SupportedLocale, { about: string; privacy: string; t
   sv: { about: "Om tjänsten (på koreanska)", privacy: "Integritet (på koreanska)", terms: "Användarvillkor (på koreanska)" },
   cs: { about: "O službě (korejsky)", privacy: "Soukromí (korejsky)", terms: "Podmínky používání (korejsky)" },
   ro: { about: "Despre serviciu (în coreeană)", privacy: "Confidențialitate (în coreeană)", terms: "Condiții de utilizare (în coreeană)" },
+  el: { about: "Σχετικά με την υπηρεσία (στα κορεατικά)", privacy: "Απόρρητο (στα κορεατικά)", terms: "Όροι χρήσης (στα κορεατικά)" },
 };
 
 export function localizedFooterLinks(locale: SupportedLocale) {

@@ -64,7 +64,7 @@ describe("ratio calculator localization and SEO", () => {
         expect(metadata.alternates?.languages).toHaveProperty("x-default", `https://www.woori.today/ko/calculators/${slug}`);
       }
     }
-    const invalidSitemapUrls = urls.filter((url) => url.includes("/calculator/") || !/^https:\/\/www\.woori\.today\/(?:ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi|ru|tr|pl|fil|bn|uk|ms|sv|cs|ro)\/calculators(?:\/[^/]+)?$/.test(url));
+    const invalidSitemapUrls = urls.filter((url) => url.includes("/calculator/") || !/^https:\/\/www\.woori\.today\/(?:ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi|ru|tr|pl|fil|bn|uk|ms|sv|cs|ro|el)\/calculators(?:\/[^/]+)?$/.test(url));
     expect(invalidSitemapUrls).toEqual([]);
   });
 });

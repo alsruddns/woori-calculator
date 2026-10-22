@@ -24,6 +24,7 @@ import { buildMalayDictionary } from "@/i18n/dictionaries/ms";
 import { buildSwedishDictionary } from "@/i18n/dictionaries/sv";
 import { cs as czechDictionary } from "@/i18n/dictionaries/cs";
 import { ro } from "@/i18n/dictionaries/ro";
+import { el } from "@/i18n/dictionaries/el";
 import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
@@ -59,6 +60,7 @@ const seedKeywords = {
 
 const sources = { en, ja, zh } as const;
 function buildDictionary(locale: SupportedLocale): LocaleDictionary {
+  if (locale === "el") return el;
   if (locale === "ro") return ro;
   if (locale === "cs") return czechDictionary;
   if (locale === "uk") return uk;
@@ -87,7 +89,7 @@ function buildDictionary(locale: SupportedLocale): LocaleDictionary {
 
 const dictionaryCache = new Map<SupportedLocale, LocaleDictionary>();
 function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictionary {
-  if (dictionary.locale === "ru" || dictionary.locale === "tr" || dictionary.locale === "pl" || dictionary.locale === "bn" || dictionary.locale === "ms" || dictionary.locale === "ro") return dictionary;
+  if (dictionary.locale === "ru" || dictionary.locale === "tr" || dictionary.locale === "pl" || dictionary.locale === "bn" || dictionary.locale === "ms" || dictionary.locale === "ro" || dictionary.locale === "el") return dictionary;
   const entries = Object.entries(dictionary.calculators).filter((entry): entry is [string, LocalizedCalculatorContent] => Boolean(entry[1]));
   const counts = (select: (content: LocalizedCalculatorContent) => string) => {
     const values = new Map<string, number>();
@@ -115,6 +117,10 @@ function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictio
 export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   const cached = dictionaryCache.get(locale);
   if (cached) return cached;
+  if (locale === "el") {
+    dictionaryCache.set(locale, el);
+    return el;
+  }
   if (locale === "ro") {
     dictionaryCache.set(locale, ro);
     return ro;

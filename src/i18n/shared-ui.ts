@@ -106,4 +106,8 @@ export const sharedUiCopy: Record<SupportedLocale, SharedUiCopy> = {
     logoLabel: "Mergi la portalul woori.today", familySite: "Servicii asociate", portal: "Portal", moneyBook: "MoneyBook", calculator: "Calculator", tools: "Instrumente", footerNavigation: "Navigare în subsol",
     contact: { title: "Contact", intro: "Aveți o întrebare sau o solicitare despre woori.today?", details: "Primim întrebări generale și sugestii de funcții, propuneri de colaborare, întrebări și propuneri despre publicitate, precum și sesizări de erori. Ne puteți scrie la adresa de e-mail de mai jos.", emailLabel: "E-mail", email: "krdd125@gmail.com", reply: "Vom analiza mesajul și vom răspunde când este posibil.", close: "Închide", types: ["Întrebări și solicitări generale", "Propuneri de colaborare", "Întrebări și propuneri despre publicitate", "Sesizări de erori"] },
   },
+  el: {
+    logoLabel: "Μετάβαση στην πύλη woori.today", familySite: "Σχετικές υπηρεσίες", portal: "Πύλη", moneyBook: "MoneyBook", calculator: "Υπολογιστής", tools: "Εργαλεία", footerNavigation: "Πλοήγηση υποσέλιδου",
+    contact: { title: "Επικοινωνία", intro: "Έχετε ερώτηση ή αίτημα για τη χρήση του woori.today;", details: "Δεχόμαστε γενικές ερωτήσεις και προτάσεις για λειτουργίες, αιτήματα συνεργασίας, ερωτήσεις ή προτάσεις για διαφήμιση και αναφορές προβλημάτων. Επικοινωνήστε μαζί μας στην παρακάτω διεύθυνση ηλεκτρονικού ταχυδρομείου.", emailLabel: "Ηλεκτρονικό ταχυδρομείο", email: "krdd125@gmail.com", reply: "Θα εξετάσουμε το μήνυμά σας και θα απαντήσουμε όταν είναι δυνατό.", close: "Κλείσιμο", types: ["Γενικές ερωτήσεις και αιτήματα", "Προτάσεις συνεργασίας", "Ερωτήσεις και προτάσεις διαφήμισης", "Αναφορές προβλημάτων"] },
+  },
 };
