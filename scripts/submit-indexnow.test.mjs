@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { calculatorUrlsFromSitemap, calculatorUrlsFromSitemapUrl, createIndexNowPayload, FULL_LOCALE_SLUGS, submitIndexNow } from "./submit-indexnow.mjs";
 
-const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi", "ru", "tr", "pl"];
+const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi", "ru", "tr", "pl", "fil"];
 const hreflang = { "pt-br": "pt-BR", "zh-tw": "zh-TW" };
 const slugs = [...FULL_LOCALE_SLUGS].sort();
 const routes = locales.map((locale) => `https://www.woori.today/${locale}/calculators`);
@@ -30,7 +30,7 @@ describe("IndexNow URL preparation", () => {
     expect(() => calculatorUrlsFromSitemap(sitemap(baseline.filter((url) => !url.includes("/zh/calculators"))))).toThrow("missing calculator landing pages");
     expect(() => calculatorUrlsFromSitemap(sitemap(baseline.filter((url) => !url.endsWith("/zh/calculators/loan-interest"))))).toThrow("loan-interest: zh");
     const incomplete = ["https://www.woori.today/ko/calculators/median", "https://www.woori.today/en/calculators/median"];
-    expect(() => calculatorUrlsFromSitemap(sitemap([...baseline, ...incomplete]))).toThrow("- median: ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl");
+    expect(() => calculatorUrlsFromSitemap(sitemap([...baseline, ...incomplete]))).toThrow("- median: ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil");
   });
 
   it("includes all supported locale routes and BCP 47 hreflang mappings", () => {

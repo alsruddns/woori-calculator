@@ -19,4 +19,5 @@ export const familySitesCopy: Record<SupportedLocale, { label: string; menu: str
   ru: { label: "Сервисы woori.today", menu: "Меню сервисов", portal: "Портал", calculator: "Калькулятор", tools: "Онлайн-инструменты", moneyBook: "MoneyBook", documents: "Документы и формы", quiz: "Викторины и тесты", newTab: "Выбранный сервис откроется в новой вкладке." },
   tr: { label: "Aile siteleri", menu: "Hizmetler", portal: "Portal", calculator: "Hesap makinesi", tools: "?evrim i?i ara?lar", moneyBook: "MoneyBook", documents: "Belgeler ve formlar", quiz: "Testler ve s?navlar", newTab: "Se?ilen hizmet yeni bir sekmede a??l?r." },
   pl: { label: "Serwisy rodzinne", menu: "Usługi", portal: "Portal", calculator: "Kalkulator", tools: "Narzędzia online", moneyBook: "MoneyBook", documents: "Dokumenty i formularze", quiz: "Quizy i testy", newTab: "Wybrana usługa otworzy się w nowej karcie." },
+  fil: { label: "Mga kaugnay na serbisyo", menu: "Mga serbisyo", portal: "Portal", calculator: "Calculator", tools: "Mga online tool", moneyBook: "MoneyBook", documents: "Mga dokumento at form", quiz: "Mga quiz at test", newTab: "Magbubukas sa bagong tab ang napiling serbisyo." },
 };

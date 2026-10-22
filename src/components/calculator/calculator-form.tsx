@@ -19,6 +19,7 @@ const unitLabels: Record<string, string> = Object.fromEntries(Object.entries(uni
 const currencyFieldNames = new Set(["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent", "cost", "unitPrice", "existingAveragePrice", "additionalPrice", "currentAveragePrice", "currentPrice", "shipping", "otherCost", "mortgage", "repayment", "otherInterest", "annualExpenses", "annualDividendPerShare", "currentSavings", "targetValue", "accountSize", "entryPrice", "stopPrice", "buyPrice", "sellPrice", "lumpSum", "purchaseCosts", "transport", "lodgingPerNight", "dailyFoodPerPerson", "activities", "localTransport", "other", "targetAnnualRevenue", "annualBusinessCosts", "fixedCosts", "pricePerUnit", "variableCostPerUnit"]);
 function localizedResultUnit(unit: string | undefined, locale: SupportedLocale) {
   if (!unit || locale === "ko") return unit;
+  if (locale === "fil") return unit.includes("year") ? "taon" : unit.replace("days", "araw");
   if (locale === "ru") return unit;
   if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष", tr: "yaş", pl: "lat" })[locale];
   if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग", tr: "pyeong", pl: "pyeong" })[locale];

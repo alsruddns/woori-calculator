@@ -17,6 +17,7 @@ import { improveLocalizedQualityContent } from "@/i18n/dictionaries/locale-quali
 import { ru } from "@/i18n/dictionaries/ru";
 import { tr } from "@/i18n/dictionaries/tr";
 import { pl } from "@/i18n/dictionaries/pl";
+import { fil } from "@/i18n/dictionaries/fil";
 import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
@@ -55,6 +56,7 @@ function buildDictionary(locale: SupportedLocale): LocaleDictionary {
   if (locale === "ru") return ru;
   if (locale === "tr") return tr;
   if (locale === "pl") return pl;
+  if (locale === "fil") return fil;
   if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko }, calculators: { ...ko.calculators, ...phaseFourLocaleContent("ko"), ...phaseFiveLocaleContent("ko"), ...phaseSixLocaleContent("ko"), ...newToolsLocaleContent("ko"), ...ratioLocaleContent("ko") } };
   if (locale !== "en" && locale !== "ja" && locale !== "zh") {
     const base = phaseOneLocaleDictionary(locale, getDictionary("en"))!;
@@ -112,6 +114,10 @@ export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   if (locale === "pl") {
     dictionaryCache.set(locale, pl);
     return pl;
+  }
+  if (locale === "fil") {
+    dictionaryCache.set(locale, fil);
+    return fil;
   }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;

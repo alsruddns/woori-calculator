@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 
 type Pattern = { inputs: string; exampleInput: string; exampleResult: string; inputQuestion: string; inputAnswer: string; sourceHeading: string; checked: string; policyYear: string; updated: string };
-export const contentPatterns: Record<Locale | "tr" | "pl", Pattern> = {
+export const contentPatterns: Record<Locale | "tr" | "pl" | "fil", Pattern> = {
   ko: { inputs: "계산에 사용하는 입력", exampleInput: "예시 입력", exampleResult: "예시 결과", inputQuestion: "이 계산에 어떤 값이 반영되나요?", inputAnswer: "입력한 항목을 사용합니다:", sourceHeading: "기준 및 출처", checked: "확인일", policyYear: "정책 기준연도", updated: "콘텐츠 업데이트" },
   en: { inputs: "Inputs used in this calculation", exampleInput: "Example inputs", exampleResult: "Example result", inputQuestion: "Which values does this calculation use?", inputAnswer: "The calculation uses these entries:", sourceHeading: "Basis and sources", checked: "Checked", policyYear: "Policy reference year", updated: "Content updated" },
   ja: { inputs: "計算に使う入力", exampleInput: "入力例", exampleResult: "計算例", inputQuestion: "どの値を計算に使いますか？", inputAnswer: "次の入力項目を使います：", sourceHeading: "基準と出典", checked: "確認日", policyYear: "制度の基準年", updated: "更新日" },
@@ -19,4 +19,5 @@ export const contentPatterns: Record<Locale | "tr" | "pl", Pattern> = {
   hi: { inputs: "गणना में उपयोग किए गए इनपुट", exampleInput: "उदाहरण इनपुट", exampleResult: "उदाहरण परिणाम", inputQuestion: "इस गणना में कौन-से मान उपयोग होते हैं?", inputAnswer: "गणना में ये इनपुट उपयोग होते हैं:", sourceHeading: "आधार और स्रोत", checked: "जाँच की तारीख", policyYear: "नीति संदर्भ वर्ष", updated: "सामग्री अपडेट" },
   tr: { inputs: "Hesaplamada kullan?lan girdiler", exampleInput: "?rnek girdiler", exampleResult: "?rnek sonu?", inputQuestion: "Bu hesaplamada hangi de?erler kullan?l?r?", inputAnswer: "Hesaplama ?u girdileri kullan?r:", sourceHeading: "Hesaplama temeli ve kaynaklar", checked: "Kontrol tarihi", policyYear: "Politika referans y?l?", updated: "??erik g?ncellemesi" },
   pl: { inputs: "Dane użyte w obliczeniu", exampleInput: "Dane przykładowe", exampleResult: "Wynik przykładowy", inputQuestion: "Jakie wartości są używane w obliczeniu?", inputAnswer: "Obliczenie wykorzystuje następujące dane:", sourceHeading: "Podstawa i źródła", checked: "Data weryfikacji", policyYear: "Rok obowiązywania zasad", updated: "Aktualizacja treści" },
+  fil: { inputs: "Mga input sa pagkukuwenta", exampleInput: "Mga input sa halimbawa", exampleResult: "Resulta sa halimbawa", inputQuestion: "Anong mga value ang ginagamit sa pagkukuwenta?", inputAnswer: "Ginagamit ng kalkulasyon ang mga input na ito:", sourceHeading: "Batayan at mga sanggunian", checked: "Sinuri noong", policyYear: "Taon ng patakaran", updated: "Na-update ang nilalaman" },
 };
