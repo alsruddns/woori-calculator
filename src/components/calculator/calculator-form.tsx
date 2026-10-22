@@ -21,6 +21,7 @@ function localizedResultUnit(unit: string | undefined, locale: SupportedLocale) 
   if (!unit || locale === "ko") return unit;
   if (locale === "fil") return unit.includes("year") ? "taon" : unit.replace("days", "araw");
   if (locale === "ru") return unit;
+  if (locale === "bn") return unit.replace("years", "বছর").replace("year", "বছর").replace("days", "দিন").replace("day", "দিন");
   if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष", tr: "yaş", pl: "lat" })[locale];
   if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग", tr: "pyeong", pl: "pyeong" })[locale];
   if (unit.startsWith("일")) {

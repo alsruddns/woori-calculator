@@ -20,4 +20,5 @@ export const familySitesCopy: Record<SupportedLocale, { label: string; menu: str
   tr: { label: "Aile siteleri", menu: "Hizmetler", portal: "Portal", calculator: "Hesap makinesi", tools: "?evrim i?i ara?lar", moneyBook: "MoneyBook", documents: "Belgeler ve formlar", quiz: "Testler ve s?navlar", newTab: "Se?ilen hizmet yeni bir sekmede a??l?r." },
   pl: { label: "Serwisy rodzinne", menu: "Usługi", portal: "Portal", calculator: "Kalkulator", tools: "Narzędzia online", moneyBook: "MoneyBook", documents: "Dokumenty i formularze", quiz: "Quizy i testy", newTab: "Wybrana usługa otworzy się w nowej karcie." },
   fil: { label: "Mga kaugnay na serbisyo", menu: "Mga serbisyo", portal: "Portal", calculator: "Calculator", tools: "Mga online tool", moneyBook: "MoneyBook", documents: "Mga dokumento at form", quiz: "Mga quiz at test", newTab: "Magbubukas sa bagong tab ang napiling serbisyo." },
+  bn: { label: "সংশ্লিষ্ট সেবা", menu: "সেবাসমূহ", portal: "পোর্টাল", calculator: "ক্যালকুলেটর", tools: "অনলাইন টুল", moneyBook: "MoneyBook", documents: "নথি ও ফর্ম", quiz: "কুইজ ও পরীক্ষা", newTab: "নির্বাচিত সেবাটি নতুন ট্যাবে খুলবে।" },
 };
