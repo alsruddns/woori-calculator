@@ -2,20 +2,6 @@ import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { filPage } from "@/i18n/dictionaries/fil-batch-2";
 
 export const filBatchFive: Record<string, LocalizedCalculatorContent> = {
-  "weighted-average": filPage("weighted-average", {
-    name: "Kalkulador ng weighted average", shortName: "Weighted average", title: "Kuwentahin ang weighted average ng mga value",
-    description: "Kuwentahin ang average na isinasaalang-alang ang bigat o dami na kaugnay ng bawat value.",
-    keywords: ["weighted average calculator", "weighted mean", "average ayon sa timbang"],
-    howTo: "Ilagay ang mga value at kaukulang weight sa parehong pagkakasunod-sunod.",
-    formula: "Weighted average = kabuuan ng bawat value × weight ÷ kabuuan ng mga weight.",
-    example: { question: "Ano ang weighted average ng 80 na may weight na 1 at 90 na may weight na 3?", answer: "(80 × 1 + 90 × 3) ÷ 4 = 87.5." },
-    related: ["average", "median", "percentage"],
-    fields: { values: "Mga value, paghiwalayin sa kuwit", weights: "Mga weight, paghiwalayin sa kuwit" },
-    results: ["Weighted average", "Timbang na average"],
-    validation: "Maglagay ng parehong dami ng value at weight; dapat positibo ang kabuuang weight.",
-    resultNote: "Ang bawat weight ay nagpapakita kung gaano kalaki ang ambag ng katumbas na value.",
-    faq: { question: "Kailangan bang 100% ang kabuuan ng weights?", answer: "Hindi. Hinahati ng formula ang weighted sum sa kabuuan ng weights, kaya maaaring anumang positibong scale ang gamitin." },
-  }),
   tenure: filPage("tenure", {
     name: "Kalkulador ng haba ng serbisyo", shortName: "Haba ng serbisyo", title: "Kuwentahin ang haba ng serbisyo sa pagitan ng mga petsa",
     description: "Tantiyahin ang tagal sa trabaho mula sa petsa ng pagsisimula hanggang sa reference date.",

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getDictionary } from "@/i18n/dictionaries";
 import { filBatchFive } from "@/i18n/dictionaries/fil-batch-5";
 
-const slugs = ["weighted-average", "tenure", "pregnancy", "utility-bill", "salary-conversion", "hourly-wage", "product-margin"] as const;
+const slugs = ["tenure", "pregnancy", "utility-bill", "salary-conversion", "hourly-wage", "product-margin"] as const;
 
 describe("Filipino calculator translation batch five", () => {
   it("translates pages and preserves all source content keys", () => {
