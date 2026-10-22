@@ -9,8 +9,8 @@
 
 | 순서 | 서비스명 | 서비스현황 및 사유 | 정책확인필요 | 기준연도 | 정책출처 | 다국어 적용 현황 | 경로 |
 |---:|---|---|:---:|---:|---|---|---|
-| 1 | 퍼센트 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `percentage` |
-| 2 | 할인율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `discount` |
+| 1 | 퍼센트 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `percentage` |
+| 2 | 할인율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `discount` |
 | 3 | 증감률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `change-rate` |
 | 4 | 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `ratio` |
 | 5 | 평균 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `average` |

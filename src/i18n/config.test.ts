@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, hasRoutingLocale, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, localizedIndexSlugs, locales, routingLocaleConfig, routingLocales, supportedLocales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, hasRoutingLocale, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, localizedIndexSlugs, locales, routingLocaleConfig, routingLocales, supportedLocales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator, turkishTranslatedCalculatorSlugs } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -9,14 +9,14 @@ describe("locale routing and translated calculator catalog", () => {
     for (const locale of locales) expect(hasLocale(locale)).toBe(true);
     expect(hasLocale("fr")).toBe(true);
     expect(locales).toHaveLength(15);
-    expect(supportedLocales).toHaveLength(16);
+    expect(supportedLocales).toHaveLength(17);
     expect(supportedLocales.slice(0, locales.length)).toEqual(locales);
-    expect(supportedLocales.at(-1)).toBe("ru");
+    expect(supportedLocales.slice(-2)).toEqual(["ru", "tr"]);
     expect(routingLocales).toHaveLength(26);
     expect(new Set(routingLocales).size).toBe(26);
     for (const locale of routingLocales) expect(hasRoutingLocale(locale)).toBe(true);
     for (const locale of ["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const) {
-      expect(hasLocale(locale)).toBe(locale === "ru");
+      expect(hasLocale(locale)).toBe(locale === "ru" || locale === "tr");
       expect(routingLocaleConfig[locale].intlLocale).toBeTruthy();
     }
     expect(localeConfig["pt-br"].hreflang).toBe("pt-BR");
@@ -95,6 +95,32 @@ describe("locale routing and translated calculator catalog", () => {
     expect(page.related).toEqual([]);
     expect(localePath("ru", "/calculators/compound-interest")).toBe("/ru/calculators/compound-interest");
     expect(localizedMetadata("ru", "/calculators/compound-interest", page.title, page.description, page.keywords, supportedLocalesForCalculator("compound-interest")).alternates?.canonical).toBe("https://www.woori.today/ru/calculators/compound-interest");
+  });
+
+  it("publishes only complete Turkish calculator pages with Turkish UI and metadata", () => {
+    const turkish = getDictionary("tr");
+    const english = getDictionary("en");
+    expect(turkish.locale).toBe("tr");
+    expect(turkish.nav.language).toBe("Dil");
+    expect(localizedIndexSlugs("tr")).toEqual(turkishTranslatedCalculatorSlugs);
+    expect(turkishTranslatedCalculatorSlugs).toHaveLength(2);
+    expect(languageSwitchPath("/ko/calculators/percentage", "tr")).toBe("/tr/calculators/percentage");
+    for (const slug of turkishTranslatedCalculatorSlugs) {
+      const page = turkish.calculators[slug]!;
+      const source = english.calculators[slug]!;
+      expect(calculatorSupportsLocale(slug, "tr")).toBe(true);
+      expect(page.title).not.toBe(source.title);
+      expect(page.description).not.toBe(source.description);
+      expect(Object.keys(page.fields).sort()).toEqual(Object.keys(source.fields).sort());
+      expect(Object.keys(page.options).sort()).toEqual(Object.keys(source.options).sort());
+      expect(Object.keys(page.resultLabels).sort()).toEqual(expect.arrayContaining(Object.keys(source.resultLabels).sort()));
+      for (const related of page.related) expect(turkish.calculators[related]).toBeDefined();
+      expect(page.faqs.length).toBeGreaterThan(0);
+      const metadata = localizedMetadata("tr", `/calculators/${slug}`, page.title, page.description, page.keywords, supportedLocalesForCalculator(slug));
+      expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/tr/calculators/${slug}`);
+      expect(metadata.alternates?.languages?.tr).toBe(`https://www.woori.today/tr/calculators/${slug}`);
+    }
+    expect(calculatorSupportsLocale("compound-interest", "tr")).toBe(false);
   });
 
   it("validates every Russian batch page against source field, option, and result keys", () => {

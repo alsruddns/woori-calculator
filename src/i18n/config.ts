@@ -7,7 +7,7 @@ export type TranslatedLocale = (typeof locales)[number];
 /** Backwards-compatible name for a locale whose shared UI and page catalogue are complete. */
 export type Locale = TranslatedLocale;
 /** Public locales can include languages with a deliberately partial set of fully translated pages. */
-export const supportedLocales = [...locales, "ru"] as const satisfies readonly RoutingLocale[];
+export const supportedLocales = [...locales, "ru", "tr"] as const satisfies readonly RoutingLocale[];
 export type SupportedLocale = (typeof supportedLocales)[number];
 export const existingLocales = ["ko", "en", "ja", "zh"] as const;
 export type ExistingLocale = (typeof existingLocales)[number];
@@ -149,7 +149,8 @@ export const russianTranslatedCalculatorSlugs = [
   "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator",
   "spain-freelancer-tax-calculator", "france-social-contribution-calculator",
 ] as const satisfies readonly LocalizedCalculatorSlug[];
-export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : [])] : ["ko"];
+export const turkishTranslatedCalculatorSlugs = ["percentage", "discount"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : []), ...(turkishTranslatedCalculatorSlugs.includes(slug as (typeof turkishTranslatedCalculatorSlugs)[number]) ? ["tr" as const] : [])] : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);
 export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {
   return slugs.flatMap((slug) => {
@@ -159,7 +160,9 @@ export function missingCalculatorTranslationReport(slugs: readonly string[]): st
   });
 }
 export const localizedIndexSlugs = (locale: SupportedLocale) => {
-  return locale === "ru" ? russianTranslatedCalculatorSlugs : localizedCalculatorSlugs;
+  if (locale === "ru") return russianTranslatedCalculatorSlugs;
+  if (locale === "tr") return turkishTranslatedCalculatorSlugs;
+  return localizedCalculatorSlugs;
 };
 
 export function localePath(locale: SupportedLocale, path = "") {
