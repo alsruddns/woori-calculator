@@ -103,11 +103,13 @@ describe("locale routing and translated calculator catalog", () => {
     expect(turkish.locale).toBe("tr");
     expect(turkish.nav.language).toBe("Dil");
     expect(localizedIndexSlugs("tr")).toEqual(turkishTranslatedCalculatorSlugs);
-    expect(turkishTranslatedCalculatorSlugs).toHaveLength(56);
+    expect(turkishTranslatedCalculatorSlugs).toHaveLength(66);
     expect(languageSwitchPath("/ko/calculators/percentage", "tr")).toBe("/tr/calculators/percentage");
     for (const slug of turkishTranslatedCalculatorSlugs) {
       const page = turkish.calculators[slug]!;
       const source = english.calculators[slug]!;
+      expect(page.fields, `${slug} translated fields`).toBeDefined();
+      expect(source.fields, `${slug} source fields`).toBeDefined();
       expect(calculatorSupportsLocale(slug, "tr")).toBe(true);
       expect(page.title).not.toBe(source.title);
       expect(page.description).not.toBe(source.description);

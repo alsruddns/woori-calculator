@@ -30,28 +30,28 @@
 | 19 | 수수료 반영 주식 손익 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `stock-profit-after-fees-calculator` |
 | 20 | 대출 조기상환 절감액 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `loan-early-repayment-calculator` |
 | 21 | 월세·구매 비용 비교 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `rent-vs-buy-calculator` |
-| 22 | 전기 사용량·요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `electricity-cost-calculator` |
+| 22 | 전기 사용량·요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `electricity-cost-calculator` |
 | 23 | 여행 예산 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `travel-budget-calculator` |
-| 24 | 프리랜서 목표 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `freelancer-hourly-rate-calculator` |
-| 25 | 손익분기점 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `break-even-point-calculator` |
+| 24 | 프리랜서 목표 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `freelancer-hourly-rate-calculator` |
+| 25 | 손익분기점 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `break-even-point-calculator` |
 | 26 | 복리 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `compound-interest` |
 | 27 | 단리 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `simple-interest` |
 | 28 | 적금 이자 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `savings-interest` |
 | 29 | 예금 이자 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `deposit-interest` |
 | 30 | 대출 이자 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `loan-interest` |
-| 31 | LTV 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `ltv` |
-| 32 | DTI 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `dti` |
-| 33 | DSR 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `dsr` |
+| 31 | LTV 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `ltv` |
+| 32 | DTI 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `dti` |
+| 33 | DSR 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `dsr` |
 | 34 | 주식·코인 물타기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `stock-average-price` |
 | 35 | 배당금·배당수익률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `dividend` |
 | 36 | 손익 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `profit-loss` |
 | 37 | 대출 갈아타기 비교 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `loan-refinance` |
-| 38 | 중도상환수수료 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `prepayment-fee` |
-| 39 | 월 상환액 기준 대출원금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `loan-affordability` |
+| 38 | 중도상환수수료 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `prepayment-fee` |
+| 39 | 월 상환액 기준 대출원금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `loan-affordability` |
 | 40 | 월급·연봉 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `salary-conversion` |
 | 41 | 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `hourly-wage` |
 | 42 | 연차수당 간편 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `annual-leave-allowance` |
-| 43 | 부가세 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `vat` |
+| 43 | 부가세 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `vat` |
 | 44 | 단가 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `unit-price` |
 | 45 | 마진율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `margin` |
 | 46 | 마크업률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `markup` |
@@ -175,7 +175,7 @@
 | 164 | 뉴질랜드 KiwiSaver 계산기 | open | true | 2026 | [IRD individual tax rates](https://www.ird.govt.nz/income-tax/income-tax-for-individuals/tax-codes-and-tax-rates-for-individuals/tax-rates-for-individuals)<br>[IRD GST rate](https://www.ird.govt.nz/gst/charging-gst)<br>[IRD KiwiSaver changes 2026](https://www.ird.govt.nz/kiwisaver-changes)<br>[IRD ACC earners levy 2026–27](https://www.ird.govt.nz/acclevy) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `new-zealand-kiwisaver-calculator` |
 | 165 | 스페인 프리랜서 세금 계산기 | open | true | 2026 | [Agencia Tributaria — VAT rates 2026](https://www3.agenciatributaria.gob.es/Sede/iva/calculo-iva-repercutido-clientes/tipos-impositivos-iva.html)<br>[Agencia Tributaria — IRPF withholding 2026](https://sede.agenciatributaria.gob.es/Sede/Retenciones.shtml) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `spain-freelancer-tax-calculator` |
 | 166 | 프랑스 사회기여금 계산기 | open | true | 2026 | [French Tax Authority — 2026 tax guide (2025 income)](https://www.impots.gouv.fr/sites/default/files/media/1_metier/5_international/actualite/dossier-de-presse-dinr-revenus-2025_03_2026.pdf)<br>[French Tax Authority — VAT statistics](https://www.impots.gouv.fr/dgfip-statistiques-la-tva-economique-augmente-de-10-en-2025) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `france-social-contribution-calculator` |
-| 167 | 비례식 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `proportion` |
+| 167 | 비례식 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `proportion` |
 | 168 | 화면 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `aspect-ratio` |
 | 169 | 축척 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `scale-ratio` |
 
