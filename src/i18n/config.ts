@@ -117,6 +117,7 @@ export const isPhaseSixTranslatedCalculator = (slug: string): slug is (typeof ph
 export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug) || isPhaseThreeTranslatedCalculator(slug) || isPhaseFourTranslatedCalculator(slug) || isPhaseFiveTranslatedCalculator(slug) || isPhaseSixTranslatedCalculator(slug) || phaseSevenTranslatedCalculatorSlugs.includes(slug as (typeof phaseSevenTranslatedCalculatorSlugs)[number]) || phaseEightTranslatedCalculatorSlugs.includes(slug as (typeof phaseEightTranslatedCalculatorSlugs)[number]);
 export const russianTranslatedCalculatorSlugs = [
   "compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest",
+  "median", "percentile", "probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic",
 ] as const satisfies readonly LocalizedCalculatorSlug[];
 export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : [])] : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);

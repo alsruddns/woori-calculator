@@ -40,13 +40,14 @@ describe("locale routing and translated calculator catalog", () => {
     const english = getDictionary("en").calculators["compound-interest"]!;
     expect(localizedIndexSlugs("ru")).toEqual([
       "compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest",
+      "median", "percentile", "probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic",
     ]);
     expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
     for (const slug of localizedIndexSlugs("ru")) expect(calculatorSupportsLocale(slug, "ru")).toBe(true);
-    expect(calculatorSupportsLocale("median", "ru")).toBe(false);
+    expect(calculatorSupportsLocale("tip-calculator", "ru")).toBe(false);
     expect(languageSwitchPath("/en/calculators/compound-interest", "ru")).toBe("/ru/calculators/compound-interest");
     expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/ru/calculators/percentage");
-    expect(languageSwitchPath("/en/calculators/median", "ru")).toBe("/en/calculators/median");
+    expect(languageSwitchPath("/en/calculators/tip-calculator", "ru")).toBe("/en/calculators/tip-calculator");
     for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) {
       expect(value).toBeTruthy();
     }
@@ -132,8 +133,8 @@ describe("locale routing and translated calculator catalog", () => {
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
     expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru"]);
-    expect(supportedLocalesForCalculator("median")).toEqual(locales);
-    expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru"]);
+    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru"]);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
   });
 
