@@ -1,12 +1,12 @@
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { msPage } from "@/i18n/dictionaries/ms-page";
 
-const germanCountryResultLabels = [
+export const msSharedCountryResultLabels = [
   "Amaun tidak termasuk cukai", "Amaun tidak termasuk cukai", "Anggaran cukai", "Jumlah termasuk cukai", "Gaji kasar tahunan", "Anggaran cukai", "Anggaran caruman pekerja", "Anggaran gaji bersih tahunan", "Anggaran gaji bersih bulanan", "Purata kadar cukai", "Gaji asas", "Premium kerja lebih masa", "Anggaran elaun", "Gaji kasar tahunan", "Kadar digunakan", "Anggaran elaun", "Gaji asas", "Tempoh perkhidmatan (tahun)", "Anggaran pampasan tamat kerja", "Jumlah caruman", "Anggaran keuntungan", "Baki unjuran", "Anggaran elaun bebas cukai", "Baki gaji bercukai", "Deposit majikan bulanan", "Deposit majikan tahunan", "Bulan yang layak", "Anggaran caruman pekerja", "Anggaran cukai", "Amaun tidak termasuk cukai", "Kadar digunakan",
 ];
 
 function germanyPolicyPage(slug: "germany-gross-net-salary-calculator" | "germany-income-tax-calculator" | "germany-vat-calculator" | "germany-overtime-pay-calculator" | "germany-vacation-pay-calculator", name: string, title: string, description: string, keywords: readonly string[], howTo: string, formula: string, example: { question: string; answer: string }, fields: Record<string, string>, options: Record<string, Record<string, string>>, related: LocalizedCalculatorContent["related"]): LocalizedCalculatorContent {
-  return msPage(slug, { name, title, description, keywords, howTo, formula, example, fields, options, results: germanCountryResultLabels, related });
+  return msPage(slug, { name, title, description, keywords, howTo, formula, example, fields, options, results: msSharedCountryResultLabels, related });
 }
 
 export const msBatchSeven: Record<string, LocalizedCalculatorContent> = {
