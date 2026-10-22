@@ -44,7 +44,7 @@ describe("locale routing and translated calculator catalog", () => {
       "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss", "margin", "markup", "calorie-per-serving",
       "loan-interest", "deposit-interest", "loan-refinance", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "break-even-point-calculator", "inflation-adjusted-return-calculator",
       "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy", "fire-retirement-calculator", "dividend-growth-calculator", "stock-profit-after-fees-calculator", "position-size-calculator", "freelancer-hourly-rate-calculator",
-      "ratio", "proportion", "aspect-ratio", "scale-ratio", "vat", "pace", "standard-deviation", "stock-average-price", "stop-loss-take-profit-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "product-margin", "withholding-tax-3-3", "annual-leave-allowance", "utility-bill", "unemployment-benefit", "minimum-wage", "severance-pay", "social-insurance",
+      "ratio", "proportion", "aspect-ratio", "scale-ratio", "vat", "pace", "standard-deviation", "stock-average-price", "stop-loss-take-profit-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "product-margin", "withholding-tax-3-3", "annual-leave-allowance", "utility-bill", "unemployment-benefit", "minimum-wage", "severance-pay", "social-insurance", "japan-consumption-tax-calculator", "japan-annual-salary-calculator", "japan-monthly-salary-calculator", "japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator",
     ]);
     expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
     for (const slug of localizedIndexSlugs("ru")) expect(calculatorSupportsLocale(slug, "ru")).toBe(true);
@@ -54,6 +54,8 @@ describe("locale routing and translated calculator catalog", () => {
     expect(calculatorSupportsLocale("unemployment-benefit", "ru")).toBe(true);
     expect(calculatorSupportsLocale("severance-pay", "ru")).toBe(true);
     expect(calculatorSupportsLocale("social-insurance", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("japan-consumption-tax-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("japan-night-holiday-pay-calculator", "ru")).toBe(true);
     expect(languageSwitchPath("/en/calculators/compound-interest", "ru")).toBe("/ru/calculators/compound-interest");
     expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/ru/calculators/percentage");
     expect(languageSwitchPath("/en/calculators/vat", "ru")).toBe("/ru/calculators/vat");
@@ -62,6 +64,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(languageSwitchPath("/en/calculators/pace", "ru")).toBe("/ru/calculators/pace");
     expect(languageSwitchPath("/en/calculators/stock-average-price", "ru")).toBe("/ru/calculators/stock-average-price");
     expect(languageSwitchPath("/en/calculators/travel-budget-calculator", "ru")).toBe("/ru/calculators/travel-budget-calculator");
+    expect(languageSwitchPath("/en/calculators/japan-annual-salary-calculator", "ru")).toBe("/ru/calculators/japan-annual-salary-calculator");
     expect(russian.calculators.vat?.description).toContain("Южной Корее");
     expect(russian.calculators.vat?.resultNote).toContain("НДС Южной Кореи");
     expect(russian.calculators["withholding-tax-3-3"]?.description).toContain("Южной Корее");

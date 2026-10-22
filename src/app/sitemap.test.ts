@@ -10,7 +10,7 @@ describe("calculator sitemap locale completeness", () => {
     const urls = entries.map(({ url }) => url);
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
-    expect(expectedDetailCount).toBe(published.length * locales.length + 74);
+    expect(expectedDetailCount).toBe(published.length * locales.length + 79);
     expect(entries).toHaveLength(expectedDetailCount + supportedLocales.length);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of supportedLocales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
@@ -52,6 +52,11 @@ describe("calculator sitemap locale completeness", () => {
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/minimum-wage`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/severance-pay`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/social-insurance`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-consumption-tax-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-annual-salary-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-monthly-salary-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-overtime-pay-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-night-holiday-pay-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/ratio`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/scale-ratio`);
     expect(entries.find(({ url }) => url.endsWith("/pt-br/calculators/fraction"))?.alternates?.languages?.["pt-BR"]).toBe(`${siteConfig.url}/pt-br/calculators/fraction`);
