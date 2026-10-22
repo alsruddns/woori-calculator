@@ -2,9 +2,11 @@ import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { filPage } from "@/i18n/dictionaries/fil-batch-2";
 import { sharedCountryResultLabelsFil } from "@/i18n/dictionaries/fil-batch-9";
 import type { LocalizedCalculatorSlug } from "@/i18n/config";
+import { sharedExpandedCountryResultsFil } from "@/i18n/dictionaries/fil-country-results-expanded";
 
 export type CountryPageSpec = {
-  country: "Germany" | "Spain" | "France" | "Netherlands" | "India" | "Brazil" | "Vietnam" | "China" | "Taiwan" | "Italy";
+  country: "Germany" | "Spain" | "France" | "Netherlands" | "India" | "Brazil" | "Vietnam" | "China" | "Taiwan" | "Italy" | "United States" | "United Kingdom";
+  results?: readonly string[];
   name: string;
   title: string;
   description: string;
@@ -17,10 +19,14 @@ export type CountryPageSpec = {
   related: LocalizedCalculatorContent["related"];
 };
 export function countryPage(slug: LocalizedCalculatorSlug, spec: CountryPageSpec): LocalizedCalculatorContent {
+  const expandedResultSlugs: readonly LocalizedCalculatorSlug[] = [
+    "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator",
+    "spain-freelancer-tax-calculator", "france-social-contribution-calculator", "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator",
+  ];
   return filPage(slug, {
     ...spec,
     shortName: spec.name,
-    results: sharedCountryResultLabelsFil,
+    results: spec.results ?? (expandedResultSlugs.includes(slug) ? sharedExpandedCountryResultsFil : sharedCountryResultLabelsFil),
     validation: "Ilagay ang mga positibo o hindi negatibong value na hinihingi ng kalkulasyon at tiyaking tama ang napiling option.",
     resultNote: spec.country + " ang policy basis. Hindi ito Philippine tax o employment calculation; i-verify ang policy year, personal details at opisyal na source.",
     faq: { question: "Nalalapat ba ang resultang ito sa Pilipinas?", answer: "Hindi. " + spec.country + " policy assumptions ang ginagamit; para sa Pilipinas, tingnan ang naaangkop na lokal na batas at opisyal na guidance." },

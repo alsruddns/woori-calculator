@@ -4,10 +4,10 @@ import { filipinoCalculatorContent, remainingFilipinoCalculatorSlugs, translated
 
 describe("Filipino translation progress", () => {
   it("tracks every calculator exactly once without publishing incomplete content", () => {
-    expect(Object.keys(filipinoCalculatorContent).length).toBe(109);
-    expect(translatedFilipinoCalculatorSlugs.length).toBe(109);
-    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 109);
+    expect(Object.keys(filipinoCalculatorContent).length).toBe(121);
+    expect(translatedFilipinoCalculatorSlugs.length).toBe(121);
+    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 121);
     expect(new Set([...translatedFilipinoCalculatorSlugs, ...remainingFilipinoCalculatorSlugs]).size).toBe(localizedCalculatorSlugs.length);
-    expect(remainingFilipinoCalculatorSlugs[0]).toBe("us-paycheck-calculator");
+    expect(remainingFilipinoCalculatorSlugs[0]).toBe("uk-stamp-duty-calculator");
   });
 });
