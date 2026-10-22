@@ -22,6 +22,7 @@ import { buildBengaliDictionary } from "@/i18n/dictionaries/bn";
 import { uk } from "@/i18n/dictionaries/uk";
 import { buildMalayDictionary } from "@/i18n/dictionaries/ms";
 import { buildSwedishDictionary } from "@/i18n/dictionaries/sv";
+import { cs as czechDictionary } from "@/i18n/dictionaries/cs";
 import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
@@ -57,6 +58,7 @@ const seedKeywords = {
 
 const sources = { en, ja, zh } as const;
 function buildDictionary(locale: SupportedLocale): LocaleDictionary {
+  if (locale === "cs") return czechDictionary;
   if (locale === "uk") return uk;
   if (locale === "ms") return buildMalayDictionary(getDictionary("en"));
   if (locale === "sv") return buildSwedishDictionary(getDictionary("en"));
@@ -111,6 +113,10 @@ function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictio
 export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   const cached = dictionaryCache.get(locale);
   if (cached) return cached;
+  if (locale === "cs") {
+    dictionaryCache.set(locale, czechDictionary);
+    return czechDictionary;
+  }
   if (locale === "ru") {
     dictionaryCache.set(locale, ru);
     return ru;

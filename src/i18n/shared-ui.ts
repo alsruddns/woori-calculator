@@ -98,4 +98,8 @@ export const sharedUiCopy: Record<SupportedLocale, SharedUiCopy> = {
     logoLabel: "Gå till woori.today-portalen", familySite: "Wooris tjänster", portal: "Portal", moneyBook: "MoneyBook", calculator: "Kalkylator", tools: "Verktyg", footerNavigation: "Sidfotsnavigering",
     contact: { title: "Kontakta oss", intro: "Har du frågor eller önskemål om woori.today?", details: "Vi tar gärna emot allmänna frågor och önskemål om funktioner, samarbetsförfrågningar, frågor och förslag om annonsering samt felrapporter. Mejla oss på adressen nedan.", emailLabel: "E-post", email: "krdd125@gmail.com", reply: "Vi går igenom ditt meddelande och svarar när vi har möjlighet.", close: "Stäng", types: ["Allmänna frågor och önskemål", "Samarbete", "Annonsering och förslag", "Felrapport"] },
   },
+  cs: {
+    logoLabel: "Přejít na portál woori.today", familySite: "Související služby", portal: "Portál", moneyBook: "MoneyBook", calculator: "Kalkulačka", tools: "Nástroje", footerNavigation: "Navigace v zápatí",
+    contact: { title: "Kontaktujte nás", intro: "Máte dotaz nebo požadavek ohledně používání woori.today?", details: "Přijímáme obecné dotazy a návrhy na nové funkce, žádosti o spolupráci, dotazy a návrhy týkající se reklamy i hlášení chyb. Napište nám na níže uvedenou e-mailovou adresu.", emailLabel: "E-mail", email: "krdd125@gmail.com", reply: "Zprávu si přečteme a podle možností odpovíme.", close: "Zavřít", types: ["Obecné dotazy a požadavky", "Nabídky spolupráce", "Dotazy a návrhy k reklamě", "Hlášení chyb"] },
+  },
 };

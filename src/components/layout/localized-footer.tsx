@@ -28,6 +28,7 @@ const legalLinkCopy: Record<SupportedLocale, { about: string; privacy: string; t
   uk: { about: "Про сервіс (корейською)", privacy: "Конфіденційність (корейською)", terms: "Умови користування (корейською)" },
   ms: { about: "Tentang kami (dalam bahasa Korea)", privacy: "Privasi (dalam bahasa Korea)", terms: "Terma penggunaan (dalam bahasa Korea)" },
   sv: { about: "Om tjänsten (på koreanska)", privacy: "Integritet (på koreanska)", terms: "Användarvillkor (på koreanska)" },
+  cs: { about: "O službě (korejsky)", privacy: "Soukromí (korejsky)", terms: "Podmínky používání (korejsky)" },
 };
 
 export function localizedFooterLinks(locale: SupportedLocale) {
