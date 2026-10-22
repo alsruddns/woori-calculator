@@ -136,6 +136,7 @@ export const russianTranslatedCalculatorSlugs = [
   "vietnam-gross-net-salary-calculator", "vietnam-personal-income-tax-calculator", "vietnam-social-insurance-calculator",
   "china-gross-net-salary-calculator", "china-individual-income-tax-calculator", "china-social-insurance-calculator", "china-vat-calculator",
   "taiwan-gross-net-salary-calculator", "taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator",
+  "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator",
 ] as const satisfies readonly LocalizedCalculatorSlug[];
 export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : [])] : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);
