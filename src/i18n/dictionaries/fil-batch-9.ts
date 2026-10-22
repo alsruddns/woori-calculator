@@ -1,7 +1,7 @@
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { filPage } from "@/i18n/dictionaries/fil-batch-2";
 
-const results = [
+export const sharedCountryResultLabelsFil = [
   "Halagang hindi pa kasama ang tax", "Taunang kita na saklaw ng buwis", "Tinatayang tax", "Kabuuang halaga kasama ang tax",
   "Kabuuang taunang gross salary", "Tinatayang income tax", "Tinatayang employee contributions", "Tinatayang taunang take-home pay",
   "Tinatayang buwanang take-home pay", "Average tax rate", "Basic pay", "Overtime premium", "Tinatayang overtime pay",
@@ -25,7 +25,7 @@ export const filBatchNine: Record<string, LocalizedCalculatorContent> = {
     related: ["germany-income-tax-calculator", "germany-vat-calculator", "salary-conversion"],
     fields: { salary: "Kabuuang sahod bago kaltas", frequency: "Panahon ng sahod", socialRate: "Rate ng hulog ng empleyado sa social insurance" },
     options: { frequency: { annual: "Taunang sahod", monthly: "Buwanang sahod" } },
-    results,
+    results: sharedCountryResultLabelsFil,
     validation: "Maglagay ng hindi negatibong gross salary at piliin ang panahon ng sahod.",
     resultNote: germanyNote,
     faq: germanyFaq,
@@ -39,7 +39,7 @@ export const filBatchNine: Record<string, LocalizedCalculatorContent> = {
     example: { question: "Kasama ba ang lahat ng deductions at tax class?", answer: "Hindi. Pangkalahatang estimate lamang ito at hindi kapalit ng indibiduwal na tax assessment." },
     related: ["germany-gross-net-salary-calculator", "germany-vat-calculator", "salary-conversion"],
     fields: { income: "Taunang taxable income na ilalagay" },
-    results,
+    results: sharedCountryResultLabelsFil,
     validation: "Maglagay ng hindi negatibong income.",
     resultNote: germanyNote + " Hindi nito isinasaalang-alang ang lahat ng deduction, tax class, solidarity surcharge o personal allowance.",
     faq: germanyFaq,
@@ -54,7 +54,7 @@ export const filBatchNine: Record<string, LocalizedCalculatorContent> = {
     related: ["vat", "percentage", "germany-income-tax-calculator"],
     fields: { amount: "Halaga ng presyo", direction: "Uri ng presyong inilagay", rate: "VAT rate sa Germany" },
     options: { direction: { exclusive: "Presyong wala pang VAT", inclusive: "Presyong kasama ang VAT" } },
-    results,
+    results: sharedCountryResultLabelsFil,
     validation: "Maglagay ng hindi negatibong presyo at wastong VAT rate.",
     resultNote: germanyNote + " Hindi nito tinutukoy ang legal na VAT treatment ng produkto.",
     faq: germanyFaq,
@@ -68,7 +68,7 @@ export const filBatchNine: Record<string, LocalizedCalculatorContent> = {
     example: { question: "Garantisado ba ng batas sa Germany ang multiplier na inilagay ko?", answer: "Hindi. Ipasok ang naaangkop na kontraktuwal o policy multiplier at beripikahin ang lokal na tuntunin." },
     related: ["germany-gross-net-salary-calculator", "hourly-wage", "germany-vacation-pay-calculator"],
     fields: { salary: "Sahod kada oras o panahon", hours: "Bilang ng overtime hours", multiplier: "Overtime multiplier" },
-    results,
+    results: sharedCountryResultLabelsFil,
     validation: "Maglagay ng hindi negatibong sahod at oras at positibong multiplier.",
     resultNote: germanyNote + " Hindi nito sinusuri ang employment contract, working-time limits o legal overtime entitlement.",
     faq: germanyFaq,
