@@ -26,4 +26,12 @@ describe("Czech locale publication", () => {
     expect(metadata.alternates?.canonical).toBe("https://www.woori.today/cs/calculators/compound-interest");
     expect(metadata.alternates?.languages).toHaveProperty("cs", "https://www.woori.today/cs/calculators/compound-interest");
   });
+
+  it("clearly keeps the VAT calculator on its South Korean 10% basis", () => {
+    const page = getDictionary("cs").calculators.vat!;
+    expect(page.name).toContain("korejské");
+    expect(page.howTo).toContain("jihokorejskou základní sazbu 10 %");
+    expect(page.faqs.some(({ answer }) => answer.includes("jazyk stránky nemění zemi"))).toBe(true);
+    expect(page.resultNote).toContain("Nepoužívá české daňové předpisy");
+  });
 });
