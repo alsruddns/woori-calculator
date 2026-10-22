@@ -20,7 +20,7 @@ type PageSpec = {
   faq: { question: string; answer: string };
 };
 
-function page(slug: keyof typeof en.calculators, spec: PageSpec): LocalizedCalculatorContent {
+export function filPage(slug: keyof typeof en.calculators, spec: PageSpec): LocalizedCalculatorContent {
   const source = en.calculators[slug] ?? additionalCalculatorContent.en[slug]!;
   const fields = Object.fromEntries(Object.entries(source.fields).map(([key, field]) => [
     key,
@@ -59,7 +59,7 @@ function page(slug: keyof typeof en.calculators, spec: PageSpec): LocalizedCalcu
 }
 
 export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
-  probability: page("probability", {
+  probability: filPage("probability", {
     name: "Kalkulador ng posibilidad", shortName: "Posibilidad", title: "Kalkulador ng posibilidad para sa mga event at pagsubok",
     description: "Kuwentahin ang tsansa ng isang event, ng dalawang independent event, o ng paglitaw nito sa paulit-ulit na pagsubok.",
     keywords: ["kalkulador ng posibilidad", "probabilidad", "tsansa ng event"],
@@ -74,7 +74,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Ipinapalagay na independent ang mga event o paulit-ulit na pagsubok kung naaangkop.",
     faq: { question: "Ano ang ibig sabihin ng independent event?", answer: "Hindi binabago ng kinalabasan ng isang event ang posibilidad ng isa pa. Kung may ugnayan ang mga event, hindi angkop ang mga formula para sa independent event." },
   }),
-  fraction: page("fraction", {
+  fraction: filPage("fraction", {
     name: "Kalkulador ng fraction", shortName: "Fraction", title: "Kalkulador ng fraction: magdagdag, magbawas, magparami at maghati",
     description: "Magsagawa ng apat na pangunahing operasyon sa mga fraction at tingnan ang pinasimpleng fraction, mixed number, at decimal.",
     keywords: ["kalkulador ng fraction", "fraction calculator", "operasyon sa fraction"],
@@ -89,7 +89,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Ang fraction ay pinapasimple sa eksaktong integer arithmetic; niro-round lamang ang decimal na display.",
     faq: { question: "Ano ang denominator?", answer: "Ipinapakita ng denominator kung ilang magkakapantay na bahagi ang kabuuan. Hindi ito maaaring sero." },
   }),
-  "decimal-fraction": page("decimal-fraction", {
+  "decimal-fraction": filPage("decimal-fraction", {
     name: "Decimal at fraction converter", shortName: "Decimal at fraction", title: "I-convert ang decimal sa fraction o fraction sa decimal",
     description: "Ipakita ang katumbas na fraction ng decimal o ang decimal value ng isang fraction.",
     keywords: ["decimal sa fraction", "fraction sa decimal", "decimal fraction converter"],
@@ -104,7 +104,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Nililimitahan sa anim na decimal place ang precision ng conversion mula decimal; maaaring mag-iba ang resulta dahil sa rounding.",
     faq: { question: "Laging eksakto ba ang conversion?", answer: "Maraming decimal ang eksaktong maisusulat bilang fraction. Nililimitahan ng calculator ang precision sa anim na decimal place para sa iba." },
   }),
-  "unit-price": page("unit-price", {
+  "unit-price": filPage("unit-price", {
     name: "Kalkulador ng presyo kada yunit", shortName: "Presyo kada yunit", title: "Kalkulador ng presyo kada yunit at kabuuang presyo",
     description: "Kuwentahin ang presyo kada piraso mula sa kabuuang presyo o ang kabuuang halaga mula sa unit price at dami.",
     keywords: ["presyo kada yunit", "presyo kada piraso", "unit price calculator"],
@@ -119,7 +119,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Ang napiling currency ay yunit lamang ng pagpapakita; hindi ito nagsasagawa ng palitan batay sa exchange rate.",
     faq: { question: "Paano maghambing ng magkaibang laki ng pakete?", answer: "Kuwentahin ang presyo kada magkakaparehong yunit, gaya ng kada piraso, kilo, o litro, at ihambing ang parehong unit." },
   }),
-  "unit-converter": page("unit-converter", {
+  "unit-converter": filPage("unit-converter", {
     name: "Unit converter", shortName: "Unit converter", title: "Unit converter para sa haba, bigat, volume at temperatura",
     description: "Mag-convert sa pagitan ng mga karaniwang yunit ng haba, bigat, volume, at temperatura.",
     keywords: ["unit converter", "conversion ng yunit", "haba bigat volume temperatura"],
@@ -138,7 +138,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Maaaring mag-iba nang bahagya ang huling digit dahil sa rounding ng ipinapakitang resulta.",
     faq: { question: "Bakit hindi lumalabas ang ilang unit?", answer: "Ipinapakita lamang ang mga unit na kabilang sa piniling kategorya upang maiwasan ang hindi angkop na conversion." },
   }),
-  dday: page("dday", {
+  dday: filPage("dday", {
     name: "Kalkulador ng araw bago o mula sa target date", shortName: "D-day", title: "Kalkulador ng D-day at bilang ng araw hanggang sa target date",
     description: "Alamin kung ilang araw ang natitira bago ang mahalagang petsa o ilang araw na ang lumipas mula rito.",
     keywords: ["D-day calculator", "bilang ng araw hanggang petsa", "araw mula sa target date"],
@@ -153,7 +153,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Mga araw sa kalendaryo ang binibilang, hindi lamang mga araw ng trabaho.",
     faq: { question: "Kasama ba ang mismong target date?", answer: "Ipinapakita ang pagitan ng mga petsa sa araw; hindi ito inclusive count ng simula at katapusan." },
   }),
-  workdays: page("workdays", {
+  workdays: filPage("workdays", {
     name: "Kalkulador ng araw ng trabaho", shortName: "Araw ng trabaho", title: "Bilangin ang weekdays sa pagitan ng dalawang petsa",
     description: "Kuwentahin ang bilang ng mga weekday sa pagitan ng mga petsa at piliing isama ang alinman sa mga dulo.",
     keywords: ["bilang ng araw ng trabaho", "weekday calculator", "workdays sa pagitan ng petsa"],
@@ -168,7 +168,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Lunes hanggang Biyernes lamang ang binibilang. Hindi kasama sa pagkukuwenta ang mga holiday at lokal na work schedule.",
     faq: { question: "Inaalis ba ang mga pampublikong holiday?", answer: "Hindi. Ang resulta ay weekday count lamang at hindi gumagamit ng holiday calendar ng anumang bansa." },
   }),
-  "time-arithmetic": page("time-arithmetic", {
+  "time-arithmetic": filPage("time-arithmetic", {
     name: "Kalkulador ng oras at minuto", shortName: "Oras at minuto", title: "Magdagdag o magbawas ng oras at minuto",
     description: "Pagsamahin o ibawas ang dalawang tagal at tingnan ang resulta bilang oras, minuto, at kabuuang minuto.",
     keywords: ["kalkulador ng oras", "magdagdag ng oras at minuto", "time arithmetic"],
@@ -183,7 +183,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Hindi ito nagko-convert ng time zone o oras ng orasan; mga tagal lamang ang pinagsasama o ibinabawas.",
     faq: { question: "Puwede bang lumampas sa 59 ang inilagay na minuto?", answer: "Oo. Kino-convert ang kabuuang minuto sa tamang oras at natitirang minuto." },
   }),
-  "tip-calculator": page("tip-calculator", {
+  "tip-calculator": filPage("tip-calculator", {
     name: "Kalkulador ng tip", shortName: "Tip", title: "Kuwentahin ang tip, kabuuang bayarin at hati kada tao",
     description: "Kuwentahin ang tip mula sa bill at rate, idagdag ito sa kabuuan, at hatiin ang bayad sa bilang ng tao.",
     keywords: ["tip calculator", "kalkulador ng tip", "hati ng bill"],
@@ -197,7 +197,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Pantay ang paghahati sa bawat tao; maaaring magkaiba ang aktuwal na bayad dahil sa rounding o ibang singil.",
     faq: { question: "Kasama ba sa tip ang buwis?", answer: "Hindi kinukuha ang buwis nang hiwalay. Gamitin ang bill amount na naaayon sa paraang gusto mong kalkulahin ang tip." },
   }),
-  "trip-split": page("trip-split", {
+  "trip-split": filPage("trip-split", {
     name: "Kalkulador ng hatian sa biyahe", shortName: "Hati sa biyahe", title: "Hatiin ang gastos sa biyahe sa magkakasamang biyahero",
     description: "Hatiin nang pantay ang kabuuang gastos at ipakita kung paano ipamamahagi ang natitirang sentimo o pinakamaliit na yunit.",
     keywords: ["hati sa gastos sa biyahe", "trip expense splitter", "hati kada tao"],
@@ -211,7 +211,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Pantay ang paghahati sa decimal; inilalarawan ng buong-unit na breakdown kung paano maipamamahagi ang natira.",
     faq: { question: "Bakit magkaiba nang isang unit ang ilang bahagi?", answer: "Kapag hindi eksakto ang hati sa pinakamaliit na monetary unit, may ilang taong kailangang magbayad ng isang unit na dagdag upang tumugma ang kabuuan." },
   }),
-  "fuel-efficiency": page("fuel-efficiency", {
+  "fuel-efficiency": filPage("fuel-efficiency", {
     name: "Kalkulador ng fuel efficiency", shortName: "Fuel efficiency", title: "Kuwentahin ang fuel efficiency, konsumo o tinatayang range",
     description: "Kuwentahin ang konsumo ng gasolina kada distansiya, fuel efficiency, o tinatayang distansiyang mararating.",
     keywords: ["fuel efficiency calculator", "konsumo ng gasolina", "km kada litro"],
@@ -226,7 +226,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Tantiya ito batay sa inilagay na datos; nag-iiba ang aktuwal na konsumo ayon sa sasakyan at kondisyon ng biyahe.",
     faq: { question: "Pareho ba ang km/L at L/100 km?", answer: "Magkaugnay ang mga ito ngunit baligtad ang direksiyon ng pagsukat: mas mataas na km/L o mas mababang L/100 km ang karaniwang nangangahulugan ng mas kaunting fuel bawat distansiya." },
   }),
-  "vehicle-cost": page("vehicle-cost", {
+  "vehicle-cost": filPage("vehicle-cost", {
     name: "Kalkulador ng gastos sa sasakyan", shortName: "Gastos sa sasakyan", title: "Tantiyahin ang buwanan at taunang gastos sa sasakyan",
     description: "Pagsamahin ang fuel, insurance, buwis, maintenance, parking, toll at iba pang gastos para tantiyahin ang kabuuang cost.",
     keywords: ["gastos sa sasakyan", "vehicle ownership cost", "gastos kada kilometro"],
@@ -240,7 +240,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Pagtatantiya lamang ito batay sa mga gastusing inilagay mo. Hindi nito awtomatikong inaangkop ang buwis, insurance, o regulasyon sa isang bansa.",
     faq: { question: "Anong mga gastos ang dapat ilagay?", answer: "Isama lamang ang mga gastusing gusto mong isama sa badyet, gaya ng insurance, buwis, maintenance, parking, toll, o hulog sa sasakyan." },
   }),
-  "taxi-fare": page("taxi-fare", {
+  "taxi-fare": filPage("taxi-fare", {
     name: "Kalkulador ng pamasahe sa taxi", shortName: "Pamasahe sa taxi", title: "Tantiyahin ang pamasahe sa taxi mula sa mga inilagay na rate",
     description: "Tantiyahin ang pamasahe gamit ang base fare, distansiya at oras na rate na inilagay mo.",
     keywords: ["taxi fare calculator", "tantiyang pamasahe", "presyo kada kilometro taxi"],
@@ -254,7 +254,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Hindi ito opisyal na fare quote. Maaaring mag-iba ang tunay na pamasahe dahil sa lokal na tariff, traffic, surcharge at ibang singil.",
     faq: { question: "Bakit hindi tugma ang resulta sa metro ng taxi?", answer: "Tantiya lamang ito gamit ang mga rate na inilagay mo; maaaring may ibang base fare, traffic charge, surcharge, rounding, o lokal na tuntunin." },
   }),
-  dividend: page("dividend", {
+  dividend: filPage("dividend", {
     name: "Kalkulador ng dividend", shortName: "Dividend", title: "Tantiyahin ang dividend kada hulog at taunang kita",
     description: "Tantiyahin ang dividend batay sa bilang ng shares, dividend kada share, dalas ng bayad at inilagay na share price.",
     keywords: ["dividend calculator", "taunang dividend", "dividend yield"],
@@ -268,7 +268,7 @@ export const filBatchTwo: Record<string, LocalizedCalculatorContent> = {
     resultNote: "Tantiya lamang bago buwis at bayarin. Maaaring magbago o hindi matanggap ang mga dividend sa hinaharap.",
     faq: { question: "Netong dividend na ba ito?", answer: "Hindi. Bago buwis at bayarin ang resulta; nag-iiba ang aktuwal na netong matatanggap ayon sa naaangkop na patakaran at account." },
   }),
-  "profit-loss": page("profit-loss", {
+  "profit-loss": filPage("profit-loss", {
     name: "Kalkulador ng tubo o lugi", shortName: "Tubo o lugi", title: "Kuwentahin ang tubo o lugi matapos ang mga bayarin",
     description: "Kuwentahin ang netong halaga ng pagbili at pagbenta, kita o lugi, porsiyento ng pagbabago at break-even price.",
     keywords: ["profit loss calculator", "tubo o lugi", "break-even selling price"],
