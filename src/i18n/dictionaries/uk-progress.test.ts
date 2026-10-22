@@ -4,9 +4,9 @@ import { remainingUkrainianCalculatorSlugs, translatedUkrainianCalculatorSlugs, 
 
 describe("Ukrainian translation workbench", () => {
   it("tracks translated pages without publishing an incomplete locale", () => {
-    expect(Object.keys(ukrainianCalculatorContent)).toHaveLength(53);
-    expect(translatedUkrainianCalculatorSlugs).toHaveLength(53);
-    expect(remainingUkrainianCalculatorSlugs).toHaveLength(localizedCalculatorSlugs.length - 53);
+    expect(Object.keys(ukrainianCalculatorContent)).toHaveLength(68);
+    expect(translatedUkrainianCalculatorSlugs).toHaveLength(68);
+    expect(remainingUkrainianCalculatorSlugs).toHaveLength(localizedCalculatorSlugs.length - 68);
     expect(new Set([...translatedUkrainianCalculatorSlugs, ...remainingUkrainianCalculatorSlugs]).size).toBe(localizedCalculatorSlugs.length);
   });
 });
