@@ -8,6 +8,7 @@ import { plBatchFive } from "@/i18n/dictionaries/pl-batch-5";
 import { plBatchSix } from "@/i18n/dictionaries/pl-batch-6";
 import { plBatchSeven } from "@/i18n/dictionaries/pl-batch-7";
 import { plBatchEight } from "@/i18n/dictionaries/pl-batch-8";
+import { plBatchNine } from "@/i18n/dictionaries/pl-batch-9";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
 const slugs = ["compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest", "median", "percentile"] as const;
@@ -18,6 +19,7 @@ const slugsFive = ["unemployment-benefit", "minimum-wage", "severance-pay", "soc
 const slugsSix = ["spain-irpf-calculator", "spain-vat-calculator", "spain-severance-pay-calculator", "france-gross-net-salary-calculator", "france-income-tax-calculator", "france-vat-calculator", "france-overtime-pay-calculator", "netherlands-gross-net-salary-calculator", "netherlands-vat-calculator", "netherlands-30-percent-ruling-calculator", "netherlands-holiday-allowance-calculator", "india-gst-calculator", "india-sip-calculator", "india-ppf-calculator", "india-nps-calculator"] as const;
 const slugsSeven = ["india-gross-net-salary-calculator", "india-income-tax-calculator", "brazil-gross-net-salary-calculator", "brazil-inss-calculator", "brazil-irrf-calculator", "brazil-fgts-calculator", "brazil-thirteenth-salary-calculator", "vietnam-gross-net-salary-calculator", "vietnam-personal-income-tax-calculator", "vietnam-social-insurance-calculator", "china-gross-net-salary-calculator", "china-individual-income-tax-calculator", "china-social-insurance-calculator", "china-vat-calculator", "taiwan-gross-net-salary-calculator"] as const;
 const slugsEight = ["taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator", "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator", "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator", "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator"] as const;
+const slugsNine = ["uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator", "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator", "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator", "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator"] as const;
 
 describe("Polish calculator translation batch one", () => {
   it("contains complete Polish page content and matching source form/result keys", () => {
@@ -30,6 +32,7 @@ describe("Polish calculator translation batch one", () => {
     expect(Object.keys(plBatchSix).sort()).toEqual([...slugsSix].sort());
     expect(Object.keys(plBatchSeven).sort()).toEqual([...slugsSeven].sort());
     expect(Object.keys(plBatchEight).sort()).toEqual([...slugsEight].sort());
+    expect(Object.keys(plBatchNine).sort()).toEqual([...slugsNine].sort());
     const entries = [
       ...slugs.map((slug) => [slug, plBatchOne[slug]] as const),
       ...slugsTwo.map((slug) => [slug, plBatchTwo[slug]] as const),
@@ -39,6 +42,7 @@ describe("Polish calculator translation batch one", () => {
       ...slugsSix.map((slug) => [slug, plBatchSix[slug]] as const),
       ...slugsSeven.map((slug) => [slug, plBatchSeven[slug]] as const),
       ...slugsEight.map((slug) => [slug, plBatchEight[slug]] as const),
+      ...slugsNine.map((slug) => [slug, plBatchNine[slug]] as const),
     ];
     for (const [slug, content] of entries) {
       const page: LocalizedCalculatorContent = content!;
