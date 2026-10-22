@@ -10,7 +10,7 @@ describe("calculator sitemap locale completeness", () => {
     const urls = entries.map(({ url }) => url);
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
-    expect(expectedDetailCount).toBe(published.length * locales.length + 110);
+    expect(expectedDetailCount).toBe(published.length * locales.length + 114);
     expect(entries).toHaveLength(expectedDetailCount + supportedLocales.length);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of supportedLocales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
@@ -60,6 +60,7 @@ describe("calculator sitemap locale completeness", () => {
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/india-sip-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/brazil-fgts-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/vietnam-social-insurance-calculator`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/china-vat-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-annual-salary-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-monthly-salary-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/japan-overtime-pay-calculator`);
