@@ -17,7 +17,7 @@
 | 6 | 가중평균 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `weighted-average` |
 | 7 | 연평균 성장률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `cagr` |
 | 8 | 분수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `fraction` |
-| 9 | 소수·분수 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `decimal-fraction` |
+| 9 | 소수·분수 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `decimal-fraction` |
 | 10 | 표준편차 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `standard-deviation` |
 | 11 | 중앙값 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `median` |
 | 12 | 백분위 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `percentile` |
@@ -52,30 +52,30 @@
 | 41 | 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `hourly-wage` |
 | 42 | 연차수당 간편 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `annual-leave-allowance` |
 | 43 | 부가세 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `vat` |
-| 44 | 단가 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `unit-price` |
+| 44 | 단가 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `unit-price` |
 | 45 | 마진율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `margin` |
 | 46 | 마크업률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `markup` |
 | 47 | 판매 수익·목표 마진 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `product-margin` |
 | 48 | 3.3% 원천징수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `withholding-tax-3-3` |
 | 49 | 날짜 차이 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `date-difference` |
-| 50 | D-Day 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `dday` |
-| 51 | 만 나이 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `age` |
-| 52 | 근무일수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `workdays` |
-| 53 | BMI 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `bmi` |
+| 50 | D-Day 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `dday` |
+| 51 | 만 나이 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `age` |
+| 52 | 근무일수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `workdays` |
+| 53 | BMI 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `bmi` |
 | 54 | 평수·제곱미터 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `area` |
-| 55 | 러닝 페이스 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `pace` |
+| 55 | 러닝 페이스 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `pace` |
 | 56 | 주유비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `fuel-cost` |
-| 57 | 연비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `fuel-efficiency` |
+| 57 | 연비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `fuel-efficiency` |
 | 58 | 1회분 칼로리 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `calorie-per-serving` |
 | 59 | 근속기간 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `tenure` |
-| 60 | 시간 더하기·빼기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `time-arithmetic` |
+| 60 | 시간 더하기·빼기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `time-arithmetic` |
 | 61 | 출산 예정일·임신 주수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `pregnancy` |
 | 62 | 수도·가스 요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `utility-bill` |
 | 63 | 차량 유지비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `vehicle-cost` |
 | 64 | 택시비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `taxi-fare` |
 | 65 | 여행 경비 나누기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `trip-split` |
 | 66 | 팁 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `tip-calculator` |
-| 67 | 단위 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `unit-converter` |
+| 67 | 단위 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr | `unit-converter` |
 | 68 | 실업급여 계산기 | open | true | 2026 | [고용노동부 1350 — 2026년 구직급여 상·하한 및 소정급여일수 안내](https://1350.moel.go.kr/rtmview.do?id=1000324861)<br>[고용보험 — 구직급여 지급액 안내](https://edrm.ei.go.kr/ei/eih/eg/pb/pbPersonBnef/retrievePb0203Info.do)<br>[최저임금위원회 — 2026년 적용 최저임금](https://www.minimumwage.go.kr/index.jsp) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `unemployment-benefit` |
 | 69 | 2026 최저임금 계산기 | open | true | 2026 | [최저임금위원회 — 2026년 적용 최저임금](https://www.minimumwage.go.kr/index.jsp) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `minimum-wage` |
 | 70 | 퇴직금 계산기 | open | true | 2026 | [국가법령정보센터 — 근로자퇴직급여 보장법 제8조](https://law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1023689759)<br>[고용노동부 — 퇴직금 산정 안내](https://1350.moel.go.kr/home/hp/retirementpaycal/retirementpaycal.jsp) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `severance-pay` |

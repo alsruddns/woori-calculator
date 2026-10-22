@@ -10,7 +10,7 @@ describe("calculator sitemap locale completeness", () => {
     const urls = entries.map(({ url }) => url);
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
-    expect(expectedDetailCount).toBe(published.length * locales.length + 175);
+    expect(expectedDetailCount).toBe(published.length * locales.length + 185);
     expect(entries).toHaveLength(expectedDetailCount + supportedLocales.length);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of supportedLocales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
@@ -28,7 +28,7 @@ describe("calculator sitemap locale completeness", () => {
       expect(alternateMap["x-default"]).toBe(`${siteConfig.url}/ko/calculators/${slug}`);
     }
     expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru"]);
-    expect(supportedLocalesForCalculator("age")).toEqual([...locales, "ru"]);
+    expect(supportedLocalesForCalculator("age")).toEqual([...locales, "ru", "tr"]);
     expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru"]);
     expect(urls).toContain(`${siteConfig.url}/es/calculators/median`);
     expect(urls).toContain(`${siteConfig.url}/es/calculators/fraction`);
