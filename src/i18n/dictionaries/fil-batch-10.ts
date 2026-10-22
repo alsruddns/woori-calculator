@@ -5,7 +5,7 @@ import type { LocalizedCalculatorSlug } from "@/i18n/config";
 import { sharedExpandedCountryResultsFil } from "@/i18n/dictionaries/fil-country-results-expanded";
 
 export type CountryPageSpec = {
-  country: "Germany" | "Spain" | "France" | "Netherlands" | "India" | "Brazil" | "Vietnam" | "China" | "Taiwan" | "Italy" | "United States" | "United Kingdom";
+  country: "Germany" | "Spain" | "France" | "Netherlands" | "India" | "Brazil" | "Vietnam" | "China" | "Taiwan" | "Italy" | "United States" | "United Kingdom" | "Canada" | "Australia" | "Singapore";
   results?: readonly string[];
   name: string;
   title: string;
@@ -22,6 +22,9 @@ export function countryPage(slug: LocalizedCalculatorSlug, spec: CountryPageSpec
   const expandedResultSlugs: readonly LocalizedCalculatorSlug[] = [
     "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator",
     "spain-freelancer-tax-calculator", "france-social-contribution-calculator", "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator",
+    "uk-stamp-duty-calculator", "uk-pension-calculator", "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator",
+    "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator",
+    "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator",
   ];
   return filPage(slug, {
     ...spec,
