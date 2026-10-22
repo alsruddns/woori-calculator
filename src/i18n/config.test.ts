@@ -44,18 +44,26 @@ describe("locale routing and translated calculator catalog", () => {
       "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss", "margin", "markup", "calorie-per-serving",
       "loan-interest", "deposit-interest", "loan-refinance", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "break-even-point-calculator", "inflation-adjusted-return-calculator",
       "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy", "fire-retirement-calculator", "dividend-growth-calculator", "stock-profit-after-fees-calculator", "position-size-calculator", "freelancer-hourly-rate-calculator",
-      "ratio", "proportion", "aspect-ratio", "scale-ratio",
+      "ratio", "proportion", "aspect-ratio", "scale-ratio", "vat", "pace", "standard-deviation", "stock-average-price",
     ]);
     expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
     for (const slug of localizedIndexSlugs("ru")) expect(calculatorSupportsLocale(slug, "ru")).toBe(true);
-    expect(calculatorSupportsLocale("vat", "ru")).toBe(false);
+    expect(calculatorSupportsLocale("vat", "ru")).toBe(true);
     expect(calculatorSupportsLocale("ratio", "ru")).toBe(true);
     expect(calculatorSupportsLocale("minimum-wage", "ru")).toBe(false);
     expect(languageSwitchPath("/en/calculators/compound-interest", "ru")).toBe("/ru/calculators/compound-interest");
     expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/ru/calculators/percentage");
-    expect(languageSwitchPath("/en/calculators/vat", "ru")).toBe("/en/calculators/vat");
+    expect(languageSwitchPath("/en/calculators/vat", "ru")).toBe("/ru/calculators/vat");
     expect(languageSwitchPath("/en/calculators/ratio", "ru")).toBe("/ru/calculators/ratio");
     expect(languageSwitchPath("/en/calculators/minimum-wage", "ru")).toBe("/en/calculators/minimum-wage");
+    expect(languageSwitchPath("/en/calculators/pace", "ru")).toBe("/ru/calculators/pace");
+    expect(languageSwitchPath("/en/calculators/stock-average-price", "ru")).toBe("/ru/calculators/stock-average-price");
+    expect(russian.calculators.vat?.description).toContain("Южной Корее");
+    expect(russian.calculators.vat?.resultNote).toContain("НДС Южной Кореи");
+    const vatMetadata = localizedMetadata("ru", "/calculators/vat", russian.calculators.vat!.title, russian.calculators.vat!.description, russian.calculators.vat!.keywords, supportedLocalesForCalculator("vat"));
+    expect(vatMetadata.alternates?.canonical).toBe("https://www.woori.today/ru/calculators/vat");
+    expect(vatMetadata.alternates?.languages?.ru).toBe("https://www.woori.today/ru/calculators/vat");
+    expect(vatMetadata.alternates?.languages?.["x-default"]).toBe("https://www.woori.today/ko/calculators/vat");
     for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) {
       expect(value).toBeTruthy();
     }
