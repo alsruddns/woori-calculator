@@ -7,6 +7,7 @@ import { svBatchFour } from "@/i18n/dictionaries/sv-batch-4";
 import { svBatchFive } from "@/i18n/dictionaries/sv-batch-5";
 import { svBatchSix } from "@/i18n/dictionaries/sv-batch-6";
 import { svBatchSeven } from "@/i18n/dictionaries/sv-batch-7";
+import { svBatchEight } from "@/i18n/dictionaries/sv-batch-8";
 
 // Swedish stays unpublished until all calculator pages and shared UI are translated.
 export const swedishCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
@@ -17,6 +18,7 @@ export const swedishCalculatorContent: Partial<Record<(typeof localizedCalculato
   ...svBatchFive,
   ...svBatchSix,
   ...svBatchSeven,
+  ...svBatchEight,
 };
 export const translatedSwedishCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in swedishCalculatorContent);
 export const remainingSwedishCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => !(slug in swedishCalculatorContent));
