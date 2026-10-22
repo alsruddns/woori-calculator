@@ -4,9 +4,9 @@ import { remainingRomanianCalculatorSlugs, romanianCalculatorContent, translated
 
 describe("Romanian translation progress", () => {
   it("tracks translated pages without publishing an incomplete Romanian locale", () => {
-    expect(translatedRomanianCalculatorSlugs).toHaveLength(26);
-    expect(remainingRomanianCalculatorSlugs).toHaveLength(localizedCalculatorSlugs.length - 26);
-    expect(Object.keys(romanianCalculatorContent)).toHaveLength(26);
+    expect(translatedRomanianCalculatorSlugs).toHaveLength(34);
+    expect(remainingRomanianCalculatorSlugs).toHaveLength(localizedCalculatorSlugs.length - 34);
+    expect(Object.keys(romanianCalculatorContent)).toHaveLength(34);
     expect(translatedRomanianCalculatorSlugs.length + remainingRomanianCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length);
   });
 });
