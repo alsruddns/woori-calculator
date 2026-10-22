@@ -1,0 +1,76 @@
+import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
+import { filPage } from "@/i18n/dictionaries/fil-batch-2";
+
+const results = [
+  "Halagang hindi pa kasama ang tax", "Taunang kita na saklaw ng buwis", "Tinatayang tax", "Kabuuang halaga kasama ang tax",
+  "Kabuuang taunang gross salary", "Tinatayang income tax", "Tinatayang employee contributions", "Tinatayang taunang take-home pay",
+  "Tinatayang buwanang take-home pay", "Average tax rate", "Basic pay", "Overtime premium", "Tinatayang overtime pay",
+  "Taunang basic pay", "Allowance rate", "Tinatayang allowance", "Daily salary basis", "Taon ng serbisyo",
+  "Tinatayang severance", "Kabuuang contributions", "Tinatayang gains", "Projected balance",
+  "Posibleng tax-free allowance", "Natitirang taxable salary", "Buwanang employer FGTS deposit",
+  "Taunang employer FGTS deposits", "Mga kwalipikadong buwan", "Tinatayang buwanang INSS contribution",
+  "Tinatayang buwanang IRRF", "Contribution base", "Employee rate",
+] as const;
+const germanyNote = "Germany ang tax at employment-policy basis ng calculator na ito. Hindi ito Philippine tax o payroll estimate; nag-iiba ang aktuwal na resulta ayon sa tax class, state, insurance at personal circumstances.";
+const germanyFaq = { question: "Nalalapat ba ito sa buwis o sahod sa Pilipinas?", answer: "Hindi. German policy assumptions ang ginagamit; para sa Philippine tax at payroll, gamitin ang tuntuning naaangkop sa Pilipinas." };
+
+export const filBatchNine: Record<string, LocalizedCalculatorContent> = {
+  "germany-gross-net-salary-calculator": filPage("germany-gross-net-salary-calculator", {
+    name: "Kalkulador ng gross at net salary sa Germany", shortName: "Net salary (Germany)", title: "Tantiyahin ang net salary mula sa gross pay sa Germany",
+    description: "Tantiyahin ang income tax, employee contributions at take-home pay mula sa gross salary sa Germany.",
+    keywords: ["Germany gross net salary calculator", "German take home salary", "net salary Germany"],
+    howTo: "Ilagay ang gross salary at piliin kung taunang o buwanang halaga ito; itakda ang social contribution rate kung kailangan.",
+    formula: "Tinatayang net pay = gross pay − tinatayang income tax − tinatayang employee contributions.",
+    example: { question: "Eksaktong payslip ba ang estimate?", answer: "Hindi. Simplified estimate ito at maaaring mag-iba ayon sa tax class, church tax, health insurer at iba pang detalye." },
+    related: ["germany-income-tax-calculator", "germany-vat-calculator", "salary-conversion"],
+    fields: { salary: "Kabuuang sahod bago kaltas", frequency: "Panahon ng sahod", socialRate: "Rate ng hulog ng empleyado sa social insurance" },
+    options: { frequency: { annual: "Taunang sahod", monthly: "Buwanang sahod" } },
+    results,
+    validation: "Maglagay ng hindi negatibong gross salary at piliin ang panahon ng sahod.",
+    resultNote: germanyNote,
+    faq: germanyFaq,
+  }),
+  "germany-income-tax-calculator": filPage("germany-income-tax-calculator", {
+    name: "Kalkulador ng income tax sa Germany", shortName: "Income tax (Germany)", title: "Tantiyahin ang income tax sa Germany",
+    description: "Tantiyahin ang German income tax mula sa taunang income na inilagay mo.",
+    keywords: ["Germany income tax calculator", "German tax estimate", "income tax Germany"],
+    howTo: "Ilagay ang taunang income na nais tantiyahin.",
+    formula: "Tinatayang tax = assessment ng income gamit ang simplified German tax rules na naka-configure sa calculator.",
+    example: { question: "Kasama ba ang lahat ng deductions at tax class?", answer: "Hindi. Pangkalahatang estimate lamang ito at hindi kapalit ng indibiduwal na tax assessment." },
+    related: ["germany-gross-net-salary-calculator", "germany-vat-calculator", "salary-conversion"],
+    fields: { income: "Taunang taxable income na ilalagay" },
+    results,
+    validation: "Maglagay ng hindi negatibong income.",
+    resultNote: germanyNote + " Hindi nito isinasaalang-alang ang lahat ng deduction, tax class, solidarity surcharge o personal allowance.",
+    faq: germanyFaq,
+  }),
+  "germany-vat-calculator": filPage("germany-vat-calculator", {
+    name: "Kalkulador ng VAT sa Germany", shortName: "VAT (Germany)", title: "Kalkulahin ang German VAT at presyong may buwis",
+    description: "Kuwentahin ang tax-exclusive o tax-inclusive na presyo gamit ang inilagay na German VAT rate.",
+    keywords: ["Germany VAT calculator", "German VAT estimate", "presyo kasama ang German VAT"],
+    howTo: "Piliin kung net o gross ang presyo, ilagay ang amount at ang naaangkop na VAT rate.",
+    formula: "VAT-exclusive: tax = net × rate. VAT-inclusive: tax = gross × rate ÷ (1 + rate).",
+    example: { question: "Awtomatiko bang pinipili ang German reduced rate?", answer: "Hindi. Ilagay ang rate na naaangkop sa produkto; maaaring may reduced rate o exemption." },
+    related: ["vat", "percentage", "germany-income-tax-calculator"],
+    fields: { amount: "Halaga ng presyo", direction: "Uri ng presyong inilagay", rate: "VAT rate sa Germany" },
+    options: { direction: { exclusive: "Presyong wala pang VAT", inclusive: "Presyong kasama ang VAT" } },
+    results,
+    validation: "Maglagay ng hindi negatibong presyo at wastong VAT rate.",
+    resultNote: germanyNote + " Hindi nito tinutukoy ang legal na VAT treatment ng produkto.",
+    faq: germanyFaq,
+  }),
+  "germany-overtime-pay-calculator": filPage("germany-overtime-pay-calculator", {
+    name: "Kalkulador ng overtime pay sa Germany", shortName: "Overtime pay (Germany)", title: "Tantiyahin ang overtime pay sa Germany",
+    description: "Tantiyahin ang base pay, premium at overtime compensation mula sa salary, oras at multiplier.",
+    keywords: ["Germany overtime pay calculator", "German overtime estimate", "overtime wage Germany"],
+    howTo: "Ilagay ang wage basis, bilang ng overtime hours at multiplier na gagamitin.",
+    formula: "Tinatayang overtime compensation = hourly-equivalent pay × overtime hours × multiplier.",
+    example: { question: "Garantisado ba ng batas sa Germany ang multiplier na inilagay ko?", answer: "Hindi. Ipasok ang naaangkop na kontraktuwal o policy multiplier at beripikahin ang lokal na tuntunin." },
+    related: ["germany-gross-net-salary-calculator", "hourly-wage", "germany-vacation-pay-calculator"],
+    fields: { salary: "Sahod kada oras o panahon", hours: "Bilang ng overtime hours", multiplier: "Overtime multiplier" },
+    results,
+    validation: "Maglagay ng hindi negatibong sahod at oras at positibong multiplier.",
+    resultNote: germanyNote + " Hindi nito sinusuri ang employment contract, working-time limits o legal overtime entitlement.",
+    faq: germanyFaq,
+  }),
+};
