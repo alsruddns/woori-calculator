@@ -1,6 +1,11 @@
 import { en } from "@/i18n/dictionaries/en";
 import { additionalCalculatorContent } from "@/i18n/dictionaries/additional";
 import { ratioLocaleContent } from "@/i18n/dictionaries/ratio-tools";
+import { phaseFourLocaleContent } from "@/i18n/dictionaries/phase-four";
+import { phaseFiveLocaleContent } from "@/i18n/dictionaries/phase-five";
+import { phaseSixLocaleContent } from "@/i18n/dictionaries/phase-six";
+import { newToolsLocaleContent } from "@/i18n/dictionaries/new-tools";
+import type { LocalizedCalculatorSlug } from "@/i18n/config";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
 type PageSpec = {
@@ -22,7 +27,17 @@ type PageSpec = {
 };
 
 export function filPage(slug: keyof typeof en.calculators, spec: PageSpec): LocalizedCalculatorContent {
-  const source = en.calculators[slug] ?? additionalCalculatorContent.en[slug] ?? ratioLocaleContent("en")[slug]!;
+  const sources: Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>[] = [
+    en.calculators,
+    additionalCalculatorContent.en,
+    phaseFourLocaleContent("en"),
+    phaseFiveLocaleContent("en"),
+    phaseSixLocaleContent("en"),
+    newToolsLocaleContent("en"),
+    ratioLocaleContent("en"),
+  ];
+  const source = sources.map((dictionary) => dictionary[slug]).find((content) => content !== undefined);
+  if (!source) throw new Error("Missing English calculator source: " + slug);
   for (const [key, field] of Object.entries(source.fields)) {
     if (!spec.fields[key] || spec.fields[key] === field.label) throw new Error("Missing Filipino field translation: " + slug + "." + key);
   }

@@ -4,10 +4,10 @@ import { filipinoCalculatorContent, remainingFilipinoCalculatorSlugs, translated
 
 describe("Filipino translation progress", () => {
   it("tracks every calculator exactly once without publishing incomplete content", () => {
-    expect(Object.keys(filipinoCalculatorContent).length).toBe(56);
-    expect(translatedFilipinoCalculatorSlugs.length).toBe(56);
-    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 56);
+    expect(Object.keys(filipinoCalculatorContent).length).toBe(62);
+    expect(translatedFilipinoCalculatorSlugs.length).toBe(62);
+    expect(remainingFilipinoCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length - 62);
     expect(new Set([...translatedFilipinoCalculatorSlugs, ...remainingFilipinoCalculatorSlugs]).size).toBe(localizedCalculatorSlugs.length);
-    expect(remainingFilipinoCalculatorSlugs[0]).toBe("annual-leave-allowance");
+    expect(remainingFilipinoCalculatorSlugs[0]).toBe("japan-consumption-tax-calculator");
   });
 });
