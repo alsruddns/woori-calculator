@@ -1,6 +1,6 @@
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
-const trCountryResultLabels = {
+export const trCountryResultLabels = {
   "Tax-exclusive amount": "Vergi hariç tutar", "Taxable annual income": "Yıllık vergiye tabi gelir", Tax: "Tahmini vergi", "Tax-inclusive total": "Vergi dahil toplam",
   "Gross annual salary": "Yıllık brüt maaş", "Estimated income tax": "Tahmini gelir vergisi", "Estimated employee contributions": "Tahmini çalışan kesintileri",
   "Estimated annual take-home pay": "Tahmini yıllık net maaş", "Estimated monthly take-home pay": "Tahmini aylık net maaş", "Average tax rate": "Ortalama vergi oranı",
@@ -10,9 +10,27 @@ const trCountryResultLabels = {
   "Potential tax-free allowance": "Olası vergiden muaf tutar", "Taxable salary remainder": "Vergiye tabi kalan maaş", "Monthly employer FGTS deposit": "Aylık işveren FGTS katkısı",
   "Annual employer FGTS deposits": "Yıllık işveren FGTS katkıları", "Eligible months": "Uygun ay sayısı", "Estimated monthly INSS contribution": "Tahmini aylık INSS primi",
   "Estimated monthly IRRF": "Tahmini aylık IRRF vergisi", "Contribution base": "Prim matrahı", "Employee rate": "Çalışan oranı",
+  "Tax amount": "Vergi tutarı", "Taxable income": "Vergiye tabi gelir", "Gross annual pay": "Yıllık brüt ücret",
+  "Employee contributions": "Çalışan katkıları", "Other estimated deductions": "Diğer tahmini kesintiler",
+  "Monthly employee National Insurance": "Aylık çalışan ulusal sigorta primi", "Annual employee National Insurance": "Yıllık çalışan ulusal sigorta primi",
+  "Estimated property transfer duty": "Tahmini taşınmaz devir vergisi", "Employer contributions": "İşveren katkıları", "Projected investment growth": "Öngörülen yatırım getirisi",
+  "Taxable capital gain": "Vergiye tabi sermaye kazancı", "Estimated federal capital gains tax": "Tahmini federal sermaye kazancı vergisi", "State tax entered": "Girilen eyalet vergisi",
+  "Federal GST": "Federal GST", "Additional provincial portion": "Ek eyalet/bölge payı", "Total at selected GST/HST rate": "Seçilen GST/HST oranındaki toplam",
+  "Employee CPP": "Çalışan CPP primi", "Employee CPP2": "Çalışan CPP2 primi", "Employee EI": "Çalışan EI primi", "Employer CPP and EI": "İşveren CPP ve EI primleri",
+  "Employee CPF": "Çalışan CPF katkısı", "Employer CPF": "İşveren CPF katkısı", "Total monthly CPF": "Aylık toplam CPF katkısı",
+  "Employee MPF": "Çalışan MPF katkısı", "Employer MPF": "İşveren MPF katkısı", "Total MPF contributions": "Toplam MPF katkısı",
+  "Employee EPF": "Çalışan EPF katkısı", "Employer EPF": "İşveren EPF katkısı", "Total EPF contributions": "Toplam EPF katkısı",
+  "Indicative employee SOCSO contribution": "Gösterge niteliğinde çalışan SOCSO primi", "Contribution wage base": "Prim hesaplama ücreti",
+  "Employee SSS contribution": "Çalışan SSS primi", "Employer SSS contribution": "İşveren SSS primi", "Employee PhilHealth share": "Çalışan PhilHealth payı", "Employer PhilHealth share": "İşveren PhilHealth payı",
+  "Total premium": "Toplam prim", "Employee Pag-IBIG contribution": "Çalışan Pag-IBIG katkısı", "Employer Pag-IBIG contribution": "İşveren Pag-IBIG katkısı", "Total monthly savings": "Aylık toplam birikim",
+  "Eligible service years": "Uygun hizmet yılı", "Estimated gratuity": "Tahmini ikramiye", "Basic monthly wage": "Temel aylık ücret",
+  "First five years benefit": "İlk beş yıl için ödeme", "Additional service benefit": "Ek hizmet süresi ödemesi", "Capped end-of-service benefit": "Üst sınır uygulanmış hizmet sonu ödemesi",
+  "Taxable profit": "Vergiye tabi kâr", "Estimated corporate tax": "Tahmini kurumlar vergisi", "CSG deductible": "İndirilebilir CSG", "CSG non-deductible": "İndirilemeyen CSG", CRDS: "CRDS",
+  "Basic old-age contribution": "Temel yaşlılık sigortası primi", "Total estimated contributions": "Tahmini toplam prim ve katkılar", "Estimated net before income tax": "Gelir vergisi öncesi tahmini net tutar",
+  "Estimated taxable business profit": "Tahmini vergiye tabi ticari kâr", "Estimated IRPF": "Tahmini IRPF", "Estimated annual social security": "Tahmini yıllık sosyal güvenlik primi", "Estimated after tax and contributions": "Vergi ve katkılar sonrası tahmini tutar",
 };
 
-const trCountryFaqs = [
+export const trCountryFaqs = [
   { question: "Bu hesaplama hangi ülkenin kurallarını kullanıyor?", answer: "Bu sayfa adında belirtilen ülke için mevcut referans varsayımlarını kullanır. Sayfa dilini değiştirmek hesaplama ülkesini değiştirmez." },
   { question: "Sonuç kesin vergi veya bordro tutarı mıdır?", answer: "Hayır. Bu yalnızca tahmindir. Kişisel durum, bölgesel kurallar, indirimler ve işveren uygulaması gerçek tutarı değiştirebilir; güncel koşulları ilgili resmi kurumdan doğrulayın." },
 ];
