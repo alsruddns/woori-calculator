@@ -141,6 +141,13 @@ export const russianTranslatedCalculatorSlugs = [
   "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator",
   "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator",
   "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator",
+  "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator",
+  "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator",
+  "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator",
+  "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator",
+  "uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator",
+  "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator",
+  "spain-freelancer-tax-calculator", "france-social-contribution-calculator",
 ] as const satisfies readonly LocalizedCalculatorSlug[];
 export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : [])] : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);
