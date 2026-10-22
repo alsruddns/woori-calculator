@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { calculateBySlug } from "@/calculators/calculate";
 import { units, type LinearUnit } from "@/calculators/conversion/convert";
 import { formatNumber } from "@/lib/formatter/number";
-import { formatCurrency, defaultCurrencyByLocale, formatLocalizedInput, isCurrencyCode, parseLocalizedNumber, unformatLocalizedInput, type CurrencyCode } from "@/lib/formatter/currency";
-import { CurrencySelector, readSavedCurrency, saveCurrency } from "@/components/calculator/currency-selector";
+import { formatCurrency, formatLocalizedInput, isCurrencyCode, parseLocalizedNumber, unformatLocalizedInput, type CurrencyCode } from "@/lib/formatter/currency";
+import { CurrencySelector, saveCurrency, useSelectedCurrency } from "@/components/calculator/currency-selector";
 import { normalizeDuration, durationForCalculator, type DurationUnit } from "@/lib/calculators/duration";
 import { numberToKoreanText } from "@/lib/formatter/korean-number";
 import type { Locale } from "@/i18n/config";
@@ -61,18 +61,12 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
   const [values, setValues] = useState<Record<string, string>>(initial);
   const [outcome, setOutcome] = useState<CalculatorOutcome | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
-  const [currency, setCurrency] = useState<CurrencyCode>(defaultCurrencyByLocale[locale]);
+  const currency = useSelectedCurrency(locale);
   const duration = durationForCalculator(slug);
   const [durationUnit, setDurationUnit] = useState<DurationUnit>(duration?.inputUnit ?? "month");
   const usesCurrency = fields.some((field) => currencyFieldNames.has(field.name) || /^(KRW|JPY|USD|EUR|원|円)$/.test(field.unit ?? ""));
 
-  useEffect(() => {
-    const saved = readSavedCurrency();
-    if (saved) setCurrency(saved);
-  }, []);
-
   function changeCurrency(next: CurrencyCode) {
-    setCurrency(next);
     saveCurrency(next);
   }
 

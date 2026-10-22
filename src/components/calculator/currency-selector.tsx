@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { currencyOptions, defaultCurrencyByLocale, isCurrencyCode, type CurrencyCode, type CurrencyLocale } from "@/lib/formatter/currency";
 
 const copy: Record<CurrencyLocale, { label: string; search: string; reset: string; note: string }> = {
@@ -49,7 +49,7 @@ export function CurrencySelector({ locale, currency, onChange }: { locale: Curre
     <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(10rem,0.8fr)_minmax(14rem,1.2fr)_auto] sm:items-end">
       <label className="min-w-0 text-sm text-slate-700"><span className="mb-1 block">{text.search}</span><input type="search" value={query} onChange={(event) => setQuery(event.currentTarget.value)} className="min-h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3" autoComplete="off" /></label>
       <label className="min-w-0 text-sm text-slate-700"><span className="sr-only">{text.label}</span><select value={currency} onChange={(event) => { if (isCurrencyCode(event.currentTarget.value)) onChange(event.currentTarget.value); }} className="min-h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3"><option value={currency}>{optionLabel(currency)}</option>{matches.filter((item) => item.code !== currency).map(({ code }) => <option key={code} value={code}>{optionLabel(code)}</option>)}</select></label>
-      <button type="button" className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-100" onClick={() => { onChange(defaultCurrencyByLocale[locale]); try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* Storage may be unavailable. */ } }}>{text.reset}</button>
+      <button type="button" className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-100" onClick={() => { onChange(defaultCurrencyByLocale[locale]); clearSavedCurrency(); }}>{text.reset}</button>
     </div>
     <p className="mt-2 text-xs leading-5 text-slate-600">{text.note}</p>
   </fieldset>;
@@ -64,4 +64,25 @@ export function readSavedCurrency(): CurrencyCode | undefined {
 
 export function saveCurrency(currency: CurrencyCode): void {
   try { window.localStorage.setItem(STORAGE_KEY, currency); } catch { /* Storage may be unavailable in private browsing. */ }
+  window.dispatchEvent(new Event("woori-calculator-currency-change"));
+}
+
+export function clearSavedCurrency(): void {
+  try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* Storage may be unavailable. */ }
+  window.dispatchEvent(new Event("woori-calculator-currency-change"));
+}
+
+export function useSelectedCurrency(locale: CurrencyLocale): CurrencyCode {
+  return useSyncExternalStore(
+    (notify) => {
+      window.addEventListener("storage", notify);
+      window.addEventListener("woori-calculator-currency-change", notify);
+      return () => {
+        window.removeEventListener("storage", notify);
+        window.removeEventListener("woori-calculator-currency-change", notify);
+      };
+    },
+    () => readSavedCurrency() ?? defaultCurrencyByLocale[locale],
+    () => defaultCurrencyByLocale[locale],
+  );
 }

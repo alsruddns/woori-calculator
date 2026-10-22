@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, hasRoutingLocale, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, routingLocaleConfig, routingLocales, supportedLocales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -9,6 +9,14 @@ describe("locale routing and translated calculator catalog", () => {
     for (const locale of locales) expect(hasLocale(locale)).toBe(true);
     expect(hasLocale("fr")).toBe(true);
     expect(locales).toHaveLength(15);
+    expect(supportedLocales).toEqual(locales);
+    expect(routingLocales).toHaveLength(26);
+    expect(new Set(routingLocales).size).toBe(26);
+    for (const locale of routingLocales) expect(hasRoutingLocale(locale)).toBe(true);
+    for (const locale of ["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const) {
+      expect(hasLocale(locale)).toBe(false);
+      expect(routingLocaleConfig[locale].intlLocale).toBeTruthy();
+    }
     expect(localeConfig["pt-br"].hreflang).toBe("pt-BR");
     expect(localeConfig["zh-tw"].hreflang).toBe("zh-TW");
     for (const slug of localizedCalculatorSlugs) expect(hasLocalizedCalculator(slug)).toBe(true);
