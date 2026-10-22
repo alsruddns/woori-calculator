@@ -20,6 +20,9 @@ type CzechPageSpec = {
   options?: Record<string, Record<string, string>>;
   results: readonly string[];
   related: LocalizedCalculatorContent["related"];
+  faqs?: LocalizedCalculatorContent["faqs"];
+  validation?: string;
+  resultNote?: string;
 };
 
 const catalogs: Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>[] = [
@@ -47,7 +50,7 @@ export function csPage(slug: LocalizedCalculatorSlug, spec: CzechPageSpec): Loca
   return {
     name: spec.name, shortName: spec.name, title: spec.title, description: spec.description, keywords: spec.keywords,
     howTo: spec.howTo, formula: spec.formula, example: spec.example,
-    faqs: [spec.example, {
+    faqs: spec.faqs ?? [spec.example, {
       question: `Jaké údaje jsou potřeba pro výpočet ${spec.name.toLocaleLowerCase("cs-CZ")}?`,
       answer: `Zadejte tyto hodnoty: ${inputNames}. Výsledek se vypočítá podle zadaných údajů a uvedených předpokladů. Před použitím si ověřte, zda odpovídají vaší situaci.`,
     }],
@@ -57,7 +60,7 @@ export function csPage(slug: LocalizedCalculatorSlug, spec: CzechPageSpec): Loca
       Object.fromEntries(Object.keys(values).map((key) => [key, spec.options![group]![key]])),
     ])),
     resultLabels: Object.fromEntries(Object.keys(source.resultLabels).map((key, index) => [key, spec.results[index]!])),
-    validation: "Zkontrolujte, zda jsou všechna povinná pole vyplněna a zda jsou hodnoty v uvedeném rozsahu.",
-    resultNote: "Výsledek je odhad založený na zadaných údajích a uvedených předpokladech. Změna měny mění pouze jednotku zobrazení; nejde o přepočet podle směnného kurzu.",
+    validation: spec.validation ?? "Zkontrolujte, zda jsou všechna povinná pole vyplněna a zda jsou hodnoty v uvedeném rozsahu.",
+    resultNote: spec.resultNote ?? "Výsledek je odhad založený na zadaných údajích a uvedených předpokladech. Změna měny mění pouze jednotku zobrazení; nejde o přepočet podle směnného kurzu.",
   };
 }
