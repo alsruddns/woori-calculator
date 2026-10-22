@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getDictionary } from "@/i18n/dictionaries";
+import { calculateFuelCost } from "@/calculators/date-life/date-calculate";
 import { svBatchThree } from "@/i18n/dictionaries/sv-batch-3";
 
 describe("Swedish calculator translation batch three", () => {
@@ -15,5 +16,10 @@ describe("Swedish calculator translation batch three", () => {
       expect(page.title, slug).not.toBe(original.title);
       for (const [key, field] of Object.entries(original.fields)) expect(page.fields[key]?.label, `${slug}.${key}`).not.toBe(field.label);
     }
+  });
+
+  it("uses a fuel cost example that agrees with the calculator formula", () => {
+    expect(calculateFuelCost({ distance: "300", efficiency: "15", price: "20" })).toMatchObject({ results: [{ value: 20 }, { value: 400 }] });
+    expect(svBatchThree["fuel-cost"]?.example.answer).toContain("400 kr");
   });
 });
