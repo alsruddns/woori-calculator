@@ -13,6 +13,7 @@ import { trBatchTen } from "@/i18n/dictionaries/tr-batch-10";
 import { trBatchEleven } from "@/i18n/dictionaries/tr-batch-11";
 import { trBatchTwelve } from "@/i18n/dictionaries/tr-batch-12";
 import { trBatchThirteen } from "@/i18n/dictionaries/tr-batch-13";
+import { trBatchFourteen } from "@/i18n/dictionaries/tr-batch-14";
 
 export const tr: LocaleDictionary = {
   locale: "tr",
@@ -42,5 +43,5 @@ export const tr: LocaleDictionary = {
   home: { title: "Günlük hesaplamalar için hızlı ve pratik araçlar", description: "İhtiyacınız olan hesap makinesini bulun ve hesaplamanızı çevrim içi olarak kolayca yapın.", featured: "Öne çıkan hesap makineleri", categories: "Kategoriye göre göz atın" },
   units: { won: "KRW", number: "sayı", year: "yıl", month: "ay", durationLabel: "Süre" },
   categoriesOrder: calculatorCategoryOrder,
-  calculators: { ...trBatchOne, ...trBatchTwo, ...trBatchThree, ...trBatchFour, ...trBatchFive, ...trBatchSix, ...trBatchSeven, ...trBatchEight, ...trBatchNine, ...trBatchTen, ...trBatchEleven, ...trBatchTwelve, ...trBatchThirteen },
+  calculators: { ...trBatchOne, ...trBatchTwo, ...trBatchThree, ...trBatchFour, ...trBatchFive, ...trBatchSix, ...trBatchSeven, ...trBatchEight, ...trBatchNine, ...trBatchTen, ...trBatchEleven, ...trBatchTwelve, ...trBatchThirteen, ...trBatchFourteen },
 };
