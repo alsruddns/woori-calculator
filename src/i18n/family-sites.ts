@@ -25,4 +25,5 @@ export const familySitesCopy: Record<SupportedLocale, { label: string; menu: str
   ms: { label: "Perkhidmatan Woori", menu: "Perkhidmatan", portal: "Portal", calculator: "Kalkulator", tools: "Alat dalam talian", moneyBook: "MoneyBook", documents: "Dokumen dan borang", quiz: "Kuiz dan ujian", newTab: "Perkhidmatan yang dipilih akan dibuka dalam tab baharu." },
   sv: { label: "Wooris tjänster", menu: "Tjänster", portal: "Portal", calculator: "Kalkylator", tools: "Verktyg online", moneyBook: "MoneyBook", documents: "Dokument och formulär", quiz: "Frågesporter och test", newTab: "Den valda tjänsten öppnas i en ny flik." },
   cs: { label: "Služby Woori", menu: "Služby", portal: "Portál", calculator: "Kalkulačka", tools: "Online nástroje", moneyBook: "MoneyBook", documents: "Dokumenty a formuláře", quiz: "Kvízy a testy", newTab: "Vybraná služba se otevře na nové kartě." },
+  ro: { label: "Serviciile Woori", menu: "Servicii", portal: "Portal", calculator: "Calculator", tools: "Instrumente online", moneyBook: "MoneyBook", documents: "Documente și formulare", quiz: "Chestionare și teste", newTab: "Serviciul selectat se va deschide într-o filă nouă." },
 };

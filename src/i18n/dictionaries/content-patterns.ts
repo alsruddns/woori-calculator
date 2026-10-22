@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 
 type Pattern = { inputs: string; exampleInput: string; exampleResult: string; inputQuestion: string; inputAnswer: string; sourceHeading: string; checked: string; policyYear: string; updated: string };
-export const contentPatterns: Record<Locale | "tr" | "pl" | "fil" | "bn" | "uk" | "ms" | "sv" | "cs", Pattern> = {
+export const contentPatterns: Record<Locale | "tr" | "pl" | "fil" | "bn" | "uk" | "ms" | "sv" | "cs" | "ro", Pattern> = {
   ko: { inputs: "계산에 사용하는 입력", exampleInput: "예시 입력", exampleResult: "예시 결과", inputQuestion: "이 계산에 어떤 값이 반영되나요?", inputAnswer: "입력한 항목을 사용합니다:", sourceHeading: "기준 및 출처", checked: "확인일", policyYear: "정책 기준연도", updated: "콘텐츠 업데이트" },
   en: { inputs: "Inputs used in this calculation", exampleInput: "Example inputs", exampleResult: "Example result", inputQuestion: "Which values does this calculation use?", inputAnswer: "The calculation uses these entries:", sourceHeading: "Basis and sources", checked: "Checked", policyYear: "Policy reference year", updated: "Content updated" },
   ja: { inputs: "計算に使う入力", exampleInput: "入力例", exampleResult: "計算例", inputQuestion: "どの値を計算に使いますか？", inputAnswer: "次の入力項目を使います：", sourceHeading: "基準と出典", checked: "確認日", policyYear: "制度の基準年", updated: "更新日" },
@@ -25,4 +25,5 @@ export const contentPatterns: Record<Locale | "tr" | "pl" | "fil" | "bn" | "uk" 
   ms: { inputs: "Input yang digunakan dalam kiraan", exampleInput: "Input contoh", exampleResult: "Hasil contoh", inputQuestion: "Nilai apakah yang digunakan dalam kiraan ini?", inputAnswer: "Kiraan ini menggunakan input berikut:", sourceHeading: "Asas dan sumber", checked: "Disemak pada", policyYear: "Tahun rujukan dasar", updated: "Kandungan dikemas kini" },
   sv: { inputs: "Indata i beräkningen", exampleInput: "Exempelindata", exampleResult: "Exempelresultat", inputQuestion: "Vilka värden används i beräkningen?", inputAnswer: "Beräkningen använder följande uppgifter:", sourceHeading: "Grund och källor", checked: "Kontrollerad", policyYear: "Regelverkets referensår", updated: "Innehållet uppdaterat" },
   cs: { inputs: "Vstupní hodnoty výpočtu", exampleInput: "Ukázkové zadání", exampleResult: "Ukázkový výsledek", inputQuestion: "Jaké hodnoty výpočet používá?", inputAnswer: "Výpočet vychází z těchto údajů:", sourceHeading: "Základ a zdroje", checked: "Ověřeno", policyYear: "Referenční rok pravidel", updated: "Obsah aktualizován" },
+  ro: { inputs: "Date folosite în calcul", exampleInput: "Date de exemplu", exampleResult: "Rezultat de exemplu", inputQuestion: "Ce valori folosește acest calcul?", inputAnswer: "Calculul folosește următoarele date:", sourceHeading: "Bază și surse", checked: "Verificat la", policyYear: "An de referință al regulilor", updated: "Conținut actualizat" },
 };

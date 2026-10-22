@@ -102,4 +102,8 @@ export const sharedUiCopy: Record<SupportedLocale, SharedUiCopy> = {
     logoLabel: "Přejít na portál woori.today", familySite: "Související služby", portal: "Portál", moneyBook: "MoneyBook", calculator: "Kalkulačka", tools: "Nástroje", footerNavigation: "Navigace v zápatí",
     contact: { title: "Kontaktujte nás", intro: "Máte dotaz nebo požadavek ohledně používání woori.today?", details: "Přijímáme obecné dotazy a návrhy na nové funkce, žádosti o spolupráci, dotazy a návrhy týkající se reklamy i hlášení chyb. Napište nám na níže uvedenou e-mailovou adresu.", emailLabel: "E-mail", email: "krdd125@gmail.com", reply: "Zprávu si přečteme a podle možností odpovíme.", close: "Zavřít", types: ["Obecné dotazy a požadavky", "Nabídky spolupráce", "Dotazy a návrhy k reklamě", "Hlášení chyb"] },
   },
+  ro: {
+    logoLabel: "Mergi la portalul woori.today", familySite: "Servicii asociate", portal: "Portal", moneyBook: "MoneyBook", calculator: "Calculator", tools: "Instrumente", footerNavigation: "Navigare în subsol",
+    contact: { title: "Contact", intro: "Aveți o întrebare sau o solicitare despre woori.today?", details: "Primim întrebări generale și sugestii de funcții, propuneri de colaborare, întrebări și propuneri despre publicitate, precum și sesizări de erori. Ne puteți scrie la adresa de e-mail de mai jos.", emailLabel: "E-mail", email: "krdd125@gmail.com", reply: "Vom analiza mesajul și vom răspunde când este posibil.", close: "Închide", types: ["Întrebări și solicitări generale", "Propuneri de colaborare", "Întrebări și propuneri despre publicitate", "Sesizări de erori"] },
+  },
 };

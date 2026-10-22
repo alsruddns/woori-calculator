@@ -9,14 +9,14 @@ describe("locale routing and translated calculator catalog", () => {
     for (const locale of locales) expect(hasLocale(locale)).toBe(true);
     expect(hasLocale("fr")).toBe(true);
     expect(locales).toHaveLength(15);
-    expect(supportedLocales).toHaveLength(24);
+    expect(supportedLocales).toHaveLength(25);
     expect(supportedLocales.slice(0, locales.length)).toEqual(locales);
-    expect(supportedLocales.slice(-9)).toEqual(["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
+    expect(supportedLocales.slice(-10)).toEqual(["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
     expect(routingLocales).toHaveLength(26);
     expect(new Set(routingLocales).size).toBe(26);
     for (const locale of routingLocales) expect(hasRoutingLocale(locale)).toBe(true);
     for (const locale of ["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const) {
-      expect(hasLocale(locale)).toBe(["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"].includes(locale));
+      expect(hasLocale(locale)).toBe(["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"].includes(locale));
       expect(routingLocaleConfig[locale].intlLocale).toBeTruthy();
     }
     expect(localeConfig["pt-br"].hreflang).toBe("pt-BR");
@@ -152,11 +152,11 @@ describe("locale routing and translated calculator catalog", () => {
       expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/tr/calculators/${slug}`);
       expect(metadata.alternates?.languages?.tr).toBe(`https://www.woori.today/tr/calculators/${slug}`);
     }
-    expect(supportedLocalesForCalculator("bmi")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
-    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
-    expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
-    expect(supportedLocalesForCalculator("loan-refinance")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
-    expect(supportedLocalesForCalculator("ratio")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
+    expect(supportedLocalesForCalculator("bmi")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
+    expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
+    expect(supportedLocalesForCalculator("loan-refinance")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
+    expect(supportedLocalesForCalculator("ratio")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
   });
 
   it("validates every Russian batch page against source field, option, and result keys", () => {
@@ -233,9 +233,9 @@ describe("locale routing and translated calculator catalog", () => {
       }
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
-    expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
-    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
-    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs"]);
+    expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
+    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro"]);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
   });
 
