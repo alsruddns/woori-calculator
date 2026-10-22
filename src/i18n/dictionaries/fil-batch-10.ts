@@ -4,7 +4,7 @@ import { sharedCountryResultLabelsFil } from "@/i18n/dictionaries/fil-batch-9";
 import type { LocalizedCalculatorSlug } from "@/i18n/config";
 
 export type CountryPageSpec = {
-  country: "Germany" | "Spain" | "France" | "Netherlands" | "India";
+  country: "Germany" | "Spain" | "France" | "Netherlands" | "India" | "Brazil";
   name: string;
   title: string;
   description: string;
