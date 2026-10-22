@@ -18,4 +18,5 @@ export const familySitesCopy: Record<SupportedLocale, { label: string; menu: str
   hi: { label: "परिवार सेवाएँ", menu: "सेवाएँ", portal: "पोर्टल", calculator: "कैलकुलेटर", tools: "ऑनलाइन टूल", moneyBook: "मुफ़्त साझा मनीबुक", documents: "दस्तावेज़ और फ़ॉर्म", quiz: "क्विज़ और टेस्ट", newTab: "चुनी गई सेवा नए टैब में खुलेगी।" },
   ru: { label: "Сервисы woori.today", menu: "Меню сервисов", portal: "Портал", calculator: "Калькулятор", tools: "Онлайн-инструменты", moneyBook: "MoneyBook", documents: "Документы и формы", quiz: "Викторины и тесты", newTab: "Выбранный сервис откроется в новой вкладке." },
   tr: { label: "Aile siteleri", menu: "Hizmetler", portal: "Portal", calculator: "Hesap makinesi", tools: "?evrim i?i ara?lar", moneyBook: "MoneyBook", documents: "Belgeler ve formlar", quiz: "Testler ve s?navlar", newTab: "Se?ilen hizmet yeni bir sekmede a??l?r." },
+  pl: { label: "Serwisy rodzinne", menu: "Usługi", portal: "Portal", calculator: "Kalkulator", tools: "Narzędzia online", moneyBook: "MoneyBook", documents: "Dokumenty i formularze", quiz: "Quizy i testy", newTab: "Wybrana usługa otworzy się w nowej karcie." },
 };

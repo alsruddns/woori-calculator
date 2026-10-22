@@ -9,14 +9,14 @@ describe("locale routing and translated calculator catalog", () => {
     for (const locale of locales) expect(hasLocale(locale)).toBe(true);
     expect(hasLocale("fr")).toBe(true);
     expect(locales).toHaveLength(15);
-    expect(supportedLocales).toHaveLength(17);
+    expect(supportedLocales).toHaveLength(18);
     expect(supportedLocales.slice(0, locales.length)).toEqual(locales);
-    expect(supportedLocales.slice(-2)).toEqual(["ru", "tr"]);
+    expect(supportedLocales.slice(-3)).toEqual(["ru", "tr", "pl"]);
     expect(routingLocales).toHaveLength(26);
     expect(new Set(routingLocales).size).toBe(26);
     for (const locale of routingLocales) expect(hasRoutingLocale(locale)).toBe(true);
     for (const locale of ["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const) {
-      expect(hasLocale(locale)).toBe(locale === "ru" || locale === "tr");
+      expect(hasLocale(locale)).toBe(locale === "ru" || locale === "tr" || locale === "pl");
       expect(routingLocaleConfig[locale].intlLocale).toBeTruthy();
     }
     expect(localeConfig["pt-br"].hreflang).toBe("pt-BR");
@@ -97,6 +97,30 @@ describe("locale routing and translated calculator catalog", () => {
     expect(localizedMetadata("ru", "/calculators/compound-interest", page.title, page.description, page.keywords, supportedLocalesForCalculator("compound-interest")).alternates?.canonical).toBe("https://www.woori.today/ru/calculators/compound-interest");
   });
 
+  it("publishes the complete Polish catalog with localized metadata and matching page content", () => {
+    const polish = getDictionary("pl");
+    const english = getDictionary("en");
+    const slugs = localizedIndexSlugs("pl");
+    expect(slugs).toHaveLength(169);
+    expect(Object.keys(polish.calculators).sort()).toEqual([...slugs].sort());
+    for (const slug of slugs) {
+      const page = polish.calculators[slug]!;
+      const source = english.calculators[slug]!;
+      expect(page.title, slug).not.toBe(source.title);
+      expect(page.description, slug).not.toBe(source.description);
+      expect(page.fields, slug).toHaveProperty(Object.keys(source.fields)[0]!);
+      for (const key of Object.keys(source.fields)) expect(page.fields[key]?.label, slug + "." + key).not.toBe(source.fields[key]?.label);
+      expect(page.faqs.length, slug).toBeGreaterThan(0);
+      expect(page.howTo, slug).toBeTruthy();
+      expect(page.formula, slug).toBeTruthy();
+      expect(page.validation, slug).toBeTruthy();
+      expect(supportedLocalesForCalculator(slug)).toContain("pl");
+      const metadata = localizedMetadata("pl", "/calculators/" + slug, page.title, page.description, page.keywords, supportedLocalesForCalculator(slug));
+      expect(metadata.alternates?.canonical).toBe("https://www.woori.today/pl/calculators/" + slug);
+      expect(metadata.alternates?.languages?.pl).toBe("https://www.woori.today/pl/calculators/" + slug);
+    }
+  });
+
   it("publishes only complete Turkish calculator pages with Turkish UI and metadata", () => {
     const turkish = getDictionary("tr");
     const english = getDictionary("en");
@@ -128,11 +152,11 @@ describe("locale routing and translated calculator catalog", () => {
       expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/tr/calculators/${slug}`);
       expect(metadata.alternates?.languages?.tr).toBe(`https://www.woori.today/tr/calculators/${slug}`);
     }
-    expect(supportedLocalesForCalculator("bmi")).toEqual([...locales, "ru", "tr"]);
-    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr"]);
-    expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr"]);
-    expect(supportedLocalesForCalculator("loan-refinance")).toEqual([...locales, "ru", "tr"]);
-    expect(supportedLocalesForCalculator("ratio")).toEqual([...locales, "ru", "tr"]);
+    expect(supportedLocalesForCalculator("bmi")).toEqual([...locales, "ru", "tr", "pl"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl"]);
+    expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr", "pl"]);
+    expect(supportedLocalesForCalculator("loan-refinance")).toEqual([...locales, "ru", "tr", "pl"]);
+    expect(supportedLocalesForCalculator("ratio")).toEqual([...locales, "ru", "tr", "pl"]);
   });
 
   it("validates every Russian batch page against source field, option, and result keys", () => {
@@ -171,6 +195,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ko/calculators");
     expect(languageSwitchPath("/zh", "ko")).toBe("/ko");
     expect(languageSwitchPath("/ko/calculators/fraction", "ja")).toBe("/ja/calculators/fraction");
+    expect(languageSwitchPath("/ko/calculators/compound-interest", "pl")).toBe("/pl/calculators/compound-interest");
     for (const slug of localizedCalculatorSlugs) for (const locale of locales) expect(languageSwitchPath(`/ko/calculators/${slug}`, locale)).toBe(`/${locale}/calculators/${slug}`);
   });
 
@@ -208,9 +233,9 @@ describe("locale routing and translated calculator catalog", () => {
       }
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
-    expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru", "tr"]);
-    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr"]);
-    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr"]);
+    expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru", "tr", "pl"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl"]);
+    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr", "pl"]);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
   });
 

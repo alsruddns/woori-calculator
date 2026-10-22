@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { calculatorUrlsFromSitemap, calculatorUrlsFromSitemapUrl, createIndexNowPayload, FULL_LOCALE_SLUGS, submitIndexNow } from "./submit-indexnow.mjs";
 
-const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"];
+const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi", "ru", "tr", "pl"];
 const hreflang = { "pt-br": "pt-BR", "zh-tw": "zh-TW" };
 const slugs = [...FULL_LOCALE_SLUGS].sort();
 const routes = locales.map((locale) => `https://www.woori.today/${locale}/calculators`);
@@ -17,7 +17,7 @@ const sitemap = (urls, localizedSlugs = slugs) => `<urlset>${urls.map((url) => {
 const baseline = [...routes, ...details("loan-interest")];
 
 describe("IndexNow URL preparation", () => {
-  it("keeps supported listing and all fifteen calculator routes, deduplicates them, and ignores invalid URLs", () => {
+  it("keeps supported listing and all eighteen calculator routes, deduplicates them, and ignores invalid URLs", () => {
     const input = [...baseline, baseline[1], "https://www.woori.today/calculator/loan-interest", "https://other.example/ko/calculators/loan-interest", "https://www.woori.today/ko/calculators/loan-interest?ref=old"];
     const result = calculatorUrlsFromSitemap(sitemap(input));
     expect(result).toHaveLength(baseline.length);
@@ -30,14 +30,14 @@ describe("IndexNow URL preparation", () => {
     expect(() => calculatorUrlsFromSitemap(sitemap(baseline.filter((url) => !url.includes("/zh/calculators"))))).toThrow("missing calculator landing pages");
     expect(() => calculatorUrlsFromSitemap(sitemap(baseline.filter((url) => !url.endsWith("/zh/calculators/loan-interest"))))).toThrow("loan-interest: zh");
     const incomplete = ["https://www.woori.today/ko/calculators/median", "https://www.woori.today/en/calculators/median"];
-    expect(() => calculatorUrlsFromSitemap(sitemap([...baseline, ...incomplete]))).toThrow("- median: ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi");
+    expect(() => calculatorUrlsFromSitemap(sitemap([...baseline, ...incomplete]))).toThrow("- median: ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl");
   });
 
   it("includes all supported locale routes and BCP 47 hreflang mappings", () => {
     for (const slug of ["fraction", "age", "median"]) {
       const urls = details(slug);
       const result = calculatorUrlsFromSitemap(sitemap([...baseline, ...urls]));
-      expect(result).toHaveLength(baseline.length + 15);
+      expect(result).toHaveLength(baseline.length + locales.length);
       expect(result).toContain(`https://www.woori.today/es/calculators/${slug}`);
       const xml = sitemap([...baseline, ...urls]);
       expect(xml).toContain(`hreflang="pt-BR" href="https://www.woori.today/pt-br/calculators/${slug}"`);
@@ -47,7 +47,7 @@ describe("IndexNow URL preparation", () => {
     expect(() => calculatorUrlsFromSitemap(broken)).toThrow("Sitemap hreflang validation failed");
   });
 
-  it("includes all fifteen locale routes for newly published calculators", () => {
+  it("includes all eighteen locale routes for newly published calculators", () => {
     const newSlugs = ["fire-retirement-calculator", "dividend-growth-calculator", "inflation-adjusted-return-calculator", "position-size-calculator", "stop-loss-take-profit-calculator", "stock-profit-after-fees-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "freelancer-hourly-rate-calculator", "break-even-point-calculator"];
     for (const slug of newSlugs) expect(FULL_LOCALE_SLUGS.has(slug)).toBe(true);
     const urls = [...routes, ...newSlugs.flatMap(details)];

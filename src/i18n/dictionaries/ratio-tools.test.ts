@@ -51,7 +51,7 @@ describe("ratio calculator localization and SEO", () => {
 
   it("publishes locale-first canonical, hreflang, sitemap and IndexNow URLs for new pages", () => {
     const urls = createSitemapEntries().map(({ url }) => url);
-    expect(urls).toHaveLength(169 * 15 + 17 + 338);
+    expect(urls).toHaveLength(169 * 15 + 18 + 507);
     expect(new Set(urls).size).toBe(urls.length);
     for (const slug of slugs.slice(1)) {
       expect(FULL_LOCALE_SLUGS.has(slug)).toBe(true);
@@ -64,6 +64,6 @@ describe("ratio calculator localization and SEO", () => {
         expect(metadata.alternates?.languages).toHaveProperty("x-default", `https://www.woori.today/ko/calculators/${slug}`);
       }
     }
-    expect(urls.every((url) => !url.includes("/calculator/") && /^https:\/\/www\.woori\.today\/(?:ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi|ru|tr)\/calculators(?:\/[^/]+)?$/.test(url))).toBe(true);
+    expect(urls.every((url) => !url.includes("/calculator/") && /^https:\/\/www\.woori\.today\/(?:ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi|ru|tr|pl)\/calculators(?:\/[^/]+)?$/.test(url))).toBe(true);
   });
 });

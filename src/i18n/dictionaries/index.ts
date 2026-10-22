@@ -16,6 +16,7 @@ import { publishedCalculatorPages } from "@/data/calculator-content";
 import { improveLocalizedQualityContent } from "@/i18n/dictionaries/locale-quality-followup";
 import { ru } from "@/i18n/dictionaries/ru";
 import { tr } from "@/i18n/dictionaries/tr";
+import { pl } from "@/i18n/dictionaries/pl";
 import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
@@ -53,6 +54,7 @@ const sources = { en, ja, zh } as const;
 function buildDictionary(locale: SupportedLocale): LocaleDictionary {
   if (locale === "ru") return ru;
   if (locale === "tr") return tr;
+  if (locale === "pl") return pl;
   if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko }, calculators: { ...ko.calculators, ...phaseFourLocaleContent("ko"), ...phaseFiveLocaleContent("ko"), ...phaseSixLocaleContent("ko"), ...newToolsLocaleContent("ko"), ...ratioLocaleContent("ko") } };
   if (locale !== "en" && locale !== "ja" && locale !== "zh") {
     const base = phaseOneLocaleDictionary(locale, getDictionary("en"))!;
@@ -71,7 +73,7 @@ function buildDictionary(locale: SupportedLocale): LocaleDictionary {
 
 const dictionaryCache = new Map<SupportedLocale, LocaleDictionary>();
 function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictionary {
-  if (dictionary.locale === "ru" || dictionary.locale === "tr") return dictionary;
+  if (dictionary.locale === "ru" || dictionary.locale === "tr" || dictionary.locale === "pl") return dictionary;
   const entries = Object.entries(dictionary.calculators).filter((entry): entry is [string, LocalizedCalculatorContent] => Boolean(entry[1]));
   const counts = (select: (content: LocalizedCalculatorContent) => string) => {
     const values = new Map<string, number>();
@@ -106,6 +108,10 @@ export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   if (locale === "tr") {
     dictionaryCache.set(locale, tr);
     return tr;
+  }
+  if (locale === "pl") {
+    dictionaryCache.set(locale, pl);
+    return pl;
   }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;
