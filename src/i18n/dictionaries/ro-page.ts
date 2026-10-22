@@ -8,7 +8,7 @@ import { ratioLocaleContent } from "@/i18n/dictionaries/ratio-tools";
 import type { LocalizedCalculatorSlug } from "@/i18n/config";
 import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 
-type RomanianPageSpec = {
+export type RomanianPageSpec = {
   name: string;
   title: string;
   description: string;
@@ -23,6 +23,40 @@ type RomanianPageSpec = {
   faqs?: LocalizedCalculatorContent["faqs"];
   validation?: string;
   resultNote?: string;
+};
+
+export const roGlobalCountryResultLabels: Record<string, string> = {
+  "Tax-exclusive amount": "Sumă fără taxe",
+  "Taxable annual income": "Venit anual impozabil",
+  Tax: "Impozit estimat",
+  "Tax-inclusive total": "Total cu taxe incluse",
+  "Gross annual salary": "Salariu brut anual",
+  "Estimated income tax": "Impozit pe venit estimat",
+  "Estimated employee contributions": "Contribuții estimate ale angajatului",
+  "Estimated annual take-home pay": "Venit net anual estimat",
+  "Estimated monthly take-home pay": "Venit net lunar estimat",
+  "Average tax rate": "Cota medie de impozitare",
+  "Base pay": "Salariu de bază",
+  "Overtime premium": "Spor pentru ore suplimentare",
+  "Estimated overtime pay": "Plată estimată pentru ore suplimentare",
+  "Annual base pay": "Salariu de bază anual",
+  "Allowance rate": "Cota alocației",
+  "Estimated allowance": "Alocație estimată",
+  "Daily salary basis": "Baza salarială zilnică",
+  "Service years": "Ani de vechime",
+  "Estimated severance": "Compensație estimată la încetarea activității",
+  "Total contributions": "Contribuții totale",
+  "Estimated gains": "Câștig estimat",
+  "Projected balance": "Sold estimat",
+  "Potential tax-free allowance": "Alocație posibil neimpozabilă",
+  "Taxable salary remainder": "Rest de salariu impozabil",
+  "Monthly employer FGTS deposit": "Depunere FGTS lunară a angajatorului",
+  "Annual employer FGTS deposits": "Depuneri FGTS anuale ale angajatorului",
+  "Eligible months": "Număr de luni eligibile",
+  "Estimated monthly INSS contribution": "Contribuție INSS lunară estimată",
+  "Estimated monthly IRRF": "Impozit IRRF lunar estimat",
+  "Contribution base": "Baza de calcul a contribuției",
+  "Employee rate": "Cota angajatului",
 };
 
 const catalogs: Partial<Record<LocalizedCalculatorSlug, LocalizedCalculatorContent>>[] = [
@@ -63,4 +97,15 @@ export function roPage(slug: LocalizedCalculatorSlug, spec: RomanianPageSpec): L
     validation: spec.validation ?? "Verificați dacă ați completat toate câmpurile obligatorii și dacă valorile se încadrează în limitele indicate.",
     resultNote: spec.resultNote ?? "Rezultatul este o estimare bazată pe datele introduse și pe ipotezele menționate. Schimbarea monedei modifică doar unitatea de afișare; nu se efectuează conversie valutară.",
   };
+}
+
+export function roCountryPage(slug: LocalizedCalculatorSlug, spec: Omit<RomanianPageSpec, "results">): LocalizedCalculatorContent {
+  const source = catalogs.map((catalog) => catalog[slug]).find((page) => page !== undefined);
+  if (!source) throw new Error(`Missing English calculator source: ${slug}`);
+  const results = Object.keys(source.resultLabels).map((label) => {
+    const translation = roGlobalCountryResultLabels[label];
+    if (!translation) throw new Error(`Missing Romanian country result label: ${label}`);
+    return translation;
+  });
+  return roPage(slug, { ...spec, results });
 }
