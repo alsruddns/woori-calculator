@@ -43,13 +43,16 @@ describe("locale routing and translated calculator catalog", () => {
       "median", "percentile", "probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic",
       "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss", "margin", "markup", "calorie-per-serving",
       "loan-interest", "deposit-interest", "loan-refinance", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "break-even-point-calculator", "inflation-adjusted-return-calculator",
+      "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy", "fire-retirement-calculator", "dividend-growth-calculator", "stock-profit-after-fees-calculator", "position-size-calculator", "freelancer-hourly-rate-calculator",
     ]);
     expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
     for (const slug of localizedIndexSlugs("ru")) expect(calculatorSupportsLocale(slug, "ru")).toBe(true);
     expect(calculatorSupportsLocale("vat", "ru")).toBe(false);
+    expect(calculatorSupportsLocale("ratio", "ru")).toBe(false);
     expect(languageSwitchPath("/en/calculators/compound-interest", "ru")).toBe("/ru/calculators/compound-interest");
     expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/ru/calculators/percentage");
     expect(languageSwitchPath("/en/calculators/vat", "ru")).toBe("/en/calculators/vat");
+    expect(languageSwitchPath("/en/calculators/ratio", "ru")).toBe("/en/calculators/ratio");
     for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) {
       expect(value).toBeTruthy();
     }
