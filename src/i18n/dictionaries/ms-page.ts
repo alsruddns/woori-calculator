@@ -43,7 +43,7 @@ export function msPage(slug: LocalizedCalculatorSlug, spec: MalayPageSpec): Loca
   if (spec.results.length !== Object.keys(source.resultLabels).length || spec.results.some((label) => !label)) {
     throw new Error(`Malay result schema mismatch: ${slug}`);
   }
-  const unitNames: Record<string, string> = { years: "tahun", months: "bulan", days: "hari", hours: "jam" };
+  const unitNames: Record<string, string> = { "currency units": "unit mata wang", years: "tahun", months: "bulan", days: "hari", hours: "jam" };
   const fieldNames = Object.values(spec.fields).join(", ");
   return {
     name: spec.name,

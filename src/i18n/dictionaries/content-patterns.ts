@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 
 type Pattern = { inputs: string; exampleInput: string; exampleResult: string; inputQuestion: string; inputAnswer: string; sourceHeading: string; checked: string; policyYear: string; updated: string };
-export const contentPatterns: Record<Locale | "tr" | "pl" | "fil" | "bn" | "uk", Pattern> = {
+export const contentPatterns: Record<Locale | "tr" | "pl" | "fil" | "bn" | "uk" | "ms", Pattern> = {
   ko: { inputs: "계산에 사용하는 입력", exampleInput: "예시 입력", exampleResult: "예시 결과", inputQuestion: "이 계산에 어떤 값이 반영되나요?", inputAnswer: "입력한 항목을 사용합니다:", sourceHeading: "기준 및 출처", checked: "확인일", policyYear: "정책 기준연도", updated: "콘텐츠 업데이트" },
   en: { inputs: "Inputs used in this calculation", exampleInput: "Example inputs", exampleResult: "Example result", inputQuestion: "Which values does this calculation use?", inputAnswer: "The calculation uses these entries:", sourceHeading: "Basis and sources", checked: "Checked", policyYear: "Policy reference year", updated: "Content updated" },
   ja: { inputs: "計算に使う入力", exampleInput: "入力例", exampleResult: "計算例", inputQuestion: "どの値を計算に使いますか？", inputAnswer: "次の入力項目を使います：", sourceHeading: "基準と出典", checked: "確認日", policyYear: "制度の基準年", updated: "更新日" },
@@ -22,4 +22,5 @@ export const contentPatterns: Record<Locale | "tr" | "pl" | "fil" | "bn" | "uk",
   fil: { inputs: "Mga input sa pagkukuwenta", exampleInput: "Mga input sa halimbawa", exampleResult: "Resulta sa halimbawa", inputQuestion: "Anong mga value ang ginagamit sa pagkukuwenta?", inputAnswer: "Ginagamit ng kalkulasyon ang mga input na ito:", sourceHeading: "Batayan at mga sanggunian", checked: "Sinuri noong", policyYear: "Taon ng patakaran", updated: "Na-update ang nilalaman" },
   bn: { inputs: "এই হিসাবে ব্যবহৃত ইনপুট", exampleInput: "উদাহরণের ইনপুট", exampleResult: "উদাহরণের ফলাফল", inputQuestion: "এই হিসাবে কোন তথ্য ব্যবহার করা হয়েছে?", inputAnswer: "হিসাবে নিচের তথ্যগুলো ব্যবহার করা হয়েছে:", sourceHeading: "ভিত্তি ও তথ্যসূত্র", checked: "যাচাই করা হয়েছে", policyYear: "নীতির রেফারেন্স বছর", updated: "বিষয়বস্তু হালনাগাদ" },
   uk: { inputs: "Дані, що використовуються в обчисленні", exampleInput: "Приклад введених даних", exampleResult: "Приклад результату", inputQuestion: "Які значення використовує це обчислення?", inputAnswer: "Для обчислення використовуються такі дані:", sourceHeading: "Основа й джерела", checked: "Перевірено", policyYear: "Рік застосування правил", updated: "Вміст оновлено" },
+  ms: { inputs: "Input yang digunakan dalam kiraan", exampleInput: "Input contoh", exampleResult: "Hasil contoh", inputQuestion: "Nilai apakah yang digunakan dalam kiraan ini?", inputAnswer: "Kiraan ini menggunakan input berikut:", sourceHeading: "Asas dan sumber", checked: "Disemak pada", policyYear: "Tahun rujukan dasar", updated: "Kandungan dikemas kini" },
 };

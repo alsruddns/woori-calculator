@@ -20,6 +20,7 @@ import { pl } from "@/i18n/dictionaries/pl";
 import { fil } from "@/i18n/dictionaries/fil";
 import { buildBengaliDictionary } from "@/i18n/dictionaries/bn";
 import { uk } from "@/i18n/dictionaries/uk";
+import { buildMalayDictionary } from "@/i18n/dictionaries/ms";
 import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
@@ -56,6 +57,7 @@ const seedKeywords = {
 const sources = { en, ja, zh } as const;
 function buildDictionary(locale: SupportedLocale): LocaleDictionary {
   if (locale === "uk") return uk;
+  if (locale === "ms") return buildMalayDictionary(getDictionary("en"));
   if (locale === "ru") return ru;
   if (locale === "tr") return tr;
   if (locale === "pl") return pl;
@@ -79,7 +81,7 @@ function buildDictionary(locale: SupportedLocale): LocaleDictionary {
 
 const dictionaryCache = new Map<SupportedLocale, LocaleDictionary>();
 function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictionary {
-  if (dictionary.locale === "ru" || dictionary.locale === "tr" || dictionary.locale === "pl" || dictionary.locale === "bn") return dictionary;
+  if (dictionary.locale === "ru" || dictionary.locale === "tr" || dictionary.locale === "pl" || dictionary.locale === "bn" || dictionary.locale === "ms") return dictionary;
   const entries = Object.entries(dictionary.calculators).filter((entry): entry is [string, LocalizedCalculatorContent] => Boolean(entry[1]));
   const counts = (select: (content: LocalizedCalculatorContent) => string) => {
     const values = new Map<string, number>();
@@ -131,6 +133,11 @@ export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   if (locale === "uk") {
     dictionaryCache.set(locale, uk);
     return uk;
+  }
+  if (locale === "ms") {
+    const malay = buildMalayDictionary(getDictionary("en"));
+    dictionaryCache.set(locale, malay);
+    return malay;
   }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;

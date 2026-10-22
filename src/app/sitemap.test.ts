@@ -10,7 +10,7 @@ describe("calculator sitemap locale completeness", () => {
     const urls = entries.map(({ url }) => url);
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
-    expect(expectedDetailCount).toBe(published.length * locales.length + 1014);
+    expect(expectedDetailCount).toBe(published.length * locales.length + 1183);
     expect(entries).toHaveLength(expectedDetailCount + supportedLocales.length);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of supportedLocales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
@@ -27,12 +27,12 @@ describe("calculator sitemap locale completeness", () => {
       for (const locale of supported) expect(alternateMap[localeConfig[locale].hreflang]).toBe(`${siteConfig.url}${localePath(locale, `/calculators/${slug}`)}`);
       expect(alternateMap["x-default"]).toBe(`${siteConfig.url}/ko/calculators/${slug}`);
     }
-    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk"]);
-    expect(supportedLocalesForCalculator("age")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk"]);
-    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk"]);
-    expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk"]);
-    expect(supportedLocalesForCalculator("aspect-ratio")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk"]);
-    expect(supportedLocalesForCalculator("fire-retirement-calculator")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms"]);
+    expect(supportedLocalesForCalculator("age")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms"]);
+    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms"]);
+    expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms"]);
+    expect(supportedLocalesForCalculator("aspect-ratio")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms"]);
+    expect(supportedLocalesForCalculator("fire-retirement-calculator")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms"]);
     expect(urls).toContain(`${siteConfig.url}/es/calculators/median`);
     expect(urls).toContain(`${siteConfig.url}/es/calculators/fraction`);
     expect(urls).toContain(`${siteConfig.url}/pt-br/calculators/compound-interest`);
