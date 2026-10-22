@@ -44,7 +44,7 @@ describe("locale routing and translated calculator catalog", () => {
       "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss", "margin", "markup", "calorie-per-serving",
       "loan-interest", "deposit-interest", "loan-refinance", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "break-even-point-calculator", "inflation-adjusted-return-calculator",
       "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy", "fire-retirement-calculator", "dividend-growth-calculator", "stock-profit-after-fees-calculator", "position-size-calculator", "freelancer-hourly-rate-calculator",
-      "ratio", "proportion", "aspect-ratio", "scale-ratio", "vat", "pace", "standard-deviation", "stock-average-price", "stop-loss-take-profit-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator",
+      "ratio", "proportion", "aspect-ratio", "scale-ratio", "vat", "pace", "standard-deviation", "stock-average-price", "stop-loss-take-profit-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "product-margin", "withholding-tax-3-3", "annual-leave-allowance", "utility-bill",
     ]);
     expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
     for (const slug of localizedIndexSlugs("ru")) expect(calculatorSupportsLocale(slug, "ru")).toBe(true);
@@ -61,6 +61,8 @@ describe("locale routing and translated calculator catalog", () => {
     expect(languageSwitchPath("/en/calculators/travel-budget-calculator", "ru")).toBe("/ru/calculators/travel-budget-calculator");
     expect(russian.calculators.vat?.description).toContain("Южной Корее");
     expect(russian.calculators.vat?.resultNote).toContain("НДС Южной Кореи");
+    expect(russian.calculators["withholding-tax-3-3"]?.description).toContain("Южной Корее");
+    expect(russian.calculators["annual-leave-allowance"]?.resultNote).toContain("корейском контексте");
     const vatMetadata = localizedMetadata("ru", "/calculators/vat", russian.calculators.vat!.title, russian.calculators.vat!.description, russian.calculators.vat!.keywords, supportedLocalesForCalculator("vat"));
     expect(vatMetadata.alternates?.canonical).toBe("https://www.woori.today/ru/calculators/vat");
     expect(vatMetadata.alternates?.languages?.ru).toBe("https://www.woori.today/ru/calculators/vat");

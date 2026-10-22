@@ -50,13 +50,13 @@
 | 39 | 월 상환액 기준 대출원금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `loan-affordability` |
 | 40 | 월급·연봉 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `salary-conversion` |
 | 41 | 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `hourly-wage` |
-| 42 | 연차수당 간편 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `annual-leave-allowance` |
+| 42 | 연차수당 간편 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `annual-leave-allowance` |
 | 43 | 부가세 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `vat` |
 | 44 | 단가 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `unit-price` |
 | 45 | 마진율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `margin` |
 | 46 | 마크업률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `markup` |
-| 47 | 판매 수익·목표 마진 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `product-margin` |
-| 48 | 3.3% 원천징수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `withholding-tax-3-3` |
+| 47 | 판매 수익·목표 마진 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `product-margin` |
+| 48 | 3.3% 원천징수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `withholding-tax-3-3` |
 | 49 | 날짜 차이 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `date-difference` |
 | 50 | D-Day 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `dday` |
 | 51 | 만 나이 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `age` |
@@ -70,7 +70,7 @@
 | 59 | 근속기간 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `tenure` |
 | 60 | 시간 더하기·빼기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `time-arithmetic` |
 | 61 | 출산 예정일·임신 주수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `pregnancy` |
-| 62 | 수도·가스 요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `utility-bill` |
+| 62 | 수도·가스 요금 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `utility-bill` |
 | 63 | 차량 유지비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `vehicle-cost` |
 | 64 | 택시비 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `taxi-fare` |
 | 65 | 여행 경비 나누기 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `trip-split` |
