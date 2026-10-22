@@ -103,7 +103,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(turkish.locale).toBe("tr");
     expect(turkish.nav.language).toBe("Dil");
     expect(localizedIndexSlugs("tr")).toEqual(turkishTranslatedCalculatorSlugs);
-    expect(turkishTranslatedCalculatorSlugs).toHaveLength(16);
+    expect(turkishTranslatedCalculatorSlugs).toHaveLength(26);
     expect(languageSwitchPath("/ko/calculators/percentage", "tr")).toBe("/tr/calculators/percentage");
     for (const slug of turkishTranslatedCalculatorSlugs) {
       const page = turkish.calculators[slug]!;
@@ -124,6 +124,7 @@ describe("locale routing and translated calculator catalog", () => {
       expect(metadata.alternates?.languages?.tr).toBe(`https://www.woori.today/tr/calculators/${slug}`);
     }
     expect(supportedLocalesForCalculator("bmi")).toEqual([...locales, "ru", "tr"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr"]);
   });
 
   it("validates every Russian batch page against source field, option, and result keys", () => {
@@ -200,8 +201,8 @@ describe("locale routing and translated calculator catalog", () => {
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
     expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru", "tr"]);
-    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru"]);
-    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr"]);
+    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr"]);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
   });
 
