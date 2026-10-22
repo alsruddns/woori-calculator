@@ -10,7 +10,7 @@ describe("calculator sitemap locale completeness", () => {
     const urls = entries.map(({ url }) => url);
     const published = calculatorRegistry.filter(({ isPublished }) => isPublished);
     const expectedDetailCount = published.reduce((count, { slug }) => count + supportedLocalesForCalculator(slug).length, 0);
-    expect(expectedDetailCount).toBe(published.length * locales.length + 53);
+    expect(expectedDetailCount).toBe(published.length * locales.length + 57);
     expect(entries).toHaveLength(expectedDetailCount + supportedLocales.length);
     expect(new Set(urls).size).toBe(urls.length);
     for (const locale of supportedLocales) expect(urls).toContain(`${siteConfig.url}${localePath(locale, "/calculators")}`);
@@ -40,7 +40,9 @@ describe("calculator sitemap locale completeness", () => {
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/tip-calculator`);
     expect(urls).toContain(`${siteConfig.url}/ru/calculators/calorie-per-serving`);
     expect(urls).not.toContain(`${siteConfig.url}/ru/calculators/vat`);
-    expect(urls).not.toContain(`${siteConfig.url}/ru/calculators/ratio`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/ratio`);
+    expect(urls).toContain(`${siteConfig.url}/ru/calculators/scale-ratio`);
+    expect(urls).not.toContain(`${siteConfig.url}/ru/calculators/minimum-wage`);
     expect(entries.find(({ url }) => url.endsWith("/pt-br/calculators/fraction"))?.alternates?.languages?.["pt-BR"]).toBe(`${siteConfig.url}/pt-br/calculators/fraction`);
     expect(entries.find(({ url }) => url.endsWith("/zh-tw/calculators/fraction"))?.alternates?.languages?.["zh-TW"]).toBe(`${siteConfig.url}/zh-tw/calculators/fraction`);
     expect(urls.every((url) => url.startsWith("https://www.woori.today/"))).toBe(true);

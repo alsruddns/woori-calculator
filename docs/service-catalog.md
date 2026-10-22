@@ -12,7 +12,7 @@
 | 1 | 퍼센트 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `percentage` |
 | 2 | 할인율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `discount` |
 | 3 | 증감률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `change-rate` |
-| 4 | 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `ratio` |
+| 4 | 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `ratio` |
 | 5 | 평균 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `average` |
 | 6 | 가중평균 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `weighted-average` |
 | 7 | 연평균 성장률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `cagr` |
@@ -175,9 +175,9 @@
 | 164 | 뉴질랜드 KiwiSaver 계산기 | open | true | 2026 | [IRD individual tax rates](https://www.ird.govt.nz/income-tax/income-tax-for-individuals/tax-codes-and-tax-rates-for-individuals/tax-rates-for-individuals)<br>[IRD GST rate](https://www.ird.govt.nz/gst/charging-gst)<br>[IRD KiwiSaver changes 2026](https://www.ird.govt.nz/kiwisaver-changes)<br>[IRD ACC earners levy 2026–27](https://www.ird.govt.nz/acclevy) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `new-zealand-kiwisaver-calculator` |
 | 165 | 스페인 프리랜서 세금 계산기 | open | true | 2026 | [Agencia Tributaria — VAT rates 2026](https://www3.agenciatributaria.gob.es/Sede/iva/calculo-iva-repercutido-clientes/tipos-impositivos-iva.html)<br>[Agencia Tributaria — IRPF withholding 2026](https://sede.agenciatributaria.gob.es/Sede/Retenciones.shtml) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `spain-freelancer-tax-calculator` |
 | 166 | 프랑스 사회기여금 계산기 | open | true | 2026 | [French Tax Authority — 2026 tax guide (2025 income)](https://www.impots.gouv.fr/sites/default/files/media/1_metier/5_international/actualite/dossier-de-presse-dinr-revenus-2025_03_2026.pdf)<br>[French Tax Authority — VAT statistics](https://www.impots.gouv.fr/dgfip-statistiques-la-tva-economique-augmente-de-10-en-2025) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `france-social-contribution-calculator` |
-| 167 | 비례식 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `proportion` |
-| 168 | 화면 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `aspect-ratio` |
-| 169 | 축척 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi | `scale-ratio` |
+| 167 | 비례식 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `proportion` |
+| 168 | 화면 비율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `aspect-ratio` |
+| 169 | 축척 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru | `scale-ratio` |
 
 ## 후보 검토 및 중복 제외
 
