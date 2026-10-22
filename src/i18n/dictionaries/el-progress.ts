@@ -11,6 +11,7 @@ import { elBatchEight } from "@/i18n/dictionaries/el-batch-8";
 import { elBatchNine } from "@/i18n/dictionaries/el-batch-9";
 import { elBatchTen } from "@/i18n/dictionaries/el-batch-10";
 import { elBatchEleven } from "@/i18n/dictionaries/el-batch-11";
+import { elBatchTwelve } from "@/i18n/dictionaries/el-batch-12";
 
 export const greekCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
   ...elBatchOne,
@@ -24,6 +25,7 @@ export const greekCalculatorContent: Partial<Record<(typeof localizedCalculatorS
   ...elBatchNine,
   ...elBatchTen,
   ...elBatchEleven,
+  ...elBatchTwelve,
 };
 
 export const translatedGreekCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in greekCalculatorContent);
