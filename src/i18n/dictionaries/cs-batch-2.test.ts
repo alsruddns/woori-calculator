@@ -1,0 +1,20 @@
+import { describe, expect, it } from "vitest";
+import { getDictionary } from "@/i18n/dictionaries";
+import { csBatchTwo } from "@/i18n/dictionaries/cs-batch-2";
+
+describe("Czech calculator translation batch two", () => {
+  it("matches the English input, option, and result schemas with Czech copy", () => {
+    const english = getDictionary("en");
+    expect(Object.keys(csBatchTwo)).toHaveLength(7);
+    for (const [slug, page] of Object.entries(csBatchTwo)) {
+      const source = english.calculators[slug as keyof typeof english.calculators]!;
+      expect(page.title, slug).not.toBe(source.title);
+      expect(page.description.length, slug).toBeGreaterThan(35);
+      expect(Object.keys(page.fields).sort(), slug).toEqual(Object.keys(source.fields).sort());
+      expect(Object.keys(page.options).sort(), slug).toEqual(Object.keys(source.options).sort());
+      expect(Object.keys(page.resultLabels).sort(), slug).toEqual(Object.keys(source.resultLabels).sort());
+      for (const [key, field] of Object.entries(source.fields)) expect(page.fields[key]?.label, `${slug}.${key}`).not.toBe(field.label);
+      for (const [group, options] of Object.entries(source.options)) expect(Object.keys(page.options[group] ?? {}).sort(), `${slug}.${group}`).toEqual(Object.keys(options).sort());
+    }
+  });
+});
