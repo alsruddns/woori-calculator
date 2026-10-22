@@ -40,7 +40,7 @@ export function svPage(slug: LocalizedCalculatorSlug, spec: SwedishPageSpec): Lo
     }
   }
   if (Object.keys(spec.options ?? {}).length !== Object.keys(source.options).length) throw new Error(`Unexpected Swedish option group: ${slug}`);
-  if (spec.results.length !== Object.keys(source.resultLabels).length || spec.results.some((label) => !label)) throw new Error(`Swedish result schema mismatch: ${slug}`);
+  if (spec.results.length !== Object.keys(source.resultLabels).length || spec.results.some((label) => !label)) throw new Error(`Swedish result schema mismatch: ${slug}: expected ${Object.keys(source.resultLabels).length}, received ${spec.results.length}`);
   const unitNames: Record<string, string> = { "currency units": "valutaenheter", years: "år", months: "månader", days: "dagar", hours: "timmar" };
   const inputNames = Object.values(spec.fields).join(", ");
   return {
