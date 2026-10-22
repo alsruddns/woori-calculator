@@ -115,7 +115,9 @@ export const isPhaseFourTranslatedCalculator = (slug: string): slug is (typeof p
 export const isPhaseFiveTranslatedCalculator = (slug: string): slug is (typeof phaseFiveTranslatedCalculatorSlugs)[number] => phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]);
 export const isPhaseSixTranslatedCalculator = (slug: string): slug is (typeof phaseSixTranslatedCalculatorSlugs)[number] => phaseSixTranslatedCalculatorSlugs.includes(slug as (typeof phaseSixTranslatedCalculatorSlugs)[number]);
 export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug) || isPhaseThreeTranslatedCalculator(slug) || isPhaseFourTranslatedCalculator(slug) || isPhaseFiveTranslatedCalculator(slug) || isPhaseSixTranslatedCalculator(slug) || phaseSevenTranslatedCalculatorSlugs.includes(slug as (typeof phaseSevenTranslatedCalculatorSlugs)[number]) || phaseEightTranslatedCalculatorSlugs.includes(slug as (typeof phaseEightTranslatedCalculatorSlugs)[number]);
-export const russianTranslatedCalculatorSlugs = ["compound-interest"] as const satisfies readonly LocalizedCalculatorSlug[];
+export const russianTranslatedCalculatorSlugs = [
+  "compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest",
+] as const satisfies readonly LocalizedCalculatorSlug[];
 export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : [])] : ["ko"];
 export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);
 export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {

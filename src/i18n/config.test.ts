@@ -34,15 +34,19 @@ describe("locale routing and translated calculator catalog", () => {
     expect(localePath("en", "/")).toBe("/en");
   });
 
-  it("publishes only the fully translated Russian compound-interest calculator", () => {
+  it("publishes only fully translated Russian calculator pages", () => {
     const russian = getDictionary("ru");
     const page = russian.calculators["compound-interest"]!;
     const english = getDictionary("en").calculators["compound-interest"]!;
-    expect(localizedIndexSlugs("ru")).toEqual(["compound-interest"]);
+    expect(localizedIndexSlugs("ru")).toEqual([
+      "compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest",
+    ]);
     expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
-    expect(calculatorSupportsLocale("percentage", "ru")).toBe(false);
+    for (const slug of localizedIndexSlugs("ru")) expect(calculatorSupportsLocale(slug, "ru")).toBe(true);
+    expect(calculatorSupportsLocale("median", "ru")).toBe(false);
     expect(languageSwitchPath("/en/calculators/compound-interest", "ru")).toBe("/ru/calculators/compound-interest");
-    expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/en/calculators/percentage");
+    expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/ru/calculators/percentage");
+    expect(languageSwitchPath("/en/calculators/median", "ru")).toBe("/en/calculators/median");
     for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) {
       expect(value).toBeTruthy();
     }
@@ -52,6 +56,34 @@ describe("locale routing and translated calculator catalog", () => {
     expect(page.related).toEqual([]);
     expect(localePath("ru", "/calculators/compound-interest")).toBe("/ru/calculators/compound-interest");
     expect(localizedMetadata("ru", "/calculators/compound-interest", page.title, page.description, page.keywords, supportedLocalesForCalculator("compound-interest")).alternates?.canonical).toBe("https://www.woori.today/ru/calculators/compound-interest");
+  });
+
+  it("validates every Russian batch page against source field, option, and result keys", () => {
+    const russian = getDictionary("ru");
+    const english = getDictionary("en");
+    for (const slug of localizedIndexSlugs("ru")) {
+      const page = russian.calculators[slug]!;
+      const source = english.calculators[slug]!;
+      expect(Object.keys(page.fields).sort()).toEqual(Object.keys(source.fields).sort());
+      expect(Object.keys(page.options).sort()).toEqual(Object.keys(source.options).sort());
+      for (const [key, choices] of Object.entries(source.options)) expect(Object.keys(page.options[key] ?? {}).sort()).toEqual(Object.keys(choices).sort());
+      expect(Object.keys(page.resultLabels).sort()).toEqual(Object.keys(source.resultLabels).sort());
+      for (const [key, field] of Object.entries(page.fields)) {
+        expect(field.label).toBeTruthy();
+        expect(field.label).not.toBe(source.fields[key]?.label);
+      }
+      for (const [key, labels] of Object.entries(page.options)) for (const [option, label] of Object.entries(labels)) {
+        expect(label).toBeTruthy();
+        expect(label).not.toBe(source.options[key]?.[option]);
+      }
+      for (const [key, label] of Object.entries(page.resultLabels)) {
+        expect(label).toBeTruthy();
+        expect(label).not.toBe(source.resultLabels[key]);
+      }
+      for (const related of page.related) expect(russian.calculators[related]).toBeDefined();
+      for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) expect(value.trim()).not.toBe("");
+      expect(page.faqs.length).toBeGreaterThan(0);
+    }
   });
 
   it("switches language to the same translated tool or a safe localized landing", () => {

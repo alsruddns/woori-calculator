@@ -1,5 +1,6 @@
 import { calculatorCategoryOrder } from "@/data/calculators/categories";
 import type { LocaleDictionary } from "@/i18n/dictionaries/types";
+import { ruBatchOne } from "@/i18n/dictionaries/ru-batch-1";
 
 export const ru: LocaleDictionary = {
   locale: "ru",
@@ -14,6 +15,7 @@ export const ru: LocaleDictionary = {
   units: { won: "KRW", number: "число", year: "лет", month: "месяцев", durationLabel: "Срок" },
   categoriesOrder: calculatorCategoryOrder,
   calculators: {
+    ...ruBatchOne,
     "compound-interest": {
       name: "Калькулятор сложных процентов",
       shortName: "Сложные проценты",
