@@ -4,9 +4,9 @@ import { remainingSwedishCalculatorSlugs, swedishCalculatorContent, translatedSw
 
 describe("Swedish translation workbench progress", () => {
   it("tracks complete batches without publishing a partial catalog", () => {
-    expect(translatedSwedishCalculatorSlugs).toHaveLength(90);
-    expect(remainingSwedishCalculatorSlugs).toHaveLength(79);
-    expect(new Set(Object.keys(swedishCalculatorContent)).size).toBe(90);
+    expect(translatedSwedishCalculatorSlugs).toHaveLength(105);
+    expect(remainingSwedishCalculatorSlugs).toHaveLength(64);
+    expect(new Set(Object.keys(swedishCalculatorContent)).size).toBe(105);
     expect(translatedSwedishCalculatorSlugs.length + remainingSwedishCalculatorSlugs.length).toBe(localizedCalculatorSlugs.length);
   });
 });
