@@ -202,7 +202,8 @@ jobs:
             expected_html_lang="$locale"
             expected_hreflang="$locale"
             case "$locale" in
-              ko) expected_html_lang="ko-KR" ;;
+              # Korean uses the existing /ko App Router tree and keeps lang="ko".
+              ko) expected_html_lang="ko" ;;
               en) expected_html_lang="en-US" ;;
               ja) expected_html_lang="ja-JP" ;;
               zh) expected_html_lang="zh-CN" ;;
