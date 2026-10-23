@@ -43,10 +43,10 @@ jobs:
 
             echo "== Compose project and service names =="
             docker compose ls --format json | python3 -c 'import json,sys; [print("project={} status={}".format(p.get("Name", "?"), p.get("Status", "?"))) for p in json.load(sys.stdin)]'
-            if services="$(docker compose --env-file .env.moneybook config --no-interpolate --services 2>/dev/null)"; then
-              printf '%s\n' "$services"
+            if compose_config="$(docker compose --env-file .env.portal --env-file .env.moneybook config --no-interpolate --format json 2>/dev/null)"; then
+              printf '%s' "$compose_config" | python3 -c 'import json,sys; c=json.load(sys.stdin); keys=lambda v: v.keys() if isinstance(v,dict) else [str(x).split("=",1)[0] for x in v or []]; names=lambda v: v.keys() if isinstance(v,dict) else v or []; [(print("service={} image={} container_name={} env_files={} environment_keys={} depends_on={} networks={} volumes={}".format(n,s.get("image","?"),s.get("container_name","?"),",".join(str(x.get("path",x)) if isinstance(x,dict) else str(x) for x in s.get("env_file",[]) or []),",".join(keys(s.get("environment",{}) or {})),",".join(names(s.get("depends_on",{}) or {})),",".join(names(s.get("networks",{}) or {})),",".join("{}:{}".format(v.get("source",""),v.get("target","")) if isinstance(v,dict) else str(v) for v in s.get("volumes",[]) or [])))) for n,s in c.get("services",{}).items() if n in ("calculator","portal")]'
             else
-              echo "Compose service listing with .env.moneybook: failed (details suppressed)"
+              echo "Compose metadata inspection with both existing env files: failed (details suppressed)"
             fi
 
             echo "== Running containers (names and states only) =="
@@ -69,8 +69,19 @@ jobs:
             else
               echo "Active Nginx config: absent or unreadable"
             fi
-            if sudo -n nginx -t >/dev/null 2>&1; then
-              echo "nginx -t: passed"
+            if command -v nginx >/dev/null 2>&1; then
+              if nginx -t >/dev/null 2>&1; then
+                echo "nginx -t (current user): passed"
+              else
+                echo "nginx -t (current user): failed (details suppressed)"
+              fi
             else
-              echo "nginx -t: unavailable or failed (details suppressed)"
+              echo "nginx binary: unavailable to current user"
+            fi
+            if command -v sudo >/dev/null 2>&1; then
+              if sudo -n nginx -t >/dev/null 2>&1; then
+                echo "nginx -t (sudo noninteractive): passed"
+              else
+                echo "nginx -t (sudo noninteractive): unavailable or failed (details suppressed)"
+              fi
             fi
