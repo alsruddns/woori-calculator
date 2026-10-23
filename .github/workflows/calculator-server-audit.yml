@@ -48,6 +48,11 @@ jobs:
             else
               echo "Compose metadata inspection with both existing env files: failed (details suppressed)"
             fi
+            if docker compose --env-file .env.portal --env-file .env.moneybook config -q >/dev/null 2>&1; then
+              echo "Compose interpolation with both existing env files: passed"
+            else
+              echo "Compose interpolation with both existing env files: failed (details suppressed)"
+            fi
 
             echo "== Running containers (names and states only) =="
             docker ps -a --format '{{.Names}} {{.Status}}'
@@ -69,19 +74,8 @@ jobs:
             else
               echo "Active Nginx config: absent or unreadable"
             fi
-            if command -v nginx >/dev/null 2>&1; then
-              if nginx -t >/dev/null 2>&1; then
-                echo "nginx -t (current user): passed"
-              else
-                echo "nginx -t (current user): failed (details suppressed)"
-              fi
+            if docker exec nginx nginx -t >/dev/null 2>&1; then
+              echo "active Nginx container nginx -t: passed"
             else
-              echo "nginx binary: unavailable to current user"
-            fi
-            if command -v sudo >/dev/null 2>&1; then
-              if sudo -n nginx -t >/dev/null 2>&1; then
-                echo "nginx -t (sudo noninteractive): passed"
-              else
-                echo "nginx -t (sudo noninteractive): unavailable or failed (details suppressed)"
-              fi
+              echo "active Nginx container nginx -t: failed or unavailable (details suppressed)"
             fi
