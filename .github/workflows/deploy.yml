@@ -9,6 +9,10 @@ permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: calculator-production-deploy
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -16,6 +20,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate production Calculator deployment preconditions
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -eu
+            cd /opt/services/compose
+            docker compose --env-file .env.portal --env-file .env.moneybook config -q
+            if ! docker compose up --help | grep -F -- '--pull' >/dev/null; then
+              echo "Installed Docker Compose does not support the tested rollback command." >&2
+              exit 1
+            fi
+            project="$(docker inspect calculator --format '{{index .Config.Labels "com.docker.compose.project"}}')"
+            health="$(docker inspect calculator --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}')"
+            image="$(docker inspect calculator --format '{{.Image}}')"
+            digest="$(docker image inspect "$image" --format '{{join .RepoDigests ","}}')"
+            if [ "$project" != "compose" ]; then
+              echo "Unexpected Calculator Compose project: $project" >&2
+              exit 1
+            fi
+            if [ "$health" != "healthy" ]; then
+              echo "Current Calculator is not healthy: $health" >&2
+              exit 1
+            fi
+            if ! docker exec nginx nginx -t >/dev/null 2>&1; then
+              echo "Active Nginx configuration test failed; no deployment attempted." >&2
+              exit 1
+            fi
+            echo "Compose config passed; Calculator project=$project health=$health image_digest=$digest"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -25,46 +61,245 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/woori-calculator:latest
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/woori-calculator:latest
+            ghcr.io/${{ github.repository_owner }}/woori-calculator:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_GA_ID=G-ZJSJW06SCX
 
+      - name: Record immutable image digest
+        run: |
+          echo "Calculator image digest: ${{ steps.build.outputs.digest }}" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Deploy to iwinv
+        id: deploy
         uses: appleboy/ssh-action@v1
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT
           script: |
+            set -eu
             cd /opt/services/compose
-            docker compose --env-file .env.moneybook pull calculator
-            docker compose --env-file .env.moneybook up -d calculator
+            compose() {
+              docker compose --env-file .env.portal --env-file .env.moneybook "$@"
+            }
+            image_ref=ghcr.io/alsruddns/woori-calculator:latest
+            rollback_ref="ghcr.io/alsruddns/woori-calculator:rollback-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            previous_image_id="$(docker inspect calculator --format '{{.Image}}')"
 
-      - name: Wait for calculator deployment and sitemap
+            compose config -q
+            docker image tag "$previous_image_id" "$rollback_ref"
+            echo "Saved Calculator rollback image: $rollback_ref"
+
+            if ! compose pull calculator; then
+              echo "Calculator image pull failed; the running container remains unchanged." >&2
+              exit 1
+            fi
+
+            wait_for_calculator_health() {
+              attempt=1
+              while [ "$attempt" -le 18 ]; do
+                health="$(docker inspect calculator --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}' 2>/dev/null || echo missing)"
+                if [ "$health" = "healthy" ]; then
+                  return 0
+                fi
+                if [ "$health" = "unhealthy" ] || [ "$health" = "missing" ] || [ "$health" = "no-healthcheck" ]; then
+                  return 1
+                fi
+                sleep 5
+                attempt=$((attempt + 1))
+              done
+              return 1
+            }
+
+            restore_calculator() {
+              echo "Restoring Calculator from $rollback_ref" >&2
+              docker image tag "$rollback_ref" "$image_ref" || return 1
+              compose up -d --no-deps --pull never calculator || return 1
+              wait_for_calculator_health || return 1
+              echo "Calculator rollback completed; health=healthy"
+            }
+
+            if ! compose up -d --no-deps calculator; then
+              if ! restore_calculator; then
+                echo "Calculator deployment and automatic rollback both failed." >&2
+                exit 2
+              fi
+              exit 1
+            fi
+
+            if ! wait_for_calculator_health; then
+              if ! restore_calculator; then
+                echo "Calculator healthcheck and automatic rollback both failed." >&2
+                exit 2
+              fi
+              exit 1
+            fi
+            echo "Calculator healthcheck passed; project and shared network are unchanged."
+
+      - name: Wait for Calculator routes, locale metadata, and sitemap
+        id: verify
         env:
           INDEXNOW_KEY: bc52d22e38f7489988b717aa090fbdfb
           INDEXNOW_VALIDATE_ONLY: "true"
         run: |
+          set -euo pipefail
+          origin="https://www.woori.today"
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+
           for attempt in $(seq 1 18); do
-            key_content="$(curl --fail --silent "https://www.woori.today/${INDEXNOW_KEY}.txt" || true)"
-            if curl --fail --silent "https://www.woori.today/ko/calculators" >/dev/null \
-              && curl --fail --silent "https://www.woori.today/calculator-sitemap.xml" >/dev/null \
+            key_content="$(curl --fail --silent "${origin}/${INDEXNOW_KEY}.txt" || true)"
+            if curl --fail --silent "${origin}/ko/calculators" >/dev/null \
+              && curl --fail --silent "${origin}/calculator-sitemap.xml" >/dev/null \
               && [ "$key_content" = "$INDEXNOW_KEY" ]; then
-              if node scripts/submit-indexnow.mjs >/dev/null 2>&1; then
-                echo "Calculator routes, complete sitemap locale sets, and IndexNow key are available."
-                exit 0
-              fi
+              break
             fi
-            echo "Waiting for calculator routes, complete sitemap locale sets, and IndexNow key (attempt ${attempt}/18)."
+            if [ "$attempt" -eq 18 ]; then
+              echo "Calculator base route, sitemap, or IndexNow key did not become available." >&2
+              exit 1
+            fi
+            echo "Waiting for Calculator base route and sitemap (attempt ${attempt}/18)."
             sleep 10
           done
-          echo "Deployment verification failed; final sitemap validation follows."
+
+          check_page() {
+            locale="$1"
+            path="$2"
+            expected_html_lang="$3"
+            expected_hreflang="$4"
+            status="$(curl --location --silent --show-error --output "$response_file" --write-out '%{http_code}' --max-time 20 "${origin}${path}" || true)"
+            if [ "$status" != "200" ]; then
+              echo "${path}: expected HTTP 200, got ${status:-no response}" >&2
+              return 1
+            fi
+            if ! grep -Eiq "<html[^>]*lang=[\"']${expected_html_lang}[\"']" "$response_file"; then
+              echo "${path}: rendered document has the wrong locale." >&2
+              return 1
+            fi
+            if ! grep -Fq "rel=\"canonical\" href=\"${origin}${path}\"" "$response_file"; then
+              echo "${path}: canonical URL missing or incorrect." >&2
+              return 1
+            fi
+            if ! grep -Eiq "hreflang=[\"']${expected_hreflang}[\"']" "$response_file"; then
+              echo "${path}: self hreflang is missing." >&2
+              return 1
+            fi
+          }
+
+          locales="ko en ja zh es pt-br de fr vi id th zh-tw it nl hi ru tr pl fil bn uk ms sv cs ro el"
+          for locale in $locales; do
+            expected_html_lang="$locale"
+            expected_hreflang="$locale"
+            case "$locale" in
+              ko) expected_html_lang="ko-KR" ;;
+              en) expected_html_lang="en-US" ;;
+              ja) expected_html_lang="ja-JP" ;;
+              zh) expected_html_lang="zh-CN" ;;
+              es) expected_html_lang="es-ES" ;;
+              pt-br) expected_html_lang="pt-BR"; expected_hreflang="pt-BR" ;;
+              de) expected_html_lang="de-DE" ;;
+              fr) expected_html_lang="fr-FR" ;;
+              vi) expected_html_lang="vi-VN" ;;
+              id) expected_html_lang="id-ID" ;;
+              th) expected_html_lang="th-TH" ;;
+              zh-tw) expected_html_lang="zh-TW"; expected_hreflang="zh-TW" ;;
+              it) expected_html_lang="it-IT" ;;
+              nl) expected_html_lang="nl-NL" ;;
+              hi) expected_html_lang="hi-IN" ;;
+              ru) expected_html_lang="ru-RU" ;;
+              tr) expected_html_lang="tr-TR" ;;
+              pl) expected_html_lang="pl-PL" ;;
+              fil) expected_html_lang="fil-PH" ;;
+              bn) expected_html_lang="bn-BD" ;;
+              uk) expected_html_lang="uk-UA" ;;
+              ms) expected_html_lang="ms-MY" ;;
+              sv) expected_html_lang="sv-SE" ;;
+              cs) expected_html_lang="cs-CZ" ;;
+              ro) expected_html_lang="ro-RO" ;;
+              el) expected_html_lang="el-GR" ;;
+            esac
+            check_page "$locale" "/${locale}/calculators" "$expected_html_lang" "$expected_hreflang"
+            check_page "$locale" "/${locale}/calculators/percentage" "$expected_html_lang" "$expected_hreflang"
+            echo "${locale}: listing and percentage detail verified."
+          done
+
+          for path in /ko /ko/tools /ko/money /ko/docs /ko/quiz; do
+            status="$(curl --location --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 20 "${origin}${path}" || true)"
+            if [ "$status" != "200" ]; then
+              echo "Existing service route ${path} regressed: HTTP ${status:-no response}." >&2
+              exit 1
+            fi
+            echo "Existing route ${path}: HTTP 200."
+          done
+
           node scripts/submit-indexnow.mjs
-          exit 1
+          node --input-type=module -e '
+            import { calculatorUrlsFromSitemapUrl } from "./scripts/submit-indexnow.mjs";
+            const locales = "ko en ja zh es pt-br de fr vi id th zh-tw it nl hi ru tr pl fil bn uk ms sv cs ro el".split(" ");
+            const urls = await calculatorUrlsFromSitemapUrl();
+            const expectedTotal = locales.length * 170;
+            if (urls.length !== expectedTotal) throw new Error(`Expected ${expectedTotal} calculator URLs, received ${urls.length}`);
+            for (const locale of locales) {
+              const prefix = `https://www.woori.today/${locale}/calculators/`;
+              const details = urls.filter((url) => url.startsWith(prefix)).length;
+              if (details !== 169) throw new Error(`${locale}: expected 169 detail URLs, received ${details}`);
+            }
+            console.log(`Sitemap count passed: ${locales.length} landing pages and 169 details per locale (${urls.length} URLs).`);
+          '
+          echo "Verified 26 localized listings and detail pages, canonical/hreflang metadata, and the complete calculator sitemap."
+
+      - name: Roll back Calculator after failed deployment or URL verification
+        if: ${{ always() && (steps.deploy.outcome == 'failure' || steps.verify.outcome == 'failure') }}
+        uses: appleboy/ssh-action@v1
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT
+          script: |
+            set -eu
+            cd /opt/services/compose
+            image_ref=ghcr.io/alsruddns/woori-calculator:latest
+            rollback_ref="ghcr.io/alsruddns/woori-calculator:rollback-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            compose() {
+              docker compose --env-file .env.portal --env-file .env.moneybook "$@"
+            }
+            if ! docker image inspect "$rollback_ref" >/dev/null 2>&1; then
+              echo "No rollback checkpoint exists; deployment did not reach image replacement."
+              exit 0
+            fi
+            rollback_image_id="$(docker image inspect "$rollback_ref" --format '{{.Id}}')"
+            current_image_id="$(docker inspect calculator --format '{{.Image}}' 2>/dev/null || echo missing)"
+            if [ "$current_image_id" = "$rollback_image_id" ]; then
+              echo "Calculator is already running the saved pre-deployment image."
+              exit 0
+            fi
+            docker image tag "$rollback_ref" "$image_ref"
+            compose up -d --no-deps --pull never calculator
+            for attempt in $(seq 1 18); do
+              health="$(docker inspect calculator --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}' 2>/dev/null || echo missing)"
+              if [ "$health" = "healthy" ]; then
+                echo "Rollback verified: Calculator is healthy on the saved image."
+                exit 0
+              fi
+              sleep 5
+            done
+            echo "Rollback was attempted but Calculator did not become healthy." >&2
+            exit 1
 
       - name: Submit calculator URLs to IndexNow
         env:
