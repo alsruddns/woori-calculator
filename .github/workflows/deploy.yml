@@ -176,13 +176,14 @@ jobs:
           check_page() {
             locale="$1"
             path="$2"
-            expected_lang="$3"
+            expected_html_lang="$3"
+            expected_hreflang="$4"
             status="$(curl --location --silent --show-error --output "$response_file" --write-out '%{http_code}' --max-time 20 "${origin}${path}" || true)"
             if [ "$status" != "200" ]; then
               echo "${path}: expected HTTP 200, got ${status:-no response}" >&2
               return 1
             fi
-            if ! grep -Eiq "<html[^>]*lang=[\"']${expected_lang}[\"']" "$response_file"; then
+            if ! grep -Eiq "<html[^>]*lang=[\"']${expected_html_lang}[\"']" "$response_file"; then
               echo "${path}: rendered document has the wrong locale." >&2
               return 1
             fi
@@ -190,7 +191,7 @@ jobs:
               echo "${path}: canonical URL missing or incorrect." >&2
               return 1
             fi
-            if ! grep -Eiq "hreflang=[\"']${expected_lang}[\"']" "$response_file"; then
+            if ! grep -Eiq "hreflang=[\"']${expected_hreflang}[\"']" "$response_file"; then
               echo "${path}: self hreflang is missing." >&2
               return 1
             fi
@@ -198,13 +199,38 @@ jobs:
 
           locales="ko en ja zh es pt-br de fr vi id th zh-tw it nl hi ru tr pl fil bn uk ms sv cs ro el"
           for locale in $locales; do
-            expected_lang="$locale"
+            expected_html_lang="$locale"
+            expected_hreflang="$locale"
             case "$locale" in
-              pt-br) expected_lang="pt-BR" ;;
-              zh-tw) expected_lang="zh-TW" ;;
+              ko) expected_html_lang="ko-KR" ;;
+              en) expected_html_lang="en-US" ;;
+              ja) expected_html_lang="ja-JP" ;;
+              zh) expected_html_lang="zh-CN" ;;
+              es) expected_html_lang="es-ES" ;;
+              pt-br) expected_html_lang="pt-BR"; expected_hreflang="pt-BR" ;;
+              de) expected_html_lang="de-DE" ;;
+              fr) expected_html_lang="fr-FR" ;;
+              vi) expected_html_lang="vi-VN" ;;
+              id) expected_html_lang="id-ID" ;;
+              th) expected_html_lang="th-TH" ;;
+              zh-tw) expected_html_lang="zh-TW"; expected_hreflang="zh-TW" ;;
+              it) expected_html_lang="it-IT" ;;
+              nl) expected_html_lang="nl-NL" ;;
+              hi) expected_html_lang="hi-IN" ;;
+              ru) expected_html_lang="ru-RU" ;;
+              tr) expected_html_lang="tr-TR" ;;
+              pl) expected_html_lang="pl-PL" ;;
+              fil) expected_html_lang="fil-PH" ;;
+              bn) expected_html_lang="bn-BD" ;;
+              uk) expected_html_lang="uk-UA" ;;
+              ms) expected_html_lang="ms-MY" ;;
+              sv) expected_html_lang="sv-SE" ;;
+              cs) expected_html_lang="cs-CZ" ;;
+              ro) expected_html_lang="ro-RO" ;;
+              el) expected_html_lang="el-GR" ;;
             esac
-            check_page "$locale" "/${locale}/calculators" "$expected_lang"
-            check_page "$locale" "/${locale}/calculators/percentage" "$expected_lang"
+            check_page "$locale" "/${locale}/calculators" "$expected_html_lang" "$expected_hreflang"
+            check_page "$locale" "/${locale}/calculators/percentage" "$expected_html_lang" "$expected_hreflang"
             echo "${locale}: listing and percentage detail verified."
           done
 
