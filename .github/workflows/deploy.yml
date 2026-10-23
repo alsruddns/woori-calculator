@@ -31,6 +31,10 @@ jobs:
             set -eu
             cd /opt/services/compose
             docker compose --env-file .env.portal --env-file .env.moneybook config -q
+            if ! docker compose up --help | grep -F -- '--pull' >/dev/null; then
+              echo "Installed Docker Compose does not support the tested rollback command." >&2
+              exit 1
+            fi
             project="$(docker inspect calculator --format '{{index .Config.Labels "com.docker.compose.project"}}')"
             health="$(docker inspect calculator --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}')"
             image="$(docker inspect calculator --format '{{.Image}}')"
