@@ -79,3 +79,11 @@ jobs:
             else
               echo "active Nginx container nginx -t: failed or unavailable (details suppressed)"
             fi
+
+            echo "== Calculator fatal/unhandled log count since current container start (log text hidden) =="
+            if started_at="$(docker inspect calculator --format '{{.State.StartedAt}}' 2>/dev/null)"; then
+              severe_count="$(docker logs --since "$started_at" calculator 2>/dev/null | grep -Eic 'fatal|panic|unhandled exception|uncaught exception' || true)"
+              echo "Calculator severe log entries: ${severe_count:-0}"
+            else
+              echo "Calculator log inspection unavailable"
+            fi
