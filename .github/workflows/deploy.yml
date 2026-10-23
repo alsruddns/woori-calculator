@@ -42,7 +42,7 @@ jobs:
           script: |
             cd /opt/services/compose
             docker compose --env-file .env.moneybook pull calculator
-            docker compose --env-file .env.moneybook up -d calculator
+            docker compose --env-file .env.moneybook up -d --no-deps calculator
 
       - name: Wait for calculator deployment and sitemap
         env:
