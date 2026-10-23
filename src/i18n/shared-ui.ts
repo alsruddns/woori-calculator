@@ -1,4 +1,4 @@
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 
 export type SharedUiCopy = {
   logoLabel: string;
@@ -20,7 +20,7 @@ export type SharedUiCopy = {
   };
 };
 
-export const sharedUiCopy: Record<Locale, SharedUiCopy> = {
+export const sharedUiCopy: Record<SupportedLocale, SharedUiCopy> = {
   ko: {
     logoLabel: "woori.today 포털로 이동", familySite: "패밀리 사이트", portal: "포털", moneyBook: "머니북", calculator: "계산기", tools: "도구", footerNavigation: "하단 메뉴",
     contact: { title: "문의 사항", intro: "woori.today 서비스 이용 중 궁금한 점이나 요청사항이 있으신가요?", details: "일반 문의 및 기능 요청, 협업 문의, 광고 문의 및 제안, 서비스 이용 중 발견한 버그 제보를 받고 있습니다. 아래 이메일로 문의해 주세요.", emailLabel: "이메일", email: "krdd125@gmail.com", reply: "문의 내용을 확인한 후 가능한 범위에서 답변드리겠습니다.", close: "닫기", types: ["일반 문의 및 요청사항", "협업 문의", "광고 문의 및 제안", "버그 제보"] },
@@ -80,5 +80,34 @@ export const sharedUiCopy: Record<Locale, SharedUiCopy> = {
   hi: {
     logoLabel: "woori.today पोर्टल पर जाएँ", familySite: "संबंधित साइटें", portal: "पोर्टल", moneyBook: "MoneyBook", calculator: "कैलकुलेटर", tools: "टूल", footerNavigation: "फुटर नेविगेशन",
     contact: { title: "संपर्क करें", intro: "क्या woori.today के उपयोग से जुड़ा कोई सवाल या अनुरोध है?", details: "हम सामान्य सवाल और फ़ीचर अनुरोध, सहयोग संबंधी पूछताछ, विज्ञापन संबंधी पूछताछ और प्रस्ताव, तथा सेवा में मिली त्रुटियों की रिपोर्ट स्वीकार करते हैं। कृपया नीचे दिए ईमेल पर संपर्क करें।", emailLabel: "ईमेल", email: "krdd125@gmail.com", reply: "हम आपके संदेश की समीक्षा करेंगे और संभव होने पर जवाब देंगे।", close: "बंद करें", types: ["सामान्य सवाल और अनुरोध", "सहयोग संबंधी पूछताछ", "विज्ञापन संबंधी पूछताछ और प्रस्ताव", "त्रुटि रिपोर्ट"] },
+  },
+  ru: {
+    logoLabel: "Перейти на портал woori.today", familySite: "Другие сервисы", portal: "Портал", moneyBook: "MoneyBook", calculator: "Калькулятор", tools: "Инструменты", footerNavigation: "Навигация внизу страницы",
+    contact: { title: "Связаться с нами", intro: "Есть вопросы или предложения по работе woori.today?", details: "Мы принимаем общие вопросы и предложения по функциям, запросы о сотрудничестве и рекламе, а также сообщения об ошибках. Напишите нам по адресу ниже.", emailLabel: "Электронная почта", email: "krdd125@gmail.com", reply: "Мы рассмотрим обращение и ответим, если это будет возможно.", close: "Закрыть", types: ["Общие вопросы и предложения", "Сотрудничество", "Реклама и предложения", "Сообщения об ошибках"] },
+  },
+  tr: { logoLabel: "woori.today ana sayfas?na git", familySite: "Aile sitesi", portal: "Portal", moneyBook: "MoneyBook", calculator: "Hesap makinesi", tools: "Ara?lar", footerNavigation: "Alt bilgi ba?lant?lar?", contact: { title: "?leti?im", intro: "woori.today hakk?nda sorunuz veya ?neriniz mi var?", details: "Genel soru ve ?zellik ?nerilerinizi, i? birli?i ve reklam taleplerinizi veya hata bildirimlerinizi e-posta ile iletebilirsiniz.", emailLabel: "E-posta", email: "krdd125@gmail.com", reply: "Mesaj?n?z? inceleyip m?mk?n oldu?unda yan?t verece?iz.", close: "Kapat", types: ["Genel soru ve ?neriler", "?? birli?i talepleri", "Reklam talepleri ve ?nerileri", "Hata bildirimleri"] } },
+  pl: { logoLabel: "Przejdź do portalu woori.today", familySite: "Serwisy rodzinne", portal: "Portal", moneyBook: "MoneyBook", calculator: "Kalkulator", tools: "Narzędzia", footerNavigation: "Nawigacja w stopce", contact: { title: "Kontakt", intro: "Masz pytanie lub sugestię dotyczącą korzystania z woori.today?", details: "Przyjmujemy pytania ogólne, propozycje funkcji, zapytania o współpracę i reklamę oraz zgłoszenia błędów. Napisz na podany niżej adres.", emailLabel: "E-mail", email: "krdd125@gmail.com", reply: "Zapoznamy się z wiadomością i odpowiemy w miarę możliwości.", close: "Zamknij", types: ["Pytania i sugestie", "Współpraca", "Reklama i propozycje", "Zgłoszenia błędów"] } },
+  fil: { logoLabel: "Pumunta sa portal ng woori.today", familySite: "Mga kaugnay na site", portal: "Portal", moneyBook: "MoneyBook", calculator: "Calculator", tools: "Mga tool", footerNavigation: "Menu sa footer", contact: { title: "Makipag-ugnayan", intro: "May tanong o mungkahi ka tungkol sa paggamit ng woori.today?", details: "Tumatanggap kami ng mga pangkalahatang tanong at mungkahi sa feature, pakikipagtulungan, advertising, at ulat ng problema. Mag-email sa address sa ibaba.", emailLabel: "Email", email: "krdd125@gmail.com", reply: "Susuriin namin ang mensahe at sasagot kung posible.", close: "Isara", types: ["Pangkalahatang tanong at mungkahi", "Pakikipagtulungan", "Advertising at mga mungkahi", "Ulat ng problema"] } },
+  bn: { logoLabel: "woori.today পোর্টালে যান", familySite: "সংশ্লিষ্ট সেবা", portal: "পোর্টাল", moneyBook: "MoneyBook", calculator: "ক্যালকুলেটর", tools: "অনলাইন টুল", footerNavigation: "ফুটার নেভিগেশন", contact: { title: "যোগাযোগ", intro: "woori.today ব্যবহার নিয়ে কোনো প্রশ্ন বা অনুরোধ আছে?", details: "সাধারণ প্রশ্ন ও নতুন ফিচারের অনুরোধ, সহযোগিতা, বিজ্ঞাপন-সংক্রান্ত প্রস্তাব এবং ব্যবহারের সময় পাওয়া ত্রুটির প্রতিবেদন পাঠাতে পারেন। নিচের ইমেইলে লিখুন।", emailLabel: "ইমেইল", email: "krdd125@gmail.com", reply: "আমরা আপনার বার্তা দেখে সম্ভব হলে উত্তর দেব।", close: "বন্ধ করুন", types: ["সাধারণ প্রশ্ন ও অনুরোধ", "সহযোগিতার প্রস্তাব", "বিজ্ঞাপন-সংক্রান্ত প্রশ্ন ও প্রস্তাব", "ত্রুটির প্রতিবেদন"] } },
+  uk: { logoLabel: "Перейти на портал woori.today", familySite: "Пов’язані сервіси", portal: "Портал", moneyBook: "MoneyBook", calculator: "Калькулятори", tools: "Інструменти", footerNavigation: "Навігація внизу сторінки", contact: { title: "Зв’язатися з нами", intro: "Маєте запитання чи пропозицію щодо woori.today?", details: "Надсилайте загальні запитання, пропозиції щодо функцій, запити про співпрацю чи рекламу та повідомлення про помилки на адресу нижче.", emailLabel: "Електронна пошта", email: "krdd125@gmail.com", reply: "Ми розглянемо повідомлення й відповімо, якщо це буде можливо.", close: "Закрити", types: ["Загальні запитання та пропозиції", "Співпраця", "Реклама та пропозиції", "Повідомлення про помилки"] } },
+  ms: {
+    logoLabel: "Pergi ke portal woori.today", familySite: "Perkhidmatan Woori", portal: "Portal", moneyBook: "MoneyBook", calculator: "Kalkulator", tools: "Alat", footerNavigation: "Navigasi kaki halaman",
+    contact: { title: "Hubungi kami", intro: "Ada soalan atau permintaan tentang woori.today?", details: "Kami menerima pertanyaan umum dan cadangan ciri, pertanyaan kerjasama, pertanyaan atau cadangan pengiklanan serta laporan pepijat. Hubungi kami melalui e-mel di bawah.", emailLabel: "E-mel", email: "krdd125@gmail.com", reply: "Kami akan menyemak mesej anda dan membalas jika dapat.", close: "Tutup", types: ["Pertanyaan dan permintaan umum", "Pertanyaan kerjasama", "Pertanyaan dan cadangan pengiklanan", "Laporan pepijat"] },
+  },
+  sv: {
+    logoLabel: "Gå till woori.today-portalen", familySite: "Wooris tjänster", portal: "Portal", moneyBook: "MoneyBook", calculator: "Kalkylator", tools: "Verktyg", footerNavigation: "Sidfotsnavigering",
+    contact: { title: "Kontakta oss", intro: "Har du frågor eller önskemål om woori.today?", details: "Vi tar gärna emot allmänna frågor och önskemål om funktioner, samarbetsförfrågningar, frågor och förslag om annonsering samt felrapporter. Mejla oss på adressen nedan.", emailLabel: "E-post", email: "krdd125@gmail.com", reply: "Vi går igenom ditt meddelande och svarar när vi har möjlighet.", close: "Stäng", types: ["Allmänna frågor och önskemål", "Samarbete", "Annonsering och förslag", "Felrapport"] },
+  },
+  cs: {
+    logoLabel: "Přejít na portál woori.today", familySite: "Související služby", portal: "Portál", moneyBook: "MoneyBook", calculator: "Kalkulačka", tools: "Nástroje", footerNavigation: "Navigace v zápatí",
+    contact: { title: "Kontaktujte nás", intro: "Máte dotaz nebo požadavek ohledně používání woori.today?", details: "Přijímáme obecné dotazy a návrhy na nové funkce, žádosti o spolupráci, dotazy a návrhy týkající se reklamy i hlášení chyb. Napište nám na níže uvedenou e-mailovou adresu.", emailLabel: "E-mail", email: "krdd125@gmail.com", reply: "Zprávu si přečteme a podle možností odpovíme.", close: "Zavřít", types: ["Obecné dotazy a požadavky", "Nabídky spolupráce", "Dotazy a návrhy k reklamě", "Hlášení chyb"] },
+  },
+  ro: {
+    logoLabel: "Mergi la portalul woori.today", familySite: "Servicii asociate", portal: "Portal", moneyBook: "MoneyBook", calculator: "Calculator", tools: "Instrumente", footerNavigation: "Navigare în subsol",
+    contact: { title: "Contact", intro: "Aveți o întrebare sau o solicitare despre woori.today?", details: "Primim întrebări generale și sugestii de funcții, propuneri de colaborare, întrebări și propuneri despre publicitate, precum și sesizări de erori. Ne puteți scrie la adresa de e-mail de mai jos.", emailLabel: "E-mail", email: "krdd125@gmail.com", reply: "Vom analiza mesajul și vom răspunde când este posibil.", close: "Închide", types: ["Întrebări și solicitări generale", "Propuneri de colaborare", "Întrebări și propuneri despre publicitate", "Sesizări de erori"] },
+  },
+  el: {
+    logoLabel: "Μετάβαση στην πύλη woori.today", familySite: "Σχετικές υπηρεσίες", portal: "Πύλη", moneyBook: "MoneyBook", calculator: "Υπολογιστής", tools: "Εργαλεία", footerNavigation: "Πλοήγηση υποσέλιδου",
+    contact: { title: "Επικοινωνία", intro: "Έχετε ερώτηση ή αίτημα για τη χρήση του woori.today;", details: "Δεχόμαστε γενικές ερωτήσεις και προτάσεις για λειτουργίες, αιτήματα συνεργασίας, ερωτήσεις ή προτάσεις για διαφήμιση και αναφορές προβλημάτων. Επικοινωνήστε μαζί μας στην παρακάτω διεύθυνση ηλεκτρονικού ταχυδρομείου.", emailLabel: "Ηλεκτρονικό ταχυδρομείο", email: "krdd125@gmail.com", reply: "Θα εξετάσουμε το μήνυμά σας και θα απαντήσουμε όταν είναι δυνατό.", close: "Κλείσιμο", types: ["Γενικές ερωτήσεις και αιτήματα", "Προτάσεις συνεργασίας", "Ερωτήσεις και προτάσεις διαφήμισης", "Αναφορές προβλημάτων"] },
   },
 };

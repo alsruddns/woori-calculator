@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { locales, localePath } from "@/i18n/config";
+import { supportedLocales, localePath } from "@/i18n/config";
 import { familySitesCopy } from "@/i18n/family-sites";
 
 describe("family site navigation", () => {
   it("localizes all six service names for every supported locale", () => {
-    expect(Object.keys(familySitesCopy).sort()).toEqual([...locales].sort());
+    expect(Object.keys(familySitesCopy).sort()).toEqual([...supportedLocales].sort());
     expect([familySitesCopy.ko.portal, familySitesCopy.ko.calculator, familySitesCopy.ko.tools, familySitesCopy.ko.moneyBook, familySitesCopy.ko.documents, familySitesCopy.ko.quiz]).toEqual(["포탈", "계산기", "온라인 도구", "무료 공유 가계부", "문서·양식", "퀴즈·테스트"]);
-    for (const locale of locales) {
+    for (const locale of supportedLocales) {
       const copy = familySitesCopy[locale];
       expect(copy.label).toBeTruthy();
       expect(copy.menu).toBeTruthy();

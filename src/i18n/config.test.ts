@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, locales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator } from "@/i18n/config";
+import { calculatorSupportsLocale, existingLocales, hasLocale, hasLocalizedCalculator, hasRoutingLocale, languageSwitchPath, localeConfig, localePath, localizedCalculatorSlugs, localizedIndexSlugs, locales, routingLocaleConfig, routingLocales, supportedLocales, phaseFiveTranslatedCalculatorSlugs, phaseFourTranslatedCalculatorSlugs, phaseOneTranslatedCalculatorSlugs, phaseThreeTranslatedCalculatorSlugs, phaseTwoTranslatedCalculatorSlugs, phaseTranslatedCalculatorSlugs, supportedLocalesForCalculator, turkishTranslatedCalculatorSlugs } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { matchesCalculatorSearch } from "@/lib/i18n/search";
@@ -9,6 +9,16 @@ describe("locale routing and translated calculator catalog", () => {
     for (const locale of locales) expect(hasLocale(locale)).toBe(true);
     expect(hasLocale("fr")).toBe(true);
     expect(locales).toHaveLength(15);
+    expect(supportedLocales).toHaveLength(26);
+    expect(supportedLocales.slice(0, locales.length)).toEqual(locales);
+    expect(supportedLocales.slice(-11)).toEqual(["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+    expect(routingLocales).toHaveLength(26);
+    expect(new Set(routingLocales).size).toBe(26);
+    for (const locale of routingLocales) expect(hasRoutingLocale(locale)).toBe(true);
+    for (const locale of ["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const) {
+      expect(hasLocale(locale)).toBe(["ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"].includes(locale));
+      expect(routingLocaleConfig[locale].intlLocale).toBeTruthy();
+    }
     expect(localeConfig["pt-br"].hreflang).toBe("pt-BR");
     expect(localeConfig["zh-tw"].hreflang).toBe("zh-TW");
     for (const slug of localizedCalculatorSlugs) expect(hasLocalizedCalculator(slug)).toBe(true);
@@ -24,6 +34,159 @@ describe("locale routing and translated calculator catalog", () => {
     expect(localePath("en", "/")).toBe("/en");
   });
 
+  it("publishes only fully translated Russian calculator pages", () => {
+    const russian = getDictionary("ru");
+    const page = russian.calculators["compound-interest"]!;
+    const english = getDictionary("en").calculators["compound-interest"]!;
+    expect(localizedIndexSlugs("ru")).toEqual([
+      "compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest",
+      "median", "percentile", "probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic",
+      "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss", "margin", "markup", "calorie-per-serving",
+      "loan-interest", "deposit-interest", "loan-refinance", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "break-even-point-calculator", "inflation-adjusted-return-calculator",
+      "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy", "fire-retirement-calculator", "dividend-growth-calculator", "stock-profit-after-fees-calculator", "position-size-calculator", "freelancer-hourly-rate-calculator",
+      "ratio", "proportion", "aspect-ratio", "scale-ratio", "vat", "pace", "standard-deviation", "stock-average-price", "stop-loss-take-profit-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "product-margin", "withholding-tax-3-3", "annual-leave-allowance", "utility-bill", "unemployment-benefit", "minimum-wage", "severance-pay", "social-insurance", "japan-consumption-tax-calculator", "japan-annual-salary-calculator", "japan-monthly-salary-calculator", "japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator", "germany-gross-net-salary-calculator", "germany-income-tax-calculator", "germany-vat-calculator", "germany-overtime-pay-calculator", "germany-vacation-pay-calculator", "spain-gross-net-salary-calculator", "spain-irpf-calculator", "spain-vat-calculator", "spain-severance-pay-calculator", "france-gross-net-salary-calculator", "france-income-tax-calculator", "france-vat-calculator", "france-overtime-pay-calculator", "netherlands-gross-net-salary-calculator", "netherlands-vat-calculator", "netherlands-30-percent-ruling-calculator", "netherlands-holiday-allowance-calculator", "india-gst-calculator", "india-sip-calculator", "india-ppf-calculator", "india-nps-calculator", "india-gross-net-salary-calculator", "india-income-tax-calculator", "brazil-gross-net-salary-calculator", "brazil-inss-calculator", "brazil-irrf-calculator", "brazil-fgts-calculator", "brazil-thirteenth-salary-calculator", "vietnam-gross-net-salary-calculator", "vietnam-personal-income-tax-calculator", "vietnam-social-insurance-calculator", "china-gross-net-salary-calculator", "china-individual-income-tax-calculator", "china-social-insurance-calculator", "china-vat-calculator", "taiwan-gross-net-salary-calculator", "taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator", "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator", "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator", "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator", "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator", "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator", "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator", "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator", "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator", "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator", "uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator", "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator", "spain-freelancer-tax-calculator", "france-social-contribution-calculator",
+    ]);
+    expect(supportedLocalesForCalculator("compound-interest")).toContain("ru");
+    for (const slug of localizedIndexSlugs("ru")) expect(calculatorSupportsLocale(slug, "ru")).toBe(true);
+    expect(calculatorSupportsLocale("vat", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("ratio", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("minimum-wage", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("unemployment-benefit", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("severance-pay", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("social-insurance", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("japan-consumption-tax-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("japan-night-holiday-pay-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("germany-vat-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("spain-vat-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("france-vat-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("netherlands-vat-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("india-sip-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("brazil-fgts-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("vietnam-social-insurance-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("china-vat-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("taiwan-vat-calculator", "ru")).toBe(true);
+    expect(calculatorSupportsLocale("italy-vat-calculator", "ru")).toBe(true);
+    expect(languageSwitchPath("/en/calculators/compound-interest", "ru")).toBe("/ru/calculators/compound-interest");
+    expect(languageSwitchPath("/en/calculators/percentage", "ru")).toBe("/ru/calculators/percentage");
+    expect(languageSwitchPath("/en/calculators/vat", "ru")).toBe("/ru/calculators/vat");
+    expect(languageSwitchPath("/en/calculators/ratio", "ru")).toBe("/ru/calculators/ratio");
+    expect(languageSwitchPath("/en/calculators/minimum-wage", "ru")).toBe("/ru/calculators/minimum-wage");
+    expect(languageSwitchPath("/en/calculators/pace", "ru")).toBe("/ru/calculators/pace");
+    expect(languageSwitchPath("/en/calculators/stock-average-price", "ru")).toBe("/ru/calculators/stock-average-price");
+    expect(languageSwitchPath("/en/calculators/travel-budget-calculator", "ru")).toBe("/ru/calculators/travel-budget-calculator");
+    expect(languageSwitchPath("/en/calculators/japan-annual-salary-calculator", "ru")).toBe("/ru/calculators/japan-annual-salary-calculator");
+    expect(russian.calculators.vat?.description).toContain("Южной Корее");
+    expect(russian.calculators.vat?.resultNote).toContain("НДС Южной Кореи");
+    expect(russian.calculators["withholding-tax-3-3"]?.description).toContain("Южной Корее");
+    expect(russian.calculators["annual-leave-allowance"]?.resultNote).toContain("корейском контексте");
+    expect(russian.calculators["unemployment-benefit"]?.resultNote).toContain("Южной Кореи");
+    expect(russian.calculators["minimum-wage"]?.resultNote).toContain("Южной Кореи");
+    expect(russian.calculators["social-insurance"]?.resultNote).toContain("Южной Кореи");
+    const vatMetadata = localizedMetadata("ru", "/calculators/vat", russian.calculators.vat!.title, russian.calculators.vat!.description, russian.calculators.vat!.keywords, supportedLocalesForCalculator("vat"));
+    expect(vatMetadata.alternates?.canonical).toBe("https://www.woori.today/ru/calculators/vat");
+    expect(vatMetadata.alternates?.languages?.ru).toBe("https://www.woori.today/ru/calculators/vat");
+    expect(vatMetadata.alternates?.languages?.["x-default"]).toBe("https://www.woori.today/ko/calculators/vat");
+    for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) {
+      expect(value).toBeTruthy();
+    }
+    expect(page.title).not.toBe(english.title);
+    expect(page.faqs.length).toBeGreaterThan(0);
+    expect(Object.keys(page.fields)).toEqual(["principal", "rate", "years", "frequency"]);
+    expect(page.related).toEqual([]);
+    expect(localePath("ru", "/calculators/compound-interest")).toBe("/ru/calculators/compound-interest");
+    expect(localizedMetadata("ru", "/calculators/compound-interest", page.title, page.description, page.keywords, supportedLocalesForCalculator("compound-interest")).alternates?.canonical).toBe("https://www.woori.today/ru/calculators/compound-interest");
+  });
+
+  it("publishes the complete Polish catalog with localized metadata and matching page content", () => {
+    const polish = getDictionary("pl");
+    const english = getDictionary("en");
+    const slugs = localizedIndexSlugs("pl");
+    expect(slugs).toHaveLength(169);
+    expect(Object.keys(polish.calculators).sort()).toEqual([...slugs].sort());
+    for (const slug of slugs) {
+      const page = polish.calculators[slug]!;
+      const source = english.calculators[slug]!;
+      expect(page.title, slug).not.toBe(source.title);
+      expect(page.description, slug).not.toBe(source.description);
+      expect(page.fields, slug).toHaveProperty(Object.keys(source.fields)[0]!);
+      for (const key of Object.keys(source.fields)) expect(page.fields[key]?.label, slug + "." + key).not.toBe(source.fields[key]?.label);
+      expect(page.faqs.length, slug).toBeGreaterThan(0);
+      expect(page.howTo, slug).toBeTruthy();
+      expect(page.formula, slug).toBeTruthy();
+      expect(page.validation, slug).toBeTruthy();
+      expect(supportedLocalesForCalculator(slug)).toContain("pl");
+      const metadata = localizedMetadata("pl", "/calculators/" + slug, page.title, page.description, page.keywords, supportedLocalesForCalculator(slug));
+      expect(metadata.alternates?.canonical).toBe("https://www.woori.today/pl/calculators/" + slug);
+      expect(metadata.alternates?.languages?.pl).toBe("https://www.woori.today/pl/calculators/" + slug);
+    }
+  });
+
+  it("publishes only complete Turkish calculator pages with Turkish UI and metadata", () => {
+    const turkish = getDictionary("tr");
+    const english = getDictionary("en");
+    expect(turkish.locale).toBe("tr");
+    expect(turkish.nav.language).toBe("Dil");
+    expect(localizedIndexSlugs("tr")).toEqual(turkishTranslatedCalculatorSlugs);
+    expect(turkishTranslatedCalculatorSlugs).toHaveLength(169);
+    expect(languageSwitchPath("/ko/calculators/percentage", "tr")).toBe("/tr/calculators/percentage");
+    for (const slug of turkishTranslatedCalculatorSlugs) {
+      const page = turkish.calculators[slug]!;
+      const source = english.calculators[slug]!;
+      expect(page.fields, `${slug} translated fields`).toBeDefined();
+      expect(source.fields, `${slug} source fields`).toBeDefined();
+      expect(calculatorSupportsLocale(slug, "tr")).toBe(true);
+      expect(page.title).not.toBe(source.title);
+      expect(page.description).not.toBe(source.description);
+      expect(Object.keys(page.fields).sort()).toEqual(Object.keys(source.fields).sort());
+      expect(Object.keys(page.options).sort()).toEqual(Object.keys(source.options).sort());
+      expect(Object.keys(page.resultLabels).sort()).toEqual(expect.arrayContaining(Object.keys(source.resultLabels).sort()));
+      for (const [key, field] of Object.entries(page.fields)) expect(field.label).not.toBe(source.fields[key]?.label);
+      for (const [key, choices] of Object.entries(page.options)) for (const [option, label] of Object.entries(choices)) {
+        if (label === "cm" || label === "m") continue;
+        expect(label).not.toBe(source.options[key]?.[option]);
+      }
+      for (const [key, label] of Object.entries(page.resultLabels)) if (source.resultLabels[key] !== "Pyeong") expect(label).not.toBe(source.resultLabels[key]);
+      for (const related of page.related) expect(turkish.calculators[related], `${slug} related ${related}`).toBeDefined();
+      expect(page.faqs.length).toBeGreaterThan(0);
+      const metadata = localizedMetadata("tr", `/calculators/${slug}`, page.title, page.description, page.keywords, supportedLocalesForCalculator(slug));
+      expect(metadata.alternates?.canonical).toBe(`https://www.woori.today/tr/calculators/${slug}`);
+      expect(metadata.alternates?.languages?.tr).toBe(`https://www.woori.today/tr/calculators/${slug}`);
+    }
+    expect(supportedLocalesForCalculator("bmi")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+    expect(supportedLocalesForCalculator("stock-average-price")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+    expect(supportedLocalesForCalculator("loan-refinance")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+    expect(supportedLocalesForCalculator("ratio")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+  });
+
+  it("validates every Russian batch page against source field, option, and result keys", () => {
+    const russian = getDictionary("ru");
+    const english = getDictionary("en");
+    for (const slug of localizedIndexSlugs("ru")) {
+      const page = russian.calculators[slug]!;
+      const source = english.calculators[slug]!;
+      expect(Object.keys(page.fields).sort()).toEqual(Object.keys(source.fields).sort());
+      expect(Object.keys(page.options).sort()).toEqual(Object.keys(source.options).sort());
+      for (const [key, choices] of Object.entries(source.options)) expect(Object.keys(page.options[key] ?? {}).sort()).toEqual(Object.keys(choices).sort());
+      expect(Object.keys(page.resultLabels).sort()).toEqual(expect.arrayContaining(Object.keys(source.resultLabels).sort()));
+      for (const [key, field] of Object.entries(page.fields)) {
+        expect(field.label).toBeTruthy();
+        expect(field.label).not.toBe(source.fields[key]?.label);
+      }
+      for (const [key, labels] of Object.entries(page.options)) for (const [option, label] of Object.entries(labels)) {
+        expect(label).toBeTruthy();
+        expect(label).not.toBe(source.options[key]?.[option]);
+      }
+      for (const [key, label] of Object.entries(page.resultLabels)) {
+        expect(label).toBeTruthy();
+        expect(label).not.toBe(source.resultLabels[key]);
+      }
+      for (const related of page.related) expect(russian.calculators[related]).toBeDefined();
+      for (const value of [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote]) expect(value.trim()).not.toBe("");
+      expect(page.faqs.length).toBeGreaterThan(0);
+    }
+  });
+
   it("switches language to the same translated tool or a safe localized landing", () => {
     expect(languageSwitchPath("/ko/calculators/loan-interest", "es")).toBe("/es/calculators/loan-interest");
     expect(languageSwitchPath("/en/calculators/loan-interest", "ko")).toBe("/ko/calculators/loan-interest");
@@ -32,6 +195,7 @@ describe("locale routing and translated calculator catalog", () => {
     expect(languageSwitchPath("/ko/privacy", "ja")).toBe("/ko/calculators");
     expect(languageSwitchPath("/zh", "ko")).toBe("/ko");
     expect(languageSwitchPath("/ko/calculators/fraction", "ja")).toBe("/ja/calculators/fraction");
+    expect(languageSwitchPath("/ko/calculators/compound-interest", "pl")).toBe("/pl/calculators/compound-interest");
     for (const slug of localizedCalculatorSlugs) for (const locale of locales) expect(languageSwitchPath(`/ko/calculators/${slug}`, locale)).toBe(`/${locale}/calculators/${slug}`);
   });
 
@@ -69,9 +233,9 @@ describe("locale routing and translated calculator catalog", () => {
       }
     }
     expect(phaseOneTranslatedCalculatorSlugs).toHaveLength(10);
-    expect(supportedLocalesForCalculator("compound-interest")).toEqual(locales);
-    expect(supportedLocalesForCalculator("median")).toEqual(locales);
-    expect(supportedLocalesForCalculator("fraction")).toEqual(locales);
+    expect(supportedLocalesForCalculator("compound-interest")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+    expect(supportedLocalesForCalculator("median")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
+    expect(supportedLocalesForCalculator("fraction")).toEqual([...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"]);
     expect(phaseTranslatedCalculatorSlugs).toHaveLength(169);
   });
 

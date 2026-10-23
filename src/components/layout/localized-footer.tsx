@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { LocaleDictionary } from "@/i18n/dictionaries/types";
-import { localePath, type Locale } from "@/i18n/config";
+import { localePath, type SupportedLocale } from "@/i18n/config";
 import { ContactTrigger } from "@/components/layout/contact-trigger";
 import { sharedUiCopy } from "@/i18n/shared-ui";
 
-const legalLinkCopy: Record<Locale, { about: string; privacy: string; terms: string }> = {
+const legalLinkCopy: Record<SupportedLocale, { about: string; privacy: string; terms: string }> = {
   ko: { about: "서비스 소개", privacy: "개인정보처리방침", terms: "이용약관" },
   en: { about: "About (Korean)", privacy: "Privacy (Korean)", terms: "Terms (Korean)" },
   ja: { about: "サービス紹介（韓国語）", privacy: "プライバシー（韓国語）", terms: "利用規約（韓国語）" },
@@ -20,9 +20,20 @@ const legalLinkCopy: Record<Locale, { about: string; privacy: string; terms: str
   it: { about: "Informazioni (in coreano)", privacy: "Privacy (in coreano)", terms: "Termini (in coreano)" },
   nl: { about: "Over ons (in het Koreaans)", privacy: "Privacy (in het Koreaans)", terms: "Voorwaarden (in het Koreaans)" },
   hi: { about: "परिचय (कोरियाई में)", privacy: "गोपनीयता (कोरियाई में)", terms: "नियम (कोरियाई में)" },
+  ru: { about: "О сервисе (на корейском)", privacy: "Конфиденциальность (на корейском)", terms: "Условия использования (на корейском)" },
+  tr: { about: "Hakk?nda", privacy: "Gizlilik (Korece)", terms: "Kullan?m ko?ullar? (Korece)" },
+  pl: { about: "O serwisie (po koreańsku)", privacy: "Prywatność (po koreańsku)", terms: "Warunki korzystania (po koreańsku)" },
+  fil: { about: "Tungkol sa amin (sa Korean)", privacy: "Privacy (sa Korean)", terms: "Mga tuntunin (sa Korean)" },
+  bn: { about: "পরিচিতি (কোরিয়ান ভাষায়)", privacy: "গোপনীয়তা (কোরিয়ান ভাষায়)", terms: "ব্যবহারের শর্ত (কোরিয়ান ভাষায়)" },
+  uk: { about: "Про сервіс (корейською)", privacy: "Конфіденційність (корейською)", terms: "Умови користування (корейською)" },
+  ms: { about: "Tentang kami (dalam bahasa Korea)", privacy: "Privasi (dalam bahasa Korea)", terms: "Terma penggunaan (dalam bahasa Korea)" },
+  sv: { about: "Om tjänsten (på koreanska)", privacy: "Integritet (på koreanska)", terms: "Användarvillkor (på koreanska)" },
+  cs: { about: "O službě (korejsky)", privacy: "Soukromí (korejsky)", terms: "Podmínky používání (korejsky)" },
+  ro: { about: "Despre serviciu (în coreeană)", privacy: "Confidențialitate (în coreeană)", terms: "Condiții de utilizare (în coreeană)" },
+  el: { about: "Σχετικά με την υπηρεσία (στα κορεατικά)", privacy: "Απόρρητο (στα κορεατικά)", terms: "Όροι χρήσης (στα κορεατικά)" },
 };
 
-export function localizedFooterLinks(locale: Locale) {
+export function localizedFooterLinks(locale: SupportedLocale) {
   const labels = legalLinkCopy[locale];
   return [
     { href: localePath(locale, "/about"), label: labels.about },

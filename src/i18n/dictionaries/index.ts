@@ -5,7 +5,6 @@ import { calculatorCategoryOrder } from "@/data/calculators/categories";
 import { additionalCalculatorContent } from "@/i18n/dictionaries/additional";
 import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import { contentPatterns } from "@/i18n/dictionaries/content-patterns";
-import type { Locale } from "@/i18n/config";
 import { phaseOneLocaleDictionary } from "@/i18n/dictionaries/phase-one";
 import { phaseFourLocaleContent } from "@/i18n/dictionaries/phase-four";
 import { phaseFiveLocaleContent } from "@/i18n/dictionaries/phase-five";
@@ -15,6 +14,18 @@ import { ratioLocaleContent } from "@/i18n/dictionaries/ratio-tools";
 import { improveKoreanContent } from "@/i18n/dictionaries/korean-content-improvements";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { improveLocalizedQualityContent } from "@/i18n/dictionaries/locale-quality-followup";
+import { ru } from "@/i18n/dictionaries/ru";
+import { tr } from "@/i18n/dictionaries/tr";
+import { pl } from "@/i18n/dictionaries/pl";
+import { fil } from "@/i18n/dictionaries/fil";
+import { buildBengaliDictionary } from "@/i18n/dictionaries/bn";
+import { uk } from "@/i18n/dictionaries/uk";
+import { buildMalayDictionary } from "@/i18n/dictionaries/ms";
+import { buildSwedishDictionary } from "@/i18n/dictionaries/sv";
+import { cs as czechDictionary } from "@/i18n/dictionaries/cs";
+import { ro } from "@/i18n/dictionaries/ro";
+import { el } from "@/i18n/dictionaries/el";
+import type { SupportedLocale } from "@/i18n/config";
 
 const ko: LocaleDictionary = {
   locale: "ko", siteName: "우리의 오늘", description: "일상에 필요한 계산과 생활 도구를 쉽고 빠르게 이용하세요.",
@@ -48,7 +59,18 @@ const seedKeywords = {
 } as const;
 
 const sources = { en, ja, zh } as const;
-function buildDictionary(locale: Locale): LocaleDictionary {
+function buildDictionary(locale: SupportedLocale): LocaleDictionary {
+  if (locale === "el") return el;
+  if (locale === "ro") return ro;
+  if (locale === "cs") return czechDictionary;
+  if (locale === "uk") return uk;
+  if (locale === "ms") return buildMalayDictionary(getDictionary("en"));
+  if (locale === "sv") return buildSwedishDictionary(getDictionary("en"));
+  if (locale === "ru") return ru;
+  if (locale === "tr") return tr;
+  if (locale === "pl") return pl;
+  if (locale === "fil") return fil;
+  if (locale === "bn") return buildBengaliDictionary(getDictionary("en"));
   if (locale === "ko") return { ...ko, home: { ...ko.home, ...landingLabels.ko }, categories: { ...ko.categories, ...categoryOverrides.ko }, calculators: { ...ko.calculators, ...phaseFourLocaleContent("ko"), ...phaseFiveLocaleContent("ko"), ...phaseSixLocaleContent("ko"), ...newToolsLocaleContent("ko"), ...ratioLocaleContent("ko") } };
   if (locale !== "en" && locale !== "ja" && locale !== "zh") {
     const base = phaseOneLocaleDictionary(locale, getDictionary("en"))!;
@@ -65,8 +87,9 @@ function buildDictionary(locale: Locale): LocaleDictionary {
   };
 }
 
-const dictionaryCache = new Map<Locale, LocaleDictionary>();
+const dictionaryCache = new Map<SupportedLocale, LocaleDictionary>();
 function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictionary {
+  if (dictionary.locale === "ru" || dictionary.locale === "tr" || dictionary.locale === "pl" || dictionary.locale === "bn" || dictionary.locale === "ms" || dictionary.locale === "ro" || dictionary.locale === "el") return dictionary;
   const entries = Object.entries(dictionary.calculators).filter((entry): entry is [string, LocalizedCalculatorContent] => Boolean(entry[1]));
   const counts = (select: (content: LocalizedCalculatorContent) => string) => {
     const values = new Map<string, number>();
@@ -91,9 +114,56 @@ function distinguishRepeatedGuidance(dictionary: LocaleDictionary): LocaleDictio
   })) as LocaleDictionary["calculators"];
   return { ...dictionary, calculators };
 }
-export function getDictionary(locale: Locale): LocaleDictionary {
+export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   const cached = dictionaryCache.get(locale);
   if (cached) return cached;
+  if (locale === "el") {
+    dictionaryCache.set(locale, el);
+    return el;
+  }
+  if (locale === "ro") {
+    dictionaryCache.set(locale, ro);
+    return ro;
+  }
+  if (locale === "cs") {
+    dictionaryCache.set(locale, czechDictionary);
+    return czechDictionary;
+  }
+  if (locale === "ru") {
+    dictionaryCache.set(locale, ru);
+    return ru;
+  }
+  if (locale === "tr") {
+    dictionaryCache.set(locale, tr);
+    return tr;
+  }
+  if (locale === "pl") {
+    dictionaryCache.set(locale, pl);
+    return pl;
+  }
+  if (locale === "fil") {
+    dictionaryCache.set(locale, fil);
+    return fil;
+  }
+  if (locale === "bn") {
+    const bengali = buildBengaliDictionary(getDictionary("en"));
+    dictionaryCache.set(locale, bengali);
+    return bengali;
+  }
+  if (locale === "uk") {
+    dictionaryCache.set(locale, uk);
+    return uk;
+  }
+  if (locale === "ms") {
+    const malay = buildMalayDictionary(getDictionary("en"));
+    dictionaryCache.set(locale, malay);
+    return malay;
+  }
+  if (locale === "sv") {
+    const swedish = buildSwedishDictionary(getDictionary("en"));
+    dictionaryCache.set(locale, swedish);
+    return swedish;
+  }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;
   if (locale === "ko") {

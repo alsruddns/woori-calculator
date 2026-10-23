@@ -3,35 +3,52 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { calculateBySlug } from "@/calculators/calculate";
 import { units, type LinearUnit } from "@/calculators/conversion/convert";
-import { formatInputNumber, formatJpy, formatKrw, formatNumber } from "@/lib/formatter/number";
+import { formatNumber } from "@/lib/formatter/number";
+import { formatCurrency, formatLocalizedInput, isCurrencyCode, parseLocalizedNumber, unformatLocalizedInput, type CurrencyCode } from "@/lib/formatter/currency";
+import { CurrencySelector, saveCurrency, useSelectedCurrency } from "@/components/calculator/currency-selector";
 import { normalizeDuration, durationForCalculator, type DurationUnit } from "@/lib/calculators/duration";
 import { numberToKoreanText } from "@/lib/formatter/korean-number";
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
 import type { CalculatorField, CalculatorOutcome } from "@/types/calculator-page";
 import { ResultTable } from "@/components/calculator/ResultTable";
 
-type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: Locale; dictionary?: Pick<LocaleDictionary, "detail" | "units" | "common">; content?: LocalizedCalculatorContent };
+type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; locale?: SupportedLocale; dictionary?: Pick<LocaleDictionary, "detail" | "units" | "common">; content?: LocalizedCalculatorContent };
 
 const unitLabels: Record<string, string> = Object.fromEntries(Object.entries(units).map(([key, unit]) => [key, unit.label]));
-function localizedResultUnit(unit: string | undefined, locale: Locale) {
+const currencyFieldNames = new Set(["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent", "cost", "unitPrice", "existingAveragePrice", "additionalPrice", "currentAveragePrice", "currentPrice", "shipping", "otherCost", "mortgage", "repayment", "otherInterest", "annualExpenses", "annualDividendPerShare", "currentSavings", "targetValue", "accountSize", "entryPrice", "stopPrice", "buyPrice", "sellPrice", "lumpSum", "purchaseCosts", "transport", "lodgingPerNight", "dailyFoodPerPerson", "activities", "localTransport", "other", "targetAnnualRevenue", "annualBusinessCosts", "fixedCosts", "pricePerUnit", "variableCostPerUnit"]);
+function localizedResultUnit(unit: string | undefined, locale: SupportedLocale) {
   if (!unit || locale === "ko") return unit;
-  if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष" })[locale];
-  if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग" })[locale];
+  if (locale === "fil") return unit.includes("year") ? "taon" : unit.replace("days", "araw");
+  if (locale === "ru") return unit;
+  if (locale === "uk") {
+    if (unit === "years old") return "років";
+    if (unit === "pyeong") return "пхьон";
+    return unit.replace("years", "років").replace("year", "рік").replace("days", "днів").replace("day", "день");
+  }
+  if (locale === "bn") return unit.replace("years", "বছর").replace("year", "বছর").replace("days", "দিন").replace("day", "দিন");
+  if (unit === "세") return ({ en: "years old", ja: "歳", zh: "岁", es: "años", "pt-br": "anos", de: "Jahre", fr: "ans", vi: "tuổi", id: "tahun", th: "ปี", "zh-tw": "歲", it: "anni", nl: "jaar", hi: "वर्ष", tr: "yaş", pl: "lat", ms: "tahun", sv: "år", cs: "let", ro: "ani", el: "ετών" })[locale];
+  if (unit === "평") return ({ en: "pyeong", ja: "坪", zh: "坪", es: "pyeong", "pt-br": "pyeong", de: "Pyeong", fr: "pyeong", vi: "pyeong", id: "pyeong", th: "พย็อง", "zh-tw": "坪", it: "pyeong", nl: "pyeong", hi: "प्योंग", tr: "pyeong", pl: "pyeong", ms: "pyeong", sv: "pyeong", cs: "pyeong", ro: "pyeong", el: "πγιόνγκ" })[locale];
   if (unit.startsWith("일")) {
-    const day = ({ en: "days", ja: "日", zh: "天", es: "días", "pt-br": "dias", de: "Tage", fr: "jours", vi: "ngày", id: "hari", th: "วัน", "zh-tw": "天", it: "giorni", nl: "dagen", hi: "दिन" })[locale];
+    const day = ({ en: "days", ja: "日", zh: "天", es: "días", "pt-br": "dias", de: "Tage", fr: "jours", vi: "ngày", id: "hari", th: "วัน", "zh-tw": "天", it: "giorni", nl: "dagen", hi: "दिन", tr: "gün", pl: "dni", ms: "hari", sv: "dagar", cs: "dnů", ro: "zile", el: "ημέρες" })[locale];
     return `${day}${unit.slice(1)}`;
   }
   return unit;
 }
-const conversionUnitLabels: Record<Locale, Record<string, string>> = {
+const conversionUnitLabels: Partial<Record<SupportedLocale, Record<string, string>>> = {
   ko: { c: "섭씨 (°C)", f: "화씨 (°F)" }, en: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, ja: { c: "摂氏 (°C)", f: "華氏 (°F)" }, zh: { c: "摄氏 (°C)", f: "华氏 (°F)" },
   es: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, "pt-br": { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, de: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, fr: { c: "Celsius (°C)", f: "Fahrenheit (°F)" },
   vi: { c: "Độ C (°C)", f: "Độ F (°F)" }, id: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, th: { c: "เซลเซียส (°C)", f: "ฟาเรนไฮต์ (°F)" }, "zh-tw": { c: "攝氏 (°C)", f: "華氏 (°F)" },
-  it: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, nl: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, hi: { c: "सेल्सियस (°C)", f: "फ़ारेनहाइट (°F)" },
+  it: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, nl: { c: "Celsius (°C)", f: "Fahrenheit (°F)" }, hi: { c: "सेल्सियस (°C)", f: "फ़ारेनहाइट (°F)" }, uk: { c: "Градуси Цельсія (°C)", f: "Градуси Фаренгейта (°F)" },
+  sv: { c: "Celsius (°C)", f: "Fahrenheit (°F)" },
+  cs: { c: "Stupně Celsia (°C)", f: "Stupně Fahrenheita (°F)" },
+  ro: { c: "Grade Celsius (°C)", f: "Grade Fahrenheit (°F)" },
+  el: { c: "Βαθμοί Κελσίου (°C)", f: "Βαθμοί Φαρενάιτ (°F)" },
 };
-const linearUnitLabels: Record<Exclude<Locale, "ko">, Record<LinearUnit, string>> = {
+const linearUnitLabels: Partial<Record<SupportedLocale, Record<LinearUnit, string>>> = {
+  uk: { mm: "Міліметри (мм)", cm: "Сантиметри (см)", m: "Метри (м)", km: "Кілометри (км)", inch: "Дюйми (in)", ft: "Фути (ft)", yard: "Ярди (yd)", mile: "Милі (mi)", mg: "Міліграми (мг)", g: "Грами (г)", kg: "Кілограми (кг)", oz: "Унції (oz)", lb: "Фунти (lb)", ml: "Мілілітри (мл)", l: "Літри (л)" },
   en: { mm: "Millimeters (mm)", cm: "Centimeters (cm)", m: "Meters (m)", km: "Kilometers (km)", inch: "Inches (in)", ft: "Feet (ft)", yard: "Yards (yd)", mile: "Miles (mi)", mg: "Milligrams (mg)", g: "Grams (g)", kg: "Kilograms (kg)", oz: "Ounces (oz)", lb: "Pounds (lb)", ml: "Milliliters (mL)", l: "Liters (L)" },
+  cs: { mm: "Milimetry (mm)", cm: "Centimetry (cm)", m: "Metry (m)", km: "Kilometry (km)", inch: "Palce (in)", ft: "Stopy (ft)", yard: "Yardy (yd)", mile: "Míle (mi)", mg: "Miligramy (mg)", g: "Gramy (g)", kg: "Kilogramy (kg)", oz: "Unce (oz)", lb: "Libry (lb)", ml: "Mililitry (ml)", l: "Litry (l)" },
   ja: { mm: "ミリメートル (mm)", cm: "センチメートル (cm)", m: "メートル (m)", km: "キロメートル (km)", inch: "インチ (in)", ft: "フィート (ft)", yard: "ヤード (yd)", mile: "マイル (mi)", mg: "ミリグラム (mg)", g: "グラム (g)", kg: "キログラム (kg)", oz: "オンス (oz)", lb: "ポンド (lb)", ml: "ミリリットル (mL)", l: "リットル (L)" },
   zh: { mm: "毫米 (mm)", cm: "厘米 (cm)", m: "米 (m)", km: "千米 (km)", inch: "英寸 (in)", ft: "英尺 (ft)", yard: "码 (yd)", mile: "英里 (mi)", mg: "毫克 (mg)", g: "克 (g)", kg: "千克 (kg)", oz: "盎司 (oz)", lb: "磅 (lb)", ml: "毫升 (mL)", l: "升 (L)" },
   es: { mm: "Milímetros (mm)", cm: "Centímetros (cm)", m: "Metros (m)", km: "Kilómetros (km)", inch: "Pulgadas (in)", ft: "Pies (ft)", yard: "Yardas (yd)", mile: "Millas (mi)", mg: "Miligramos (mg)", g: "Gramos (g)", kg: "Kilogramos (kg)", oz: "Onzas (oz)", lb: "Libras (lb)", ml: "Mililitros (mL)", l: "Litros (L)" },
@@ -45,12 +62,16 @@ const linearUnitLabels: Record<Exclude<Locale, "ko">, Record<LinearUnit, string>
   it: { mm: "Millimetri (mm)", cm: "Centimetri (cm)", m: "Metri (m)", km: "Chilometri (km)", inch: "Pollici (in)", ft: "Piedi (ft)", yard: "Iarde (yd)", mile: "Miglia (mi)", mg: "Milligrammi (mg)", g: "Grammi (g)", kg: "Chilogrammi (kg)", oz: "Once (oz)", lb: "Libbre (lb)", ml: "Millilitri (mL)", l: "Litri (L)" },
   nl: { mm: "Millimeter (mm)", cm: "Centimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Inch (in)", ft: "Voet (ft)", yard: "Yard (yd)", mile: "Mijl (mi)", mg: "Milligram (mg)", g: "Gram (g)", kg: "Kilogram (kg)", oz: "Ons (oz)", lb: "Pond (lb)", ml: "Milliliter (mL)", l: "Liter (L)" },
   hi: { mm: "मिलीमीटर (mm)", cm: "सेंटीमीटर (cm)", m: "मीटर (m)", km: "किलोमीटर (km)", inch: "इंच (in)", ft: "फुट (ft)", yard: "गज (yd)", mile: "मील (mi)", mg: "मिलीग्राम (mg)", g: "ग्राम (g)", kg: "किलोग्राम (kg)", oz: "औंस (oz)", lb: "पाउंड (lb)", ml: "मिलीलीटर (mL)", l: "लीटर (L)" },
+  sv: { mm: "Millimeter (mm)", cm: "Centimeter (cm)", m: "Meter (m)", km: "Kilometer (km)", inch: "Tum (in)", ft: "Fot (ft)", yard: "Yard (yd)", mile: "Engelska mil (mi)", mg: "Milligram (mg)", g: "Gram (g)", kg: "Kilogram (kg)", oz: "Uns (oz)", lb: "Pund (lb)", ml: "Milliliter (mL)", l: "Liter (L)" },
+  ro: { mm: "Milimetri (mm)", cm: "Centimetri (cm)", m: "Metri (m)", km: "Kilometri (km)", inch: "Țoli (in)", ft: "Picioare (ft)", yard: "Yarzi (yd)", mile: "Mile (mi)", mg: "Miligrame (mg)", g: "Grame (g)", kg: "Kilograme (kg)", oz: "Uncii (oz)", lb: "Livre (lb)", ml: "Mililitri (ml)", l: "Litri (l)" },
+  el: { mm: "Χιλιοστά (mm)", cm: "Εκατοστά (cm)", m: "Μέτρα (m)", km: "Χιλιόμετρα (km)", inch: "Ίντσες (in)", ft: "Πόδια (ft)", yard: "Γιάρδες (yd)", mile: "Μίλια (mi)", mg: "Χιλιοστόγραμμα (mg)", g: "Γραμμάρια (g)", kg: "Κιλά (kg)", oz: "Ουγγιές (oz)", lb: "Λίβρες (lb)", ml: "Χιλιοστόλιτρα (ml)", l: "Λίτρα (l)" },
 };
-const optionsFor = (field: CalculatorField, values: Record<string, string>, locale: Locale) => {
+const optionsFor = (field: CalculatorField, values: Record<string, string>, locale: SupportedLocale) => {
   if (field.name !== "fromUnit" && field.name !== "toUnit") return field.options ?? [];
   const category = values.category ?? "length";
-  if (category === "temperature") return [{ label: conversionUnitLabels[locale].c!, value: "c" }, { label: conversionUnitLabels[locale].f!, value: "f" }];
-  return (Object.keys(units) as LinearUnit[]).filter((key) => units[key].category === category).map((key) => ({ label: locale === "ko" ? unitLabels[key]! : linearUnitLabels[locale][key], value: key }));
+  if (category === "temperature") { const labels = conversionUnitLabels[locale] ?? conversionUnitLabels.en!; return [{ label: labels.c!, value: "c" }, { label: labels.f!, value: "f" }]; }
+  const labels = locale === "ko" ? unitLabels : (linearUnitLabels[locale] ?? linearUnitLabels.en!);
+  return (Object.keys(units) as LinearUnit[]).filter((key) => units[key].category === category).map((key) => ({ label: labels[key]!, value: key }));
 };
 
 export function CalculatorForm({ slug, fields, locale = "ko", dictionary, content }: CalculatorFormProps) {
@@ -58,8 +79,20 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
   const [values, setValues] = useState<Record<string, string>>(initial);
   const [outcome, setOutcome] = useState<CalculatorOutcome | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const currency = useSelectedCurrency(locale);
   const duration = durationForCalculator(slug);
   const [durationUnit, setDurationUnit] = useState<DurationUnit>(duration?.inputUnit ?? "month");
+  const usesCurrency = fields.some((field) => currencyFieldNames.has(field.name) || /^(KRW|JPY|USD|EUR|원|円)$/.test(field.unit ?? ""));
+
+  function changeCurrency(next: CurrencyCode) {
+    saveCurrency(next);
+  }
+
+  function formattedResultValue(value: string | number, unit: string | undefined, digits = 2): string {
+    if (typeof value !== "number") return value;
+    if (unit === String.fromCodePoint(0xC6D0) || unit === "円" || (unit !== undefined && isCurrencyCode(unit))) return formatCurrency(value, currency, locale);
+    return formatNumber(value, digits, locale);
+  }
 
   function changeValue(name: string, value: string) {
     setValues((current) => {
@@ -77,8 +110,13 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const normalized = { ...values };
+    for (const field of fields) {
+      if ((field.type ?? "number") !== "number") continue;
+      const parsed = parseLocalizedNumber(values[field.name] ?? "", locale);
+      if (parsed !== undefined) normalized[field.name] = String(parsed);
+    }
     if (duration) {
-      const input = Number((values[duration.field] ?? "").replace(/,/g, ""));
+      const input = parseLocalizedNumber(values[duration.field] ?? "", locale) ?? Number.NaN;
       if (Number.isFinite(input)) {
         const months = normalizeDuration(input, durationUnit);
         normalized[duration.field] = String(duration.inputUnit === "month" ? months : months / 12);
@@ -99,10 +137,13 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7" aria-label={dictionary?.detail.calculators ?? "Calculator input and result"}>
+      {usesCurrency ? <CurrencySelector locale={locale} currency={currency} onChange={changeCurrency} /> : null}
       <form onSubmit={submit} noValidate>
         <div className="grid gap-5 sm:grid-cols-2">
           {fields.filter((field) => (!field.showWhen || values[field.showWhen.field] === field.showWhen.value) && (!field.showWhenAll || field.showWhenAll.every((condition) => values[condition.field] === condition.value))).map((field) => {
             const fieldError = error?.field === field.name ? (content?.validation ?? error.error) : undefined;
+            const fieldUnit = content?.fields[field.name]?.unit ?? field.unit ?? "";
+            const isCurrencyField = currencyFieldNames.has(field.name) || fieldUnit === String.fromCodePoint(0xC6D0) || fieldUnit === "円" || isCurrencyCode(fieldUnit);
             const inputId = `${slug}-${field.name}`;
             const describedBy = fieldError ? `${inputId}-error` : undefined;
             const commonClass = "mt-2 min-h-12 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
@@ -136,23 +177,23 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
                       onChange={(event) => changeValue(field.name, event.target.value)}
                       onFocus={(event) => {
                         if (field.type !== "date") {
-                          const clean = event.currentTarget.value.replace(/,/g, "");
+                          const clean = unformatLocalizedInput(event.currentTarget.value, locale);
                           if (clean !== event.currentTarget.value) changeValue(field.name, clean);
                       }
                       }}
                       onBlur={(event) => {
-                        if (field.type !== "date") changeValue(field.name, formatInputNumber(event.currentTarget.value));
+                        if (field.type !== "date") changeValue(field.name, formatLocalizedInput(event.currentTarget.value, locale));
                       }}
                       placeholder={field.placeholder}
                       aria-describedby={describedBy}
                       aria-invalid={Boolean(fieldError)}
                     />
-                    {(content?.fields[field.name]?.unit ?? field.unit) ? <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">{content?.fields[field.name]?.unit ?? field.unit}</span> : null}
+                    {(isCurrencyField || content?.fields[field.name]?.unit || field.unit) ? <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">{isCurrencyField ? currency : content?.fields[field.name]?.unit ?? field.unit}</span> : null}
                     </div>
                     {field.name === duration?.field ? <select aria-label={dictionary?.units.durationLabel ?? "기간 단위"} className="min-h-12 min-w-20 rounded-lg border border-slate-300 bg-white px-3 text-sm focus-visible:outline-2 focus-visible:outline-teal-700" value={durationUnit} onChange={(event) => setDurationUnit(event.target.value as DurationUnit)}><option value="month">{dictionary?.units.month ?? "개월"}</option><option value="year">{dictionary?.units.year ?? "년"}</option></select> : null}
                   </div>
                 )}
-                {locale === "ko" && ["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent", "cost", "unitPrice", "existingAveragePrice", "additionalPrice", "currentAveragePrice", "currentPrice", "shipping", "otherCost", "mortgage", "repayment", "otherInterest"].includes(field.name) && values[field.name] && Number.isInteger(Number((values[field.name] ?? "").replace(/,/g, ""))) ? <p className="mt-1 min-w-0 break-words text-xs leading-5 text-slate-500 [overflow-wrap:anywhere]">{numberToKoreanText(Number((values[field.name] ?? "").replace(/,/g, "")))} {dictionary?.units.won ?? "원"}</p> : null}
+                {locale === "ko" && currency === "KRW" && isCurrencyField && values[field.name] && Number.isInteger(Number((values[field.name] ?? "").replace(/,/g, ""))) ? <p className="mt-1 min-w-0 break-words text-xs leading-5 text-slate-500 [overflow-wrap:anywhere]">{numberToKoreanText(Number((values[field.name] ?? "").replace(/,/g, "")))} {dictionary?.units.won ?? "원"}</p> : null}
                 {fieldError ? <p id={describedBy} role="alert" className="mt-1 min-w-0 break-words text-sm leading-5 text-red-700 [overflow-wrap:anywhere]">{fieldError}</p> : null}
               </div>
             );
@@ -169,20 +210,19 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
         <section className="mt-7 rounded-xl bg-teal-50 p-5" aria-live="polite" aria-label={dictionary?.detail.result ?? "Result"}>
           <h2 className="text-base font-bold text-slate-950">{dictionary?.detail.result ?? "Result"}</h2>
           <button type="button" className="mt-3 min-h-10 rounded-lg border border-teal-800 px-4 text-sm font-semibold text-teal-900 hover:bg-white" onClick={async () => {
-            try { await navigator.clipboard.writeText(success.results.map((item) => `${content?.resultLabels[item.label] ?? item.label}: ${typeof item.value === "number" ? formatNumber(item.value, item.precision ?? 2, locale) : item.value}`).join("\n")); setCopyState("copied"); }
+            try { await navigator.clipboard.writeText(success.results.map((item) => `${content?.resultLabels[item.label] ?? item.label}: ${formattedResultValue(item.value, item.unit, item.precision ?? 2)}`).join("\n")); setCopyState("copied"); }
             catch { setCopyState("error"); }
           }}>{copyState === "copied" ? dictionary?.common.copied ?? "Copied" : dictionary?.common.copy ?? "Copy"}</button>
           {copyState !== "idle" ? <p className="mt-2 text-sm" role="status">{copyState === "copied" ? dictionary?.common.copied ?? "Copied" : dictionary?.common.copyError ?? "Could not copy."}</p> : null}
           <dl className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {success.results.map((item, index) => {
-              const isJpy = item.unit === "円";
-              const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "KRW";
               const resultUnit = localizedResultUnit(item.unit, locale);
-              const value = typeof item.value === "number" ? (isJpy ? formatJpy(item.value, item.precision ?? 0, locale) : isMoney ? formatKrw(item.value, item.precision ?? 0, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${resultUnit ? ` ${resultUnit}` : ""}`) : item.value;
+              const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "円" || (item.unit !== undefined && isCurrencyCode(item.unit));
+              const value = typeof item.value === "number" ? (isMoney ? formatCurrency(item.value, currency, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${resultUnit ? ` ${resultUnit}` : ""}`) : item.value;
               return <div key={`${item.label}-${index}`} className="min-w-0 rounded-lg bg-white px-3 py-3 sm:px-4"><dt className="break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]">{content?.resultLabels[item.label] ?? content?.resultLabels[`__result_${index}`] ?? item.label}</dt><dd className="mt-1 break-words text-lg font-bold tabular-nums text-teal-900 [overflow-wrap:anywhere] sm:text-xl">{value}</dd></div>;
             })}
           </dl>
-          {success.table ? <ResultTable table={success.table} locale={locale} /> : null}
+          {success.table ? <ResultTable table={success.table} locale={locale} currency={currency} /> : null}
           {success.note ? <p className="mt-4 text-sm leading-6 text-slate-700">{content?.resultNote ?? success.note}</p> : null}
         </section>
       ) : null}

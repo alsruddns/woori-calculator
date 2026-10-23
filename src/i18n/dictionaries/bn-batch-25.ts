@@ -1,0 +1,56 @@
+import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
+import { bnCountryPage, bnUsCountryResultLabels } from "@/i18n/dictionaries/bn-country-page";
+
+export const bnBatchTwentyFive: Record<string, LocalizedCalculatorContent> = {
+  "australia-gross-net-salary-calculator": bnCountryPage("australia-gross-net-salary-calculator", {
+    name: "অস্ট্রেলিয়ার মোট ও হাতে-পাওয়া বেতনের হিসাব",
+    title: "অস্ট্রেলিয়ার মোট ও হাতে-পাওয়া বেতন ক্যালকুলেটর",
+    description: "অস্ট্রেলিয়ার নিয়ম অনুযায়ী বেতন থেকে আনুমানিক কর ও হাতে-পাওয়া অর্থ হিসাব করুন। এটি কেবল নির্দেশক অনুমান; ব্যক্তিগত পরিস্থিতি ও রাজ্যভেদে ফল বদলাতে পারে।",
+    keywords: ["অস্ট্রেলিয়ার হাতে-পাওয়া বেতন", "অস্ট্রেলিয়া বেতন কর ক্যালকুলেটর", "AUD বেতন হিসাব"],
+    howTo: "বার্ষিক বা মাসিক বেতন লিখে বেতনের সময়কাল নির্বাচন করুন। এই হিসাব অস্ট্রেলিয়ার নীতি অনুসরণ করে; অন্য দেশের কর হিসাব করে না।",
+    formula: "প্রদত্ত বেতন ও নির্বাচিত নীতি বছরের অস্ট্রেলীয় করের হার ব্যবহার করে একটি আনুমানিক হিসাব করা হয়।",
+    example: { question: "বার্ষিক ৮০,০০০ AUD বেতনে আনুমানিক হাতে কত থাকে?", answer: "ফলটি অস্ট্রেলিয়ার নির্বাচিত করবর্ষের নিয়মে একটি আনুমানিক হিসাব। ব্যক্তিগত কর নির্ধারণের বিকল্প নয়।" },
+    fields: { salary: "বেতন", frequency: "বেতন প্রদানের সময়কাল" }, options: { frequency: { annual: "বার্ষিক", monthly: "মাসিক" } },
+    resultLabels: bnUsCountryResultLabels, related: ["australia-income-tax-calculator", "australia-superannuation-calculator"],
+  }),
+  "australia-income-tax-calculator": bnCountryPage("australia-income-tax-calculator", {
+    name: "অস্ট্রেলিয়ার আয়কর হিসাব", title: "অস্ট্রেলিয়ার আয়কর ক্যালকুলেটর",
+    description: "অস্ট্রেলিয়ার করবর্ষের নিয়মে করযোগ্য বার্ষিক আয়ের ওপর আনুমানিক আয়কর হিসাব করুন। ব্যক্তিগত ছাড় বা স্থানীয় নিয়মে ফল ভিন্ন হতে পারে।",
+    keywords: ["অস্ট্রেলিয়া আয়কর ক্যালকুলেটর", "অস্ট্রেলিয়ার কর হিসাব", "AUD আয়কর"],
+    howTo: "অস্ট্রেলিয়ান ডলারে বার্ষিক করযোগ্য আয় লিখুন। ফলটি অস্ট্রেলিয়ার করনীতির অনুমান, চূড়ান্ত কর নির্ধারণ নয়।",
+    formula: "অস্ট্রেলিয়ার নির্বাচিত নীতি বছরের প্রযোজ্য করের ধাপ ও হার অনুযায়ী হিসাব করা হয়।",
+    example: { question: "বার্ষিক করযোগ্য আয় ৮০,০০০ AUD হলে কর কত হতে পারে?", answer: "ক্যালকুলেটরটি অস্ট্রেলিয়ার করবর্ষের নিয়মে আনুমানিক ফল দেখায়; ব্যক্তিগত কর পরামর্শ নয়।" },
+    fields: { income: "বার্ষিক করযোগ্য আয়" }, resultLabels: bnUsCountryResultLabels,
+    related: ["australia-gross-net-salary-calculator", "australia-superannuation-calculator"],
+  }),
+  "australia-gst-calculator": bnCountryPage("australia-gst-calculator", {
+    name: "অস্ট্রেলিয়ার GST হিসাব", title: "অস্ট্রেলিয়ার GST ক্যালকুলেটর",
+    description: "অস্ট্রেলিয়ার পণ্য বা সেবার দামে GST যোগ করুন অথবা অন্তর্ভুক্ত GST আলাদা করে দেখুন। হারটি আপনার পরিস্থিতি অনুযায়ী যাচাই করুন।",
+    keywords: ["অস্ট্রেলিয়া GST ক্যালকুলেটর", "GST হিসাব", "অস্ট্রেলিয়ার পণ্যমূল্য কর"],
+    howTo: "মূল্য ও GST হার লিখে কর যোগ করা বা করসহ মূল্য থেকে GST বের করার পদ্ধতি বেছে নিন। এটি অস্ট্রেলিয়ার GST প্রসঙ্গে প্রদর্শিত হিসাব।",
+    formula: "কর-বহির্ভূত মূল্য × হার = GST; কর-সহ মূল্যে অন্তর্ভুক্ত GST হার অনুযায়ী আলাদা করা হয়।",
+    example: { question: "১০% GST-এ ১০০ AUD মূল্যের পণ্যে কর কত?", answer: "কর-বহির্ভূত ১০০ AUD মূল্যে ১০% GST যোগ করলে কর ১০ AUD এবং মোট ১১০ AUD হয়।" },
+    fields: { amount: "মূল্য", rate: "GST হার", direction: "হিসাবের ধরন" }, options: { direction: { exclusive: "মূল্যের সঙ্গে কর যোগ করুন", inclusive: "করসহ মূল্য থেকে কর বের করুন" } },
+    resultLabels: bnUsCountryResultLabels, related: ["australia-income-tax-calculator", "vat"],
+  }),
+  "australia-superannuation-calculator": bnCountryPage("australia-superannuation-calculator", {
+    name: "অস্ট্রেলিয়ার সুপারঅ্যানুয়েশন হিসাব", title: "অস্ট্রেলিয়ার সুপারঅ্যানুয়েশন ক্যালকুলেটর",
+    description: "বেতন, নিজস্ব অবদান, নিয়োগকর্তার অবদান ও বিনিয়োগের অনুমিত রিটার্ন দিয়ে অস্ট্রেলিয়ার superannuation-এর সম্ভাব্য জমা হিসাব করুন।",
+    keywords: ["অস্ট্রেলিয়া superannuation", "সুপার অবদান ক্যালকুলেটর", "অস্ট্রেলিয়া অবসর সঞ্চয়"],
+    howTo: "বার্ষিক বেতন, বার্ষিক অবদান, নিয়োগকর্তার অবদানের হার, অনুমিত রিটার্ন ও সময়কাল দিন। অস্ট্রেলিয়ার superannuation নিয়ম এবং যোগ্যতা আলাদা করে যাচাই করুন।",
+    formula: "প্রারম্ভিক জমা ও নির্ধারিত অবদানকে নির্বাচিত রিটার্নে সময়ের সঙ্গে বাড়িয়ে সম্ভাব্য ব্যালান্স দেখানো হয়।",
+    example: { question: "৮০,০০০ AUD বেতন ও ১২% নিয়োগকর্তা অবদানে কীভাবে হিসাব হবে?", answer: "অবদান ও অনুমিত রিটার্নের ভিত্তিতে সম্ভাব্য জমা দেখানো হয়; প্রকৃত ফি, কর ও তহবিলের ফল ভিন্ন হতে পারে।" },
+    fields: { annualSalary: "বার্ষিক বেতন", annualContribution: "বার্ষিক নিজস্ব অবদান", employerRate: "নিয়োগকর্তার অবদানের হার", rate: "বার্ষিক অনুমিত রিটার্ন", years: "সময়কাল (বছর)" },
+    resultLabels: bnUsCountryResultLabels, related: ["australia-gross-net-salary-calculator", "australia-income-tax-calculator", "fire-retirement-calculator"],
+  }),
+  "australia-stamp-duty-calculator": bnCountryPage("australia-stamp-duty-calculator", {
+    name: "অস্ট্রেলিয়ার সম্পত্তি স্ট্যাম্প ডিউটি হিসাব", title: "অস্ট্রেলিয়ার স্ট্যাম্প ডিউটি ক্যালকুলেটর",
+    description: "সম্পত্তির মূল্য ও অনুমিত হার দিয়ে অস্ট্রেলিয়ার স্ট্যাম্প ডিউটির একটি সরল অনুমান দেখুন। প্রকৃত শুল্ক রাজ্য, ক্রেতার অবস্থা ও ছাড়ের ওপর নির্ভর করে।",
+    keywords: ["অস্ট্রেলিয়া স্ট্যাম্প ডিউটি", "সম্পত্তি হস্তান্তর শুল্ক", "অস্ট্রেলিয়া সম্পত্তি খরচ"],
+    howTo: "সম্পত্তির মূল্য এবং প্রযোজ্য অনুমিত হার লিখুন। অস্ট্রেলিয়ায় স্ট্যাম্প ডিউটি রাজ্যভেদে আলাদা, তাই ফলটি প্রাথমিক অনুমান হিসেবে নিন।",
+    formula: "সম্পত্তির মূল্য × প্রবেশ করানো হার = আনুমানিক স্ট্যাম্প ডিউটি।",
+    example: { question: "৫০০,০০০ AUD সম্পত্তিতে ৪% হার ধরলে শুল্ক কত?", answer: "সরল হিসাবে ২০,০০০ AUD। রাজ্যভিত্তিক ধাপ, ছাড় ও ক্রেতার যোগ্যতা এতে ধরা নেই।" },
+    fields: { propertyValue: "সম্পত্তির মূল্য", rate: "অনুমিত শুল্কের হার" }, resultLabels: bnUsCountryResultLabels,
+    related: ["australia-income-tax-calculator", "rent-vs-buy-calculator"],
+  }),
+};

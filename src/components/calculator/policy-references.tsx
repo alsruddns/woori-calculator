@@ -1,8 +1,9 @@
-import { localeConfig, type Locale } from "@/i18n/config";
+import { localeConfig, type SupportedLocale } from "@/i18n/config";
 import { contentPatterns } from "@/i18n/dictionaries/content-patterns";
 import type { CalculatorPageDefinition } from "@/types/calculator-page";
 
-export function PolicyReferences({ locale, page }: { locale: Locale; page: CalculatorPageDefinition }) {
+export function PolicyReferences({ locale, page }: { locale: SupportedLocale; page: CalculatorPageDefinition }) {
+  if (locale === "ru") return null;
   if (page.policyType !== "POLICY") return null;
   const copy = contentPatterns[locale];
   const date = (value: string) => new Intl.DateTimeFormat(localeConfig[locale].intlLocale, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(`${value}T00:00:00.000Z`));

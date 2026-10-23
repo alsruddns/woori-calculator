@@ -1,11 +1,20 @@
-export const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"] as const;
-export type Locale = (typeof locales)[number];
+export const routingLocales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi", "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const;
+export type RoutingLocale = (typeof routingLocales)[number];
+
+/** Locales whose general dictionary catalog is complete; partial publications are listed separately below. */
+export const locales = ["ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi"] as const satisfies readonly RoutingLocale[];
+export type TranslatedLocale = (typeof locales)[number];
+/** Backwards-compatible name for a locale whose shared UI and page catalogue are complete. */
+export type Locale = TranslatedLocale;
+/** Public locales can include languages with a deliberately partial set of fully translated pages. */
+export const supportedLocales = [...locales, "ru", "tr", "pl", "fil", "bn", "uk", "ms", "sv", "cs", "ro", "el"] as const satisfies readonly RoutingLocale[];
+export type SupportedLocale = (typeof supportedLocales)[number];
 export const existingLocales = ["ko", "en", "ja", "zh"] as const;
 export type ExistingLocale = (typeof existingLocales)[number];
-export const dictionaryLocales = locales.filter((locale) => locale !== "ko") as readonly Exclude<Locale, "ko">[];
-export type DictionaryLocale = Exclude<Locale, "ko">;
+export const dictionaryLocales = supportedLocales.filter((locale) => locale !== "ko") as readonly Exclude<SupportedLocale, "ko">[];
+export type DictionaryLocale = Exclude<SupportedLocale, "ko">;
 
-const localeDetails: Record<Locale, { intlLocale: string; hreflang: string; openGraphLocale: string; nativeName: string }> = {
+const localeDetails: Record<RoutingLocale, { intlLocale: string; hreflang: string; openGraphLocale: string; nativeName: string }> = {
   ko: { intlLocale: "ko-KR", hreflang: "ko", openGraphLocale: "ko_KR", nativeName: "한국어" },
   en: { intlLocale: "en-US", hreflang: "en", openGraphLocale: "en_US", nativeName: "English" },
   ja: { intlLocale: "ja-JP", hreflang: "ja", openGraphLocale: "ja_JP", nativeName: "日本語" },
@@ -21,11 +30,23 @@ const localeDetails: Record<Locale, { intlLocale: string; hreflang: string; open
   it: { intlLocale: "it-IT", hreflang: "it", openGraphLocale: "it_IT", nativeName: "Italiano" },
   nl: { intlLocale: "nl-NL", hreflang: "nl", openGraphLocale: "nl_NL", nativeName: "Nederlands" },
   hi: { intlLocale: "hi-IN", hreflang: "hi", openGraphLocale: "hi_IN", nativeName: "हिन्दी" },
+  ru: { intlLocale: "ru-RU", hreflang: "ru", openGraphLocale: "ru_RU", nativeName: "Русский" },
+  tr: { intlLocale: "tr-TR", hreflang: "tr", openGraphLocale: "tr_TR", nativeName: "Türkçe" },
+  pl: { intlLocale: "pl-PL", hreflang: "pl", openGraphLocale: "pl_PL", nativeName: "Polski" },
+  fil: { intlLocale: "fil-PH", hreflang: "fil", openGraphLocale: "fil_PH", nativeName: "Filipino" },
+  bn: { intlLocale: "bn-BD", hreflang: "bn", openGraphLocale: "bn_BD", nativeName: "বাংলা" },
+  uk: { intlLocale: "uk-UA", hreflang: "uk", openGraphLocale: "uk_UA", nativeName: "Українська" },
+  ms: { intlLocale: "ms-MY", hreflang: "ms", openGraphLocale: "ms_MY", nativeName: "Bahasa Melayu" },
+  sv: { intlLocale: "sv-SE", hreflang: "sv", openGraphLocale: "sv_SE", nativeName: "Svenska" },
+  cs: { intlLocale: "cs-CZ", hreflang: "cs", openGraphLocale: "cs_CZ", nativeName: "Čeština" },
+  ro: { intlLocale: "ro-RO", hreflang: "ro", openGraphLocale: "ro_RO", nativeName: "Română" },
+  el: { intlLocale: "el-GR", hreflang: "el", openGraphLocale: "el_GR", nativeName: "Ελληνικά" },
 };
-export const localeConfig = Object.fromEntries(locales.map((routeLocale) => {
+export const routingLocaleConfig = Object.fromEntries(routingLocales.map((routeLocale) => {
   const detail = localeDetails[routeLocale];
   return [routeLocale, { routeLocale, ...detail, htmlLang: routeLocale === "zh" ? "zh-CN" : detail.intlLocale, ogLocale: detail.openGraphLocale, languageName: detail.nativeName }];
-})) as Record<Locale, { routeLocale: Locale; hreflang: string; nativeName: string; intlLocale: string; openGraphLocale: string; htmlLang: string; ogLocale: string; languageName: string }>;
+})) as Record<RoutingLocale, { routeLocale: RoutingLocale; hreflang: string; nativeName: string; intlLocale: string; openGraphLocale: string; htmlLang: string; ogLocale: string; languageName: string }>;
+export const localeConfig = Object.fromEntries(supportedLocales.map((locale) => [locale, routingLocaleConfig[locale]])) as Record<SupportedLocale, typeof routingLocaleConfig[RoutingLocale]>;
 
 export const localizedCalculatorSlugs = [
   "percentage", "discount", "loan-interest", "compound-interest", "vat", "date-difference", "age", "area",
@@ -47,8 +68,8 @@ export const localizedCalculatorSlugs = [
   "china-gross-net-salary-calculator", "china-individual-income-tax-calculator", "china-social-insurance-calculator", "china-vat-calculator",
   "taiwan-gross-net-salary-calculator", "taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator",
   "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator",
-  "spain-freelancer-tax-calculator", "france-social-contribution-calculator",
   "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator",
+  "spain-freelancer-tax-calculator", "france-social-contribution-calculator",
   "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator",
   "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator",
   "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator",
@@ -63,7 +84,8 @@ export const localizedCalculatorSlugs = [
   "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator", "freelancer-hourly-rate-calculator", "break-even-point-calculator",
 ] as const;
 export type LocalizedCalculatorSlug = (typeof localizedCalculatorSlugs)[number];
-export const hasLocale = (value: string): value is Locale => locales.includes(value as Locale);
+export const hasLocale = (value: string): value is SupportedLocale => supportedLocales.includes(value as SupportedLocale);
+export const hasRoutingLocale = (value: string): value is RoutingLocale => routingLocales.includes(value as RoutingLocale);
 export const hasLocalizedCalculator = (slug: string): slug is LocalizedCalculatorSlug => localizedCalculatorSlugs.includes(slug as LocalizedCalculatorSlug);
 
 export const phaseOneTranslatedCalculatorSlugs = ["age", "annual-leave-allowance", "area", "average", "bmi", "cagr", "calorie-per-serving", "change-rate", "compound-interest", "date-difference"] as const satisfies readonly LocalizedCalculatorSlug[];
@@ -93,8 +115,43 @@ export const isPhaseFourTranslatedCalculator = (slug: string): slug is (typeof p
 export const isPhaseFiveTranslatedCalculator = (slug: string): slug is (typeof phaseFiveTranslatedCalculatorSlugs)[number] => phaseFiveTranslatedCalculatorSlugs.includes(slug as (typeof phaseFiveTranslatedCalculatorSlugs)[number]);
 export const isPhaseSixTranslatedCalculator = (slug: string): slug is (typeof phaseSixTranslatedCalculatorSlugs)[number] => phaseSixTranslatedCalculatorSlugs.includes(slug as (typeof phaseSixTranslatedCalculatorSlugs)[number]);
 export const isPhaseTranslatedCalculator = (slug: string): slug is (typeof phaseTranslatedCalculatorSlugs)[number] => isPhaseOneTranslatedCalculator(slug) || isPhaseTwoTranslatedCalculator(slug) || isPhaseThreeTranslatedCalculator(slug) || isPhaseFourTranslatedCalculator(slug) || isPhaseFiveTranslatedCalculator(slug) || isPhaseSixTranslatedCalculator(slug) || phaseSevenTranslatedCalculatorSlugs.includes(slug as (typeof phaseSevenTranslatedCalculatorSlugs)[number]) || phaseEightTranslatedCalculatorSlugs.includes(slug as (typeof phaseEightTranslatedCalculatorSlugs)[number]);
-export const supportedLocalesForCalculator = (slug: string): readonly Locale[] => hasLocalizedCalculator(slug) ? locales : ["ko"];
-export const calculatorSupportsLocale = (slug: string, locale: Locale) => supportedLocalesForCalculator(slug).includes(locale);
+export const russianTranslatedCalculatorSlugs = [
+  "compound-interest", "percentage", "discount", "date-difference", "age", "area", "average", "weighted-average", "bmi", "cagr", "change-rate", "simple-interest", "savings-interest",
+  "median", "percentile", "probability", "fraction", "decimal-fraction", "unit-price", "unit-converter", "dday", "workdays", "time-arithmetic",
+  "tip-calculator", "trip-split", "fuel-efficiency", "vehicle-cost", "taxi-fare", "dividend", "profit-loss", "margin", "markup", "calorie-per-serving",
+  "loan-interest", "deposit-interest", "loan-refinance", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "break-even-point-calculator", "inflation-adjusted-return-calculator",
+  "fuel-cost", "salary-conversion", "hourly-wage", "tenure", "pregnancy", "fire-retirement-calculator", "dividend-growth-calculator", "stock-profit-after-fees-calculator", "position-size-calculator", "freelancer-hourly-rate-calculator",
+  "ratio", "proportion", "aspect-ratio", "scale-ratio",
+  "vat", "pace", "standard-deviation", "stock-average-price",
+  "stop-loss-take-profit-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator",
+  "product-margin", "withholding-tax-3-3", "annual-leave-allowance", "utility-bill",
+  "unemployment-benefit", "minimum-wage", "severance-pay", "social-insurance",
+  "japan-consumption-tax-calculator", "japan-annual-salary-calculator", "japan-monthly-salary-calculator", "japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator",
+  "germany-gross-net-salary-calculator", "germany-income-tax-calculator", "germany-vat-calculator", "germany-overtime-pay-calculator", "germany-vacation-pay-calculator",
+  "spain-gross-net-salary-calculator", "spain-irpf-calculator", "spain-vat-calculator", "spain-severance-pay-calculator",
+  "france-gross-net-salary-calculator", "france-income-tax-calculator", "france-vat-calculator", "france-overtime-pay-calculator",
+  "netherlands-gross-net-salary-calculator", "netherlands-vat-calculator", "netherlands-30-percent-ruling-calculator", "netherlands-holiday-allowance-calculator",
+  "india-gst-calculator", "india-sip-calculator", "india-ppf-calculator", "india-nps-calculator", "india-gross-net-salary-calculator", "india-income-tax-calculator",
+  "brazil-gross-net-salary-calculator", "brazil-inss-calculator", "brazil-irrf-calculator", "brazil-fgts-calculator", "brazil-thirteenth-salary-calculator",
+  "vietnam-gross-net-salary-calculator", "vietnam-personal-income-tax-calculator", "vietnam-social-insurance-calculator",
+  "china-gross-net-salary-calculator", "china-individual-income-tax-calculator", "china-social-insurance-calculator", "china-vat-calculator",
+  "taiwan-gross-net-salary-calculator", "taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator",
+  "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator",
+  "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "us-401k-calculator", "us-roth-ira-calculator", "us-capital-gains-tax-calculator",
+  "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator",
+  "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator",
+  "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator",
+  "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator",
+  "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator",
+  "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator",
+  "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator",
+  "uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator",
+  "new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-gst-calculator", "new-zealand-kiwisaver-calculator",
+  "spain-freelancer-tax-calculator", "france-social-contribution-calculator",
+] as const satisfies readonly LocalizedCalculatorSlug[];
+export const turkishTranslatedCalculatorSlugs = ["percentage", "discount", "compound-interest", "loan-interest", "date-difference", "area", "age", "bmi", "dday", "workdays", "pace", "fuel-efficiency", "unit-price", "unit-converter", "time-arithmetic", "decimal-fraction", "median", "percentile", "probability", "fraction", "standard-deviation", "average", "weighted-average", "cagr", "change-rate", "simple-interest", "savings-interest", "deposit-interest", "dividend", "profit-loss", "margin", "markup", "product-margin", "stock-average-price", "fuel-cost", "trip-split", "salary-conversion", "hourly-wage", "calorie-per-serving", "pregnancy", "tenure", "tip-calculator", "aspect-ratio", "scale-ratio", "vehicle-cost", "loan-refinance", "ratio", "fire-retirement-calculator", "dividend-growth-calculator", "inflation-adjusted-return-calculator", "position-size-calculator", "stop-loss-take-profit-calculator", "stock-profit-after-fees-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "travel-budget-calculator", "proportion", "electricity-cost-calculator", "freelancer-hourly-rate-calculator", "break-even-point-calculator", "prepayment-fee", "loan-affordability", "ltv", "dti", "dsr", "vat", "annual-leave-allowance", "withholding-tax-3-3", "utility-bill", "taxi-fare", "japan-consumption-tax-calculator", "japan-annual-salary-calculator", "japan-monthly-salary-calculator", "japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator", "germany-gross-net-salary-calculator", "germany-income-tax-calculator", "germany-vat-calculator", "germany-overtime-pay-calculator", "germany-vacation-pay-calculator", "spain-gross-net-salary-calculator", "spain-irpf-calculator", "spain-vat-calculator", "spain-severance-pay-calculator", "france-gross-net-salary-calculator", "france-income-tax-calculator", "france-vat-calculator", "france-overtime-pay-calculator", "france-social-contribution-calculator", "netherlands-gross-net-salary-calculator", "netherlands-vat-calculator", "netherlands-30-percent-ruling-calculator", "netherlands-holiday-allowance-calculator", "india-gst-calculator", "india-sip-calculator", "india-ppf-calculator", "india-nps-calculator", "india-income-tax-calculator", "india-gross-net-salary-calculator", "brazil-gross-net-salary-calculator", "brazil-inss-calculator", "brazil-irrf-calculator", "brazil-fgts-calculator", "brazil-thirteenth-salary-calculator", "vietnam-gross-net-salary-calculator", "vietnam-personal-income-tax-calculator", "vietnam-social-insurance-calculator", "china-gross-net-salary-calculator", "china-individual-income-tax-calculator", "china-social-insurance-calculator", "china-vat-calculator", "taiwan-gross-net-salary-calculator", "taiwan-income-tax-calculator", "taiwan-labor-insurance-calculator", "taiwan-vat-calculator", "italy-gross-net-salary-calculator", "italy-income-tax-calculator", "italy-vat-calculator", "us-paycheck-calculator", "us-income-tax-calculator", "us-sales-tax-calculator", "uk-gross-net-salary-calculator", "uk-income-tax-calculator", "uk-national-insurance-calculator", "uk-vat-calculator", "uk-stamp-duty-calculator", "uk-pension-calculator", "canada-gross-net-salary-calculator", "canada-income-tax-calculator", "canada-gst-hst-calculator", "canada-cpp-ei-calculator", "canada-rrsp-calculator", "australia-gross-net-salary-calculator", "australia-income-tax-calculator", "australia-gst-calculator", "australia-superannuation-calculator", "australia-stamp-duty-calculator", "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator", "singapore-cpf-calculator", "singapore-gst-calculator", "hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator", "malaysia-income-tax-calculator", "malaysia-epf-calculator", "malaysia-socso-calculator", "malaysia-sst-calculator", "philippines-gross-net-salary-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator", "philippines-philhealth-calculator", "philippines-pagibig-calculator", "uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator", "uae-corporate-tax-calculator", 'unemployment-benefit', 'minimum-wage', 'severance-pay', 'social-insurance', 'us-401k-calculator', 'us-roth-ira-calculator', 'us-capital-gains-tax-calculator', 'new-zealand-gross-net-salary-calculator', 'new-zealand-income-tax-calculator', 'new-zealand-gst-calculator', 'new-zealand-kiwisaver-calculator', 'spain-freelancer-tax-calculator'] as const satisfies readonly LocalizedCalculatorSlug[];
+export const supportedLocalesForCalculator = (slug: string): readonly SupportedLocale[] => hasLocalizedCalculator(slug) ? [...locales, ...(russianTranslatedCalculatorSlugs.includes(slug as (typeof russianTranslatedCalculatorSlugs)[number]) ? ["ru" as const] : []), ...(turkishTranslatedCalculatorSlugs.includes(slug as (typeof turkishTranslatedCalculatorSlugs)[number]) ? ["tr" as const] : []), ...(localizedCalculatorSlugs.includes(slug as (typeof localizedCalculatorSlugs)[number]) ? ["pl" as const, "fil" as const, "bn" as const, "uk" as const, "ms" as const, "sv" as const, "cs" as const, "ro" as const, "el" as const] : [])] : ["ko"];
+export const calculatorSupportsLocale = (slug: string, locale: SupportedLocale) => supportedLocalesForCalculator(slug).includes(locale);
 export function missingCalculatorTranslationReport(slugs: readonly string[]): string[] {
   return slugs.flatMap((slug) => {
     const supported = new Set(supportedLocalesForCalculator(slug));
@@ -102,22 +159,24 @@ export function missingCalculatorTranslationReport(slugs: readonly string[]): st
     return missing.length ? [`- ${slug}: ${missing.join(", ")}`] : [];
   });
 }
-export const localizedIndexSlugs = (locale: Locale) => {
-  void locale;
+export const localizedIndexSlugs = (locale: SupportedLocale) => {
+  if (locale === "ru") return russianTranslatedCalculatorSlugs;
+  if (locale === "tr") return turkishTranslatedCalculatorSlugs;
+  if (locale === "pl") return localizedCalculatorSlugs;
   return localizedCalculatorSlugs;
 };
 
-export function localePath(locale: Locale, path = "") {
+export function localePath(locale: SupportedLocale, path = "") {
   const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
   const normalized = withLeadingSlash === "/" ? "" : withLeadingSlash.replace(/\/+$/, "");
   return `/${locale}${normalized}`;
 }
 
-export function languageSwitchPath(pathname: string, target: Locale) {
-  const path = pathname.replace(/^\/(ko|en|ja|zh|es|pt-br|de|fr|vi|id|th|zh-tw|it|nl|hi)(?=\/|$)/, "") || "/";
+export function languageSwitchPath(pathname: string, target: SupportedLocale) {
+  const path = pathname.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/, "") || "/";
   const slug = path.match(/^\/calculators\/([^/]+)/)?.[1];
   if ((slug && !calculatorSupportsLocale(slug, target)) || /^\/(about|privacy|terms)(\/|$)/.test(path)) {
-    const fallback: Locale = slug && calculatorSupportsLocale(slug, "en") ? "en" : "ko";
+    const fallback: SupportedLocale = slug && calculatorSupportsLocale(slug, "en") ? "en" : "ko";
     return localePath(fallback, slug ? `/calculators/${slug}` : "/calculators");
   }
   return localePath(target, path);

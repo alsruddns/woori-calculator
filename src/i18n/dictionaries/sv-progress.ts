@@ -1,0 +1,30 @@
+import { localizedCalculatorSlugs } from "@/i18n/config";
+import type { LocalizedCalculatorContent } from "@/i18n/dictionaries/types";
+import { svBatchOne } from "@/i18n/dictionaries/sv-batch-1";
+import { svBatchTwo } from "@/i18n/dictionaries/sv-batch-2";
+import { svBatchThree } from "@/i18n/dictionaries/sv-batch-3";
+import { svBatchFour } from "@/i18n/dictionaries/sv-batch-4";
+import { svBatchFive } from "@/i18n/dictionaries/sv-batch-5";
+import { svBatchSix } from "@/i18n/dictionaries/sv-batch-6";
+import { svBatchSeven } from "@/i18n/dictionaries/sv-batch-7";
+import { svBatchEight } from "@/i18n/dictionaries/sv-batch-8";
+import { svBatchNine } from "@/i18n/dictionaries/sv-batch-9";
+import { svBatchTen } from "@/i18n/dictionaries/sv-batch-10";
+import { svBatchEleven } from "@/i18n/dictionaries/sv-batch-11";
+
+// The complete Swedish calculator catalog is assembled from validated translation batches.
+export const swedishCalculatorContent: Partial<Record<(typeof localizedCalculatorSlugs)[number], LocalizedCalculatorContent>> = {
+  ...svBatchOne,
+  ...svBatchTwo,
+  ...svBatchThree,
+  ...svBatchFour,
+  ...svBatchFive,
+  ...svBatchSix,
+  ...svBatchSeven,
+  ...svBatchEight,
+  ...svBatchNine,
+  ...svBatchTen,
+  ...svBatchEleven,
+};
+export const translatedSwedishCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => slug in swedishCalculatorContent);
+export const remainingSwedishCalculatorSlugs = localizedCalculatorSlugs.filter((slug) => !(slug in swedishCalculatorContent));

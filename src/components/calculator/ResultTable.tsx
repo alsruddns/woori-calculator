@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { formatKrw, formatNumber } from "@/lib/formatter/number";
+import { formatNumber } from "@/lib/formatter/number";
+import { formatCurrency, defaultCurrencyByLocale, type CurrencyCode } from "@/lib/formatter/currency";
 import type { CalculatorTable } from "@/types/calculator-page";
-import type { Locale } from "@/i18n/config";
+import type { SupportedLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
 const labels = {
@@ -13,7 +14,7 @@ const labels = {
   zh: { periodDetails: "分期明细", repaymentSchedule: "每月还款明细", yearlyForecast: "年度预测", period: "期间", openingBalance: "期初金额", monthlyDeposit: "每月存入", cumulativePrincipal: "累计本金", periodInterest: "本期利息", cumulativeInterest: "累计利息", endingBalance: "期末金额", payment: "还款额", principal: "本金", interest: "利息", remainingBalance: "剩余本金", amount: "预测金额", change: "较上年增加", showAll: "显示全部", showLess: "收起部分", cagrAssumption: "此数学推算假设每期保持相同CAGR，不代表实际投资表现。" },
 } as const;
 
-export function ResultTable({ table, locale = "ko" }: { table: CalculatorTable; locale?: Locale }) {
+export function ResultTable({ table, locale = "ko", currency = defaultCurrencyByLocale[locale] }: { table: CalculatorTable; locale?: SupportedLocale; currency?: CurrencyCode }) {
   const [expanded, setExpanded] = useState(false);
   const text = labels[locale as keyof typeof labels] ?? {
     periodDetails: getDictionary(locale).common.result, repaymentSchedule: getDictionary(locale).common.result,
@@ -33,7 +34,7 @@ export function ResultTable({ table, locale = "ko" }: { table: CalculatorTable; 
     <div className="max-w-full overflow-x-auto rounded-lg border border-slate-200">
       <table className="min-w-[680px] w-full border-collapse text-sm">
         <thead className="bg-slate-100"><tr>{table.columns.map((column) => <th key={column} scope="col" className={`sticky top-0 whitespace-nowrap px-3 py-3 font-semibold text-slate-700 ${column === "period" ? "text-left" : "text-right"}`}>{text[column]}</th>)}</tr></thead>
-        <tbody>{visibleRows.map((row, rowIndex) => <tr key={rowIndex} className="border-t border-slate-100 odd:bg-white even:bg-slate-50">{row.map((value, columnIndex) => { const column = table.columns[columnIndex]!; const display = typeof value !== "number" ? value : column === "period" ? `${formatNumber(value, Number.isInteger(value) ? 0 : 2, locale)} ${table.periodUnit === "year" ? (locale === "en" ? "years" : locale === "ja" ? "年" : locale === "zh" ? "年" : "년") : (locale === "en" ? "months" : locale === "ja" ? "か月" : locale === "zh" ? "个月" : "개월")}` : formatKrw(value, 0, locale); return <td key={columnIndex} className={`whitespace-nowrap px-3 py-3 tabular-nums ${column === "period" ? "text-left" : "text-right"}`}>{display}</td>; })}</tr>)}</tbody>
+        <tbody>{visibleRows.map((row, rowIndex) => <tr key={rowIndex} className="border-t border-slate-100 odd:bg-white even:bg-slate-50">{row.map((value, columnIndex) => { const column = table.columns[columnIndex]!; const display = typeof value !== "number" ? value : column === "period" ? `${formatNumber(value, Number.isInteger(value) ? 0 : 2, locale)} ${table.periodUnit === "year" ? (locale === "en" ? "years" : locale === "ja" ? "年" : locale === "zh" ? "年" : "년") : (locale === "en" ? "months" : locale === "ja" ? "か月" : locale === "zh" ? "个月" : "개월")}` : formatCurrency(value, currency, locale); return <td key={columnIndex} className={`whitespace-nowrap px-3 py-3 tabular-nums ${column === "period" ? "text-left" : "text-right"}`}>{display}</td>; })}</tr>)}</tbody>
       </table>
     </div>
     {table.note ? <p className="mt-3 text-sm leading-6 text-slate-600">{text[table.note]}</p> : null}
