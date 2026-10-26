@@ -1,5 +1,6 @@
 import type { SupportedLocale } from "./config";
 
+export const enabledFamilyServices = ["portal", "calculator", "tools", "documents", "quiz"] as const;
 export const familySitesCopy: Record<SupportedLocale, { label: string; menu: string; portal: string; calculator: string; tools: string; moneyBook: string; documents: string; quiz: string; newTab: string }> = {
   ko: { label: "Family Sites", menu: "서비스 메뉴", portal: "포탈", calculator: "계산기", tools: "온라인 도구", moneyBook: "무료 공유 가계부", documents: "문서·양식", quiz: "퀴즈·테스트", newTab: "선택한 서비스가 새 탭에서 열립니다." },
   en: { label: "Family Sites", menu: "Services", portal: "Portal", calculator: "Calculator", tools: "Online Tools", moneyBook: "Free Shared Money Book", documents: "Documents & Forms", quiz: "Quizzes & Tests", newTab: "The selected service opens in a new tab." },
