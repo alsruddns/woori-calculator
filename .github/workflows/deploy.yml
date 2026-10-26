@@ -127,6 +127,8 @@ jobs:
               docker image tag "$rollback_ref" "$image_ref" || return 1
               compose up -d --no-deps --pull never calculator || return 1
               wait_for_calculator_health || return 1
+              docker exec nginx nginx -t || return 1
+              docker exec nginx nginx -s reload || return 1
               echo "Calculator rollback completed; health=healthy"
             }
 
@@ -145,7 +147,9 @@ jobs:
               fi
               exit 1
             fi
-            echo "Calculator healthcheck passed; project and shared network are unchanged."
+            docker exec nginx nginx -t
+            docker exec nginx nginx -s reload
+            echo "Calculator healthcheck passed; Nginx configuration validated and gracefully reloaded."
 
       - name: Wait for Calculator routes, locale metadata, and sitemap
         id: verify
@@ -235,7 +239,7 @@ jobs:
             echo "${locale}: listing and percentage detail verified."
           done
 
-          for path in /ko /ko/tools /ko/money /ko/docs /ko/quiz; do
+          for path in /ko /ko/tools /ko/docs /ko/quiz; do
             status="$(curl --location --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 20 "${origin}${path}" || true)"
             if [ "$status" != "200" ]; then
               echo "Existing service route ${path} regressed: HTTP ${status:-no response}." >&2
@@ -243,6 +247,13 @@ jobs:
             fi
             echo "Existing route ${path}: HTTP 200."
           done
+
+          money_status="$(curl --location --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 20 "${origin}/ko/money" || true)"
+          if [ "$money_status" != "503" ]; then
+            echo "MoneyBook route must remain temporarily unavailable (HTTP 503), got ${money_status:-no response}." >&2
+            exit 1
+          fi
+          echo "MoneyBook route remains intentionally unavailable: HTTP 503."
 
           node scripts/submit-indexnow.mjs
           node --input-type=module -e '
@@ -294,7 +305,9 @@ jobs:
             for attempt in $(seq 1 18); do
               health="$(docker inspect calculator --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}' 2>/dev/null || echo missing)"
               if [ "$health" = "healthy" ]; then
-                echo "Rollback verified: Calculator is healthy on the saved image."
+                docker exec nginx nginx -t
+                docker exec nginx nginx -s reload
+                echo "Rollback verified: Calculator is healthy on the saved image; Nginx was reloaded."
                 exit 0
               fi
               sleep 5
