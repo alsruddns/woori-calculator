@@ -235,7 +235,7 @@ jobs:
             echo "${locale}: listing and percentage detail verified."
           done
 
-          for path in /ko /ko/tools /ko/money /ko/docs /ko/quiz; do
+          for path in /ko /ko/tools /ko/docs /ko/quiz; do
             status="$(curl --location --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 20 "${origin}${path}" || true)"
             if [ "$status" != "200" ]; then
               echo "Existing service route ${path} regressed: HTTP ${status:-no response}." >&2
@@ -243,6 +243,13 @@ jobs:
             fi
             echo "Existing route ${path}: HTTP 200."
           done
+
+          money_status="$(curl --location --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 20 "${origin}/ko/money" || true)"
+          if [ "$money_status" != "503" ]; then
+            echo "MoneyBook route must remain temporarily unavailable (HTTP 503), got ${money_status:-no response}." >&2
+            exit 1
+          fi
+          echo "MoneyBook route remains intentionally unavailable: HTTP 503."
 
           node scripts/submit-indexnow.mjs
           node --input-type=module -e '
