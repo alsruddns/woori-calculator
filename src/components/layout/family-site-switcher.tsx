@@ -1,17 +1,17 @@
 import type { SupportedLocale } from "@/i18n/config";
 import { localePath } from "@/i18n/config";
-import { familySitesCopy } from "@/i18n/family-sites";
+import { enabledFamilyServices, familySitesCopy } from "@/i18n/family-sites";
 
 export function FamilySiteSwitcher({ locale }: { locale: SupportedLocale }) {
   const copy = familySitesCopy[locale];
-  const sites = [
-    { href: localePath(locale), label: copy.portal },
-    { href: localePath(locale, "/calculators"), label: copy.calculator, active: true },
-    { href: localePath(locale, "/tools"), label: copy.tools },
-    { href: localePath(locale, "/money"), label: copy.moneyBook },
-    { href: localePath(locale, "/docs"), label: copy.documents },
-    { href: localePath(locale, "/quiz"), label: copy.quiz },
-  ];
+  const siteDefinitions = {
+    portal: { href: localePath(locale), label: copy.portal, active: false },
+    calculator: { href: localePath(locale, "/calculators"), label: copy.calculator, active: true },
+    tools: { href: localePath(locale, "/tools"), label: copy.tools, active: false },
+    documents: { href: localePath(locale, "/docs"), label: copy.documents, active: false },
+    quiz: { href: localePath(locale, "/quiz"), label: copy.quiz, active: false },
+  };
+  const sites = enabledFamilyServices.map((service) => siteDefinitions[service]);
   const linkClass = "inline-flex min-h-10 items-center justify-center rounded-lg px-2 text-center text-xs font-medium leading-tight text-slate-700 hover:bg-slate-100 hover:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 xl:px-2.5 xl:text-sm";
   const activeClass = "bg-teal-50 text-teal-900 ring-1 ring-inset ring-teal-200";
 

@@ -8,7 +8,7 @@ import "../globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.serviceBaseUrl),
-  title: { default: siteConfig.name, template: `%s | ${siteConfig.shortName}` },
+  title: { default: siteConfig.name, template: "%s" },
   description: siteConfig.description,
   applicationName: siteConfig.shortName,
   icons: {
