@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
 import { localizedMetadata } from "@/lib/i18n/seo";
-import { localePath } from "@/i18n/config";
+import { localePath, supportedLocales } from "@/i18n/config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
 import { CatalogGuidance } from "@/components/calculator/catalog-guidance";
 import { getDictionary } from "@/i18n/dictionaries";
 import { catalogGuidance } from "@/i18n/catalog-guidance";
 
-export const metadata: Metadata = localizedMetadata("ko", "/calculators", "계산기와 생활 도구", "일상에 필요한 계산기를 골라 바로 결과를 확인하세요. 계산은 브라우저에서 처리됩니다.", ["계산기", "생활 계산기"]);
+export const metadata: Metadata = localizedMetadata("ko", "/calculators", "계산기와 생활 도구", "일상에 필요한 계산기를 골라 바로 결과를 확인하세요. 계산은 브라우저에서 처리됩니다.", ["계산기", "생활 계산기"], supportedLocales);
 
 export default function CalculatorsPage() {
   const dictionary = getDictionary("ko");
