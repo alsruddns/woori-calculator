@@ -8,6 +8,7 @@
     "start": "node scripts/start.mjs",
     "lint": "eslint",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "check:content-quality": "vitest run src/data/calculator-content/content-quality.test.ts",
     "audit:content": "vitest run src/data/calculator-content/calculator-content-audit.test.ts",
     "list:policy-calculators": "node scripts/list-policy-calculators.mjs",
@@ -19,6 +20,7 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { getDictionary } from "@/i18n/dictionaries";
-import { locales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
+import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
@@ -51,14 +51,18 @@ describe("calculator content quality", () => {
     expect(publicSlugs.size).toBe(publishedCalculatorPages.length);
     expect(koreanContentImprovementSlugs).toHaveLength(53);
     expect(koreanContentImprovementSlugs.every((slug) => publicSlugs.has(slug))).toBe(true);
-    expect(Object.values(localeContentFollowupTargets).flat()).toHaveLength(175);
-    const improvedExamples = new Set(["average", "percentage", "proportion", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "weighted-average", "workdays"]);
+    expect(Object.values(localeContentFollowupTargets).flat()).toHaveLength(305);
+    expect(Object.keys(nextBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
+    const improvedExamples = new Set(["average", "percentage", "proportion", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "weighted-average", "workdays", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio"]);
     for (const [locale, slugs] of Object.entries(localeContentFollowupTargets)) {
       expect(slugs.every((slug) => publicSlugs.has(slug))).toBe(true);
       const localizedContent = getDictionary(locale as SupportedLocale).calculators;
       expect(slugs.every((slug) => Boolean(localizedContent[slug as keyof typeof localizedContent]))).toBe(true);
+      for (const slug of ["fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio"]) {
+        expect(localizedContent[slug as keyof typeof localizedContent]?.example.answer).toContain(nextBatchExampleNotes[locale as SupportedLocale]?.[slug]);
+      }
       for (const slug of slugs) {
-        if (["average", "weighted-average", "unit-price", "probability", "area"].includes(slug)) {
+        if (["average", "weighted-average", "unit-price", "probability", "area", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio"].includes(slug)) {
           expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
         }
         if (!improvedExamples.has(slug)) continue;
