@@ -21,6 +21,9 @@ describe("extended static finance calculators", () => {
   it("estimates loan comparison, user-entered fee and affordable principal", () => {
     expect(calculateRefinance({ balance: "10000000", oldRate: "0", oldMonths: "10", newRate: "0", newMonths: "10", fees: "0" })).toMatchObject({ results: [{ value: 0 }, { value: 0 }, { value: 0 }, { value: 0 }, { value: 0 }, { value: "산출 불가" }] });
     expect(calculatePrepaymentFee({ amount: "10000000", rate: "1" })).toMatchObject({ results: [{ value: 100000 }] });
+    const refinance = calculateRefinance({ balance: "10000000", oldRate: "12", oldMonths: "12", newRate: "6", newMonths: "12", fees: "100000" });
+    expect(refinance).toMatchObject({ results: [{ value: 661855 }, { value: 327972 }, { value: 100000 }, { value: 233883 }, { value: 27824 }, { value: 4 }] });
+    expect(calculatePrepaymentFee({ amount: "10000000", rate: "1.5" })).toMatchObject({ results: [{ value: 150000 }] });
     const affordable = calculateAffordableLoan({ payment: "100000", rate: "0", months: "12" });
     expect("results" in affordable && affordable.results[0]?.value).toBe(1200000);
   });

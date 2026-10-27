@@ -17,8 +17,9 @@ type CalculatorFormProps = { slug: string; fields: readonly CalculatorField[]; l
 
 const unitLabels: Record<string, string> = Object.fromEntries(Object.entries(units).map(([key, unit]) => [key, unit.label]));
 const currencyFieldNames = new Set(["principal", "monthly", "price", "sale", "amount", "gross", "income", "homePrice", "loan", "salary", "wage", "rent", "cost", "unitPrice", "existingAveragePrice", "additionalPrice", "currentAveragePrice", "currentPrice", "shipping", "otherCost", "mortgage", "repayment", "otherInterest", "annualExpenses", "annualDividendPerShare", "currentSavings", "targetValue", "accountSize", "entryPrice", "stopPrice", "buyPrice", "sellPrice", "lumpSum", "purchaseCosts", "transport", "lodgingPerNight", "dailyFoodPerPerson", "activities", "localTransport", "other", "targetAnnualRevenue", "annualBusinessCosts", "fixedCosts", "pricePerUnit", "variableCostPerUnit"]);
-function localizedResultUnit(unit: string | undefined, locale: SupportedLocale) {
+function localizedResultUnit(unit: string | undefined, locale: SupportedLocale, monthUnit?: string) {
   if (!unit || locale === "ko") return unit;
+  if (unit === "개월" || unit === "months") return monthUnit ?? unit;
   if (locale === "fil") return unit.includes("year") ? "taon" : unit.replace("days", "araw");
   if (locale === "ru") return unit;
   if (locale === "uk") {
@@ -221,7 +222,7 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
           {copyState !== "idle" ? <p className="mt-2 text-sm" role="status">{copyState === "copied" ? dictionary?.common.copied ?? "Copied" : dictionary?.common.copyError ?? "Could not copy."}</p> : null}
           <dl className="mt-4 grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {success.results.map((item, index) => {
-              const resultUnit = localizedResultUnit(item.unit, locale);
+              const resultUnit = localizedResultUnit(item.unit, locale, dictionary?.units.month);
               const isMoney = item.unit === String.fromCodePoint(0xC6D0) || item.unit === "円" || (item.unit !== undefined && isCurrencyCode(item.unit));
               const value = typeof item.value === "number" ? (isMoney ? formatCurrency(item.value, currency, locale) : `${formatNumber(item.value, item.precision ?? 2, locale)}${resultUnit ? ` ${resultUnit}` : ""}`) : item.value;
               return <div key={`${item.label}-${index}`} className="min-w-0 rounded-lg bg-white px-3 py-3 sm:px-4"><dt className="break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]">{localizedResultLabel(item.label, index, content?.resultLabels)}</dt><dd className="mt-1 break-words text-lg font-bold tabular-nums text-teal-900 [overflow-wrap:anywhere] sm:text-xl">{value}</dd></div>;

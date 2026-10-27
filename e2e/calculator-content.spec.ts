@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -14,6 +14,7 @@ const fifthEditorialBatchSlugs = ["stock-profit-after-fees-calculator", "loan-ea
 const sixthEditorialBatchSlugs = ["freelancer-hourly-rate-calculator", "break-even-point-calculator", "savings-interest", "deposit-interest", "loan-interest"] as const;
 const seventhEditorialBatchSlugs = ["stock-average-price", "dividend", "profit-loss", "margin", "markup"] as const;
 const eighthEditorialBatchSlugs = ["product-margin", "salary-conversion", "bmi", "pace", "fuel-cost"] as const;
+const ninthEditorialBatchSlugs = ["ltv", "dti", "dsr", "loan-refinance", "prepayment-fee"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -62,7 +63,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -76,7 +77,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -96,6 +97,24 @@ test.describe("product margin, salary, BMI, pace, and fuel detail SSR across all
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article h2").first()).toBeVisible();
       await expect(page.locator("article")).toContainText(eighthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
+    });
+  }
+});
+
+test.describe("loan ratio and refinance detail SSR across all locales", () => {
+  for (const [index, locale] of locales.entries()) {
+    const slug = ninthEditorialBatchSlugs[index % ninthEditorialBatchSlugs.length]!;
+    test(locale + "/" + slug + " renders its localized example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toContain(ninthReviewedBatchExampleNotes[locale]?.[slug]);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article h1")).toBeVisible();
+      await expect(page.locator("article h2").first()).toBeVisible();
+      await expect(page.locator("article")).toContainText(ninthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
     });
   }
 });
@@ -205,6 +224,23 @@ test.describe("product, salary, health-metric, and travel-detail cards at requir
   }
 });
 
+test.describe("loan ratio and refinancing cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px loan ratio and fee pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of ninthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dd").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ body: document.body.scrollWidth, viewport: document.documentElement.clientWidth }));
+        expect(dimensions.body, slug).toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
 test.describe("reviewed calculators at required viewport widths", () => {
   for (const width of viewports) {
     test(width + "px pages have visible cards and no horizontal overflow", async ({ page }) => {
@@ -278,6 +314,11 @@ test.describe("calculator input and result flows", () => {
     ["rent-vs-buy-calculator", "With a 120,000 home, 20% down, zero-interest loan"],
     ["electricity-cost-calculator", "One 100 W device used 5 hours daily for 30 days consumes 15 kWh"],
     ["travel-budget-calculator", "Transport 100, two nights at 50, food for 2 people"],
+      ["ltv", "With a home value of 50,000,000 and a loan of 20,000,000"],
+      ["dti", "Annual income 50,000,000, mortgage principal and interest 10,000,000"],
+      ["dsr", "Annual income 50,000,000 and entered annual principal and interest of 10,000,000"],
+      ["loan-refinance", "For a 10,000,000 balance, old terms of 12% for 12 months"],
+      ["prepayment-fee", "Applying the entered 1.5% fee rate to a 10,000,000 payment"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
@@ -606,6 +647,48 @@ test.describe("calculator input and result flows", () => {
     await expect(page.locator('[aria-live="polite"]')).toContainText("10 L");
     await expect(page.locator('[aria-live="polite"]')).toContainText("17,000");
 
+    expect(errors).toEqual([]);
+  });
+
+  test("LTV, DTI, DSR, refinance, and fee examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/ltv");
+    await waitForCalculatorHydration(page);
+    await page.locator("#ltv-homePrice").fill("50000000");
+    await page.locator("#ltv-loan").fill("20000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("40 %");
+
+    await page.goto("/en/calculators/dti");
+    await waitForCalculatorHydration(page);
+    await page.locator("#dti-income").fill("50000000");
+    await page.locator("#dti-mortgage").fill("10000000");
+    await page.locator("#dti-otherInterest").fill("1000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("22 %");
+
+    await page.goto("/en/calculators/dsr");
+    await waitForCalculatorHydration(page);
+    await page.locator("#dsr-income").fill("50000000");
+    await page.locator("#dsr-repayment").fill("10000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("20 %");
+
+    await page.goto("/en/calculators/loan-refinance");
+    await waitForCalculatorHydration(page);
+    for (const [field, value] of [["balance", "10000000"], ["oldRate", "12"], ["oldMonths", "12"], ["newRate", "6"], ["newMonths", "12"], ["fees", "100000"]]) {
+      await page.locator("#loan-refinance-" + field).fill(value);
+    }
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("233,883");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("4 months");
+
+    await page.goto("/en/calculators/prepayment-fee");
+    await waitForCalculatorHydration(page);
+    await page.locator("#prepayment-fee-amount").fill("10000000");
+    await page.locator("#prepayment-fee-rate").fill("1.5");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("150,000");
     expect(errors).toEqual([]);
   });
 

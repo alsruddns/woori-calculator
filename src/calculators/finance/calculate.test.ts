@@ -2,6 +2,12 @@ import { describe, expect, it } from "vitest";
 import { calculateCompoundInterest, calculateDepositInterest, calculateDsr, calculateDti, calculateLoanInterest, calculateLtv, calculateSavingsInterest, calculateSimpleInterest, calculateStockAveragePrice } from "@/calculators/finance/calculate";
 
 describe("finance calculator functions", () => {
+  it("matches worked LTV, simplified DTI, and basic DSR examples", () => {
+    expect(calculateLtv({ homePrice: "50000000", loan: "20000000" })).toMatchObject({ results: [{ value: 40, unit: "%" }] });
+    expect(calculateDti({ income: "50000000", mortgage: "10000000", otherInterest: "1000000" })).toMatchObject({ results: [{ value: 22, unit: "%" }] });
+    expect(calculateDsr({ income: "50000000", repayment: "10000000" })).toMatchObject({ results: [{ value: 20, unit: "%" }] });
+  });
+
   it("calculates stock average price and all requested investment results", () => {
     expect(calculateStockAveragePrice({ existingQuantity: "10", existingAveragePrice: "10000", additionalQuantity: "10", additionalPrice: "8000" })).toMatchObject({
       results: [

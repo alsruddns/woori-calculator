@@ -6,11 +6,11 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 40
+- COMPLETE: 45
 - VALIDATING: 5
 - DRAFT: 10
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 15
+- PENDING static calculators: 10
 - Latest audit signals: short-content 47 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
@@ -19,6 +19,8 @@ This register separates earlier result-note work from full content completion. A
 COMPLETE requires calculator-specific purpose, input/unit meaning, implemented formula and assumptions, engine-matched example, result interpretation, limitations, useful FAQ, related links where present, all 26 localized page records, SSR body verification, and passing content/locale checks. Native-speaker review is not claimed.
 
 ## Latest completed batch
+
+ltv, dti, dsr, loan-refinance, prepayment-fee. Added individual worked examples and interpretation limits in all 26 locales. Finance/content tests (29), TypeScript, lint, and diff checks passed. Playwright verified localized example text in initial SSR HTML across 26 locales, five live calculation flows, and five pages at all eight required widths without horizontal overflow. Fixed refinance month-unit rendering to use the active locale dictionary. No policy rates or approval rules were changed. Native-speaker review was not performed.
 
 product-margin, salary-conversion, bmi, pace, fuel-cost. Added distinct 26-locale examples and interpretations tied to each implemented model. Engine/content tests passed (40); TypeScript, lint, and diff checks passed. Playwright verified five browser calculation flows, initial SSR examples across all 26 locales, and all eight required viewport widths without horizontal overflow. The AdSense external script logged its own console warning; no calculator page errors were reported. Native-speaker review was not performed.
 
@@ -36,7 +38,7 @@ fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-retur
 
 ## Current batch under validation
 
-ltv, dti, dsr, loan-refinance, prepayment-fee. Inspect the implemented finance formulas and keep user-entered assumptions separate from lender-specific policy.
+loan-affordability, hourly-wage, fuel-efficiency, calorie-per-serving, trip-split. Inspect current formulas and user-entered assumptions before writing examples.
 
 ## Calculator register
 
@@ -75,17 +77,17 @@ ltv, dti, dsr, loan-refinance, prepayment-fee. Inspect the implemented finance f
 | `savings-interest` | finance | STATIC | 26/26 | COMPLETE | Monthly contribution example matches the engine's simple-rate approximation; product terms excluded. |
 | `deposit-interest` | finance | STATIC | 26/26 | COMPLETE | Six-month simple-interest example matches engine output; compounding and tax excluded. |
 | `loan-interest` | finance | STATIC | 26/26 | COMPLETE | Equal-payment scenario matches monthly rounded schedule; browser output verified, lender terms excluded. |
-| `ltv` | finance | STATIC | 26/26 | VALIDATING | Selected for next batch; inspect implemented inputs, calculation period, and fee assumptions. |
-| `dti` | finance | STATIC | 26/26 | VALIDATING | Selected for next batch; inspect implemented inputs, calculation period, and fee assumptions. |
-| `dsr` | finance | STATIC | 26/26 | VALIDATING | Selected for next batch; inspect implemented inputs, calculation period, and fee assumptions. |
+| `ltv` | finance | STATIC | 26/26 | COMPLETE | 40% loan-to-home value example verified against the ratio engine; no approval or regulatory cap is implied. |
+| `dti` | finance | STATIC | 26/26 | COMPLETE | 22% example matches the simplified annual mortgage principal/interest plus other-debt interest calculation; regulatory formulas excluded. |
+| `dsr` | finance | STATIC | 26/26 | COMPLETE | 20% example matches entered total annual debt principal and interest divided by income; stress tests and lender rules excluded. |
 | `stock-average-price` | finance | STATIC | 26/26 | COMPLETE | Weighted cost-basis example verified; fees excluded and target-return mode left unchanged. |
 | `dividend` | finance | STATIC | 26/26 | COMPLETE | Gross dividend and entered-price yield example verified; taxes and future payments excluded. |
 | `profit-loss` | finance | STATIC | 26/26 | COMPLETE | User-entered purchase/sale costs example matches net proceeds and return formula. |
-| `loan-refinance` | finance | STATIC | 26/26 | VALIDATING | Selected for next batch; inspect implemented inputs, calculation period, and fee assumptions. |
-| `prepayment-fee` | finance | STATIC | 26/26 | VALIDATING | Selected for next batch; inspect implemented inputs, calculation period, and fee assumptions. |
-| `loan-affordability` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `loan-refinance` | finance | STATIC | 26/26 | COMPLETE | Net-savings example matches monthly annuity formulas and rounded output; fixed-rate, equal-payment and fee assumptions stated. |
+| `prepayment-fee` | finance | STATIC | 26/26 | COMPLETE | 1.5% of entered repayment example matches engine; exemptions, elapsed-time schedules, and contract-specific fees excluded. |
+| `loan-affordability` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
 | `salary-conversion` | salary | STATIC | 26/26 | COMPLETE | Monthly-to-annual example matches the multiply-by-12 engine; no payroll deductions applied. |
-| `hourly-wage` | salary | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `hourly-wage` | salary | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
 | `annual-leave-allowance` | salary | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `vat` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `unit-price` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
@@ -101,15 +103,15 @@ ltv, dti, dsr, loan-refinance, prepayment-fee. Inspect the implemented finance f
 | `area` | life | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `pace` | life | STATIC | 26/26 | COMPLETE | Distance/time example matches pace and speed outputs; unit labels verified in browser. |
 | `fuel-cost` | life | STATIC | 26/26 | COMPLETE | Distance/efficiency/entered-price example matches fuel volume and cost outputs; price is user supplied. |
-| `fuel-efficiency` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `calorie-per-serving` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `fuel-efficiency` | life | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
+| `calorie-per-serving` | life | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
 | `tenure` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `time-arithmetic` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `pregnancy` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `utility-bill` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `vehicle-cost` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `taxi-fare` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `trip-split` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `trip-split` | life | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
 | `tip-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `unit-converter` | math | STATIC | 26/26 | COMPLETE | Mile conversion and temperature offset example match engine tests; browser flow and responsive checks passed. |
 | `unemployment-benefit` | salary | POLICY | 26/26 | BLOCKED | Official rule and effective date need verification; do not change policy values. |
