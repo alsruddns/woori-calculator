@@ -183,7 +183,7 @@ export function getDictionary(locale: SupportedLocale): LocaleDictionary {
       distinguished.calculators[page.slug as keyof typeof distinguished.calculators]
         ?? { ...Object.fromEntries(Object.entries(page).filter(([key]) => key !== "calculate")), related: page.relatedCalculatorIds, options: {} },
     ])) as LocaleDictionary["calculators"];
-    dictionary = { ...distinguished, calculators: improveKoreanContent(completeKoreanContent) };
+    dictionary = { ...distinguished, calculators: improveLocalizedQualityContent("ko", improveKoreanContent(completeKoreanContent)) };
   } else {
     dictionary = { ...distinguished, calculators: improveLocalizedQualityContent(locale, distinguished.calculators) };
   }

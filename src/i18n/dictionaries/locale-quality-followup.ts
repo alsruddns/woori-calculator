@@ -4,23 +4,64 @@ import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictio
 type LocaleFollowup = Partial<Record<string, { description?: string; exampleNote?: string }>>;
 
 export const localeContentFollowupTargets = {
-  ru: ["percentage", "unit-price", "unit-converter", "area"],
-  tr: ["percentage", "proportion", "unit-price", "unit-converter", "probability", "weighted-average", "workdays"],
-  pl: ["percentage", "proportion", "unit-price", "unit-converter", "area", "decimal-fraction", "workdays"],
-  fil: ["percentage", "proportion", "unit-price"],
-  bn: ["percentage", "proportion", "unit-price", "decimal-fraction"],
-  uk: ["percentage", "proportion", "unit-price", "unit-converter", "area"],
-  ms: ["percentage", "unit-price", "unit-converter", "probability", "weighted-average", "workdays", "area", "decimal-fraction"],
-  sv: ["percentage", "unit-price", "unit-converter", "area", "decimal-fraction"],
-  cs: ["percentage", "unit-price", "unit-converter", "probability", "weighted-average"],
-  ro: ["percentage", "unit-price", "unit-converter", "probability", "weighted-average"],
-  el: ["percentage", "unit-price", "unit-converter", "probability", "area", "decimal-fraction"],
-  en: ["percentage", "weighted-average", "median", "probability", "unit-price", "area", "utility-bill"],
-  ja: ["workdays", "area"],
-  zh: ["median", "age", "workdays", "area"],
-  th: ["average", "bmi"],
-  "zh-tw": ["average", "cagr", "age", "bmi", "calorie-per-serving"],
+  ru: ["percentage", "unit-price", "unit-converter", "area", "average", "weighted-average", "probability"],
+  tr: ["percentage", "proportion", "unit-price", "unit-converter", "probability", "weighted-average", "workdays", "average", "area"],
+  pl: ["percentage", "proportion", "unit-price", "unit-converter", "area", "decimal-fraction", "workdays", "average", "weighted-average", "probability"],
+  fil: ["percentage", "proportion", "unit-price", "average", "weighted-average", "probability", "area"],
+  bn: ["percentage", "proportion", "unit-price", "decimal-fraction", "average", "weighted-average", "probability", "area"],
+  uk: ["percentage", "proportion", "unit-price", "unit-converter", "area", "average", "weighted-average", "probability"],
+  ms: ["percentage", "unit-price", "unit-converter", "probability", "weighted-average", "workdays", "area", "decimal-fraction", "average"],
+  sv: ["percentage", "unit-price", "unit-converter", "area", "decimal-fraction", "average", "weighted-average", "probability"],
+  cs: ["percentage", "unit-price", "unit-converter", "probability", "weighted-average", "average", "area"],
+  ro: ["percentage", "unit-price", "unit-converter", "probability", "weighted-average", "average", "area"],
+  el: ["percentage", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "average", "weighted-average"],
+  en: ["percentage", "weighted-average", "median", "probability", "unit-price", "area", "utility-bill", "average"],
+  ja: ["workdays", "area", "average", "weighted-average", "unit-price", "probability"],
+  zh: ["median", "age", "workdays", "area", "average", "weighted-average", "unit-price", "probability"],
+  th: ["average", "bmi", "weighted-average", "unit-price", "probability", "area"],
+  "zh-tw": ["average", "cagr", "age", "bmi", "calorie-per-serving", "weighted-average", "unit-price", "probability", "area"],
+  it: ["average", "weighted-average", "unit-price", "probability", "area"],
+  nl: ["average", "weighted-average", "unit-price", "probability", "area"],
+  hi: ["average", "weighted-average", "unit-price", "probability", "area"],
+  es: ["average", "weighted-average", "unit-price", "probability", "area"],
+  "pt-br": ["average", "weighted-average", "unit-price", "probability", "area"],
+  de: ["average", "weighted-average", "unit-price", "probability", "area"],
+  fr: ["average", "weighted-average", "unit-price", "probability", "area"],
+  vi: ["average", "weighted-average", "unit-price", "probability", "area"],
+  id: ["average", "weighted-average", "unit-price", "probability", "area"],
+  ko: ["average", "weighted-average", "unit-price", "probability", "area"],
 } as const satisfies Partial<Record<SupportedLocale, readonly string[]>>;
+
+// Calculator-specific interpretation notes for this editorial batch. Existing
+// follow-up notes below take precedence so previously reviewed copy is retained.
+const batchExampleNotes: Partial<Record<SupportedLocale, Partial<Record<string, string>>>> = {
+  it: { average: "Ogni valore ha lo stesso peso; un valore estremo può spostare sensibilmente la media.", "weighted-average": "Un peso maggiore incide di più; moltiplicare tutti i pesi per lo stesso fattore non cambia la media.", "unit-price": "Prima del confronto uniforma quantità e unità; il prezzo unitario non considera qualità o quantità utilizzabile.", probability: "La probabilità di almeno un successo presuppone prove indipendenti.", area: "Il pyeong è un'unità di superficie tradizionale coreana; nei documenti immobiliari verifica anche i metri quadrati." },
+  nl: { average: "Elke waarde telt even zwaar; een uitschieter kan het gemiddelde merkbaar verschuiven.", "weighted-average": "Een groter gewicht telt sterker mee; dezelfde factor voor alle gewichten laat het gemiddelde gelijk.", "unit-price": "Maak aantallen en eenheden gelijk voordat je vergelijkt; de eenheidsprijs zegt niets over kwaliteit of bruikbare hoeveelheid.", probability: "De kans op minstens één succes gaat uit van onafhankelijke pogingen.", area: "Pyeong is een traditionele Koreaanse oppervlaktemaat; controleer ook de vierkante meters in vastgoeddocumenten." },
+  hi: { average: "हर मान का भार समान है; बहुत बड़ा या छोटा मान औसत को अपनी ओर खींच सकता है।", "weighted-average": "अधिक भार वाला मान परिणाम को अधिक प्रभावित करता है; सभी भारों को एक ही गुणक से बदलने पर औसत नहीं बदलता।", "unit-price": "तुलना से पहले मात्रा और इकाई समान करें; प्रति इकाई कीमत गुणवत्ता या उपयोग योग्य मात्रा नहीं बताती।", probability: "कम से कम एक सफलता की संभावना यह मानती है कि हर प्रयास स्वतंत्र है।", area: "प्योंग कोरिया की पारंपरिक क्षेत्रफल इकाई है; संपत्ति के दस्तावेज़ में वर्ग मीटर भी जाँचें।" },
+  en: { average: "Each value counts equally; an unusually high or low value can pull the mean away from the typical observation." },
+  ko: { average: "모든 값에 같은 비중을 둔 산술평균입니다. 매우 크거나 작은 값이 있으면 평균이 그 방향으로 움직일 수 있습니다.", "weighted-average": "가중치가 큰 값일수록 결과에 더 큰 영향을 줍니다. 가중치를 모두 같은 배수로 바꿔도 평균값은 달라지지 않습니다.", "unit-price": "비교하려는 상품의 수량과 단위를 먼저 맞추세요. 포장 단위가격은 품질이나 실제 사용량 차이를 반영하지 않습니다.", probability: "반복 시행에서 한 번 이상 성공할 확률은 각 시행이 서로 독립이라는 가정에 따릅니다.", area: "평은 한국에서 쓰이는 관습 단위입니다. 공식 부동산 자료에서는 제곱미터 표기를 함께 확인하세요." },
+  ja: { average: "各データを同じ重みで扱う算術平均です。極端に大きい値や小さい値があると平均も引っ張られます。", "weighted-average": "重みが大きい値ほど結果への影響が大きくなります。すべての重みを同じ倍率で変えても平均は変わりません。", "unit-price": "比較する商品の数量と単位をそろえてください。単価だけでは品質や実際に使える量は比べられません。", probability: "複数回の試行で1回以上成功する確率は、各試行が独立しているという前提で計算します。" },
+  zh: { average: "每个数值权重相同；特别大或特别小的数值会把算术平均拉向其方向。", "weighted-average": "权重越大，对结果的影响越大。所有权重同时乘以相同倍数，平均值不变。", "unit-price": "比较前先统一商品数量和计量单位。单价不反映品质或实际可用量的差异。", probability: "多次试验至少成功一次的结果以各次试验相互独立为前提。" },
+  "zh-tw": { "weighted-average": "權重越大，該數值對結果的影響越大；所有權重同乘一個倍數，平均值仍不變。", "unit-price": "比較前先統一商品數量與計量單位；單價不會反映品質或實際可用量的差異。", probability: "多次試驗至少成功一次的結果，假設每次試驗彼此獨立。" },
+  es: { average: "Cada dato cuenta por igual; un valor extremo puede desplazar la media respecto al valor habitual." , "weighted-average": "Un peso mayor influye más en el resultado; multiplicar todos los pesos por el mismo factor no cambia la media.", "unit-price": "Antes de comparar, iguala la cantidad y la unidad; el precio unitario no refleja calidad ni cantidad aprovechable.", probability: "La probabilidad de lograrlo al menos una vez supone que los intentos son independientes.", area: "El pyeong es una unidad tradicional coreana; consulta también los metros cuadrados en documentos inmobiliarios." },
+  "pt-br": { average: "Cada valor tem o mesmo peso; um valor muito alto ou baixo pode deslocar a média em relação ao conjunto.", "weighted-average": "Um peso maior exerce mais influência; multiplicar todos os pesos pelo mesmo fator não altera a média.", "unit-price": "Antes de comparar, padronize a quantidade e a unidade; o preço unitário não considera qualidade nem desperdício.", probability: "A chance de obter ao menos um sucesso pressupõe tentativas independentes.", area: "Pyeong é uma unidade tradicional coreana; confira também os metros quadrados em documentos imobiliários." },
+  de: { average: "Jeder Wert zählt gleich viel; ein Ausreißer kann den Mittelwert deutlich verschieben.", "weighted-average": "Ein größeres Gewicht beeinflusst das Ergebnis stärker; eine gemeinsame Skalierung aller Gewichte ändert den Mittelwert nicht.", "unit-price": "Vergleichen Sie gleiche Mengen und Einheiten. Der Stückpreis berücksichtigt weder Qualität noch nutzbare Menge.", probability: "Die Chance auf mindestens einen Erfolg setzt unabhängige Versuche voraus.", area: "Pyeong ist eine traditionelle koreanische Flächeneinheit; maßgebliche Immobilienunterlagen verwenden meist Quadratmeter." },
+  fr: { average: "Chaque valeur compte autant; une valeur extrême peut déplacer la moyenne loin du centre habituel.", "weighted-average": "Un poids plus élevé influence davantage le résultat; multiplier tous les poids par le même facteur ne change pas la moyenne.", "unit-price": "Ramenez les produits à la même quantité et unité avant de comparer; le prix unitaire n’inclut ni qualité ni pertes.", probability: "La probabilité d’au moins un succès suppose des essais indépendants.", area: "Le pyeong est une unité de surface coréenne traditionnelle; vérifiez aussi les mètres carrés dans les documents immobiliers." },
+  vi: { average: "Mỗi giá trị có trọng số như nhau; một giá trị quá lớn hoặc quá nhỏ có thể kéo lệch số trung bình.", "weighted-average": "Trọng số lớn tạo ảnh hưởng lớn hơn; nhân mọi trọng số với cùng một hệ số không làm đổi kết quả.", "unit-price": "Hãy quy đổi về cùng số lượng và đơn vị trước khi so sánh; đơn giá không phản ánh chất lượng hay phần sử dụng được.", probability: "Xác suất thành công ít nhất một lần giả định các lượt thử độc lập.", area: "Pyeong là đơn vị diện tích truyền thống của Hàn Quốc; hồ sơ bất động sản thường dùng mét vuông." },
+  id: { average: "Setiap nilai dihitung sama besar; nilai yang sangat tinggi atau rendah dapat menarik rata-rata menjauh.", "weighted-average": "Bobot lebih besar memberi pengaruh lebih kuat; mengalikan semua bobot dengan faktor yang sama tidak mengubah rata-rata.", "unit-price": "Samakan jumlah dan satuan sebelum membandingkan; harga satuan tidak memperhitungkan mutu atau jumlah yang dapat digunakan.", probability: "Peluang berhasil setidaknya sekali mengasumsikan setiap percobaan saling bebas.", area: "Pyeong adalah satuan luas tradisional Korea; dokumen properti biasanya memakai meter persegi." },
+  th: { average: "ค่านี้ให้น้ำหนักข้อมูลทุกตัวเท่ากัน ค่าที่สูงหรือต่ำผิดปกติอาจดึงค่าเฉลี่ยให้เปลี่ยนไปมาก", "weighted-average": "ค่าน้ำหนักที่มากกว่าจะส่งผลต่อผลลัพธ์มากกว่า และการคูณน้ำหนักทุกตัวด้วยค่าเดียวกันไม่ทำให้ค่าเฉลี่ยเปลี่ยน", "unit-price": "ปรับจำนวนและหน่วยให้เท่ากันก่อนเปรียบเทียบ ราคาต่อหน่วยไม่ได้สะท้อนคุณภาพหรือปริมาณที่ใช้ได้จริง", probability: "โอกาสสำเร็จอย่างน้อยหนึ่งครั้งตั้งอยู่บนสมมติฐานว่าการทดลองแต่ละครั้งเป็นอิสระ", area: "พย็องเป็นหน่วยพื้นที่ดั้งเดิมของเกาหลี เอกสารอสังหาริมทรัพย์ควรตรวจสอบหน่วยตารางเมตรด้วย" },
+  ru: { average: "Каждое значение учитывается одинаково; выброс может заметно сместить среднее.", "weighted-average": "Больший вес сильнее влияет на результат; умножение всех весов на один коэффициент не меняет среднее.", probability: "Вероятность хотя бы одного успеха предполагает независимость попыток." },
+  tr: { average: "Her değer eşit ağırlıktadır; uç bir değer aritmetik ortalamayı belirgin biçimde etkileyebilir.", "unit-price": "Karşılaştırmadan önce miktar ve birimleri eşitleyin; birim fiyat kaliteyi veya kullanılabilir miktarı göstermez.", area: "Pyeong geleneksel bir Kore alan birimidir; taşınmaz belgelerinde metrekareyi de kontrol edin." },
+  pl: { average: "Każda wartość ma taką samą wagę; skrajny wynik może wyraźnie przesunąć średnią.", "weighted-average": "Większa waga mocniej wpływa na wynik; pomnożenie wszystkich wag przez ten sam czynnik nie zmienia średniej.", probability: "Szansa co najmniej jednego sukcesu zakłada niezależność kolejnych prób." },
+  fil: { average: "Magkakapantay ang bigat ng bawat halaga; maaaring hilahin ng napakataas o mababang halaga ang average.", "weighted-average": "Mas malaki ang epekto ng mas mataas na timbang; hindi nagbabago ang average kung pare-parehong minultiply ang lahat ng timbang.", probability: "Ipinapalagay ng tsansang magtagumpay kahit isang beses na magkakahiwalay ang bawat pagsubok.", area: "Tradisyonal na yunit ng lawak sa Korea ang pyeong; tingnan din ang metro kuwadrado sa mga dokumento ng ari-arian." },
+  bn: { average: "প্রতিটি মানের গুরুত্ব সমান; খুব বড় বা ছোট মান গাণিতিক গড়কে নিজের দিকে টেনে নিতে পারে।", "weighted-average": "ওজন বেশি হলে সেই মানের প্রভাবও বেশি; সব ওজনকে একই সংখ্যা দিয়ে গুণ করলেও গড় বদলায় না।", probability: "অন্তত একবার সফল হওয়ার হিসাবটি প্রতিটি প্রচেষ্টা স্বাধীন—এই অনুমানের ওপর নির্ভর করে।", area: "পিয়ং কোরিয়ার প্রচলিত জমির মাপ; সম্পত্তির নথিতে বর্গমিটারের মানও যাচাই করুন।" },
+  uk: { average: "Кожне значення має однакову вагу; дуже велике або мале значення може помітно змістити середнє.", "weighted-average": "Більша вага сильніше впливає на результат; множення всіх ваг на однаковий коефіцієнт не змінює середнє.", probability: "Імовірність хоча б одного успіху передбачає незалежність спроб." },
+  ms: { average: "Setiap nilai diberi wajaran yang sama; nilai luar biasa tinggi atau rendah boleh mengubah purata dengan ketara.", "unit-price": "Samakan kuantiti dan unit sebelum membandingkan; harga seunit tidak mengambil kira mutu atau jumlah yang boleh digunakan.", area: "Pyeong ialah unit keluasan tradisional Korea; dokumen hartanah biasanya menggunakan meter persegi." },
+  sv: { average: "Alla värden väger lika; ett extremvärde kan dra medelvärdet tydligt åt sitt håll.", "weighted-average": "En större vikt påverkar resultatet mer; om alla vikter skalas lika ändras inte medelvärdet.", probability: "Sannolikheten för minst en träff förutsätter oberoende försök." },
+  cs: { average: "Každá hodnota má stejnou váhu; odlehlá hodnota může průměr výrazně posunout.", "unit-price": "Před porovnáním sjednoťte množství a jednotky; jednotková cena nezohledňuje kvalitu ani využitelné množství.", area: "Pyeong je tradiční korejská plošná jednotka; v dokumentech k nemovitostem ověřte také metry čtvereční." },
+  ro: { average: "Fiecare valoare are aceeași pondere; o valoare extremă poate deplasa vizibil media.", "unit-price": "Uniformizați cantitatea și unitatea înainte de comparație; prețul unitar nu include calitatea sau cantitatea utilizabilă.", area: "Pyeong este o unitate tradițională coreeană de suprafață; verificați și metri pătrați în actele imobiliare." },
+  el: { average: "Κάθε τιμή έχει ίσο βάρος· μια ακραία τιμή μπορεί να μετακινήσει αισθητά τον αριθμητικό μέσο όρο.", "weighted-average": "Μεγαλύτερο βάρος επηρεάζει περισσότερο το αποτέλεσμα· ο ίδιος πολλαπλασιασμός όλων των βαρών δεν αλλάζει τον μέσο όρο.", "unit-price": "Εξισώστε ποσότητες και μονάδες πριν από τη σύγκριση· η τιμή μονάδας δεν αποτυπώνει ποιότητα ή αξιοποιήσιμη ποσότητα.", area: "Το pyeong είναι παραδοσιακή κορεατική μονάδα επιφάνειας· ελέγξτε και τα τετραγωνικά μέτρα στα έγγραφα ακινήτου." },
+};
 
 const followups: Partial<Record<SupportedLocale, LocaleFollowup>> = {
   ru: {
@@ -138,15 +179,16 @@ const followups: Partial<Record<SupportedLocale, LocaleFollowup>> = {
 };
 
 export function improveLocalizedQualityContent(locale: SupportedLocale, content: LocaleDictionary["calculators"]): LocaleDictionary["calculators"] {
-  const additions = followups[locale];
-  if (!additions) return content;
+  const additions = followups[locale] ?? {};
+  const batchNotes = batchExampleNotes[locale] ?? {};
   return Object.fromEntries(Object.entries(content).map(([slug, page]) => {
-    const addition = additions[slug];
-    if (!page || !addition) return [slug, page];
+    const addition = additions[slug] ?? {};
+    const exampleNote = addition.exampleNote ?? batchNotes[slug];
+    if (!page || (!addition.description && !exampleNote)) return [slug, page];
     const updated: LocalizedCalculatorContent = {
       ...page,
       ...(addition.description ? { description: `${page.description} ${addition.description}` } : {}),
-      ...(addition.exampleNote ? { example: { ...page.example, answer: `${page.example.answer} ${addition.exampleNote}` } } : {}),
+      ...(exampleNote ? { example: { ...page.example, answer: `${page.example.answer} ${exampleNote}` } } : {}),
     };
     return [slug, updated];
   })) as LocaleDictionary["calculators"];
