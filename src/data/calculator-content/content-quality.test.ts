@@ -4,7 +4,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
@@ -63,6 +63,7 @@ describe("calculator content quality", () => {
     expect(Object.keys(eighthReviewedBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
     expect(Object.keys(ninthReviewedBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
     expect(Object.keys(tenthReviewedBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
+    expect(Object.keys(eleventhReviewedBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
     const reviewedBatchSlugs = ["percentage", "ratio", "proportion", "median", "decimal-fraction"] as const;
     const secondReviewedBatchSlugs = ["change-rate", "discount", "cagr", "simple-interest", "compound-interest"] as const;
     const thirdReviewedBatchSlugs = ["date-difference", "dday", "age", "workdays", "unit-converter"] as const;
@@ -185,8 +186,20 @@ describe("calculator content quality", () => {
         expect(content!.faqs.length, `${locale}/${slug} FAQ`).toBeGreaterThanOrEqual(2);
         expect(supportedLocalesForCalculator(slug), `${locale}/${slug} public route`).toContain(locale);
       }
+      const eleventhReviewedBatchSlugs = ["annual-leave-allowance", "tenure", "time-arithmetic", "pregnancy", "utility-bill"] as const;
+      for (const slug of eleventhReviewedBatchSlugs) {
+        const content = localizedContent[slug];
+        expect(content, `${locale}/${slug} content`).toBeDefined();
+        expect(content!.description.length, `${locale}/${slug} purpose`).toBeGreaterThan(10);
+        expect(content!.howTo.length, `${locale}/${slug} input guidance`).toBeGreaterThan(10);
+        expect(content!.formula.length, `${locale}/${slug} formula`).toBeGreaterThan(8);
+        expect(content!.example.question.length, `${locale}/${slug} example input`).toBeGreaterThan(5);
+        expect(content!.example.answer).toContain(eleventhReviewedBatchExampleNotes[locale]?.[slug]);
+        expect(content!.faqs.length, `${locale}/${slug} FAQ`).toBeGreaterThanOrEqual(2);
+        expect(supportedLocalesForCalculator(slug), `${locale}/${slug} public route`).toContain(locale);
+      }
     }
-    const improvedExamples = new Set(["average", "percentage", "proportion", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "weighted-average", "workdays", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio", "change-rate", "discount", "cagr", "simple-interest", "compound-interest", "date-difference", "dday", "age", ...fourthReviewedBatchSlugs, ...fifthReviewedBatchSlugs, "freelancer-hourly-rate-calculator", "break-even-point-calculator", "savings-interest", "deposit-interest", "loan-interest", "stock-average-price", "dividend", "profit-loss", "margin", "markup", "product-margin", "salary-conversion", "bmi", "pace", "fuel-cost", "ltv", "dti", "dsr", "loan-refinance", "prepayment-fee", "loan-affordability", "hourly-wage", "fuel-efficiency", "calorie-per-serving", "trip-split"]);
+    const improvedExamples = new Set(["average", "percentage", "proportion", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "weighted-average", "workdays", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio", "change-rate", "discount", "cagr", "simple-interest", "compound-interest", "date-difference", "dday", "age", ...fourthReviewedBatchSlugs, ...fifthReviewedBatchSlugs, "freelancer-hourly-rate-calculator", "break-even-point-calculator", "savings-interest", "deposit-interest", "loan-interest", "stock-average-price", "dividend", "profit-loss", "margin", "markup", "product-margin", "salary-conversion", "bmi", "pace", "fuel-cost", "ltv", "dti", "dsr", "loan-refinance", "prepayment-fee", "loan-affordability", "hourly-wage", "fuel-efficiency", "calorie-per-serving", "trip-split", "annual-leave-allowance", "tenure", "time-arithmetic", "pregnancy", "utility-bill"]);
     for (const [locale, slugs] of Object.entries(localeContentFollowupTargets)) {
       expect(slugs.every((slug) => publicSlugs.has(slug))).toBe(true);
       const localizedContent = getDictionary(locale as SupportedLocale).calculators;

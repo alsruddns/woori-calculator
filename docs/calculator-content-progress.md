@@ -6,8 +6,8 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 50
-- VALIDATING: 5
+- COMPLETE: 55
+- VALIDATING: 0
 - DRAFT: 10
 - BLOCKED policy calculators: 99
 - PENDING static calculators: 5
@@ -19,6 +19,8 @@ This register separates earlier result-note work from full content completion. A
 COMPLETE requires calculator-specific purpose, input/unit meaning, implemented formula and assumptions, engine-matched example, result interpretation, limitations, useful FAQ, related links where present, all 26 localized page records, SSR body verification, and passing content/locale checks. Native-speaker review is not claimed.
 
 ## Latest completed batch
+
+annual-leave-allowance, tenure, time-arithmetic, pregnancy, utility-bill. Added distinct arithmetic/date examples and interpretation limits across all 26 locales. Date-life/finance/content tests passed (14); TypeScript, lint, and diff checks passed. Playwright verified localized SSR example content on all 26 locale routes, one browser calculation flow, and all eight viewport widths without horizontal overflow. No legal leave entitlement, clinical due-date guarantee, tariff schedule, tax, or additional fee rules are inferred. Native-speaker review was not performed.
 
 loan-affordability, hourly-wage, fuel-efficiency, calorie-per-serving, trip-split. Added distinct worked examples and interpretation boundaries across all 26 locales. Finance/date-life/content tests passed (37); TypeScript, lint, and diff checks passed. Playwright verified initial SSR examples across 26 locales, five live calculation flows, and five detail pages at all eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
@@ -40,7 +42,7 @@ fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-retur
 
 ## Current batch under validation
 
-annual-leave-allowance, tenure, time-arithmetic, pregnancy, utility-bill. Inspect the implemented arithmetic, date boundaries, user-entered tariff, and non-policy limitations.
+None. The latest five-calculator batch passed engine/content tests, locale SSR, live calculation flow, and responsive checks.
 
 ## Calculator register
 
@@ -90,7 +92,7 @@ annual-leave-allowance, tenure, time-arithmetic, pregnancy, utility-bill. Inspec
 | `loan-affordability` | finance | STATIC | 26/26 | COMPLETE | Zero-rate annuity example matches engine principal, total payment, and interest; not an approval estimate. |
 | `salary-conversion` | salary | STATIC | 26/26 | COMPLETE | Monthly-to-annual example matches the multiply-by-12 engine; no payroll deductions applied. |
 | `hourly-wage` | salary | STATIC | 26/26 | COMPLETE | Monthly-to-hourly example matches entered-hours calculation; no statutory wage rule is asserted. |
-| `annual-leave-allowance` | salary | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
+| `annual-leave-allowance` | salary | STATIC | 26/26 | COMPLETE | Example: 100,000 times 3 days = 300,000; arithmetic only, no statutory entitlement assessment. Engine, locale SSR, and responsive checks passed. |
 | `vat` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `unit-price` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `margin` | finance | STATIC | 26/26 | COMPLETE | Sales-based margin denominator distinguished and example verified. |
@@ -107,10 +109,10 @@ annual-leave-allowance, tenure, time-arithmetic, pregnancy, utility-bill. Inspec
 | `fuel-cost` | life | STATIC | 26/26 | COMPLETE | Distance/efficiency/entered-price example matches fuel volume and cost outputs; price is user supplied. |
 | `fuel-efficiency` | life | STATIC | 26/26 | COMPLETE | 520 km and 40 L example matches both km/L and L/100 km engine outputs. |
 | `calorie-per-serving` | life | STATIC | 26/26 | COMPLETE | 600 kcal across three servings and one portion returns 200 kcal; proportional estimate only. |
-| `tenure` | date-time | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
-| `time-arithmetic` | date-time | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
-| `pregnancy` | date-time | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
-| `utility-bill` | life | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
+| `tenure` | date-time | STATIC | 26/26 | COMPLETE | Calendar example: 2024-01-15 to 2025-03-20 = 1y 2m 5d, 14 complete months, 430 elapsed days. Engine, locale SSR, and responsive checks passed. |
+| `time-arithmetic` | date-time | STATIC | 26/26 | COMPLETE | Example: 2h45m + 1h30m = 4h15m / 255 minutes. Engine, locale SSR, and responsive checks passed. |
+| `pregnancy` | date-time | STATIC | 26/26 | COMPLETE | LMP 2026-01-01 + 280 days = estimated 2026-10-08; estimate only, clinical advice takes priority. Engine, locale SSR, and responsive checks passed. |
+| `utility-bill` | life | STATIC | 26/26 | COMPLETE | Example: usage 20 times entered rate 500 + base 1,000 = 11,000; excludes tiered tariffs, taxes, and fees. Engine, locale SSR, and responsive checks passed. |
 | `vehicle-cost` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `taxi-fare` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `trip-split` | life | STATIC | 26/26 | COMPLETE | 10,000 split among three matches fractional share and integer remainder allocation. |
@@ -218,4 +220,4 @@ annual-leave-allowance, tenure, time-arithmetic, pregnancy, utility-bill. Inspec
 
 ## Next batch queue
 
-After the current batch is committed: change-rate, discount, cagr, simple-interest, compound-interest. Recheck status and existing copy before editing.
+change-rate, discount, cagr, simple-interest, compound-interest are already COMPLETE. Recheck the 10 DRAFT calculators and pending static rows; exclude policy calculations from factual completion until current official rules are verified.

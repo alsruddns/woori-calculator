@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -16,6 +16,7 @@ const seventhEditorialBatchSlugs = ["stock-average-price", "dividend", "profit-l
 const eighthEditorialBatchSlugs = ["product-margin", "salary-conversion", "bmi", "pace", "fuel-cost"] as const;
 const ninthEditorialBatchSlugs = ["ltv", "dti", "dsr", "loan-refinance", "prepayment-fee"] as const;
 const tenthEditorialBatchSlugs = ["loan-affordability", "hourly-wage", "fuel-efficiency", "calorie-per-serving", "trip-split"] as const;
+const eleventhEditorialBatchSlugs = ["annual-leave-allowance", "tenure", "time-arithmetic", "pregnancy", "utility-bill"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -64,7 +65,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs, ...tenthEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs, ...tenthEditorialBatchSlugs, ...eleventhEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -78,7 +79,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? tenthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? tenthReviewedBatchExampleNotes[locale]?.[slug] ?? eleventhReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -134,6 +135,24 @@ test.describe("loan, wage, fuel, food, and bill-split SSR across all locales", (
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article h2").first()).toBeVisible();
       await expect(page.locator("article")).toContainText(tenthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
+    });
+  }
+});
+
+test.describe("leave, tenure, time, pregnancy, and utility SSR across all locales", () => {
+  for (const [index, locale] of locales.entries()) {
+    const slug = eleventhEditorialBatchSlugs[index % eleventhEditorialBatchSlugs.length]!;
+    test(locale + "/" + slug + " renders its localized example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toContain(eleventhReviewedBatchExampleNotes[locale]?.[slug]);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article h1")).toBeVisible();
+      await expect(page.locator("article h2").first()).toBeVisible();
+      await expect(page.locator("article")).toContainText(eleventhReviewedBatchExampleNotes[locale]?.[slug] ?? "");
     });
   }
 });
@@ -277,6 +296,23 @@ test.describe("loan, wage, fuel, food, and split cards at required viewport widt
   }
 });
 
+test.describe("leave, tenure, time, pregnancy, and utility cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px date and bill detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of eleventhEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dd").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ body: document.body.scrollWidth, viewport: document.documentElement.clientWidth }));
+        expect(dimensions.body, slug).toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
 test.describe("reviewed calculators at required viewport widths", () => {
   for (const width of viewports) {
     test(width + "px pages have visible cards and no horizontal overflow", async ({ page }) => {
@@ -360,6 +396,11 @@ test.describe("calculator input and result flows", () => {
       ["fuel-efficiency", "Using 40 L over 520 km gives 13 km/L"],
       ["calorie-per-serving", "If a 600 kcal dish has 3 equal servings and you eat 1 serving"],
       ["trip-split", "Splitting 10,000 among 3 gives 3,333.33 each"],
+      ["annual-leave-allowance", "The entered daily wage of 100,000 multiplied by 3 days"],
+      ["tenure", "From 2024-01-15 to 2025-03-20, the calendar difference"],
+      ["time-arithmetic", "Adding 2 hours 45 minutes and 1 hour 30 minutes"],
+      ["pregnancy", "An LMP date of 2026-01-01 plus the calculator's 280-day estimate"],
+      ["utility-bill", "Usage 20 × entered rate 500 plus base fee 1,000"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
@@ -774,6 +815,50 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("3,333.33");
     await expect(page.locator('[aria-live="polite"]')).toContainText("3,334");
+    expect(errors).toEqual([]);
+  });
+
+  test("leave arithmetic, tenure, time, pregnancy date, and utility examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/annual-leave-allowance");
+    await waitForCalculatorHydration(page);
+    await page.locator("#annual-leave-allowance-dailyWage").fill("100000");
+    await page.locator("#annual-leave-allowance-days").fill("3");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("300,000");
+
+    await page.goto("/en/calculators/tenure");
+    await waitForCalculatorHydration(page);
+    await page.locator("#tenure-start").fill("2024-01-15");
+    await page.locator("#tenure-end").fill("2025-03-20");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("14");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("430");
+
+    await page.goto("/en/calculators/time-arithmetic");
+    await waitForCalculatorHydration(page);
+    await page.locator("#time-arithmetic-mode").selectOption("add");
+    await page.locator("#time-arithmetic-aHours").fill("2");
+    await page.locator("#time-arithmetic-aMinutes").fill("45");
+    await page.locator("#time-arithmetic-bHours").fill("1");
+    await page.locator("#time-arithmetic-bMinutes").fill("30");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("255");
+
+    await page.goto("/en/calculators/pregnancy");
+    await waitForCalculatorHydration(page);
+    await page.locator("#pregnancy-mode").selectOption("due");
+    await page.locator("#pregnancy-lmp").fill("2026-01-01");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("2026-10-08");
+
+    await page.goto("/en/calculators/utility-bill");
+    await waitForCalculatorHydration(page);
+    await page.locator("#utility-bill-usage").fill("20");
+    await page.locator("#utility-bill-rate").fill("500");
+    await page.locator("#utility-bill-base").fill("1000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("11,000");
     expect(errors).toEqual([]);
   });
 
