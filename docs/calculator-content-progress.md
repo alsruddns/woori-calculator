@@ -1,18 +1,18 @@
 # Calculator content completion checkpoint
 
-Updated: 2026-10-27
+Updated: 2026-10-28
 
 This register separates earlier result-note work from full content completion. A route or a non-empty content field alone does not make a calculator COMPLETE.
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 60
+- COMPLETE: 65
 - VALIDATING: 0
-- DRAFT: 8
+- DRAFT: 3
 - BLOCKED policy calculators: 99
 - PENDING static calculators: 2
 - Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
-- Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, percentile, aspect-ratio, scale-ratio
+- Previously improved result-note calculators remain DRAFT: percentile, aspect-ratio, scale-ratio
 
 ## Completion gate
 
@@ -42,9 +42,11 @@ date-difference, dday, age, workdays, unit-converter. Added distinct interpretat
 
 fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-return-calculator, position-size-calculator, stop-loss-take-profit-calculator. Added distinct financial scenario interpretations to all 26 locale records. Finance engine tests passed (12), content/locale/example checks passed, TypeScript/lint passed, and Playwright verified SSR on all 26 locale routes, all five example/FAQ pages, five browser input/result flows, and all eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
+average, weighted-average, unit-price, probability, area. Added localized worked examples and interpretation limits for all 26 locales. Focused engine/content tests passed (48); TypeScript, lint, and diff checks passed. Playwright verified localized example text in initial SSR HTML across all 26 locales, all five calculator result flows in the browser, and all five pages at eight viewport widths without horizontal overflow. No native-speaker review was performed.
+
 ## Current batch under validation
 
-None. The latest five-calculator batch passed engine/content tests, locale SSR, live calculation flow, and responsive checks.
+None. The latest batch passed engine, content, locale SSR, browser-flow, and eight-width responsive checks.
 
 ## Calculator register
 
@@ -54,8 +56,8 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 | `discount` | math | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed. |
 | `change-rate` | math | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed. |
 | `ratio` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
-| `average` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `weighted-average` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `average` | math | STATIC | 26/26 | COMPLETE | Mean 20 for inputs 10, 20, 30; engine example, localized SSR, browser flow, and responsive checks passed. |
+| `weighted-average` | math | STATIC | 26/26 | COMPLETE | Weighted mean 95 for values 80/100 with weights 1/3; scaling and engine example verified. |
 | `cagr` | math | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed. |
 | `proportion` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `aspect-ratio` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
@@ -65,7 +67,7 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 | `standard-deviation` | math | STATIC | 26/26 | COMPLETE | Population example matches engine (mean 5, variance 4, standard deviation 2); sample minimum and 26-locale SSR verified. |
 | `median` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `percentile` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `probability` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `probability` | math | STATIC | 26/26 | COMPLETE | Three independent 20% trials yield 48.8% chance of at least one success; independence and non-prediction limits stated. |
 | `fire-retirement-calculator` | finance | STATIC | 26/26 | COMPLETE | Withdrawal-rate assumption, target-only scope, engine example, SSR, browser, and responsive checks passed. |
 | `dividend-growth-calculator` | finance | STATIC | 26/26 | COMPLETE | Compounded dividend scenario and non-guarantee note match engine; SSR, browser, and responsive checks passed. |
 | `inflation-adjusted-return-calculator` | finance | STATIC | 26/26 | COMPLETE | Nominal and real annualized returns distinguished; engine precision, SSR, browser, and responsive checks passed. |
@@ -96,7 +98,7 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 | `hourly-wage` | salary | STATIC | 26/26 | COMPLETE | Monthly-to-hourly example matches entered-hours calculation; no statutory wage rule is asserted. |
 | `annual-leave-allowance` | salary | STATIC | 26/26 | COMPLETE | Example: 100,000 times 3 days = 300,000; arithmetic only, no statutory entitlement assessment. Engine, locale SSR, and responsive checks passed. |
 | `vat` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `unit-price` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `unit-price` | math | STATIC | 26/26 | COMPLETE | 10,000 divided by 3 gives 3,333.33; engine rounding and comparable-unit limitation verified. |
 | `margin` | finance | STATIC | 26/26 | COMPLETE | Sales-based margin denominator distinguished and example verified. |
 | `markup` | finance | STATIC | 26/26 | COMPLETE | Cost-based markup denominator distinguished and example verified. |
 | `product-margin` | finance | STATIC | 26/26 | COMPLETE | Localized example, engine output, 26-locale SSR, browser flow, and eight viewport checks passed. |
@@ -106,7 +108,7 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 | `age` | life | STATIC | 26/26 | COMPLETE | Completed age and year-based reference values explained; browser example passed. Legal age is not asserted. |
 | `workdays` | date-time | STATIC | 26/26 | COMPLETE | Inclusive endpoints and holiday exclusion are explained; engine, browser, and responsive checks passed. |
 | `bmi` | life | STATIC | 26/26 | COMPLETE | Height/weight calculation and rounded example verified; health metric only, not diagnosis. |
-| `area` | life | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `area` | life | STATIC | 26/26 | COMPLETE | 10 pyeong converts to 33.06 m² using 400/121; rounding and legal-area-category limitation stated. |
 | `pace` | life | STATIC | 26/26 | COMPLETE | Distance/time example matches pace and speed outputs; unit labels verified in browser. |
 | `fuel-cost` | life | STATIC | 26/26 | COMPLETE | Distance/efficiency/entered-price example matches fuel volume and cost outputs; price is user supplied. |
 | `fuel-efficiency` | life | STATIC | 26/26 | COMPLETE | 520 km and 40 L example matches both km/L and L/100 km engine outputs. |
@@ -222,4 +224,4 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 
 ## Next batch queue
 
-average, weighted-average, unit-price, probability, area. These remain DRAFT and require full review of localized purpose, inputs, formula, examples, result interpretation, limitations, and FAQs. Keep the remaining policy-verification queue separate.
+percentile, aspect-ratio, scale-ratio. Recheck status before selecting the next static batch; retain the policy-verification queue separately.

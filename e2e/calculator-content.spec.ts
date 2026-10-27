@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -18,6 +18,7 @@ const ninthEditorialBatchSlugs = ["ltv", "dti", "dsr", "loan-refinance", "prepay
 const tenthEditorialBatchSlugs = ["loan-affordability", "hourly-wage", "fuel-efficiency", "calorie-per-serving", "trip-split"] as const;
 const eleventhEditorialBatchSlugs = ["annual-leave-allowance", "tenure", "time-arithmetic", "pregnancy", "utility-bill"] as const;
 const twelfthEditorialBatchSlugs = ["fraction", "standard-deviation", "vehicle-cost", "taxi-fare", "tip-calculator"] as const;
+const thirteenthEditorialBatchSlugs = ["average", "weighted-average", "unit-price", "probability", "area"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -66,7 +67,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs, ...tenthEditorialBatchSlugs, ...eleventhEditorialBatchSlugs, ...twelfthEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs, ...tenthEditorialBatchSlugs, ...eleventhEditorialBatchSlugs, ...twelfthEditorialBatchSlugs, ...thirteenthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -80,7 +81,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? tenthReviewedBatchExampleNotes[locale]?.[slug] ?? eleventhReviewedBatchExampleNotes[locale]?.[slug] ?? twelfthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? tenthReviewedBatchExampleNotes[locale]?.[slug] ?? eleventhReviewedBatchExampleNotes[locale]?.[slug] ?? twelfthReviewedBatchExampleNotes[locale]?.[slug] ?? thirteenthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -188,6 +189,24 @@ test.describe("twelfth editorial batch cards at required viewport widths", () =>
         const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
         expect(dimensions.body, slug + " body at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
       }
+    });
+  }
+});
+
+test.describe("average, weighted mean, unit price, probability, and area SSR across locales", () => {
+  for (const [index, locale] of locales.entries()) {
+    const slug = thirteenthEditorialBatchSlugs[index % thirteenthEditorialBatchSlugs.length]!;
+    test(locale + "/" + slug + " renders its localized example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toContain(thirteenthReviewedBatchExampleNotes[locale]?.[slug]);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article h1")).toBeVisible();
+      await expect(page.locator("article h2").first()).toBeVisible();
+      await expect(page.locator("article")).toContainText(thirteenthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
     });
   }
 });
@@ -348,6 +367,22 @@ test.describe("leave, tenure, time, pregnancy, and utility cards at required vie
   }
 });
 
+test.describe("thirteenth editorial batch cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px average and everyday detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of thirteenthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").last(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, slug + " body at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
 test.describe("reviewed calculators at required viewport widths", () => {
   for (const width of viewports) {
     test(width + "px pages have visible cards and no horizontal overflow", async ({ page }) => {
@@ -439,6 +474,11 @@ test.describe("calculator input and result flows", () => {
       ["vehicle-cost", "At 1,000 km per month, 10 km/L, and fuel at 1,700 per liter"],
       ["taxi-fare", "A 4,000 base fare, 2 km included, 5 km trip, 1,000 per extra km"],
       ["tip-calculator", "Adding an entered 10% tip to 50,000 gives a 5,000 tip"],
+      ["average", "For 10, 20, and 30, the sum 60 divided by 3 gives an arithmetic mean of 20"],
+      ["weighted-average", "Weighting 80 by 1 and 100 by 3 gives (80×1 + 100×3) ÷ 4 = 95"],
+      ["unit-price", "A total of 10,000 divided by 3 units is 3,333.33 per unit"],
+      ["probability", "With independent trials and a 20% success chance each, three trials give 1−0.8³ = 48.8%"],
+      ["area", "Ten pyeong multiplied by 400/121 is 33.06 m²"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
@@ -496,6 +536,48 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#tip-calculator-people").fill("2");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("27,500");
+
+    expect(errors).toEqual([]);
+  });
+
+  test("average, weighted average, unit price, probability, and area examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+
+    await page.goto("/en/calculators/average");
+    await waitForCalculatorHydration(page);
+    await page.locator("#average-numbers").fill("10, 20, 30");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("20");
+
+    await page.goto("/en/calculators/weighted-average");
+    await waitForCalculatorHydration(page);
+    await page.locator("#weighted-average-values").fill("80, 100");
+    await page.locator("#weighted-average-weights").fill("1, 3");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("95");
+
+    await page.goto("/en/calculators/unit-price");
+    await waitForCalculatorHydration(page);
+    await page.locator("#unit-price-mode").selectOption("unit");
+    await page.locator("#unit-price-total").fill("10000");
+    await page.locator("#unit-price-quantity").fill("3");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("3,333.33");
+
+    await page.goto("/en/calculators/probability");
+    await waitForCalculatorHydration(page);
+    await page.locator("#probability-mode").selectOption("at-least-one");
+    await page.locator("#probability-probability").fill("20");
+    await page.locator("#probability-trials").fill("3");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("48.8");
+
+    await page.goto("/en/calculators/area");
+    await waitForCalculatorHydration(page);
+    await page.locator("#area-mode").selectOption("pyeong-to-sqm");
+    await page.locator("#area-value").fill("10");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("33.06");
 
     expect(errors).toEqual([]);
   });
