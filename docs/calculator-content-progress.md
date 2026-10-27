@@ -11,6 +11,7 @@ This register separates earlier result-note work from full content completion. A
 - DRAFT: 10
 - BLOCKED policy calculators: 99
 - PENDING static calculators: 20
+- Latest audit signals: short-content 47 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
 ## Completion gate

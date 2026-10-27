@@ -9,8 +9,8 @@ This report records reproducible structural and calculation checks for the 169 p
 - Policy calculators: **99**; with at least one listed source: **99/99**. Source records contain a check date for **22 unique URLs**, referenced by **23/99 pages**; **4 URLs** were opened and their relevant content compared with the configured rule or rate in this run. This does not validate every rule or input model on a page.
 - Country-policy pages with a calculator-specific displayed formula or calculation explanation: **90/99**. Their examples are generated from the page calculation function; this does not certify policy eligibility, translation quality or legal completeness.
 - Country-specific examples matching the result produced from their default input values: **90/90**. The check runs the page calculation function and matches its displayed result text.
-- Locale-aware short-content signals (review candidates, not automatic failures): ko 0, en 0, ja 0, zh 0, es 0, pt-br 0, de 0, fr 0, vi 0, id 0, th 0, zh-tw 0, it 0, nl 0, hi 0, ru 5, tr 6, pl 6, fil 7, bn 8, uk 8, ms 17, sv 4, cs 3, ro 2, el 5. The published route count does not certify translation quality.
-- Exact duplicate content occurrences across description/how-to/FAQ/example blocks by locale: ko 0, en 0, ja 0, zh 0, es 0, pt-br 0, de 0, fr 0, vi 0, id 0, th 0, zh-tw 0, it 0, nl 0, hi 0, ru 0, tr 86, pl 3, fil 83, bn 0, uk 133, ms 43, sv 7, cs 1, ro 0, el 3. This includes partial locales that the legacy duplicate test does not yet cover.
+- Locale-aware short-content signals (review candidates, not automatic failures): ko 0, en 0, ja 0, zh 0, es 0, pt-br 0, de 0, fr 0, vi 0, id 0, th 0, zh-tw 0, it 0, nl 0, hi 0, ru 4, tr 5, pl 6, fil 7, bn 4, uk 4, ms 8, sv 2, cs 1, ro 1, el 5. The published route count does not certify translation quality.
+- Exact duplicate content occurrences across description/how-to/FAQ/example blocks by locale: ko 0, en 0, ja 0, zh 0, es 0, pt-br 0, de 0, fr 0, vi 0, id 0, th 0, zh-tw 0, it 0, nl 0, hi 0, ru 0, tr 86, pl 3, fil 83, bn 0, uk 131, ms 40, sv 7, cs 1, ro 0, el 3. This includes partial locales that the legacy duplicate test does not yet cover.
 - Generated country-policy pages requiring editorial review: **90** (48 global-country pages and 42 country-specific pages). The review is required because their copy is assembled from shared wording even when the inputs and examples differ.
 - Calculation functions, rate tables, routes, canonical metadata, hreflang, sitemap, and currency behavior were not modified by this audit artifact.
 
@@ -24,33 +24,33 @@ This report records reproducible structural and calculation checks for the 169 p
 | `discount` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `change-rate` | math | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `ratio` | math | STATIC | 16 | 10 | 26/26 | manual | 0 | uk: short example | No structural flag; human usefulness review remains required |
-| `average` | math | STATIC | 1 | 3 | 26/26 | manual | 0 | bn: short howTo; bn: short example | No structural flag; human usefulness review remains required |
+| `average` | math | STATIC | 1 | 3 | 26/26 | manual | 0 | bn: short howTo | No structural flag; human usefulness review remains required |
 | `weighted-average` | math | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `cagr` | math | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `proportion` | math | STATIC | 5 | 4 | 26/26 | manual | 0 | uk: exact duplicate howTo with ratio; ms: exact duplicate howTo with ratio; ms: exact duplicate example with ratio; el: exact duplicate FAQ with ratio | No structural flag; human usefulness review remains required |
-| `aspect-ratio` | math | STATIC | 2 | 4 | 26/26 | manual | 0 | bn: short example; uk: short example; uk: exact duplicate howTo with ratio; uk: exact duplicate example with ratio; ms: exact duplicate howTo with ratio; ms: exact duplicate example with ratio; el: exact duplicate FAQ with ratio | No structural flag; human usefulness review remains required |
-| `scale-ratio` | math | STATIC | 6 | 4 | 26/26 | manual | 0 | bn: short howTo; uk: short example; uk: exact duplicate howTo with ratio; uk: exact duplicate example with ratio; ms: exact duplicate howTo with ratio; ms: exact duplicate example with ratio; el: exact duplicate FAQ with ratio | No structural flag; human usefulness review remains required |
-| `fraction` | math | STATIC | 5 | 3 | 26/26 | manual | 0 | bn: short example; ms: short example | No structural flag; human usefulness review remains required |
+| `proportion` | math | STATIC | 5 | 4 | 26/26 | manual | 0 | uk: exact duplicate howTo with ratio; ms: exact duplicate howTo with ratio; el: exact duplicate FAQ with ratio | No structural flag; human usefulness review remains required |
+| `aspect-ratio` | math | STATIC | 2 | 4 | 26/26 | manual | 0 | uk: exact duplicate howTo with ratio; ms: exact duplicate howTo with ratio; el: exact duplicate FAQ with ratio | No structural flag; human usefulness review remains required |
+| `scale-ratio` | math | STATIC | 6 | 4 | 26/26 | manual | 0 | bn: short howTo; uk: exact duplicate howTo with ratio; ms: exact duplicate howTo with ratio; el: exact duplicate FAQ with ratio | No structural flag; human usefulness review remains required |
+| `fraction` | math | STATIC | 5 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `decimal-fraction` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `standard-deviation` | math | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `median` | math | STATIC | 1 | 3 | 26/26 | manual | 0 | sv: exact duplicate howTo with average | No structural flag; human usefulness review remains required |
 | `percentile` | math | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `probability` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | uk: short example | No structural flag; human usefulness review remains required |
+| `probability` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `fire-retirement-calculator` | finance | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `dividend-growth-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | ms: short example | No structural flag; human usefulness review remains required |
-| `inflation-adjusted-return-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | ru: short example | No structural flag; human usefulness review remains required |
-| `position-size-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | ms: short example | No structural flag; human usefulness review remains required |
-| `stop-loss-take-profit-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | ms: short example | No structural flag; human usefulness review remains required |
+| `dividend-growth-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
+| `inflation-adjusted-return-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
+| `position-size-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
+| `stop-loss-take-profit-calculator` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `stock-profit-after-fees-calculator` | finance | STATIC | 5 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `loan-early-repayment-calculator` | finance | STATIC | 6 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `rent-vs-buy-calculator` | life | STATIC | 8 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `electricity-cost-calculator` | life | STATIC | 5 | 3 | 26/26 | manual | 0 | pl: exact duplicate FAQ with rent-vs-buy-calculator; uk: short example | No structural flag; human usefulness review remains required |
+| `electricity-cost-calculator` | life | STATIC | 5 | 3 | 26/26 | manual | 0 | pl: exact duplicate FAQ with rent-vs-buy-calculator | No structural flag; human usefulness review remains required |
 | `travel-budget-calculator` | life | STATIC | 10 | 3 | 26/26 | manual | 0 | pl: exact duplicate FAQ with rent-vs-buy-calculator | No structural flag; human usefulness review remains required |
 | `freelancer-hourly-rate-calculator` | finance | STATIC | 5 | 3 | 26/26 | manual | 0 | pl: exact duplicate FAQ with rent-vs-buy-calculator | No structural flag; human usefulness review remains required |
-| `break-even-point-calculator` | tax | STATIC | 3 | 3 | 26/26 | manual | 0 | ms: short example | No structural flag; human usefulness review remains required |
+| `break-even-point-calculator` | tax | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `compound-interest` | finance | STATIC | 4 | 4 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `simple-interest` | finance | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `savings-interest` | finance | STATIC | 3 | 3 | 26/26 | manual | 0 | ms: short example | No structural flag; human usefulness review remains required |
+| `savings-interest` | finance | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `deposit-interest` | finance | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `loan-interest` | finance | STATIC | 4 | 4 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `ltv` | finance | STATIC | 2 | 3 | 26/26 | manual | 0 | tr: short example; pl: short example; sv: short howTo; sv: short example | No structural flag; human usefulness review remains required |
@@ -58,7 +58,7 @@ This report records reproducible structural and calculation checks for the 169 p
 | `dsr` | finance | STATIC | 2 | 3 | 26/26 | manual | 0 | tr: short example; pl: short example; uk: short example; el: short example | No structural flag; human usefulness review remains required |
 | `stock-average-price` | finance | STATIC | 11 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `dividend` | finance | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `profit-loss` | finance | STATIC | 5 | 3 | 26/26 | manual | 0 | ms: short example | No structural flag; human usefulness review remains required |
+| `profit-loss` | finance | STATIC | 5 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `loan-refinance` | finance | STATIC | 6 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `prepayment-fee` | finance | STATIC | 2 | 2 | 26/26 | manual | 0 | ru: short example; pl: short example; ms: short example | No structural flag; human usefulness review remains required |
 | `loan-affordability` | finance | STATIC | 3 | 3 | 26/26 | manual | 0 | bn: short example | No structural flag; human usefulness review remains required |
@@ -67,16 +67,16 @@ This report records reproducible structural and calculation checks for the 169 p
 | `annual-leave-allowance` | salary | STATIC | 2 | 3 | 26/26 | manual | 0 | ru: short example; ms: short example | No structural flag; human usefulness review remains required |
 | `vat` | tax | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `unit-price` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `margin` | finance | STATIC | 2 | 3 | 26/26 | manual | 0 | tr: short example; pl: short howTo; fil: short howTo | No structural flag; human usefulness review remains required |
+| `margin` | finance | STATIC | 2 | 3 | 26/26 | manual | 0 | pl: short howTo; fil: short howTo | No structural flag; human usefulness review remains required |
 | `markup` | finance | STATIC | 2 | 3 | 26/26 | manual | 0 | pl: short howTo; fil: short howTo; fil: exact duplicate howTo with margin | No structural flag; human usefulness review remains required |
 | `product-margin` | finance | STATIC | 7 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `withholding-tax-3-3` | tax | STATIC | 1 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `date-difference` | date-time | STATIC | 3 | 3 | 26/26 | manual | 0 | ms: short example; sv: short example | No structural flag; human usefulness review remains required |
+| `date-difference` | date-time | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `dday` | date-time | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `age` | life | STATIC | 2 | 3 | 26/26 | manual | 0 | ms: short example; sv: short example; cs: short example | No structural flag; human usefulness review remains required |
+| `age` | life | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `workdays` | date-time | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `bmi` | life | STATIC | 2 | 3 | 26/26 | manual | 0 | ru: short example; tr: short example; uk: short example; ms: short example | No structural flag; human usefulness review remains required |
-| `area` | life | STATIC | 2 | 3 | 26/26 | manual | 0 | cs: short example; ro: short example | No structural flag; human usefulness review remains required |
+| `area` | life | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `pace` | life | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `fuel-cost` | life | STATIC | 3 | 3 | 26/26 | manual | 0 | ms: short example | No structural flag; human usefulness review remains required |
 | `fuel-efficiency` | life | STATIC | 7 | 3 | 26/26 | manual | 0 | el: short example | No structural flag; human usefulness review remains required |
@@ -89,7 +89,7 @@ This report records reproducible structural and calculation checks for the 169 p
 | `taxi-fare` | life | STATIC | 6 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `trip-split` | life | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `tip-calculator` | life | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `unit-converter` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | bn: short example | No structural flag; human usefulness review remains required |
+| `unit-converter` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `unemployment-benefit` | salary | POLICY 2026 | 3 | 3 | 26/26 | manual | 3 | — | official source and effective rule not live-verified in this audit |
 | `minimum-wage` | salary | POLICY 2026 | 1 | 2 | 26/26 | manual | 1 | — | official source and effective rule not live-verified in this audit |
 | `severance-pay` | salary | POLICY 2026 | 3 | 3 | 26/26 | manual | 2 | tr: exact duplicate FAQ with minimum-wage | official source and effective rule not live-verified in this audit |
