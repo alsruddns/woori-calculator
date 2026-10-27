@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -11,6 +11,7 @@ const secondEditorialBatchSlugs = ["change-rate", "discount", "cagr", "simple-in
 const thirdEditorialBatchSlugs = ["date-difference", "dday", "age", "workdays", "unit-converter"] as const;
 const fourthEditorialBatchSlugs = ["fire-retirement-calculator", "dividend-growth-calculator", "inflation-adjusted-return-calculator", "position-size-calculator", "stop-loss-take-profit-calculator"] as const;
 const fifthEditorialBatchSlugs = ["stock-profit-after-fees-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator"] as const;
+const sixthEditorialBatchSlugs = ["freelancer-hourly-rate-calculator", "break-even-point-calculator", "savings-interest", "deposit-interest", "loan-interest"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -59,7 +60,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -73,7 +74,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -133,6 +134,23 @@ test.describe("cost-planning editorial cards at required viewport widths", () =>
   }
 });
 
+test.describe("freelance, break-even, interest editorial cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px finance detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of sixthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dd").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ body: document.body.scrollWidth, viewport: document.documentElement.clientWidth }));
+        expect(dimensions.body, slug).toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
 test.describe("reviewed calculators at required viewport widths", () => {
   for (const width of viewports) {
     test(width + "px pages have visible cards and no horizontal overflow", async ({ page }) => {
@@ -186,7 +204,7 @@ test.describe("calculator input and result flows", () => {
       ["proportion", "For 2:5=x:20, matching positions gives 2/5=x/20"],
       ["median", "The median of 1, 3, 8 is 3"],
       ["decimal-fraction", "0.125 reduces from 125/1000 to 1/8"],
-      ["change-rate", "From 200 to 150, the change is −50"],
+      ["change-rate", "From 200 to 150, the change is ??0"],
       ["discount", "A 20% discount on 50,000 gives a 10,000 discount"],
       ["cagr", "Growing from 100 to 121 over two years is equivalent"],
       ["simple-interest", "At 10% simple interest for five years"],
@@ -381,6 +399,60 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#travel-budget-calculator-bufferPercent").fill("10");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("429");
+
+    expect(errors).toEqual([]);
+  });
+
+  test("freelance, break-even, savings, deposit, and loan examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+
+    await page.goto("/en/calculators/freelancer-hourly-rate-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#freelancer-hourly-rate-calculator-targetAnnualRevenue").fill("60000");
+    await page.locator("#freelancer-hourly-rate-calculator-annualBusinessCosts").fill("10000");
+    await page.locator("#freelancer-hourly-rate-calculator-billableHoursPerWeek").fill("20");
+    await page.locator("#freelancer-hourly-rate-calculator-workingWeeks").fill("50");
+    await page.locator("#freelancer-hourly-rate-calculator-bufferPercent").fill("10");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("70");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("77");
+
+    await page.goto("/en/calculators/break-even-point-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#break-even-point-calculator-fixedCosts").fill("1000");
+    await page.locator("#break-even-point-calculator-pricePerUnit").fill("25");
+    await page.locator("#break-even-point-calculator-variableCostPerUnit").fill("15");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("100");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("2,500");
+
+    await page.goto("/en/calculators/savings-interest");
+    await waitForCalculatorHydration(page);
+    await page.locator("#savings-interest-monthly").fill("100");
+    await page.locator("#savings-interest-rate").fill("12");
+    await page.locator("#savings-interest-months").fill("12");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("1,200");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("66");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("1,266");
+
+    await page.goto("/en/calculators/deposit-interest");
+    await waitForCalculatorHydration(page);
+    await page.locator("#deposit-interest-principal").fill("1000");
+    await page.locator("#deposit-interest-rate").fill("12");
+    await page.locator("#deposit-interest-months").fill("6");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("60");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("1,060");
+
+    await page.goto("/en/calculators/loan-interest");
+    await waitForCalculatorHydration(page);
+    await page.locator("#loan-interest-principal").fill("12000");
+    await page.locator("#loan-interest-rate").fill("12");
+    await page.locator("#loan-interest-months").fill("12");
+    await page.locator("#loan-interest-method").selectOption("equal-payment");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("796");
 
     expect(errors).toEqual([]);
   });
