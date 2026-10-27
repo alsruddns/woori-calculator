@@ -12,6 +12,7 @@ import { CalculatorWorkspace } from "@/components/calculator/calculator-workspac
 import { localizedCalculatorSlugs, localePath } from "@/i18n/config";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { getDictionary } from "@/i18n/dictionaries";
+import { sourceNotVerified } from "@/i18n/policy-source-status";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -111,7 +112,7 @@ export default async function CalculatorPage({ params }: PageProps) {
             {related.map((item) => <li key={item.id}><Link className="flex min-w-0 items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 font-medium text-slate-800 hover:border-teal-700 hover:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-800" href={localePath("ko", `/calculators/${item.slug}`)}><span className="min-w-0 break-words [overflow-wrap:anywhere]">{dictionary.calculators[item.slug as keyof typeof dictionary.calculators]?.name ?? item.name}</span><span aria-hidden="true" className="shrink-0">→</span></Link></li>)}
           </ul>
           <p className="mt-4 text-xs text-slate-500">최종 업데이트: <time dateTime={calculator.updatedAt}>{formatKoreanDate(calculator.updatedAt)}</time></p>
-          {calculator.sources?.length ? <section className="mt-7 min-w-0" aria-labelledby="policy-sources"><h3 id="policy-sources" className="text-sm font-bold text-slate-900">기준 및 출처</h3><ul className="mt-2 min-w-0 space-y-2">{calculator.sources.map((source) => <li key={source.url} className="min-w-0"><a className="break-words text-sm text-teal-900 underline underline-offset-2 [overflow-wrap:anywhere] hover:text-teal-700 focus-visible:outline-2" href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a><p className="mt-1 text-xs text-slate-500">확인일: <time dateTime={source.checkedAt}>{formatKoreanDate(source.checkedAt)}</time></p></li>)}</ul></section> : null}
+          {calculator.sources?.length ? <section className="mt-7 min-w-0" aria-labelledby="policy-sources"><h3 id="policy-sources" className="text-sm font-bold text-slate-900">기준 및 출처</h3><ul className="mt-2 min-w-0 space-y-2">{calculator.sources.map((source) => <li key={source.url} className="min-w-0"><a className="break-words text-sm text-teal-900 underline underline-offset-2 [overflow-wrap:anywhere] hover:text-teal-700 focus-visible:outline-2" href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a><p className="mt-1 text-xs text-slate-500">{source.checkedAt ? <>확인일: <time dateTime={source.checkedAt}>{formatKoreanDate(source.checkedAt)}</time></> : sourceNotVerified.ko}</p></li>)}</ul></section> : null}
         </aside>
       </div>
     </article>

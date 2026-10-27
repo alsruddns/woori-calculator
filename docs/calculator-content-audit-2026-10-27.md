@@ -6,7 +6,8 @@ This report records reproducible structural and calculation checks for the 169 p
 
 - Published calculators: **169** (unique slugs: 169)
 - Configured public locales: **26**; per-locale published calculator counts: ko 169, en 169, ja 169, zh 169, es 169, pt-br 169, de 169, fr 169, vi 169, id 169, th 169, zh-tw 169, it 169, nl 169, hi 169, ru 169, tr 169, pl 169, fil 169, bn 169, uk 169, ms 169, sv 169, cs 169, ro 169, el 169
-- Policy calculators: **99**; with at least one listed source: **99/99**. Source presence is not evidence that the current rules were independently verified during this audit.
+- Policy calculators: **99**; with at least one listed source: **99/99**. Source records contain a check date for **22 unique URLs**, referenced by **23/99 pages**; **4 URLs** were opened and their relevant content compared with the configured rule or rate in this run. This does not validate every rule or input model on a page.
+- Country-policy pages with a calculator-specific displayed formula or calculation explanation: **90/99**. Their examples are generated from the page calculation function; this does not certify policy eligibility, translation quality or legal completeness.
 - Country-specific examples matching the result produced from their default input values: **90/90**. The check runs the page calculation function and matches its displayed result text.
 - Locale-aware short-content signals (review candidates, not automatic failures): ko 0, en 0, ja 0, zh 0, es 0, pt-br 0, de 0, fr 0, vi 0, id 0, th 0, zh-tw 0, it 0, nl 0, hi 0, ru 9, tr 12, pl 13, fil 10, bn 12, uk 13, ms 25, sv 9, cs 7, ro 5, el 11. The published route count does not certify translation quality.
 - Exact duplicate content occurrences across description/how-to/FAQ/example blocks by locale: ko 0, en 0, ja 0, zh 0, es 0, pt-br 0, de 0, fr 0, vi 0, id 0, th 0, zh-tw 0, it 0, nl 0, hi 0, ru 0, tr 86, pl 3, fil 83, bn 0, uk 134, ms 43, sv 7, cs 1, ro 0, el 3. This includes partial locales that the legacy duplicate test does not yet cover.
@@ -191,7 +192,7 @@ This report records reproducible structural and calculation checks for the 169 p
 
 ## Follow-up required
 
-- Review the generated country-policy explanations per calculator and replace generic input/formula/FAQ wording with an explanation of the actual model and assumptions. Keep examples tied to the calculation function.
-- Independently verify current country rules and effective dates against the listed primary sources before describing any policy data as current. The source URLs and stored check dates are inventory metadata, not proof of a successful live review.
-- Review translation terminology and long-copy rendering for each published locale. Locale route counts confirm configured content exists; they do not certify translation accuracy.
+- The model formula/explanation and engine-generated example were improved for the 90 country-policy pages. Review the remaining calculator-specific purpose, detailed assumptions and FAQs individually before treating the pages as fully edited.
+- Verify the policy rules and effective dates for the remaining sources. Only sources with an explicit per-source checked date were opened in this review; source presence and checked links do not validate every country rule.
+- Review translation terminology and long-copy rendering for each published locale. Core-locale formula improvements do not certify all 26 locale translations; short-content and duplicate signals remain review candidates.
 - Check the flagged rows above before treating the catalog as fully editorially reviewed. Pages without structural flags still need a human content and domain review.

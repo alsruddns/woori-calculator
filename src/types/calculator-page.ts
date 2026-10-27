@@ -34,7 +34,7 @@ export type CalculatorPageDefinition = CalculatorDefinition & {
   faqs: readonly { question: string; answer: string }[];
   updatedAt: string;
   policyYear?: number;
-  sources?: readonly { name: string; url: string; checkedAt: string }[];
+  sources?: readonly { name: string; url: string; checkedAt?: string }[];
 };
 
 export type CalculatorCategoryContent = {

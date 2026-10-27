@@ -85,7 +85,7 @@ export const countrySpecificCalculatorPages: readonly CalculatorPageDefinition[]
     formula: row.type === "vat" ? "Tax = taxable amount × selected rate; total = base + tax. For tax-inclusive input, base = total ÷ (1 + rate)." : "Results follow the displayed inputs and assumptions. Annual and monthly amounts are converted consistently where applicable.",
     example: { question: `How is a ${rate.countryName} estimate calculated?`, answer: "Enter a representative amount to see the estimate, itemized components and stated assumptions." },
     notes: [rate.notes], faqs: [{ question: "Does changing locale change the calculation country?", answer: `No. The interface language may change, but the calculation remains based on ${rate.countryName}.` }, { question: "Is this an official payroll or tax determination?", answer: "No. This is an estimate. Verify current rules and individual circumstances with the relevant authority or a qualified professional." }],
-    sources: rate.sources.map((source) => ({ ...source, checkedAt: rate.updatedAt })),
+    sources: rate.sources.map((source) => ({ ...source })),
   });
 }).map((page) => {
   const example = calculatorExample(page, "en");

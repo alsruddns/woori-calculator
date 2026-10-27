@@ -10,6 +10,12 @@ import { calculatorExample } from "@/lib/content-quality/examples";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 const auditPath = resolve(process.cwd(), "docs/calculator-content-audit-2026-10-27.md");
+const policySourceUrlsComparedThisRun = new Set([
+  "https://www.gov.br/receitafederal/pt-br/assuntos/meu-imposto-de-renda/tabelas/2026",
+  "https://www.gov.br/inss/pt-br/direitos-e-deveres/inscricao-e-contribuicao/tabela-de-contribuicao-mensal",
+  "https://www3.agenciatributaria.gob.es/Sede/iva/calculo-iva-repercutido-clientes/tipos-impositivos-iva.html",
+  "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/coming-to-work-in-the-netherlands-30-percent-facility",
+]);
 
 function buildAuditReport() {
   const publishedSlugs = new Set(publishedCalculatorPages.map((page) => page.slug));
@@ -72,6 +78,9 @@ function buildAuditReport() {
 
   const policyPages = publishedCalculatorPages.filter((page) => page.policyType === "POLICY");
   const policySourceRows = policyPages.filter((page) => Boolean(page.sources?.length)).length;
+  const verifiedPolicySourceUrls = new Set(policyPages.flatMap((page) => page.sources?.filter((source) => source.checkedAt).map((source) => source.url) ?? []));
+  const pagesWithVerifiedSources = policyPages.filter((page) => page.sources?.some((source) => source.checkedAt)).length;
+  const modelSpecificPolicyPages = policyPages.filter((page) => page.countrySpecific && getDictionary("en").calculators[page.slug as keyof ReturnType<typeof getDictionary>['calculators']]?.formula !== page.formula).length;
   const generatedPolicyPages = rows.filter(({ page }) => globalTemplates.has(page.slug) || countryTemplates.has(page.slug));
   const computedPolicyExamples = rows.filter(({ page, exampleOutputMatches }) => page.countrySpecific && exampleOutputMatches === true).length;
   const localeSignalCounts = Object.fromEntries(supportedLocales.map((locale) => [locale, rows.reduce((count, row) => count + row.localeSignals.filter((signal) => signal.startsWith(`${locale}: `) && !signal.includes("exact duplicate ")).length, 0)]));
@@ -84,7 +93,8 @@ function buildAuditReport() {
     "",
     `- Published calculators: **${publishedCalculatorPages.length}** (unique slugs: ${new Set(publishedCalculatorPages.map((page) => page.slug)).size})`,
     `- Configured public locales: **${supportedLocales.length}**; per-locale published calculator counts: ${Object.entries(localeCoverage).map(([locale, count]) => `${locale} ${count}`).join(", ")}`,
-    `- Policy calculators: **${policyPages.length}**; with at least one listed source: **${policySourceRows}/${policyPages.length}**. Source presence is not evidence that the current rules were independently verified during this audit.`,
+    `- Policy calculators: **${policyPages.length}**; with at least one listed source: **${policySourceRows}/${policyPages.length}**. Source records contain a check date for **${verifiedPolicySourceUrls.size} unique URLs**, referenced by **${pagesWithVerifiedSources}/${policyPages.length} pages**; **${policySourceUrlsComparedThisRun.size} URLs** were opened and their relevant content compared with the configured rule or rate in this run. This does not validate every rule or input model on a page.`,
+    `- Country-policy pages with a calculator-specific displayed formula or calculation explanation: **${modelSpecificPolicyPages}/${policyPages.length}**. Their examples are generated from the page calculation function; this does not certify policy eligibility, translation quality or legal completeness.`,
     `- Country-specific examples matching the result produced from their default input values: **${computedPolicyExamples}/${publishedCalculatorPages.filter((page) => page.countrySpecific).length}**. The check runs the page calculation function and matches its displayed result text.`,
     `- Locale-aware short-content signals (review candidates, not automatic failures): ${Object.entries(localeSignalCounts).map(([locale, count]) => `${locale} ${count}`).join(", ")}. The published route count does not certify translation quality.`,
     `- Exact duplicate content occurrences across description/how-to/FAQ/example blocks by locale: ${Object.entries(localeDuplicateCounts).map(([locale, count]) => `${locale} ${count}`).join(", ")}. This includes partial locales that the legacy duplicate test does not yet cover.`,
@@ -106,13 +116,13 @@ function buildAuditReport() {
     "",
     "## Follow-up required",
     "",
-    "- Review the generated country-policy explanations per calculator and replace generic input/formula/FAQ wording with an explanation of the actual model and assumptions. Keep examples tied to the calculation function.",
-    "- Independently verify current country rules and effective dates against the listed primary sources before describing any policy data as current. The source URLs and stored check dates are inventory metadata, not proof of a successful live review.",
-    "- Review translation terminology and long-copy rendering for each published locale. Locale route counts confirm configured content exists; they do not certify translation accuracy.",
+    "- The model formula/explanation and engine-generated example were improved for the 90 country-policy pages. Review the remaining calculator-specific purpose, detailed assumptions and FAQs individually before treating the pages as fully edited.",
+    "- Verify the policy rules and effective dates for the remaining sources. Only sources with an explicit per-source checked date were opened in this review; source presence and checked links do not validate every country rule.",
+    "- Review translation terminology and long-copy rendering for each published locale. Core-locale formula improvements do not certify all 26 locale translations; short-content and duplicate signals remain review candidates.",
     "- Check the flagged rows above before treating the catalog as fully editorially reviewed. Pages without structural flags still need a human content and domain review.",
   ].join("\n");
 
-  return { output, rows, policyPages, generatedPolicyPages, computedPolicyExamples, localeCoverage };
+  return { output, rows, policyPages, generatedPolicyPages, computedPolicyExamples, modelSpecificPolicyPages, verifiedPolicySourceUrls, pagesWithVerifiedSources, policySourceUrlsComparedThisRun, localeCoverage };
 }
 
 describe("calculator content audit register", () => {
@@ -122,6 +132,10 @@ describe("calculator content audit register", () => {
     expect(new Set(report.rows.map(({ page }) => page.slug)).size).toBe(169);
     expect(report.policyPages.every((page) => page.countryCode && page.countryName && page.policyYear && page.sources?.length)).toBe(true);
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
+    expect(report.modelSpecificPolicyPages).toBe(90);
+    expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(4);
+    expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);
 
