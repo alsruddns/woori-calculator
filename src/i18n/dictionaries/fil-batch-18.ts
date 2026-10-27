@@ -9,7 +9,7 @@ export const filBatchEighteen: Record<string, LocalizedCalculatorContent> = {
     example: { question: "Garantisado bang sapat ang target na ito habang buhay?", answer: "Hindi. Simplified estimate ito; nagbabago ang inflation, returns, buwis at haba ng retirement." },
     fields: { annualExpenses: "Taunang gastos sa retirement", withdrawalRate: "Taunang withdrawal rate", currentSavings: "Kasalukuyang retirement savings" },
     results: ["Target na retirement savings", "Agwat para maabot ang target", "Bahagi ng target na natutugunan"], validation: "Ilagay ang hindi negatibong gastos at ipon at withdrawal rate na mas mataas sa sero.",
-    resultNote: "Pagtatantiya lamang ito, hindi investment advice o garantiya ng retirement income.", faq: { question: "Ano ang FIRE target?", answer: "Ito ang tinatayang portfolio na kailangan upang masuportahan ang taunang gastos sa ipinagpalagay na withdrawal rate." }, related: ["compound-interest", "fire-retirement-calculator", "inflation-adjusted-return-calculator"],
+    resultNote: "Pagtatantiya lamang ito, hindi investment advice o garantiya ng retirement income.", faq: { question: "Ano ang FIRE target?", answer: "Ito ang tinatayang portfolio na kailangan upang masuportahan ang taunang gastos sa ipinagpalagay na withdrawal rate." }, related: ["compound-interest", "inflation-adjusted-return-calculator", "dividend-growth-calculator"],
   }),
   "dividend-growth-calculator": filPage("dividend-growth-calculator", {
     name: "Dividend growth calculator", shortName: "Dividend growth", title: "I-project ang paglago ng taunang dividend",

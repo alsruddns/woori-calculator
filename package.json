@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "check:content-quality": "vitest run src/data/calculator-content/content-quality.test.ts",
+    "audit:content": "vitest run src/data/calculator-content/calculator-content-audit.test.ts",
     "list:policy-calculators": "node scripts/list-policy-calculators.mjs",
     "typecheck": "tsc --noEmit"
   },

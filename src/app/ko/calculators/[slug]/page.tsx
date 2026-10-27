@@ -76,6 +76,8 @@ export default async function CalculatorPage({ params }: PageProps) {
           {calculator.policyYear ? <p className="mt-3 inline-flex rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-amber-900">{calculator.policyYear}년 기준 정책 계산</p> : null}
       </header>
 
+      {calculator.notes?.[0] ? <p className="mb-5 max-w-3xl border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">{calculator.notes[0]}</p> : null}
+
       <CalculatorForm key={calculator.slug} slug={calculator.slug} fields={calculator.fields} locale="ko" dictionary={{ detail: dictionary.detail, units: dictionary.units, common: dictionary.common }} content={localized} />
 
       <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_17rem]">

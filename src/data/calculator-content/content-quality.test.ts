@@ -5,25 +5,9 @@ import { locales } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
 import { localeContentFollowupTargets } from "@/i18n/dictionaries/locale-quality-followup";
+import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
-
-function qualitySignals(content: Content, locale: string) {
-  const issues: string[] = [];
-  const cjk = locale === "ja" || locale === "zh" || locale === "zh-tw";
-  const minimums = cjk
-    ? { description: 20, howTo: 20, formula: 10, example: 14 }
-    : { description: 45, howTo: 45, formula: 25, example: 30 };
-  if (content.description.trim().length < minimums.description) issues.push("short description");
-  if (content.howTo.trim().length < minimums.howTo) issues.push("short howTo");
-  const conciseEquation = /[=＝]/u.test(content.formula)
-    && ["×", "*", "÷", "/", "+", "−", "-"].some((operator) => content.formula.includes(operator))
-    && /[\p{L}\d]/u.test(content.formula);
-  if (content.formula.trim().length < minimums.formula && !conciseEquation) issues.push("short formula");
-  if (content.example.answer.trim().length < minimums.example) issues.push("short example");
-  if (content.faqs.length < 2) issues.push("few FAQs");
-  return issues;
-}
 
 describe("calculator content quality", () => {
   it("keeps every public page complete, linked, and free of exact content duplicates", () => {
@@ -56,7 +40,7 @@ describe("calculator content quality", () => {
           if (previous) duplicateBlocks.push(`${locale}:${name}:${previous},${page.slug}`);
           else map.set(value, page.slug);
         }
-        const signals = qualitySignals(content, locale);
+        const signals = calculatorContentQualitySignals(content, locale);
         if (signals.length) flagged++;
         if (locale === "ko" && signals.length) koreanSignals[page.slug] = signals;
         if (signals.length) localeReviewLists[locale] = { ...localeReviewLists[locale], [page.slug]: signals };
