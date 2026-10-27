@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { getDictionary } from "@/i18n/dictionaries";
-import { locales } from "@/i18n/config";
+import { locales, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
 import { localeContentFollowupTargets } from "@/i18n/dictionaries/locale-quality-followup";
@@ -51,11 +51,18 @@ describe("calculator content quality", () => {
     expect(publicSlugs.size).toBe(publishedCalculatorPages.length);
     expect(koreanContentImprovementSlugs).toHaveLength(53);
     expect(koreanContentImprovementSlugs.every((slug) => publicSlugs.has(slug))).toBe(true);
-    expect(Object.values(localeContentFollowupTargets).flat()).toHaveLength(20);
+    expect(Object.values(localeContentFollowupTargets).flat()).toHaveLength(79);
+    const improvedExamples = new Set(["percentage", "proportion", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "weighted-average", "workdays"]);
     for (const [locale, slugs] of Object.entries(localeContentFollowupTargets)) {
       expect(slugs.every((slug) => publicSlugs.has(slug))).toBe(true);
-      const localizedContent = getDictionary(locale as (typeof locales)[number]).calculators;
+      const localizedContent = getDictionary(locale as SupportedLocale).calculators;
       expect(slugs.every((slug) => Boolean(localizedContent[slug as keyof typeof localizedContent]))).toBe(true);
+      for (const slug of slugs) {
+        if (!improvedExamples.has(slug)) continue;
+        const content = localizedContent[slug as keyof typeof localizedContent];
+        expect(content).toBeDefined();
+        expect(calculatorContentQualitySignals(content!, locale).filter((signal) => signal === "short example"), `${locale}/${slug}: ${content?.example.answer}`).toEqual([]);
+      }
     }
     expect(missing).toEqual([]);
     expect(brokenLinks).toEqual([]);

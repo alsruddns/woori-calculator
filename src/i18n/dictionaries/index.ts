@@ -118,51 +118,62 @@ export function getDictionary(locale: SupportedLocale): LocaleDictionary {
   const cached = dictionaryCache.get(locale);
   if (cached) return cached;
   if (locale === "el") {
-    dictionaryCache.set(locale, el);
-    return el;
+    const localized = { ...el, calculators: improveLocalizedQualityContent(locale, el.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "ro") {
-    dictionaryCache.set(locale, ro);
-    return ro;
+    const localized = { ...ro, calculators: improveLocalizedQualityContent(locale, ro.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "cs") {
-    dictionaryCache.set(locale, czechDictionary);
-    return czechDictionary;
+    const localized = { ...czechDictionary, calculators: improveLocalizedQualityContent(locale, czechDictionary.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "ru") {
-    dictionaryCache.set(locale, ru);
-    return ru;
+    const localized = { ...ru, calculators: improveLocalizedQualityContent(locale, ru.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "tr") {
-    dictionaryCache.set(locale, tr);
-    return tr;
+    const localized = { ...tr, calculators: improveLocalizedQualityContent(locale, tr.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "pl") {
-    dictionaryCache.set(locale, pl);
-    return pl;
+    const localized = { ...pl, calculators: improveLocalizedQualityContent(locale, pl.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "fil") {
-    dictionaryCache.set(locale, fil);
-    return fil;
+    const localized = { ...fil, calculators: improveLocalizedQualityContent(locale, fil.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "bn") {
     const bengali = buildBengaliDictionary(getDictionary("en"));
-    dictionaryCache.set(locale, bengali);
-    return bengali;
+    const localized = { ...bengali, calculators: improveLocalizedQualityContent(locale, bengali.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "uk") {
-    dictionaryCache.set(locale, uk);
-    return uk;
+    const localized = { ...uk, calculators: improveLocalizedQualityContent(locale, uk.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "ms") {
     const malay = buildMalayDictionary(getDictionary("en"));
-    dictionaryCache.set(locale, malay);
-    return malay;
+    const localized = { ...malay, calculators: improveLocalizedQualityContent(locale, malay.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   if (locale === "sv") {
     const swedish = buildSwedishDictionary(getDictionary("en"));
-    dictionaryCache.set(locale, swedish);
-    return swedish;
+    const localized = { ...swedish, calculators: improveLocalizedQualityContent(locale, swedish.calculators) };
+    dictionaryCache.set(locale, localized);
+    return localized;
   }
   const distinguished = distinguishRepeatedGuidance(buildDictionary(locale));
   let dictionary = distinguished;
