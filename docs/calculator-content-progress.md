@@ -6,11 +6,11 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 15
+- COMPLETE: 20
 - VALIDATING: 0
 - DRAFT: 10
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 45
+- PENDING static calculators: 40
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
 ## Completion gate
@@ -22,6 +22,8 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 change-rate, discount, cagr, simple-interest, compound-interest. Added distinct result interpretation copy to all 26 locale records. Calculation engine tests passed (29); content, locale, and example checks passed; TypeScript, lint, and diff checks passed. Playwright verified reviewed SSR across all 26 locales, example/FAQ rendering on all 15 calculators across the two completed batches, and all 8 viewport widths across both batches. Native-speaker review was not performed.
 
 date-difference, dday, age, workdays, unit-converter. Added distinct interpretation notes across all 26 locale records. Date/conversion engine tests passed (29), content/locale/example checks passed, TypeScript/lint passed, and Playwright verified SSR on all 26 locale routes, all five example/FAQ pages, all five browser input/result flows, and all eight viewports with no horizontal overflow. Native-speaker review was not performed.
+
+fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-return-calculator, position-size-calculator, stop-loss-take-profit-calculator. Added distinct financial scenario interpretations to all 26 locale records. Finance engine tests passed (12), content/locale/example checks passed, TypeScript/lint passed, and Playwright verified SSR on all 26 locale routes, all five example/FAQ pages, five browser input/result flows, and all eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
 ## Next batch under validation
 
@@ -47,11 +49,11 @@ Select the next five eligible static calculators from the register; do not inclu
 | `median` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `percentile` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `probability` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `fire-retirement-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `dividend-growth-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `inflation-adjusted-return-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `position-size-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `stop-loss-take-profit-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `fire-retirement-calculator` | finance | STATIC | 26/26 | COMPLETE | Withdrawal-rate assumption, target-only scope, engine example, SSR, browser, and responsive checks passed. |
+| `dividend-growth-calculator` | finance | STATIC | 26/26 | COMPLETE | Compounded dividend scenario and non-guarantee note match engine; SSR, browser, and responsive checks passed. |
+| `inflation-adjusted-return-calculator` | finance | STATIC | 26/26 | COMPLETE | Nominal and real annualized returns distinguished; engine precision, SSR, browser, and responsive checks passed. |
+| `position-size-calculator` | finance | STATIC | 26/26 | COMPLETE | Risk budget and stop-distance example match engine; excluded execution costs are stated. |
+| `stop-loss-take-profit-calculator` | finance | STATIC | 26/26 | COMPLETE | Stop, target, and potential ratio match engine; no execution or profit guarantee asserted. |
 | `stock-profit-after-fees-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `loan-early-repayment-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `rent-vs-buy-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |

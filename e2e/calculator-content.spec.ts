@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -9,6 +9,7 @@ const reviewedSlugs = ["average", "weighted-average", "unit-price", "probability
 const editorialBatchSlugs = ["percentage", "ratio", "proportion", "median", "decimal-fraction"] as const;
 const secondEditorialBatchSlugs = ["change-rate", "discount", "cagr", "simple-interest", "compound-interest"] as const;
 const thirdEditorialBatchSlugs = ["date-difference", "dday", "age", "workdays", "unit-converter"] as const;
+const fourthEditorialBatchSlugs = ["fire-retirement-calculator", "dividend-growth-calculator", "inflation-adjusted-return-calculator", "position-size-calculator", "stop-loss-take-profit-calculator"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -57,7 +58,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -71,7 +72,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -82,6 +83,24 @@ test.describe("date and unit editorial cards at required viewport widths", () =>
     test(width + "px date and unit detail pages fit without horizontal overflow", async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const slug of thirdEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dt").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, document: document.documentElement.scrollWidth, body: document.body.scrollWidth }));
+        expect(dimensions.document, slug + " document at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+        expect(dimensions.body, slug + " body at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
+test.describe("finance editorial cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px finance detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of fourthEditorialBatchSlugs) {
         const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
         expect(response?.status(), slug).toBe(200);
         await expect(page.locator("article h1"), slug).toBeVisible();
@@ -158,6 +177,11 @@ test.describe("calculator input and result flows", () => {
     ["age", "A person born Dec 31, 2000 is 25 on Dec 30, 2026"],
     ["workdays", "Monday Jan 5 through Friday Jan 9, 2026 counts 5 weekdays"],
     ["unit-converter", "One mile is 1.609344 kilometers"],
+    ["fire-retirement-calculator", "Annual spending of 40,000 divided by a chosen 4% withdrawal assumption gives a 1,000,000 target"],
+    ["dividend-growth-calculator", "An annual dividend of 200 growing at an assumed 5% for 10 years becomes about 325.78"],
+    ["inflation-adjusted-return-calculator", "Growing from 100 to 150 over 10 years is about 4.14% nominal annualized"],
+    ["position-size-calculator", "A 1% risk budget on a 10,000 account is 100"],
+    ["stop-loss-take-profit-calculator", "From entry 100, a 5% stop is 95 and a 10% target is 110"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
@@ -215,6 +239,56 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#unit-converter-toUnit").selectOption("f");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("212");
+
+    expect(errors).toEqual([]);
+  });
+
+  test("finance examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+
+    await page.goto("/en/calculators/fire-retirement-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#fire-retirement-calculator-annualExpenses").fill("40000");
+    await page.locator("#fire-retirement-calculator-withdrawalRate").fill("4");
+    await page.locator("#fire-retirement-calculator-currentSavings").fill("500000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("1,000,000");
+
+    await page.goto("/en/calculators/dividend-growth-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#dividend-growth-calculator-annualDividendPerShare").fill("2");
+    await page.locator("#dividend-growth-calculator-shares").fill("100");
+    await page.locator("#dividend-growth-calculator-growthRate").fill("5");
+    await page.locator("#dividend-growth-calculator-years").fill("10");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("325.78");
+
+    await page.goto("/en/calculators/inflation-adjusted-return-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#inflation-adjusted-return-calculator-initialValue").fill("100");
+    await page.locator("#inflation-adjusted-return-calculator-finalValue").fill("150");
+    await page.locator("#inflation-adjusted-return-calculator-years").fill("10");
+    await page.locator("#inflation-adjusted-return-calculator-inflationRate").fill("2");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("2.0961");
+
+    await page.goto("/en/calculators/position-size-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#position-size-calculator-accountSize").fill("10000");
+    await page.locator("#position-size-calculator-riskPercent").fill("1");
+    await page.locator("#position-size-calculator-entryPrice").fill("100");
+    await page.locator("#position-size-calculator-stopPrice").fill("95");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("20");
+
+    await page.goto("/en/calculators/stop-loss-take-profit-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#stop-loss-take-profit-calculator-entryPrice").fill("100");
+    await page.locator("#stop-loss-take-profit-calculator-units").fill("10");
+    await page.locator("#stop-loss-take-profit-calculator-stopPercent").fill("5");
+    await page.locator("#stop-loss-take-profit-calculator-targetPercent").fill("10");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("2");
 
     expect(errors).toEqual([]);
   });
