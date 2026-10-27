@@ -5,6 +5,7 @@ const resultValues = (outcome: ReturnType<typeof calculateFractions>) => "result
 describe("extended math calculators", () => {
   it("reduces fraction operations and rejects zero denominators", () => {
     expect(resultValues(calculateFractions({ aNumerator: "1", aDenominator: "2", bNumerator: "1", bDenominator: "3", operation: "add" })).slice(0, 2)).toEqual(["5/6", "5/6"]);
+    expect(resultValues(calculateFractions({ aNumerator: "1", aDenominator: "2", bNumerator: "1", bDenominator: "4", operation: "add" })).slice(0, 2)).toEqual(["3/4", "3/4"]);
     expect(calculateFractions({ aNumerator: "1", aDenominator: "0", bNumerator: "1", bDenominator: "3", operation: "add" })).toHaveProperty("error");
     expect(calculateFractions({ aNumerator: "1", aDenominator: "2", bNumerator: "0", bDenominator: "1", operation: "divide" })).toHaveProperty("error");
   });

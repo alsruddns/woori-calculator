@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -17,6 +17,7 @@ const eighthEditorialBatchSlugs = ["product-margin", "salary-conversion", "bmi",
 const ninthEditorialBatchSlugs = ["ltv", "dti", "dsr", "loan-refinance", "prepayment-fee"] as const;
 const tenthEditorialBatchSlugs = ["loan-affordability", "hourly-wage", "fuel-efficiency", "calorie-per-serving", "trip-split"] as const;
 const eleventhEditorialBatchSlugs = ["annual-leave-allowance", "tenure", "time-arithmetic", "pregnancy", "utility-bill"] as const;
+const twelfthEditorialBatchSlugs = ["fraction", "standard-deviation", "vehicle-cost", "taxi-fare", "tip-calculator"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -65,7 +66,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs, ...tenthEditorialBatchSlugs, ...eleventhEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs, ...tenthEditorialBatchSlugs, ...eleventhEditorialBatchSlugs, ...twelfthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -79,7 +80,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? tenthReviewedBatchExampleNotes[locale]?.[slug] ?? eleventhReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? tenthReviewedBatchExampleNotes[locale]?.[slug] ?? eleventhReviewedBatchExampleNotes[locale]?.[slug] ?? twelfthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -153,6 +154,40 @@ test.describe("leave, tenure, time, pregnancy, and utility SSR across all locale
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article h2").first()).toBeVisible();
       await expect(page.locator("article")).toContainText(eleventhReviewedBatchExampleNotes[locale]?.[slug] ?? "");
+    });
+  }
+});
+
+test.describe("fraction, deviation, vehicle, taxi, and tip SSR across locales", () => {
+  for (const [index, locale] of locales.entries()) {
+    const slug = twelfthEditorialBatchSlugs[index % twelfthEditorialBatchSlugs.length]!;
+    test(locale + "/" + slug + " renders its localized example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toContain(twelfthReviewedBatchExampleNotes[locale]?.[slug]);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article h1")).toBeVisible();
+      await expect(page.locator("article h2").first()).toBeVisible();
+      await expect(page.locator("article")).toContainText(twelfthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
+    });
+  }
+});
+
+test.describe("twelfth editorial batch cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px math and everyday detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of twelfthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").last(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, slug + " body at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
     });
   }
 });
@@ -401,6 +436,9 @@ test.describe("calculator input and result flows", () => {
       ["time-arithmetic", "Adding 2 hours 45 minutes and 1 hour 30 minutes"],
       ["pregnancy", "An LMP date of 2026-01-01 plus the calculator's 280-day estimate"],
       ["utility-bill", "Usage 20 × entered rate 500 plus base fee 1,000"],
+      ["vehicle-cost", "At 1,000 km per month, 10 km/L, and fuel at 1,700 per liter"],
+      ["taxi-fare", "A 4,000 base fare, 2 km included, 5 km trip, 1,000 per extra km"],
+      ["tip-calculator", "Adding an entered 10% tip to 50,000 gives a 5,000 tip"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
@@ -414,6 +452,53 @@ test.describe("calculator input and result flows", () => {
       await expect(page.locator("article dl dt").last(), slug).toBeVisible();
     });
   }
+
+  test("fraction, deviation, vehicle, taxi, and tip examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+
+    await page.goto("/en/calculators/fraction");
+    await waitForCalculatorHydration(page);
+    await page.locator("#fraction-operation").selectOption("add");
+    await page.locator("#fraction-aNumerator").fill("1");
+    await page.locator("#fraction-aDenominator").fill("2");
+    await page.locator("#fraction-bNumerator").fill("1");
+    await page.locator("#fraction-bDenominator").fill("4");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("3/4");
+
+    await page.goto("/en/calculators/standard-deviation");
+    await waitForCalculatorHydration(page);
+    await page.locator("#standard-deviation-mode").selectOption("population");
+    await page.locator("#standard-deviation-numbers").fill("2, 4, 4, 4, 5, 5, 7, 9");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("2");
+
+    await page.goto("/en/calculators/vehicle-cost");
+    await waitForCalculatorHydration(page);
+    for (const [key, value] of Object.entries({ distance: "1000", efficiency: "10", fuelPrice: "1700", insurance: "0", tax: "0", maintenance: "0", parking: "0", tolls: "0", other: "0" })) {
+      await page.locator("#vehicle-cost-" + key).fill(value);
+    }
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("2,040,000");
+
+    await page.goto("/en/calculators/taxi-fare");
+    await waitForCalculatorHydration(page);
+    for (const [key, value] of Object.entries({ baseFare: "4000", includedDistance: "2", distanceRate: "1000", distance: "5", timeRate: "0", minutes: "0" })) {
+      await page.locator("#taxi-fare-" + key).fill(value);
+    }
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("7,000");
+
+    await page.goto("/en/calculators/tip-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#tip-calculator-amount").fill("50000");
+    await page.locator("#tip-calculator-percent").fill("10");
+    await page.locator("#tip-calculator-people").fill("2");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("27,500");
+
+    expect(errors).toEqual([]);
+  });
 
   test("date, workday, age, and unit examples calculate in the browser", async ({ page }) => {
     const errors = collectBrowserErrors(page);

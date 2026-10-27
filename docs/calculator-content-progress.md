@@ -6,19 +6,21 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 55
+- COMPLETE: 60
 - VALIDATING: 0
-- DRAFT: 10
+- DRAFT: 8
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 5
-- Latest audit signals: short-content 47 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
-- Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
+- PENDING static calculators: 2
+- Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
+- Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, percentile, aspect-ratio, scale-ratio
 
 ## Completion gate
 
 COMPLETE requires calculator-specific purpose, input/unit meaning, implemented formula and assumptions, engine-matched example, result interpretation, limitations, useful FAQ, related links where present, all 26 localized page records, SSR body verification, and passing content/locale checks. Native-speaker review is not claimed.
 
 ## Latest completed batch
+
+fraction, standard-deviation, vehicle-cost, taxi-fare, tip-calculator. Added calculator-specific worked examples and interpretation limits across all 26 locales. Tests verify each localized detail has purpose, input guidance, formula, example, and at least two FAQs; engine/content tests passed (16), full regression passed (1,105 tests across 210 files), content audit passed, TypeScript/lint passed, and production build generated all 4,423 static routes. Playwright verified 26 locale SSR examples, all five browser calculation flows, and all five detail pages at eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
 annual-leave-allowance, tenure, time-arithmetic, pregnancy, utility-bill. Added distinct arithmetic/date examples and interpretation limits across all 26 locales. Date-life/finance/content tests passed (14); TypeScript, lint, and diff checks passed. Playwright verified localized SSR example content on all 26 locale routes, one browser calculation flow, and all eight viewport widths without horizontal overflow. No legal leave entitlement, clinical due-date guarantee, tariff schedule, tax, or additional fee rules are inferred. Native-speaker review was not performed.
 
@@ -58,9 +60,9 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 | `proportion` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `aspect-ratio` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `scale-ratio` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `fraction` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `fraction` | math | STATIC | 26/26 | COMPLETE | Localized formula and example verified; denominator and zero-divisor limits documented; 26-locale SSR and browser calculation passed. |
 | `decimal-fraction` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
-| `standard-deviation` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `standard-deviation` | math | STATIC | 26/26 | COMPLETE | Population example matches engine (mean 5, variance 4, standard deviation 2); sample minimum and 26-locale SSR verified. |
 | `median` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `percentile` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `probability` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
@@ -113,10 +115,10 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 | `time-arithmetic` | date-time | STATIC | 26/26 | COMPLETE | Example: 2h45m + 1h30m = 4h15m / 255 minutes. Engine, locale SSR, and responsive checks passed. |
 | `pregnancy` | date-time | STATIC | 26/26 | COMPLETE | LMP 2026-01-01 + 280 days = estimated 2026-10-08; estimate only, clinical advice takes priority. Engine, locale SSR, and responsive checks passed. |
 | `utility-bill` | life | STATIC | 26/26 | COMPLETE | Example: usage 20 times entered rate 500 + base 1,000 = 11,000; excludes tiered tariffs, taxes, and fees. Engine, locale SSR, and responsive checks passed. |
-| `vehicle-cost` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `taxi-fare` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `vehicle-cost` | life | STATIC | 26/26 | COMPLETE | User-entered distance, efficiency, fuel price, and monthly costs explained; 170,000 monthly fuel and 2,040,000 annual example verified. |
+| `taxi-fare` | life | STATIC | 26/26 | COMPLETE | User-entered base, included distance, distance/time rates explained; 7,000 example verified, local fare adjustments excluded. |
 | `trip-split` | life | STATIC | 26/26 | COMPLETE | 10,000 split among three matches fractional share and integer remainder allocation. |
-| `tip-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `tip-calculator` | life | STATIC | 26/26 | COMPLETE | Entered tip rate and equal split explained; 50,000 at 10% split by two yields 27,500 each. |
 | `unit-converter` | math | STATIC | 26/26 | COMPLETE | Mile conversion and temperature offset example match engine tests; browser flow and responsive checks passed. |
 | `unemployment-benefit` | salary | POLICY | 26/26 | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `minimum-wage` | salary | POLICY | 26/26 | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -220,4 +222,4 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 
 ## Next batch queue
 
-fraction, standard-deviation, vehicle-cost, taxi-fare, tip-calculator. Reuse existing content and inspect the exact engine behavior first. Exclude withholding-tax-3-3 and other policy calculations from factual completion until current official rules are verified.
+average, weighted-average, unit-price, probability, area. These remain DRAFT and require full review of localized purpose, inputs, formula, examples, result interpretation, limitations, and FAQs. Keep the remaining policy-verification queue separate.

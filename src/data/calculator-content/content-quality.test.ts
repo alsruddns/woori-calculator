@@ -4,7 +4,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
@@ -228,5 +228,26 @@ describe("calculator content quality", () => {
   it("uses calculator output for country-policy examples", () => {
     const missingExamples = publishedCalculatorPages.filter((page) => page.countrySpecific && !calculatorExample(page, "en")).map((page) => page.slug);
     expect(missingExamples).toEqual([]);
+  });
+
+  it("keeps the twelfth reviewed batch complete and localized across 26 locales", () => {
+    const slugs = ["fraction", "standard-deviation", "vehicle-cost", "taxi-fare", "tip-calculator"] as const;
+    for (const locale of locales) {
+      const dictionary = getDictionary(locale);
+      for (const slug of slugs) {
+        const content = dictionary.calculators[slug];
+        const note = twelfthReviewedBatchExampleNotes[locale]?.[slug];
+        expect(note, `${locale}/${slug} localized example note`).toBeTruthy();
+        expect(content, `${locale}/${slug} content`).toBeDefined();
+        if (!content) throw new Error(`Missing localized content for ${locale}/${slug}`);
+        expect(content.description, `${locale}/${slug} purpose`).toBeTruthy();
+        expect(content.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
+        expect(content.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(content.example.question, `${locale}/${slug} example inputs`).toBeTruthy();
+        expect(content.example.answer, `${locale}/${slug} example result`).toContain(note);
+        expect(content.faqs.length, `${locale}/${slug} useful FAQ`).toBeGreaterThanOrEqual(2);
+        expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
+      }
+    }
   });
 });
