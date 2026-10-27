@@ -6,13 +6,13 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 65
+- COMPLETE: 68
 - VALIDATING: 0
-- DRAFT: 3
+- DRAFT: 0
 - BLOCKED policy calculators: 99
 - PENDING static calculators: 2
 - Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
-- Previously improved result-note calculators remain DRAFT: percentile, aspect-ratio, scale-ratio
+- Remaining static candidates: vat, withholding-tax-3-3 (review policy basis before completing)
 
 ## Completion gate
 
@@ -42,11 +42,13 @@ date-difference, dday, age, workdays, unit-converter. Added distinct interpretat
 
 fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-return-calculator, position-size-calculator, stop-loss-take-profit-calculator. Added distinct financial scenario interpretations to all 26 locale records. Finance engine tests passed (12), content/locale/example checks passed, TypeScript/lint passed, and Playwright verified SSR on all 26 locale routes, all five example/FAQ pages, five browser input/result flows, and all eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
+percentile, aspect-ratio, scale-ratio. Added localized nearest-rank, aspect simplification, and scale conversion examples in all 26 locales. Engine/content tests passed (14); TypeScript, lint, and diff checks passed. Playwright verified all 26 locale SSR examples, all three live calculator flows, and eight viewport widths with no horizontal overflow. The 320px viewport initially timed out during a loaded run, then passed on isolated rerun. Native-speaker review was not performed.
+
 average, weighted-average, unit-price, probability, area. Added localized worked examples and interpretation limits for all 26 locales. Focused engine/content tests passed (48); TypeScript, lint, and diff checks passed. Playwright verified localized example text in initial SSR HTML across all 26 locales, all five calculator result flows in the browser, and all five pages at eight viewport widths without horizontal overflow. No native-speaker review was performed.
 
 ## Current batch under validation
 
-None. The latest batch passed engine, content, locale SSR, browser-flow, and eight-width responsive checks.
+None. The latest three-calculator batch passed engine/content tests, locale SSR, browser flows, and viewport checks.
 
 ## Calculator register
 
@@ -60,13 +62,13 @@ None. The latest batch passed engine, content, locale SSR, browser-flow, and eig
 | `weighted-average` | math | STATIC | 26/26 | COMPLETE | Weighted mean 95 for values 80/100 with weights 1/3; scaling and engine example verified. |
 | `cagr` | math | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed. |
 | `proportion` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
-| `aspect-ratio` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `scale-ratio` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `aspect-ratio` | math | STATIC | 26/26 | COMPLETE | 2,560×1,440 reduces to 16:9; engine, localized SSR, browser input, and responsive checks passed. |
+| `scale-ratio` | math | STATIC | 26/26 | COMPLETE | 1:100 drawing length 5 cm converts to actual 5 m; unit conversion, SSR, browser, and viewport checks passed. |
 | `fraction` | math | STATIC | 26/26 | COMPLETE | Localized formula and example verified; denominator and zero-divisor limits documented; 26-locale SSR and browser calculation passed. |
 | `decimal-fraction` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `standard-deviation` | math | STATIC | 26/26 | COMPLETE | Population example matches engine (mean 5, variance 4, standard deviation 2); sample minimum and 26-locale SSR verified. |
 | `median` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
-| `percentile` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
+| `percentile` | math | STATIC | 26/26 | COMPLETE | Nearest-rank 60th percentile of 1–5 is 3; engine, localized SSR, browser, and viewport checks passed. |
 | `probability` | math | STATIC | 26/26 | COMPLETE | Three independent 20% trials yield 48.8% chance of at least one success; independence and non-prediction limits stated. |
 | `fire-retirement-calculator` | finance | STATIC | 26/26 | COMPLETE | Withdrawal-rate assumption, target-only scope, engine example, SSR, browser, and responsive checks passed. |
 | `dividend-growth-calculator` | finance | STATIC | 26/26 | COMPLETE | Compounded dividend scenario and non-guarantee note match engine; SSR, browser, and responsive checks passed. |
@@ -224,4 +226,4 @@ None. The latest batch passed engine, content, locale SSR, browser-flow, and eig
 
 ## Next batch queue
 
-percentile, aspect-ratio, scale-ratio. Recheck status before selecting the next static batch; retain the policy-verification queue separately.
+vat, withholding-tax-3-3. These use policy-related rates; verify official rules and applicable dates before presenting current-law claims. Keep the 99 blocked policy calculators in a separate official-source queue.

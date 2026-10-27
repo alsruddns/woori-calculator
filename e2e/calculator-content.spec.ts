@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -19,6 +19,7 @@ const tenthEditorialBatchSlugs = ["loan-affordability", "hourly-wage", "fuel-eff
 const eleventhEditorialBatchSlugs = ["annual-leave-allowance", "tenure", "time-arithmetic", "pregnancy", "utility-bill"] as const;
 const twelfthEditorialBatchSlugs = ["fraction", "standard-deviation", "vehicle-cost", "taxi-fare", "tip-calculator"] as const;
 const thirteenthEditorialBatchSlugs = ["average", "weighted-average", "unit-price", "probability", "area"] as const;
+const fourteenthEditorialBatchSlugs = ["percentile", "aspect-ratio", "scale-ratio"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -211,6 +212,21 @@ test.describe("average, weighted mean, unit price, probability, and area SSR acr
   }
 });
 
+test.describe("percentile and ratio examples in localized SSR", () => {
+  for (const [index, locale] of locales.entries()) {
+    const slug = fourteenthEditorialBatchSlugs[index % fourteenthEditorialBatchSlugs.length]!;
+    test(locale + "/" + slug + " includes localized example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toContain(fourteenthReviewedBatchExampleNotes[locale]?.[slug]);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      await expect(page.locator("article")).toContainText(fourteenthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
+    });
+  }
+});
+
 test.describe("date and unit editorial cards at required viewport widths", () => {
   for (const width of viewports) {
     test(width + "px date and unit detail pages fit without horizontal overflow", async ({ page }) => {
@@ -372,6 +388,22 @@ test.describe("thirteenth editorial batch cards at required viewport widths", ()
     test(width + "px average and everyday detail pages fit without horizontal overflow", async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const slug of thirteenthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").last(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, slug + " body at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
+test.describe("fourteenth editorial batch cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px percentile and ratio cards fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of fourteenthEditorialBatchSlugs) {
         const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
         expect(response?.status(), slug).toBe(200);
         await expect(page.locator("article h1"), slug).toBeVisible();
@@ -1063,6 +1095,30 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("10");
 
+    expect(errors).toEqual([]);
+  });
+
+  test("percentile and ratio examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/percentile");
+    await page.locator("#percentile-numbers").fill("1, 2, 3, 4, 5");
+    await page.locator("#percentile-percentile").fill("60");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("3");
+
+    await page.goto("/en/calculators/aspect-ratio");
+    await page.locator("#aspect-ratio-width").fill("2560");
+    await page.locator("#aspect-ratio-height").fill("1440");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("16 : 9");
+
+    await page.goto("/en/calculators/scale-ratio");
+    await page.locator("#scale-ratio-scaleDrawing").fill("1");
+    await page.locator("#scale-ratio-scaleActual").fill("100");
+    await page.locator("#scale-ratio-length").fill("5");
+    await page.locator("#scale-ratio-outputUnit").selectOption("m");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("5");
     expect(errors).toEqual([]);
   });
 });
