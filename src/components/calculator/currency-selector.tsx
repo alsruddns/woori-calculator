@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { currencyOptions, defaultCurrencyByLocale, isCurrencyCode, type CurrencyCode, type CurrencyLocale } from "@/lib/formatter/currency";
+import { currencyOptions, currencySymbolByCode, defaultCurrencyByLocale, isCurrencyCode, type CurrencyCode, type CurrencyLocale } from "@/lib/formatter/currency";
 
 const copy: Record<CurrencyLocale, { label: string; search: string; reset: string; note: string }> = {
   ko: { label: "표시 통화", search: "통화 코드 또는 이름 검색", reset: "기본 통화로 초기화", note: "통화 변경은 표시 단위만 바꾸며 환율 환산이나 국가별 세금·급여 규칙 변경은 하지 않습니다." },
@@ -35,8 +35,7 @@ const copy: Record<CurrencyLocale, { label: string; search: string; reset: strin
 const STORAGE_KEY = "woori-calculator-currency-v1";
 function optionLabel(code: CurrencyCode) {
   const option = currencyOptions.find((item) => item.code === code)!;
-  const symbol = new Intl.NumberFormat(option.intlLocale, { style: "currency", currency: code }).formatToParts(0).find((part) => part.type === "currency")?.value ?? code;
-  return `${code} — ${symbol} — ${option.nativeName}`;
+  return `${code} — ${currencySymbolByCode[code]} — ${option.nativeName}`;
 }
 
 export function CurrencySelector({ locale, currency, onChange }: { locale: CurrencyLocale; currency: CurrencyCode; onChange: (currency: CurrencyCode) => void }) {
