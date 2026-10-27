@@ -6,11 +6,11 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 10
+- COMPLETE: 15
 - VALIDATING: 0
 - DRAFT: 10
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 50
+- PENDING static calculators: 45
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
 ## Completion gate
@@ -20,6 +20,12 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 ## Latest completed batch
 
 change-rate, discount, cagr, simple-interest, compound-interest. Added distinct result interpretation copy to all 26 locale records. Calculation engine tests passed (29); content, locale, and example checks passed; TypeScript, lint, and diff checks passed. Playwright verified reviewed SSR across all 26 locales, example/FAQ rendering on all 15 calculators across the two completed batches, and all 8 viewport widths across both batches. Native-speaker review was not performed.
+
+date-difference, dday, age, workdays, unit-converter. Added distinct interpretation notes across all 26 locale records. Date/conversion engine tests passed (29), content/locale/example checks passed, TypeScript/lint passed, and Playwright verified SSR on all 26 locale routes, all five example/FAQ pages, all five browser input/result flows, and all eight viewports with no horizontal overflow. Native-speaker review was not performed.
+
+## Next batch under validation
+
+Select the next five eligible static calculators from the register; do not include blocked policy calculators until official rules are verified.
 
 ## Calculator register
 
@@ -76,10 +82,10 @@ change-rate, discount, cagr, simple-interest, compound-interest. Added distinct 
 | `markup` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `product-margin` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `withholding-tax-3-3` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `date-difference` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `dday` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `age` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `workdays` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `date-difference` | date-time | STATIC | 26/26 | COMPLETE | Engine example, localized endpoint-count explanation, SSR, browser form, and responsive checks passed. |
+| `dday` | date-time | STATIC | 26/26 | COMPLETE | Engine example, localized D−N interpretation, SSR, browser form, and responsive checks passed. |
+| `age` | life | STATIC | 26/26 | COMPLETE | Completed age and year-based reference values explained; browser example passed. Legal age is not asserted. |
+| `workdays` | date-time | STATIC | 26/26 | COMPLETE | Inclusive endpoints and holiday exclusion are explained; engine, browser, and responsive checks passed. |
 | `bmi` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `area` | life | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `pace` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
@@ -94,7 +100,7 @@ change-rate, discount, cagr, simple-interest, compound-interest. Added distinct 
 | `taxi-fare` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `trip-split` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `tip-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `unit-converter` | math | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `unit-converter` | math | STATIC | 26/26 | COMPLETE | Mile conversion and temperature offset example match engine tests; browser flow and responsive checks passed. |
 | `unemployment-benefit` | salary | POLICY | 26/26 | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `minimum-wage` | salary | POLICY | 26/26 | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `severance-pay` | salary | POLICY | 26/26 | BLOCKED | Official rule and effective date need verification; do not change policy values. |
