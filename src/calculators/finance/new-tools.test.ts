@@ -35,6 +35,8 @@ describe("new static calculator functions", () => {
   });
   it("compares early repayment schedules, including zero interest", () => {
     expect(Number(resultValue(calculateEarlyRepayment(values({ principal:"12000", annualRate:"6", termMonths:"12", extraMonthly:"100", lumpSum:"0", lumpMonth:"1" })), "interestSaved"))).toBeGreaterThan(0);
+    expect(resultValue(calculateEarlyRepayment(values({ principal:"1200", annualRate:"6", termMonths:"12", extraMonthly:"100", lumpSum:"0", lumpMonth:"1" })), "interestSaved")).toBeCloseTo(18.2444, 3);
+    expect(resultValue(calculateEarlyRepayment(values({ principal:"1200", annualRate:"6", termMonths:"12", extraMonthly:"100", lumpSum:"0", lumpMonth:"1" })), "monthsSaved")).toBe(5);
     expect(resultValue(calculateEarlyRepayment(values({ principal:"1200", annualRate:"0", termMonths:"12", extraMonthly:"0", lumpSum:"0", lumpMonth:"1" })), "interestSaved")).toBe(0);
   });
   it("compares rent and ownership assumptions with zero-interest boundary", () => {

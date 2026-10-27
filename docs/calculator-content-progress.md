@@ -6,11 +6,11 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 20
-- VALIDATING: 0
+- COMPLETE: 25
+- VALIDATING: 5
 - DRAFT: 10
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 40
+- PENDING static calculators: 30
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
 ## Completion gate
@@ -19,15 +19,17 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 
 ## Latest completed batch
 
+stock-profit-after-fees-calculator, loan-early-repayment-calculator, rent-vs-buy-calculator, electricity-cost-calculator, travel-budget-calculator. Added distinct fee, amortization, ownership-cost, energy-use, and contingency examples to all 26 locale records. Finance engine/content tests passed (14); TypeScript and lint passed. Playwright verified 26-locale SSR, all five example/FAQ pages, all five browser input/result flows, and all eight viewport widths without horizontal overflow. Native-speaker review was not performed.
+
 change-rate, discount, cagr, simple-interest, compound-interest. Added distinct result interpretation copy to all 26 locale records. Calculation engine tests passed (29); content, locale, and example checks passed; TypeScript, lint, and diff checks passed. Playwright verified reviewed SSR across all 26 locales, example/FAQ rendering on all 15 calculators across the two completed batches, and all 8 viewport widths across both batches. Native-speaker review was not performed.
 
 date-difference, dday, age, workdays, unit-converter. Added distinct interpretation notes across all 26 locale records. Date/conversion engine tests passed (29), content/locale/example checks passed, TypeScript/lint passed, and Playwright verified SSR on all 26 locale routes, all five example/FAQ pages, all five browser input/result flows, and all eight viewports with no horizontal overflow. Native-speaker review was not performed.
 
 fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-return-calculator, position-size-calculator, stop-loss-take-profit-calculator. Added distinct financial scenario interpretations to all 26 locale records. Finance engine tests passed (12), content/locale/example checks passed, TypeScript/lint passed, and Playwright verified SSR on all 26 locale routes, all five example/FAQ pages, five browser input/result flows, and all eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
-## Next batch under validation
+## Current batch under validation
 
-Select the next five eligible static calculators from the register; do not include blocked policy calculators until official rules are verified.
+freelancer-hourly-rate-calculator, break-even-point-calculator, savings-interest, deposit-interest, loan-interest. Static formula calculators only; no national tax, wage, or lending policy rule changes. Add locale-specific scenario notes after matching each example to the implementation.
 
 ## Calculator register
 
@@ -54,18 +56,18 @@ Select the next five eligible static calculators from the register; do not inclu
 | `inflation-adjusted-return-calculator` | finance | STATIC | 26/26 | COMPLETE | Nominal and real annualized returns distinguished; engine precision, SSR, browser, and responsive checks passed. |
 | `position-size-calculator` | finance | STATIC | 26/26 | COMPLETE | Risk budget and stop-distance example match engine; excluded execution costs are stated. |
 | `stop-loss-take-profit-calculator` | finance | STATIC | 26/26 | COMPLETE | Stop, target, and potential ratio match engine; no execution or profit guarantee asserted. |
-| `stock-profit-after-fees-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `loan-early-repayment-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `rent-vs-buy-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `electricity-cost-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `travel-budget-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `freelancer-hourly-rate-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `break-even-point-calculator` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `stock-profit-after-fees-calculator` | finance | STATIC | 26/26 | COMPLETE | Fee-adjusted net example and tax exclusion verified in engine, SSR, browser, and responsive checks. |
+| `loan-early-repayment-calculator` | finance | STATIC | 26/26 | COMPLETE | Added amortization scenario; interest saved and months saved are engine-tested. |
+| `rent-vs-buy-calculator` | life | STATIC | 26/26 | COMPLETE | Modeled non-recoverable costs and omitted opportunity costs are stated; example verified. |
+| `electricity-cost-calculator` | life | STATIC | 26/26 | COMPLETE | Energy and entered-unit-price example matches engine and browser output. |
+| `travel-budget-calculator` | life | STATIC | 26/26 | COMPLETE | Itemized costs, contingency, and per-person budget match engine and browser output. |
+| `freelancer-hourly-rate-calculator` | finance | STATIC | 26/26 | VALIDATING | Selected for localized example and formula review. |
+| `break-even-point-calculator` | tax | STATIC | 26/26 | VALIDATING | Static contribution-margin math; no jurisdiction-specific tax rule is being changed. |
 | `compound-interest` | finance | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed; tax and fee effects excluded. |
 | `simple-interest` | finance | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed; pre-tax simple-interest estimate. |
-| `savings-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `deposit-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `loan-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `savings-interest` | finance | STATIC | 26/26 | VALIDATING | Selected for localized example and formula review. |
+| `deposit-interest` | finance | STATIC | 26/26 | VALIDATING | Selected for localized example and formula review. |
+| `loan-interest` | finance | STATIC | 26/26 | VALIDATING | Static payment estimate only; excludes lender-specific policy and fees. |
 | `ltv` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `dti` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `dsr` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
@@ -85,7 +87,7 @@ Select the next five eligible static calculators from the register; do not inclu
 | `product-margin` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `withholding-tax-3-3` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `date-difference` | date-time | STATIC | 26/26 | COMPLETE | Engine example, localized endpoint-count explanation, SSR, browser form, and responsive checks passed. |
-| `dday` | date-time | STATIC | 26/26 | COMPLETE | Engine example, localized Dâˆ’N interpretation, SSR, browser form, and responsive checks passed. |
+| `dday` | date-time | STATIC | 26/26 | COMPLETE | Engine example, localized D?’N interpretation, SSR, browser form, and responsive checks passed. |
 | `age` | life | STATIC | 26/26 | COMPLETE | Completed age and year-based reference values explained; browser example passed. Legal age is not asserted. |
 | `workdays` | date-time | STATIC | 26/26 | COMPLETE | Inclusive endpoints and holiday exclusion are explained; engine, browser, and responsive checks passed. |
 | `bmi` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |

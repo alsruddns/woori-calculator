@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -10,6 +10,7 @@ const editorialBatchSlugs = ["percentage", "ratio", "proportion", "median", "dec
 const secondEditorialBatchSlugs = ["change-rate", "discount", "cagr", "simple-interest", "compound-interest"] as const;
 const thirdEditorialBatchSlugs = ["date-difference", "dday", "age", "workdays", "unit-converter"] as const;
 const fourthEditorialBatchSlugs = ["fire-retirement-calculator", "dividend-growth-calculator", "inflation-adjusted-return-calculator", "position-size-calculator", "stop-loss-take-profit-calculator"] as const;
+const fifthEditorialBatchSlugs = ["stock-profit-after-fees-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -58,7 +59,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -72,7 +73,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -101,6 +102,24 @@ test.describe("finance editorial cards at required viewport widths", () => {
     test(width + "px finance detail pages fit without horizontal overflow", async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const slug of fourthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dt").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, document: document.documentElement.scrollWidth, body: document.body.scrollWidth }));
+        expect(dimensions.document, slug + " document at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+        expect(dimensions.body, slug + " body at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
+test.describe("cost-planning editorial cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px cost-planning pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of fifthEditorialBatchSlugs) {
         const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
         expect(response?.status(), slug).toBe(200);
         await expect(page.locator("article h1"), slug).toBeVisible();
@@ -182,6 +201,11 @@ test.describe("calculator input and result flows", () => {
     ["inflation-adjusted-return-calculator", "Growing from 100 to 150 over 10 years is about 4.14% nominal annualized"],
     ["position-size-calculator", "A 1% risk budget on a 10,000 account is 100"],
     ["stop-loss-take-profit-calculator", "From entry 100, a 5% stop is 95 and a 10% target is 110"],
+    ["stock-profit-after-fees-calculator", "Buy 10 shares at 100, sell at 110, and charge 0.1% on each side"],
+    ["loan-early-repayment-calculator", "On 1,200 at 6% for 12 months, adding 100 monthly"],
+    ["rent-vs-buy-calculator", "With a 120,000 home, 20% down, zero-interest loan"],
+    ["electricity-cost-calculator", "One 100 W device used 5 hours daily for 30 days consumes 15 kWh"],
+    ["travel-budget-calculator", "Transport 100, two nights at 50, food for 2 people"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
@@ -289,6 +313,74 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#stop-loss-take-profit-calculator-targetPercent").fill("10");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("2");
+
+    expect(errors).toEqual([]);
+  });
+
+  test("fees, repayment, housing, power, and travel examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+
+    await page.goto("/en/calculators/stock-profit-after-fees-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#stock-profit-after-fees-calculator-buyPrice").fill("100");
+    await page.locator("#stock-profit-after-fees-calculator-sellPrice").fill("110");
+    await page.locator("#stock-profit-after-fees-calculator-shares").fill("10");
+    await page.locator("#stock-profit-after-fees-calculator-buyFeePercent").fill("0.1");
+    await page.locator("#stock-profit-after-fees-calculator-sellFeePercent").fill("0.1");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("97.9");
+
+    await page.goto("/en/calculators/loan-early-repayment-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#loan-early-repayment-calculator-principal").fill("1200");
+    await page.locator("#loan-early-repayment-calculator-annualRate").fill("6");
+    await page.locator("#loan-early-repayment-calculator-termMonths").fill("12");
+    await page.locator("#loan-early-repayment-calculator-extraMonthly").fill("100");
+    await page.locator("#loan-early-repayment-calculator-lumpSum").fill("0");
+    await page.locator("#loan-early-repayment-calculator-lumpMonth").fill("1");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("18.24");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("5");
+
+    await page.goto("/en/calculators/rent-vs-buy-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#rent-vs-buy-calculator-homePrice").fill("120000");
+    await page.locator("#rent-vs-buy-calculator-downPaymentPercent").fill("20");
+    await page.locator("#rent-vs-buy-calculator-annualRate").fill("0");
+    await page.locator("#rent-vs-buy-calculator-loanYears").fill("20");
+    await page.locator("#rent-vs-buy-calculator-holdingYears").fill("5");
+    await page.locator("#rent-vs-buy-calculator-monthlyRent").fill("1000");
+    await page.locator("#rent-vs-buy-calculator-annualMaintenancePercent").fill("1");
+    await page.locator("#rent-vs-buy-calculator-purchaseCosts").fill("2000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("60,000");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("8,000");
+
+    await page.goto("/en/calculators/electricity-cost-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#electricity-cost-calculator-watts").fill("100");
+    await page.locator("#electricity-cost-calculator-hoursPerDay").fill("5");
+    await page.locator("#electricity-cost-calculator-days").fill("30");
+    await page.locator("#electricity-cost-calculator-pricePerKwh").fill("0.2");
+    await page.locator("#electricity-cost-calculator-devices").fill("1");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("15 kWh");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("3");
+
+    await page.goto("/en/calculators/travel-budget-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#travel-budget-calculator-transport").fill("100");
+    await page.locator("#travel-budget-calculator-lodgingPerNight").fill("50");
+    await page.locator("#travel-budget-calculator-nights").fill("2");
+    await page.locator("#travel-budget-calculator-dailyFoodPerPerson").fill("20");
+    await page.locator("#travel-budget-calculator-people").fill("2");
+    await page.locator("#travel-budget-calculator-days").fill("3");
+    await page.locator("#travel-budget-calculator-activities").fill("40");
+    await page.locator("#travel-budget-calculator-localTransport").fill("20");
+    await page.locator("#travel-budget-calculator-other").fill("10");
+    await page.locator("#travel-budget-calculator-bufferPercent").fill("10");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("429");
 
     expect(errors).toEqual([]);
   });
