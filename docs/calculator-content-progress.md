@@ -6,11 +6,11 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 30
+- COMPLETE: 35
 - VALIDATING: 5
 - DRAFT: 10
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 25
+- PENDING static calculators: 20
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
 ## Completion gate
@@ -18,6 +18,8 @@ This register separates earlier result-note work from full content completion. A
 COMPLETE requires calculator-specific purpose, input/unit meaning, implemented formula and assumptions, engine-matched example, result interpretation, limitations, useful FAQ, related links where present, all 26 localized page records, SSR body verification, and passing content/locale checks. Native-speaker review is not claimed.
 
 ## Latest completed batch
+
+stock-average-price, dividend, profit-loss, margin, markup. Added distinct calculation examples and interpretation notes to all 26 locale records. Finance/tax/content tests passed (45); TypeScript, lint, and diff checks passed. Playwright verified SSR across all 26 locale routes, five calculation flows, and all eight viewports without horizontal overflow. Browser output confirmed the average-price mode switch and locale-formatted percentage spacing; the test was aligned to the UI. Native-speaker review was not performed.
 
 stock-profit-after-fees-calculator, loan-early-repayment-calculator, rent-vs-buy-calculator, electricity-cost-calculator, travel-budget-calculator. Added distinct examples and interpretation notes to all 26 locale records. Engine/content tests, TypeScript, lint, and diff checks passed. Playwright verified 26-locale SSR, five browser calculation flows, and all eight required viewport widths without horizontal overflow. Native-speaker review was not performed.
 
@@ -31,7 +33,7 @@ fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-retur
 
 ## Current batch under validation
 
-stock-average-price, dividend, profit-loss, margin, markup. Static arithmetic calculators; avoid jurisdiction-specific or investment outcome claims. Match each scenario to the current calculation engine before localization.
+product-margin, salary-conversion, bmi, pace, fuel-cost. Static calculations only; state the model assumptions and avoid presenting outputs as medical, payroll-policy, or fuel-price advice.
 
 ## Calculator register
 
@@ -73,29 +75,29 @@ stock-average-price, dividend, profit-loss, margin, markup. Static arithmetic ca
 | `ltv` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `dti` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `dsr` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `stock-average-price` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static arithmetic batch. |
-| `dividend` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static arithmetic batch; no yield guarantees. |
-| `profit-loss` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static arithmetic batch. |
+| `stock-average-price` | finance | STATIC | 26/26 | COMPLETE | Weighted cost-basis example verified; fees excluded and target-return mode left unchanged. |
+| `dividend` | finance | STATIC | 26/26 | COMPLETE | Gross dividend and entered-price yield example verified; taxes and future payments excluded. |
+| `profit-loss` | finance | STATIC | 26/26 | COMPLETE | User-entered purchase/sale costs example matches net proceeds and return formula. |
 | `loan-refinance` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `prepayment-fee` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `loan-affordability` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `salary-conversion` | salary | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `salary-conversion` | salary | STATIC | 26/26 | VALIDATING | Selected for unit conversion scenario; no tax or statutory deduction assumptions. |
 | `hourly-wage` | salary | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `annual-leave-allowance` | salary | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `vat` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `unit-price` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `margin` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static arithmetic batch. |
-| `markup` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static arithmetic batch. |
-| `product-margin` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `margin` | finance | STATIC | 26/26 | COMPLETE | Sales-based margin denominator distinguished and example verified. |
+| `markup` | finance | STATIC | 26/26 | COMPLETE | Cost-based markup denominator distinguished and example verified. |
+| `product-margin` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static scenario batch. |
 | `withholding-tax-3-3` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `date-difference` | date-time | STATIC | 26/26 | COMPLETE | Engine example, localized endpoint-count explanation, SSR, browser form, and responsive checks passed. |
 | `dday` | date-time | STATIC | 26/26 | COMPLETE | Engine example, localized D−N interpretation, SSR, browser form, and responsive checks passed. |
 | `age` | life | STATIC | 26/26 | COMPLETE | Completed age and year-based reference values explained; browser example passed. Legal age is not asserted. |
 | `workdays` | date-time | STATIC | 26/26 | COMPLETE | Inclusive endpoints and holiday exclusion are explained; engine, browser, and responsive checks passed. |
-| `bmi` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `bmi` | life | STATIC | 26/26 | VALIDATING | Selected for a formula and limitation note; no medical diagnosis claims. |
 | `area` | life | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `pace` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `fuel-cost` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `pace` | life | STATIC | 26/26 | VALIDATING | Selected for unit and time-format example. |
+| `fuel-cost` | life | STATIC | 26/26 | VALIDATING | Selected for user-entered price and consumption scenario. |
 | `fuel-efficiency` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `calorie-per-serving` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `tenure` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |

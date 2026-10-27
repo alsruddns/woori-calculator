@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -12,6 +12,7 @@ const thirdEditorialBatchSlugs = ["date-difference", "dday", "age", "workdays", 
 const fourthEditorialBatchSlugs = ["fire-retirement-calculator", "dividend-growth-calculator", "inflation-adjusted-return-calculator", "position-size-calculator", "stop-loss-take-profit-calculator"] as const;
 const fifthEditorialBatchSlugs = ["stock-profit-after-fees-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator"] as const;
 const sixthEditorialBatchSlugs = ["freelancer-hourly-rate-calculator", "break-even-point-calculator", "savings-interest", "deposit-interest", "loan-interest"] as const;
+const seventhEditorialBatchSlugs = ["stock-average-price", "dividend", "profit-loss", "margin", "markup"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -60,7 +61,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -74,7 +75,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -139,6 +140,23 @@ test.describe("freelance, break-even, interest editorial cards at required viewp
     test(width + "px finance detail pages fit without horizontal overflow", async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const slug of sixthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dd").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ body: document.body.scrollWidth, viewport: document.documentElement.clientWidth }));
+        expect(dimensions.body, slug).toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
+test.describe("investment and pricing editorial cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px investment and pricing detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of seventhEditorialBatchSlugs) {
         const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
         expect(response?.status(), slug).toBe(200);
         await expect(page.locator("article h1"), slug).toBeVisible();
@@ -453,6 +471,56 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#loan-interest-method").selectOption("equal-payment");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("796");
+
+    expect(errors).toEqual([]);
+  });
+
+  test("average price, dividend, trading profit, margin, and markup examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+
+    await page.goto("/en/calculators/stock-average-price");
+    await waitForCalculatorHydration(page);
+    await page.locator("#stock-average-price-mode").selectOption("manual");
+    await page.locator("#stock-average-price-existingQuantity").fill("10");
+    await page.locator("#stock-average-price-existingAveragePrice").fill("10000");
+    await page.locator("#stock-average-price-additionalQuantity").fill("10");
+    await page.locator("#stock-average-price-additionalPrice").fill("8000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("9,000");
+
+    await page.goto("/en/calculators/dividend");
+    await waitForCalculatorHydration(page);
+    await page.locator("#dividend-shares").fill("100");
+    await page.locator("#dividend-perShare").fill("500");
+    await page.locator("#dividend-payments").fill("2");
+    await page.locator("#dividend-price").fill("10000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("100,000");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("10 %");
+
+    await page.goto("/en/calculators/profit-loss");
+    await waitForCalculatorHydration(page);
+    await page.locator("#profit-loss-buy").fill("100");
+    await page.locator("#profit-loss-sell").fill("120");
+    await page.locator("#profit-loss-quantity").fill("10");
+    await page.locator("#profit-loss-buyCost").fill("50");
+    await page.locator("#profit-loss-sellCost").fill("30");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("120");
+
+    await page.goto("/en/calculators/margin");
+    await waitForCalculatorHydration(page);
+    await page.locator("#margin-cost").fill("60");
+    await page.locator("#margin-sale").fill("100");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("40 %");
+
+    await page.goto("/en/calculators/markup");
+    await waitForCalculatorHydration(page);
+    await page.locator("#markup-cost").fill("60");
+    await page.locator("#markup-sale").fill("100");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("66.67 %");
 
     expect(errors).toEqual([]);
   });
