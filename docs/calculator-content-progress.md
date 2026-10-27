@@ -220,4 +220,4 @@ None. The latest five-calculator batch passed engine/content tests, locale SSR, 
 
 ## Next batch queue
 
-change-rate, discount, cagr, simple-interest, compound-interest are already COMPLETE. Recheck the 10 DRAFT calculators and pending static rows; exclude policy calculations from factual completion until current official rules are verified.
+fraction, standard-deviation, vehicle-cost, taxi-fare, tip-calculator. Reuse existing content and inspect the exact engine behavior first. Exclude withholding-tax-3-3 and other policy calculations from factual completion until current official rules are verified.
