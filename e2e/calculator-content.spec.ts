@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -13,6 +13,7 @@ const fourthEditorialBatchSlugs = ["fire-retirement-calculator", "dividend-growt
 const fifthEditorialBatchSlugs = ["stock-profit-after-fees-calculator", "loan-early-repayment-calculator", "rent-vs-buy-calculator", "electricity-cost-calculator", "travel-budget-calculator"] as const;
 const sixthEditorialBatchSlugs = ["freelancer-hourly-rate-calculator", "break-even-point-calculator", "savings-interest", "deposit-interest", "loan-interest"] as const;
 const seventhEditorialBatchSlugs = ["stock-average-price", "dividend", "profit-loss", "margin", "markup"] as const;
+const eighthEditorialBatchSlugs = ["product-margin", "salary-conversion", "bmi", "pace", "fuel-cost"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -61,7 +62,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -75,8 +76,26 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
+    });
+  }
+});
+
+test.describe("product margin, salary, BMI, pace, and fuel detail SSR across all locales", () => {
+  for (const [index, locale] of locales.entries()) {
+    const slug = eighthEditorialBatchSlugs[index % eighthEditorialBatchSlugs.length]!;
+    test(locale + "/" + slug + " renders its localized example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toContain(eighthReviewedBatchExampleNotes[locale]?.[slug]);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article h1")).toBeVisible();
+      await expect(page.locator("article h2").first()).toBeVisible();
+      await expect(page.locator("article")).toContainText(eighthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
     });
   }
 });
@@ -157,6 +176,23 @@ test.describe("investment and pricing editorial cards at required viewport width
     test(width + "px investment and pricing detail pages fit without horizontal overflow", async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const slug of seventhEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dd").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ body: document.body.scrollWidth, viewport: document.documentElement.clientWidth }));
+        expect(dimensions.body, slug).toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
+test.describe("product, salary, health-metric, and travel-detail cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px product and everyday detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of eighthEditorialBatchSlugs) {
         const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
         expect(response?.status(), slug).toBe(200);
         await expect(page.locator("article h1"), slug).toBeVisible();
@@ -521,6 +557,54 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#markup-sale").fill("100");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("66.67 %");
+
+    expect(errors).toEqual([]);
+  });
+
+  test("product margin, salary conversion, BMI, pace, and fuel cost examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+
+    await page.goto("/en/calculators/product-margin");
+    await waitForCalculatorHydration(page);
+    await page.locator("#product-margin-cost").fill("10000");
+    await page.locator("#product-margin-sale").fill("20000");
+    await page.locator("#product-margin-feeRate").fill("10");
+    await page.locator("#product-margin-shipping").fill("3000");
+    await page.locator("#product-margin-otherCost").fill("0");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("5,000");
+
+    await page.goto("/en/calculators/salary-conversion");
+    await waitForCalculatorHydration(page);
+    await page.locator("#salary-conversion-mode").selectOption("monthly");
+    await page.locator("#salary-conversion-amount").fill("3000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("36,000,000");
+
+    await page.goto("/en/calculators/bmi");
+    await waitForCalculatorHydration(page);
+    await page.locator("#bmi-height").fill("170");
+    await page.locator("#bmi-weight").fill("65");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("22.5");
+
+    await page.goto("/en/calculators/pace");
+    await waitForCalculatorHydration(page);
+    await page.locator("#pace-distance").fill("5");
+    await page.locator("#pace-hours").fill("0");
+    await page.locator("#pace-minutes").fill("25");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("5:00 /km");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("12 km/h");
+
+    await page.goto("/en/calculators/fuel-cost");
+    await waitForCalculatorHydration(page);
+    await page.locator("#fuel-cost-distance").fill("100");
+    await page.locator("#fuel-cost-efficiency").fill("10");
+    await page.locator("#fuel-cost-price").fill("1700");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("10 L");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("17,000");
 
     expect(errors).toEqual([]);
   });
