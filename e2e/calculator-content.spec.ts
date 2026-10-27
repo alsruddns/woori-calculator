@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -15,6 +15,7 @@ const sixthEditorialBatchSlugs = ["freelancer-hourly-rate-calculator", "break-ev
 const seventhEditorialBatchSlugs = ["stock-average-price", "dividend", "profit-loss", "margin", "markup"] as const;
 const eighthEditorialBatchSlugs = ["product-margin", "salary-conversion", "bmi", "pace", "fuel-cost"] as const;
 const ninthEditorialBatchSlugs = ["ltv", "dti", "dsr", "loan-refinance", "prepayment-fee"] as const;
+const tenthEditorialBatchSlugs = ["loan-affordability", "hourly-wage", "fuel-efficiency", "calorie-per-serving", "trip-split"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -63,7 +64,7 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs];
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs, ...thirdEditorialBatchSlugs, ...fourthEditorialBatchSlugs, ...fifthEditorialBatchSlugs, ...sixthEditorialBatchSlugs, ...seventhEditorialBatchSlugs, ...eighthEditorialBatchSlugs, ...ninthEditorialBatchSlugs, ...tenthEditorialBatchSlugs];
     const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
@@ -77,7 +78,7 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? thirdReviewedBatchExampleNotes[locale]?.[slug] ?? fourthReviewedBatchExampleNotes[locale]?.[slug] ?? fifthReviewedBatchExampleNotes[locale]?.[slug] ?? sixthReviewedBatchExampleNotes[locale]?.[slug] ?? seventhReviewedBatchExampleNotes[locale]?.[slug] ?? eighthReviewedBatchExampleNotes[locale]?.[slug] ?? ninthReviewedBatchExampleNotes[locale]?.[slug] ?? tenthReviewedBatchExampleNotes[locale]?.[slug] ?? "";
       await expect(page.locator("article")).toContainText(note);
     });
   }
@@ -115,6 +116,24 @@ test.describe("loan ratio and refinance detail SSR across all locales", () => {
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article h2").first()).toBeVisible();
       await expect(page.locator("article")).toContainText(ninthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
+    });
+  }
+});
+
+test.describe("loan, wage, fuel, food, and bill-split SSR across all locales", () => {
+  for (const [index, locale] of locales.entries()) {
+    const slug = tenthEditorialBatchSlugs[index % tenthEditorialBatchSlugs.length]!;
+    test(locale + "/" + slug + " renders its localized example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toContain(tenthReviewedBatchExampleNotes[locale]?.[slug]);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article h1")).toBeVisible();
+      await expect(page.locator("article h2").first()).toBeVisible();
+      await expect(page.locator("article")).toContainText(tenthReviewedBatchExampleNotes[locale]?.[slug] ?? "");
     });
   }
 });
@@ -241,6 +260,23 @@ test.describe("loan ratio and refinancing cards at required viewport widths", ()
   }
 });
 
+test.describe("loan, wage, fuel, food, and split cards at required viewport widths", () => {
+  for (const width of viewports) {
+    test(width + "px affordability and everyday detail pages fit without horizontal overflow", async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const slug of tenthEditorialBatchSlugs) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
+        expect(response?.status(), slug).toBe(200);
+        await expect(page.locator("article h1"), slug).toBeVisible();
+        await expect(page.locator("article h2").first(), slug).toBeVisible();
+        await expect(page.locator("article dl dd").first(), slug).toBeVisible();
+        const dimensions = await page.evaluate(() => ({ body: document.body.scrollWidth, viewport: document.documentElement.clientWidth }));
+        expect(dimensions.body, slug).toBeLessThanOrEqual(dimensions.viewport);
+      }
+    });
+  }
+});
+
 test.describe("reviewed calculators at required viewport widths", () => {
   for (const width of viewports) {
     test(width + "px pages have visible cards and no horizontal overflow", async ({ page }) => {
@@ -319,6 +355,11 @@ test.describe("calculator input and result flows", () => {
       ["dsr", "Annual income 50,000,000 and entered annual principal and interest of 10,000,000"],
       ["loan-refinance", "For a 10,000,000 balance, old terms of 12% for 12 months"],
       ["prepayment-fee", "Applying the entered 1.5% fee rate to a 10,000,000 payment"],
+      ["loan-affordability", "At 100,000 per month, 0% annual interest, and 12 months"],
+      ["hourly-wage", "Dividing monthly pay of 3,000,000 by the entered 209 monthly hours"],
+      ["fuel-efficiency", "Using 40 L over 520 km gives 13 km/L"],
+      ["calorie-per-serving", "If a 600 kcal dish has 3 equal servings and you eat 1 serving"],
+      ["trip-split", "Splitting 10,000 among 3 gives 3,333.33 each"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
@@ -689,6 +730,50 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#prepayment-fee-rate").fill("1.5");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("150,000");
+    expect(errors).toEqual([]);
+  });
+
+  test("loan affordability, hourly wage, fuel efficiency, calories, and split examples calculate in the browser", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/loan-affordability");
+    await waitForCalculatorHydration(page);
+    await page.locator("#loan-affordability-payment").fill("100000");
+    await page.locator("#loan-affordability-rate").fill("0");
+    await page.locator("#loan-affordability-months").fill("12");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("1,200,000");
+
+    await page.goto("/en/calculators/hourly-wage");
+    await waitForCalculatorHydration(page);
+    await page.locator("#hourly-wage-mode").selectOption("monthly-to-hourly");
+    await page.locator("#hourly-wage-pay").fill("3000000");
+    await page.locator("#hourly-wage-monthlyHours").fill("209");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("14,354.07");
+
+    await page.goto("/en/calculators/fuel-efficiency");
+    await waitForCalculatorHydration(page);
+    await page.locator("#fuel-efficiency-distance").fill("520");
+    await page.locator("#fuel-efficiency-fuelAmount").fill("40");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("13 km/L");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("7.69 L/100km");
+
+    await page.goto("/en/calculators/calorie-per-serving");
+    await waitForCalculatorHydration(page);
+    await page.locator("#calorie-per-serving-calories").fill("600");
+    await page.locator("#calorie-per-serving-servings").fill("3");
+    await page.locator("#calorie-per-serving-portion").fill("1");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("200 kcal");
+
+    await page.goto("/en/calculators/trip-split");
+    await waitForCalculatorHydration(page);
+    await page.locator("#trip-split-total").fill("10000");
+    await page.locator("#trip-split-people").fill("3");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator('[aria-live="polite"]')).toContainText("3,333.33");
+    await expect(page.locator('[aria-live="polite"]')).toContainText("3,334");
     expect(errors).toEqual([]);
   });
 

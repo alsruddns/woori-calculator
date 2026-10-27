@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { calculateAge, calculateArea, calculateBmi, calculateDateDifference, calculateDday, calculateFuelCost, calculatePace, calculateWorkdays } from "@/calculators/date-life/date-calculate";
+import { calculateAge, calculateArea, calculateBmi, calculateCaloriePerServing, calculateDateDifference, calculateDday, calculateFuelCost, calculatePace, calculateWorkdays } from "@/calculators/date-life/date-calculate";
 
 describe("date and life calculator functions", () => {
+  it("apportions total calories by the entered serving portion", () => {
+    expect(calculateCaloriePerServing({ calories: "600", servings: "3", portion: "1" })).toMatchObject({ results: [{ value: 200, unit: "kcal" }] });
+  });
+
   it("calculates date difference and optional boundary inclusion", () => {
     expect(calculateDateDifference({ start: "2026-01-01", end: "2026-01-03", include: "both" })).toMatchObject({ results: [{ value: 2 }, { value: 3 }] });
     expect(calculateDateDifference({ start: "2026-01-01", end: "2026-01-03", include: "none" })).toMatchObject({ results: [{ value: 2 }, { value: 1 }] });

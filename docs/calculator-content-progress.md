@@ -6,11 +6,11 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 45
+- COMPLETE: 50
 - VALIDATING: 5
 - DRAFT: 10
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 10
+- PENDING static calculators: 5
 - Latest audit signals: short-content 47 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
@@ -19,6 +19,8 @@ This register separates earlier result-note work from full content completion. A
 COMPLETE requires calculator-specific purpose, input/unit meaning, implemented formula and assumptions, engine-matched example, result interpretation, limitations, useful FAQ, related links where present, all 26 localized page records, SSR body verification, and passing content/locale checks. Native-speaker review is not claimed.
 
 ## Latest completed batch
+
+loan-affordability, hourly-wage, fuel-efficiency, calorie-per-serving, trip-split. Added distinct worked examples and interpretation boundaries across all 26 locales. Finance/date-life/content tests passed (37); TypeScript, lint, and diff checks passed. Playwright verified initial SSR examples across 26 locales, five live calculation flows, and five detail pages at all eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
 ltv, dti, dsr, loan-refinance, prepayment-fee. Added individual worked examples and interpretation limits in all 26 locales. Finance/content tests (29), TypeScript, lint, and diff checks passed. Playwright verified localized example text in initial SSR HTML across 26 locales, five live calculation flows, and five pages at all eight required widths without horizontal overflow. Fixed refinance month-unit rendering to use the active locale dictionary. No policy rates or approval rules were changed. Native-speaker review was not performed.
 
@@ -38,7 +40,7 @@ fire-retirement-calculator, dividend-growth-calculator, inflation-adjusted-retur
 
 ## Current batch under validation
 
-loan-affordability, hourly-wage, fuel-efficiency, calorie-per-serving, trip-split. Inspect current formulas and user-entered assumptions before writing examples.
+annual-leave-allowance, tenure, time-arithmetic, pregnancy, utility-bill. Inspect the implemented arithmetic, date boundaries, user-entered tariff, and non-policy limitations.
 
 ## Calculator register
 
@@ -85,10 +87,10 @@ loan-affordability, hourly-wage, fuel-efficiency, calorie-per-serving, trip-spli
 | `profit-loss` | finance | STATIC | 26/26 | COMPLETE | User-entered purchase/sale costs example matches net proceeds and return formula. |
 | `loan-refinance` | finance | STATIC | 26/26 | COMPLETE | Net-savings example matches monthly annuity formulas and rounded output; fixed-rate, equal-payment and fee assumptions stated. |
 | `prepayment-fee` | finance | STATIC | 26/26 | COMPLETE | 1.5% of entered repayment example matches engine; exemptions, elapsed-time schedules, and contract-specific fees excluded. |
-| `loan-affordability` | finance | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
+| `loan-affordability` | finance | STATIC | 26/26 | COMPLETE | Zero-rate annuity example matches engine principal, total payment, and interest; not an approval estimate. |
 | `salary-conversion` | salary | STATIC | 26/26 | COMPLETE | Monthly-to-annual example matches the multiply-by-12 engine; no payroll deductions applied. |
-| `hourly-wage` | salary | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
-| `annual-leave-allowance` | salary | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `hourly-wage` | salary | STATIC | 26/26 | COMPLETE | Monthly-to-hourly example matches entered-hours calculation; no statutory wage rule is asserted. |
+| `annual-leave-allowance` | salary | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
 | `vat` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `unit-price` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `margin` | finance | STATIC | 26/26 | COMPLETE | Sales-based margin denominator distinguished and example verified. |
@@ -103,15 +105,15 @@ loan-affordability, hourly-wage, fuel-efficiency, calorie-per-serving, trip-spli
 | `area` | life | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `pace` | life | STATIC | 26/26 | COMPLETE | Distance/time example matches pace and speed outputs; unit labels verified in browser. |
 | `fuel-cost` | life | STATIC | 26/26 | COMPLETE | Distance/efficiency/entered-price example matches fuel volume and cost outputs; price is user supplied. |
-| `fuel-efficiency` | life | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
-| `calorie-per-serving` | life | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
-| `tenure` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `time-arithmetic` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `pregnancy` | date-time | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `utility-bill` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `fuel-efficiency` | life | STATIC | 26/26 | COMPLETE | 520 km and 40 L example matches both km/L and L/100 km engine outputs. |
+| `calorie-per-serving` | life | STATIC | 26/26 | COMPLETE | 600 kcal across three servings and one portion returns 200 kcal; proportional estimate only. |
+| `tenure` | date-time | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
+| `time-arithmetic` | date-time | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
+| `pregnancy` | date-time | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
+| `utility-bill` | life | STATIC | 26/26 | VALIDATING | Selected for next batch; review formulas and assumptions before drafting. |
 | `vehicle-cost` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `taxi-fare` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `trip-split` | life | STATIC | 26/26 | VALIDATING | Selected for the next static example batch; confirm formula and input assumptions. |
+| `trip-split` | life | STATIC | 26/26 | COMPLETE | 10,000 split among three matches fractional share and integer remainder allocation. |
 | `tip-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `unit-converter` | math | STATIC | 26/26 | COMPLETE | Mile conversion and temperature offset example match engine tests; browser flow and responsive checks passed. |
 | `unemployment-benefit` | salary | POLICY | 26/26 | BLOCKED | Official rule and effective date need verification; do not change policy values. |
