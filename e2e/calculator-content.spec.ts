@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -7,6 +7,7 @@ const locales = [
 ] as const;
 const reviewedSlugs = ["average", "weighted-average", "unit-price", "probability", "area"] as const;
 const editorialBatchSlugs = ["percentage", "ratio", "proportion", "median", "decimal-fraction"] as const;
+const secondEditorialBatchSlugs = ["change-rate", "discount", "cagr", "simple-interest", "compound-interest"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
 
 function collectBrowserErrors(page: Page) {
@@ -48,7 +49,8 @@ test.describe("calculator detail SSR in all locales", () => {
 
 test.describe("reviewed editorial batch SSR across locales", () => {
   for (const [index, locale] of locales.entries()) {
-    const slug = editorialBatchSlugs[index % editorialBatchSlugs.length]!;
+    const batchSlugs = [...editorialBatchSlugs, ...secondEditorialBatchSlugs];
+    const slug = batchSlugs[index % batchSlugs.length]!;
     test(locale + "/" + slug + " renders the reviewed content in server HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
       expect(response?.status()).toBe(200);
@@ -61,7 +63,8 @@ test.describe("reviewed editorial batch SSR across locales", () => {
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article h1")).toBeVisible();
       await expect(page.locator("article dl dd").first()).toBeVisible();
-      await expect(page.locator("article")).toContainText(reviewedBatchExampleNotes[locale]?.[slug] ?? "");
+      const note = reviewedBatchExampleNotes[locale]?.[slug] ?? secondReviewedBatchExampleNotes[locale]?.[slug] ?? "";
+      await expect(page.locator("article")).toContainText(note);
     });
   }
 });
@@ -92,8 +95,8 @@ test.describe("editorial batch cards at required viewport widths", () => {
   for (const width of viewports) {
     test(width + "px reviewed pages fit without horizontal overflow", async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      for (const slug of editorialBatchSlugs) {
-        const response = await page.goto("/en/calculators/" + slug);
+      for (const slug of [...editorialBatchSlugs, ...secondEditorialBatchSlugs]) {
+        const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
         expect(response?.status(), slug).toBe(200);
         await expect(page.locator("article h1"), slug).toBeVisible();
         await expect(page.locator("article h2").last(), slug).toBeVisible();
@@ -108,8 +111,7 @@ test.describe("editorial batch cards at required viewport widths", () => {
 });
 
 test.describe("calculator input and result flows", () => {
-  test("new static-math batch renders calculator-specific examples and notes", async ({ page }) => {
-    const batch = [
+  const batch = [
       ["fraction", "The reduced fraction 5/6 is exact"],
       ["percentile", "Nearest rank selects an observed value"],
       ["standard-deviation", "A population standard deviation of 2 describes spread"],
@@ -120,17 +122,24 @@ test.describe("calculator input and result flows", () => {
       ["proportion", "For 2:5=x:20, matching positions gives 2/5=x/20"],
       ["median", "The median of 1, 3, 8 is 3"],
       ["decimal-fraction", "0.125 reduces from 125/1000 to 1/8"],
-    ] as const;
-    for (const [slug, note] of batch) {
-      const response = await page.goto("/en/calculators/" + slug);
+      ["change-rate", "From 200 to 150, the change is −50"],
+      ["discount", "A 20% discount on 50,000 gives a 10,000 discount"],
+      ["cagr", "Growing from 100 to 121 over two years is equivalent"],
+      ["simple-interest", "At 10% simple interest for five years"],
+      ["compound-interest", "At 10% compounded annually for five years"],
+  ] as const;
+  for (const [slug, note] of batch) {
+    test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {
+      const response = await page.goto("/en/calculators/" + slug, { waitUntil: "domcontentloaded", timeout: 30000 });
       expect(response?.status(), slug).toBe(200);
       await expect(page.locator("article h1"), slug).toBeVisible();
       await expect(page.locator("article h2").first(), slug).toBeVisible();
       await expect(page.locator("article"), slug).toContainText(note);
       expect(await page.locator("article h2").count(), slug).toBeGreaterThanOrEqual(4);
-      await expect(page.locator("article h2").last(), slug).toBeVisible();
-    }
-  });
+      await expect(page.locator("article h2").filter({ hasText: /Frequently asked questions/ }), slug).toBeVisible();
+      await expect(page.locator("article dl dt").last(), slug).toBeVisible();
+    });
+  }
 
   test("average, weighted average, unit price, probability, and area calculate in the browser", async ({ page }) => {
     const errors = collectBrowserErrors(page);

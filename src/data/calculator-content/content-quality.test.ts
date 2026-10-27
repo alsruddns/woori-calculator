@@ -4,7 +4,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
@@ -54,7 +54,9 @@ describe("calculator content quality", () => {
     expect(Object.values(localeContentFollowupTargets).flat()).toHaveLength(305);
     expect(Object.keys(nextBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
     expect(Object.keys(reviewedBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
+    expect(Object.keys(secondReviewedBatchExampleNotes).sort()).toEqual([...routingLocales].sort());
     const reviewedBatchSlugs = ["percentage", "ratio", "proportion", "median", "decimal-fraction"] as const;
+    const secondReviewedBatchSlugs = ["change-rate", "discount", "cagr", "simple-interest", "compound-interest"] as const;
     for (const locale of routingLocales) {
       const localizedContent = getDictionary(locale).calculators;
       for (const slug of reviewedBatchSlugs) {
@@ -68,8 +70,19 @@ describe("calculator content quality", () => {
         expect(content!.faqs.length, `${locale}/${slug} FAQ`).toBeGreaterThanOrEqual(2);
         expect(supportedLocalesForCalculator(slug), `${locale}/${slug} public route`).toContain(locale);
       }
+      for (const slug of secondReviewedBatchSlugs) {
+        const content = localizedContent[slug];
+        expect(content, `${locale}/${slug} content`).toBeDefined();
+        expect(content!.description.length, `${locale}/${slug} purpose`).toBeGreaterThan(10);
+        expect(content!.howTo.length, `${locale}/${slug} input guidance`).toBeGreaterThan(10);
+        expect(content!.formula.length, `${locale}/${slug} formula`).toBeGreaterThan(8);
+        expect(content!.example.question.length, `${locale}/${slug} example input`).toBeGreaterThan(5);
+        expect([content!.description, content!.howTo, content!.formula, content!.example.answer].join(" ")).toContain(secondReviewedBatchExampleNotes[locale]?.[slug]);
+        expect(content!.faqs.length, `${locale}/${slug} FAQ`).toBeGreaterThanOrEqual(2);
+        expect(supportedLocalesForCalculator(slug), `${locale}/${slug} public route`).toContain(locale);
+      }
     }
-    const improvedExamples = new Set(["average", "percentage", "proportion", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "weighted-average", "workdays", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio"]);
+    const improvedExamples = new Set(["average", "percentage", "proportion", "unit-price", "unit-converter", "probability", "area", "decimal-fraction", "weighted-average", "workdays", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio", "change-rate", "discount", "cagr", "simple-interest", "compound-interest"]);
     for (const [locale, slugs] of Object.entries(localeContentFollowupTargets)) {
       expect(slugs.every((slug) => publicSlugs.has(slug))).toBe(true);
       const localizedContent = getDictionary(locale as SupportedLocale).calculators;
@@ -78,7 +91,7 @@ describe("calculator content quality", () => {
         expect(localizedContent[slug as keyof typeof localizedContent]?.example.answer).toContain(nextBatchExampleNotes[locale as SupportedLocale]?.[slug]);
       }
       for (const slug of slugs) {
-        if (["average", "weighted-average", "unit-price", "probability", "area", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio", "percentage", "ratio", "proportion", "median", "decimal-fraction"].includes(slug)) {
+        if (["average", "weighted-average", "unit-price", "probability", "area", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio", "percentage", "ratio", "proportion", "median", "decimal-fraction", "change-rate", "discount", "cagr", "simple-interest", "compound-interest"].includes(slug)) {
           expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
         }
         if (!improvedExamples.has(slug)) continue;

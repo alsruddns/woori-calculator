@@ -6,32 +6,32 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- COMPLETE: 5
+- COMPLETE: 10
 - VALIDATING: 0
 - DRAFT: 10
 - BLOCKED policy calculators: 99
-- PENDING static calculators: 55
+- PENDING static calculators: 50
 - Previously improved result-note calculators remain DRAFT: average, weighted-average, unit-price, probability, area, fraction, percentile, standard-deviation, aspect-ratio, scale-ratio
 
 ## Completion gate
 
 COMPLETE requires calculator-specific purpose, input/unit meaning, implemented formula and assumptions, engine-matched example, result interpretation, limitations, useful FAQ, related links where present, all 26 localized page records, SSR body verification, and passing content/locale checks. Native-speaker review is not claimed.
 
-## Latest batch under validation
+## Latest completed batch
 
-percentage, ratio, proportion, median, decimal-fraction. Added distinct interpretation copy in all 26 locale records. Calculation engine, content-quality, TypeScript, lint, diff, and 27 Playwright SSR/render checks and all 8 required responsive widths passed.
+change-rate, discount, cagr, simple-interest, compound-interest. Added distinct result interpretation copy to all 26 locale records. Calculation engine tests passed (29); content, locale, and example checks passed; TypeScript, lint, and diff checks passed. Playwright verified reviewed SSR across all 26 locales, example/FAQ rendering on all 15 calculators across the two completed batches, and all 8 viewport widths across both batches. Native-speaker review was not performed.
 
 ## Calculator register
 
 | Calculator | Category | Rule class | Locale records | Status | Checkpoint |
 | --- | --- | --- | ---: | --- | --- |
 | `percentage` | math | STATIC | 26/26 | COMPLETE | Localized details and examples verified; engine, 26-locale SSR, and 8-width responsive checks passed. |
-| `discount` | math | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `change-rate` | math | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `discount` | math | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed. |
+| `change-rate` | math | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed. |
 | `ratio` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `average` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `weighted-average` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
-| `cagr` | math | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `cagr` | math | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed. |
 | `proportion` | math | STATIC | 26/26 | COMPLETE | Engine example, localized details, and SSR verified for this batch. |
 | `aspect-ratio` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
 | `scale-ratio` | math | STATIC | 26/26 | DRAFT | Result-interpretation additions only; full-content criteria not verified. |
@@ -53,8 +53,8 @@ percentage, ratio, proportion, median, decimal-fraction. Added distinct interpre
 | `travel-budget-calculator` | life | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `freelancer-hourly-rate-calculator` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `break-even-point-calculator` | tax | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `compound-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
-| `simple-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
+| `compound-interest` | finance | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed; tax and fee effects excluded. |
+| `simple-interest` | finance | STATIC | 26/26 | COMPLETE | Localized interpretation, engine example, SSR, FAQ, and responsive checks passed; pre-tax simple-interest estimate. |
 | `savings-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `deposit-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
 | `loan-interest` | finance | STATIC | 26/26 | PENDING | Not yet reviewed for this editorial completion effort. |
