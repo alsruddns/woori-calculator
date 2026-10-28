@@ -50,6 +50,7 @@ import { usRothIraFollowups } from "../src/i18n/dictionaries/us-roth-ira-followu
 import { usCapitalGainsFollowups } from "../src/i18n/dictionaries/us-capital-gains-followups";
 import { ukGrossNetFollowups } from "../src/i18n/dictionaries/uk-gross-net-followups";
 import { ukIncomeTaxFollowups } from "../src/i18n/dictionaries/uk-income-tax-followups";
+import { ukNationalInsuranceFollowups } from "../src/i18n/dictionaries/uk-national-insurance-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3220,6 +3221,32 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("11,432");
     await expect(page.locator("[aria-live='polite']")).toContainText("19.05");
+    expect(errors).toEqual([]);
+  });
+
+  test("UK National Insurance details render in all locales and the monthly example works", async ({ page, request }) => {
+    for (const locale of locales) {
+      const copy = ukNationalInsuranceFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/uk-national-insurance-calculator");
+      expect(response.status(), locale).toBe(200);
+      const html = await response.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/uk-national-insurance-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#uk-national-insurance-calculator-salary").fill("3000");
+    await page.locator("#uk-national-insurance-calculator-frequency").selectOption("monthly");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("156.16");
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,873.92");
     expect(errors).toEqual([]);
   });
 });

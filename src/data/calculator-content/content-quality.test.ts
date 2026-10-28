@@ -42,6 +42,7 @@ import { usRothIraFollowups } from "@/i18n/dictionaries/us-roth-ira-followups";
 import { usCapitalGainsFollowups } from "@/i18n/dictionaries/us-capital-gains-followups";
 import { ukGrossNetFollowups } from "@/i18n/dictionaries/uk-gross-net-followups";
 import { ukIncomeTaxFollowups } from "@/i18n/dictionaries/uk-income-tax-followups";
+import { ukNationalInsuranceFollowups } from "@/i18n/dictionaries/uk-national-insurance-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -295,6 +296,26 @@ describe("calculator content quality", () => {
     expect(outcome && "results" in outcome ? outcome.results.map(({ value }) => value) : outcome).toEqual([60000, 11432, 19.05]);
     for (const locale of supportedLocales) {
       const copy = ukIncomeTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders the UK National Insurance monthly model and matches its example in every locale", () => {
+    const slug = "uk-national-insurance-calculator";
+    const outcome = calculateBySlug(slug, { salary: "3000", frequency: "monthly" });
+    expect(outcome && "results" in outcome ? outcome.results.map(({ value }) => value) : outcome).toEqual([156.16, 1873.92]);
+    for (const locale of supportedLocales) {
+      const copy = ukNationalInsuranceFollowups[locale];
       const page = getDictionary(locale).calculators[slug];
       expect(copy.description, `${locale} purpose`).toBeTruthy();
       expect(copy.howTo, `${locale} input`).toBeTruthy();

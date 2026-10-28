@@ -60,6 +60,11 @@ describe("global country calculators", () => {
     const annual = values("uk-gross-net-salary-calculator", { salary: "60000", frequency: "annual" });
     expect(monthly[0]).toBe(annual[0]);
     expect(monthly[4]).toBe(annual[4]);
+    const monthlyNi = values("uk-national-insurance-calculator", { salary: "3000", frequency: "monthly" });
+    const annualNi = values("uk-national-insurance-calculator", { salary: "36000", frequency: "annual" });
+    expect(monthlyNi).toEqual([156.16, 1873.92]);
+    expect(annualNi).toEqual(monthlyNi);
+    expect(values("uk-national-insurance-calculator", { salary: "50000", frequency: "annual" })).toEqual([249.49, 2993.92]);
     expect(values("uae-vat-calculator", { amount: "100", rate: "5", direction: "exclusive" })[1]).toBe(5);
     expect(values("canada-gst-hst-calculator", { amount: "100", rate: "5", direction: "exclusive" })).toEqual([100, 5, 105]);
     expect(values("australia-gst-calculator", { amount: "100", rate: "10", direction: "exclusive" })).toEqual([100, 10, 110]);
