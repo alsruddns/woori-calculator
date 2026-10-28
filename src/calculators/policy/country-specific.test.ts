@@ -57,6 +57,13 @@ describe("country-specific calculator models", () => {
     expect(values("brazil-fgts-calculator", { salary: "3000" })).toEqual([240, 2880]);
   });
 
+  it("prorates the Brazil 13th-salary gross estimate over the entered months", () => {
+    expect(values("brazil-thirteenth-salary-calculator", { salary: "3000", months: "7" })).toEqual([1750, 7]);
+    expect(values("brazil-thirteenth-salary-calculator", { salary: "3000", months: "0" })).toEqual([0, 0]);
+    expect(values("brazil-thirteenth-salary-calculator", { salary: "3000", months: "12" })).toEqual([3000, 12]);
+    expect(calculateBySlug("brazil-thirteenth-salary-calculator", { salary: "3000", months: "13" })).toHaveProperty("error");
+  });
+
   it("separates India investment return scenarios from tax treatment", () => {
     expect(values("india-ppf-calculator", { monthlyDeposit: "0", rate: "7.1", years: "15" })).toEqual([0, 0, 0]);
     const projection = values("india-sip-calculator", { monthlyDeposit: "1000", rate: "8", years: "10" });

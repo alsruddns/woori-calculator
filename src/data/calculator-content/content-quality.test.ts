@@ -10,6 +10,7 @@ import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
 import { japanNightHolidayFollowups } from "@/i18n/dictionaries/japan-night-holiday-followups";
 import { franceOvertimeFollowups } from "@/i18n/dictionaries/france-overtime-followups";
 import { netherlandsHolidayFollowups } from "@/i18n/dictionaries/netherlands-holiday-followups";
+import { brazilThirteenthFollowups } from "@/i18n/dictionaries/brazil-thirteenth-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -320,6 +321,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} current-engine formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Brazil 13th-salary proration and gross-scope limits in every locale", () => {
+    const slug = "brazil-thirteenth-salary-calculator";
+    const output = calculateBySlug(slug, { salary: "3000", months: "7" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([1750, 7]);
+    for (const locale of supportedLocales) {
+      const copy = brazilThirteenthFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input meaning`).toBeTruthy();
+      expect(copy.formula, `${locale} engine formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} legal limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
