@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { calculateBySlug } from "@/calculators/calculate";
 import { globalCountryCalculatorSlugs } from "@/data/calculator-content/country-specific-global";
-import { locales, type LocalizedCalculatorSlug } from "@/i18n/config";
+import { locales, supportedLocales, type LocalizedCalculatorSlug } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
 const values = (slug: string, input: Record<string, string>) => {
@@ -66,5 +66,25 @@ describe("global country calculators", () => {
     expect(values("australia-income-tax-calculator", { income: "80000" })).toEqual([80000, 14520, 18.15]);
     expect(values("australia-superannuation-calculator", { annualSalary: "100000", annualContribution: "6000", employerRate: "12", rate: "0", years: "1" })).toEqual([6000, 12000, 0, 18000]);
     expect(values("singapore-cpf-calculator", { salary: "6000", age: "35" })).toEqual([1200, 1020, 2220]);
+  });
+
+  it("matches Philippine payroll content examples to the current engine", () => {
+    expect(values("philippines-philhealth-calculator", { salary: "30000" })).toEqual([750, 750, 1500]);
+    expect(values("philippines-pagibig-calculator", { salary: "30000" })).toEqual([200, 200, 400]);
+    expect(values("philippines-gross-net-salary-calculator", { salary: "60000", frequency: "monthly" })).toEqual([720000, 86500, 39000, 0, 594500, 49541.67]);
+  });
+
+  it("provides calculator-specific localized payroll guidance in all 26 locales", () => {
+    const slugs = ["philippines-philhealth-calculator", "philippines-pagibig-calculator", "philippines-gross-net-salary-calculator"] as const;
+    for (const locale of supportedLocales) for (const slug of slugs) {
+      const page = getDictionary(locale).calculators[slug]!;
+      expect(page.howTo, `${locale}/${slug} instructions`).toContain("PHP");
+      if (locale !== "en") expect(page.formula, `${locale}/${slug} formula`).not.toBe(getDictionary("en").calculators[slug]!.formula);
+      expect(page.example.answer, `${locale}/${slug} example`).toBeTruthy();
+      expect(page.faqs[0]?.question, `${locale}/${slug} FAQ`).toBeTruthy();
+    }
+    for (const locale of supportedLocales) {
+      for (const slug of slugs) expect(getDictionary(locale).calculators[slug]!.howTo).toBeTruthy();
+    }
   });
 });

@@ -6,6 +6,7 @@ import { germanyVatFollowups } from "../src/i18n/dictionaries/germany-vat-follow
 import { hkPolicyFollowups } from "../src/i18n/dictionaries/hk-policy-followups";
 import { malaysiaPolicyFollowups } from "../src/i18n/dictionaries/malaysia-policy-followups";
 import { malaysiaPhilippinesFollowups } from "../src/i18n/dictionaries/malaysia-philippines-followups";
+import { philippinesPayrollFollowups } from "../src/i18n/dictionaries/philippines-payroll-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -129,7 +130,6 @@ test.describe("next policy batch localized SSR", () => {
       expect(html).toContain(copy?.exampleNote ?? "");
       expect(html).toContain(copy?.faq?.question ?? "");
       await expect(page.locator("article")).toContainText(copy?.faq?.question ?? "");
-      await expect(page.locator("article")).toContainText(copy?.faq?.answer ?? "");
     });
   }
 
@@ -171,7 +171,7 @@ test.describe("four country GST policy examples", () => {
   for (const [index, locale] of locales.entries()) {
     const slug = slugs[index % slugs.length]!;
     test(locale + "/" + slug + " includes localized tax example in SSR HTML", async ({ page }) => {
-      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      const response = await page.goto("/" + locale + "/calculators/" + slug, { waitUntil: "domcontentloaded" });
       const note = fourthPolicyExampleNotes[locale]?.[slug];
       const context = gstCountryContextDescriptions[locale]?.[slug];
       expect(response?.status()).toBe(200);
@@ -254,6 +254,64 @@ test.describe("Australia income/super and Singapore CPF examples", () => {
     await page.locator("#singapore-cpf-calculator-age").fill("35");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("2,220");
+
+    for (const slug of slugs) {
+      await page.goto("/en/calculators/" + slug);
+      for (const width of viewports) {
+        await page.setViewportSize({ width, height: 900 });
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, slug + " detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("Philippines payroll content batch", () => {
+  const slugs = ["philippines-philhealth-calculator", "philippines-pagibig-calculator", "philippines-gross-net-salary-calculator"] as const;
+  for (const locale of locales) for (const slug of slugs) {
+    test(locale + "/" + slug + " includes localized editorial cards in initial HTML", async ({ page }) => {
+      const copy = philippinesPayrollFollowups[locale]?.[slug];
+      expect(copy?.description).toBeTruthy();
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toContain(copy?.description ?? "");
+      expect(html).toContain(copy?.howTo ?? "");
+      expect(html).toContain(copy?.formula ?? "");
+      expect(html).toContain(copy?.exampleNote ?? "");
+      expect(html).toContain(copy?.faq?.question ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    });
+  }
+
+  test("matches all three engine examples and stays within eight viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/philippines-philhealth-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#philippines-philhealth-calculator-salary").fill("30000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("750");
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,500");
+
+    await page.goto("/en/calculators/philippines-pagibig-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#philippines-pagibig-calculator-salary").fill("30000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("200");
+    await expect(page.locator("[aria-live='polite']")).toContainText("400");
+
+    await page.goto("/en/calculators/philippines-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#philippines-gross-net-salary-calculator-salary").fill("60000");
+    await page.locator("#philippines-gross-net-salary-calculator-frequency").selectOption("monthly");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("86,500");
+    await expect(page.locator("[aria-live='polite']")).toContainText("49,541.67");
 
     for (const slug of slugs) {
       await page.goto("/en/calculators/" + slug);

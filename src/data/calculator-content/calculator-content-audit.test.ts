@@ -44,6 +44,12 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://bir-cdn.bir.gov.ph/BIR/pdf/RMC%20No.%2034-2025%20Annex%20A.pdf",
   "https://www.sss.gov.ph/pay-contribution/",
   "https://www.sss.gov.ph/wp-content/uploads/2024/12/2025-SSS-Contribution-Table-rev.pdf",
+  "https://www.philhealth.gov.ph/advisories/2025/PA2025-0002.pdf",
+  "https://www.philhealth.gov.ph/uhc/",
+  "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2024/Circular-Letter/CIRCULAR-LETTER-NO-2024-2-DATED-FEBRUARY-01-2024.pdf",
+  "https://pco.gov.ph/other_releases/pag-ibig-members-to-gain-more-benefits-under-new-rates-starting-february-2024/",
+  "https://bir-cdn.bir.gov.ph/local/pdf/RR%20No.%2011-2018.pdf",
+  "https://web-services.bir.gov.ph/tax_calculator/wt_calculator.html",
 ]);
 
 function buildAuditReport() {
@@ -171,7 +177,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(32);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(38);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);
