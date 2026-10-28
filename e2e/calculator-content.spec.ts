@@ -23,6 +23,7 @@ import { germanyIncomeTaxFollowups } from "../src/i18n/dictionaries/germany-inco
 import { germanyOvertimeFollowups } from "../src/i18n/dictionaries/germany-overtime-followups";
 import { germanyVacationPayFollowups } from "../src/i18n/dictionaries/germany-vacation-pay-followups";
 import { spainGrossNetFollowups } from "../src/i18n/dictionaries/spain-gross-net-followups";
+import { japanOvertimeFollowups } from "../src/i18n/dictionaries/japan-overtime-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -371,6 +372,39 @@ test("Spain gross-to-net content is SSR-localized and the modeled salary flow wo
   await page.locator('form button[type="submit"]').click();
   await expect(page.locator("[aria-live='polite']")).toContainText("39,260");
   await expect(page.locator("[aria-live='polite']")).toContainText("3,271.67");
+  expect(errors).toEqual([]);
+});
+
+test("Japan overtime content is SSR-localized and the over-60-hour scenario works", async ({ page }) => {
+  const responses = await Promise.all(locales.map(async (locale) => {
+    const copy = japanOvertimeFollowups[locale];
+    const response = await page.request.get("/" + locale + "/calculators/japan-overtime-pay-calculator");
+    expect(response.status()).toBe(200);
+    const html = await response.text();
+    expect(html).toContain(copy.description);
+    expect(html).toContain(copy.howTo);
+    expect(html).toContain(copy.formula);
+    expect(html).toContain(copy.example!.answer);
+    expect(html).toContain(copy.faq!.question);
+    expect(html).toMatch(/<h1\b/);
+    expect(html).toMatch(/<h2\b/);
+    expect(html).toMatch(/rel=["']canonical["']/i);
+    expect(html).toMatch(/hrefLang=/i);
+    expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    return locale;
+  }));
+  expect(responses).toHaveLength(26);
+
+  const errors = collectBrowserErrors(page);
+  await page.goto("/en/calculators/japan-overtime-pay-calculator");
+  await waitForCalculatorHydration(page);
+  await page.locator("#japan-overtime-pay-calculator-wageMode").selectOption("hourly");
+  await page.locator("#japan-overtime-pay-calculator-hourlyWage").fill("1500");
+  await page.locator("#japan-overtime-pay-calculator-overtimeHours").fill("10");
+  await page.locator("#japan-overtime-pay-calculator-over60Hours").fill("2");
+  await page.locator("#japan-overtime-pay-calculator-overtimeRate").fill("25");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("23,250");
   expect(errors).toEqual([]);
 });
 

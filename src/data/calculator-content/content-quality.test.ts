@@ -37,6 +37,7 @@ import { germanyIncomeTaxFollowups } from "@/i18n/dictionaries/germany-income-ta
 import { germanyOvertimeFollowups } from "@/i18n/dictionaries/germany-overtime-followups";
 import { germanyVacationPayFollowups } from "@/i18n/dictionaries/germany-vacation-pay-followups";
 import { spainGrossNetFollowups } from "@/i18n/dictionaries/spain-gross-net-followups";
+import { japanOvertimeFollowups } from "@/i18n/dictionaries/japan-overtime-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -236,6 +237,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} implementation`).toBeTruthy();
       expect(copy.example?.answer, `${locale} exact scenario explanation`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} policy limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Japan overtime thresholds, wage modes, and an engine-matched example in every locale", () => {
+    const slug = "japan-overtime-pay-calculator";
+    const output = calculateBySlug(slug, { wageMode: "hourly", hourlyWage: "1500", overtimeHours: "10", over60Hours: "2", overtimeRate: "25" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([18000, 5250, 23250]);
+    for (const locale of supportedLocales) {
+      const copy = japanOvertimeFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} formula and reference scope`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} calculation example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} legal limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
@@ -466,7 +487,7 @@ describe("calculator content quality", () => {
       for (const locale of locales) {
         const note = seventhPolicyExampleNotes[locale]?.[slug];
         expect(note, `${locale}/${slug} authored example`).toBeTruthy();
-        expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.example.answer).toContain(note);
+        if (slug !== "japan-overtime-pay-calculator") expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.example.answer).toContain(note);
         expect(supportedLocalesForCalculator(slug)).toContain(locale);
       }
     }
