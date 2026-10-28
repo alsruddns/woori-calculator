@@ -14,15 +14,15 @@ export function RatioExamples({ locale, heading }: { locale: Locale; heading: st
     { question: `${copy.names[2]}: 1920 × 1080`, answer: copy.faqs[3]!.answer },
   ];
   return <>
-    <section aria-labelledby="ratio-examples-heading">
-      <h2 id="ratio-examples-heading" className="text-xl font-bold text-slate-950">{heading}</h2>
+    <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6" aria-labelledby="ratio-examples-heading">
+      <h2 id="ratio-examples-heading" className="break-words text-lg font-bold text-slate-950 [overflow-wrap:anywhere] sm:text-xl">{heading}</h2>
       <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-2">
         {examples.map(({ question, answer }) => <div key={question} className="min-w-0 rounded-xl border border-slate-200 bg-white p-4"><h3 className="break-words font-semibold [overflow-wrap:anywhere]">{question}</h3><p className="mt-2 break-words leading-7 text-slate-700 [overflow-wrap:anywhere]">{answer}</p></div>)}
       </div>
     </section>
-    <section aria-labelledby="ratio-use-cases-heading">
-      <h2 id="ratio-use-cases-heading" className="text-xl font-bold text-slate-950">{useCaseHeading[locale]}</h2>
-      <p className="mt-3 leading-7 text-slate-700">{copy.useCases}</p>
+    <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6" aria-labelledby="ratio-use-cases-heading">
+      <h2 id="ratio-use-cases-heading" className="break-words text-lg font-bold text-slate-950 [overflow-wrap:anywhere] sm:text-xl">{useCaseHeading[locale]}</h2>
+      <p className="mt-3 break-words leading-7 text-slate-700 [overflow-wrap:anywhere]">{copy.useCases}</p>
     </section>
   </>;
 }

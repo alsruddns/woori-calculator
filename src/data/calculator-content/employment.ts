@@ -8,6 +8,8 @@ export const employmentCalculatorPages = [
     name: "실업급여 계산기",
     shortName: "실업급여",
     category: "salary",
+    countryCode: "KR",
+    countryName: "대한민국",
     policyType: "POLICY",
     policyYear: unemploymentBenefit2026.policyYear,
     description: "퇴직 전 월 평균임금과 퇴직 당시 나이, 고용보험 가입기간으로 2026년 기준 예상 구직급여액과 소정급여일수를 계산합니다.",

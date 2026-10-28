@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { currencyCodes, defaultCurrencyByLocale, formatCurrency, formatLocalizedInput, isCurrencyCode, parseLocalizedNumber, unformatLocalizedInput } from "@/lib/formatter/currency";
+import { currencyCodes, currencySymbolByCode, defaultCurrencyByLocale, formatCurrency, formatLocalizedInput, isCurrencyCode, parseLocalizedNumber, unformatLocalizedInput } from "@/lib/formatter/currency";
 
 describe("currency configuration and display", () => {
   it("defines distinct defaults for all 26 planned locales", () => {
@@ -18,6 +18,12 @@ describe("currency configuration and display", () => {
     expect(formatCurrency(1_000_000, "RUB", "ru")).toContain("1 000 000,00");
     expect(formatCurrency(Number.NaN, "USD", "en")).toBe("—");
     expect(formatCurrency(-0, "USD", "en")).not.toContain("-");
+  });
+
+  it("keeps currency-picker symbols deterministic across server and browser Intl data", () => {
+    expect(Object.keys(currencySymbolByCode)).toHaveLength(currencyCodes.length);
+    expect(Object.values(currencySymbolByCode).every((symbol) => symbol.trim().length > 0)).toBe(true);
+    expect(currencySymbolByCode.UAH).toBe("грн");
   });
 
   it("parses locale grouping and decimal conventions and keeps unfinished input empty", () => {

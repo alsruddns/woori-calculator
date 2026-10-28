@@ -8,9 +8,10 @@ export type CountryRateConfig = {
   socialEmployeeRate?: number;
   employerFundRate?: number;
   annualPersonalAllowance?: number;
+  annualStandardDeduction?: number;
   annualTaxBrackets?: readonly { upTo: number; rate: number }[];
   annualTaxBracketsByStatus?: Readonly<Record<string, readonly { upTo: number; rate: number }[]>>;
   rules?: Readonly<Record<string, number>>;
-  sources: readonly { name: string; url: string }[];
+  sources: readonly { name: string; url: string; checkedAt?: string }[];
   notes: string;
 };

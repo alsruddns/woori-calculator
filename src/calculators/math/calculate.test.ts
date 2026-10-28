@@ -45,6 +45,7 @@ describe("math calculator functions", () => {
   });
 
   it("averages entered values, including decimals, and rejects blank lists", () => {
+    expect(calculateAverage({ numbers: "10, 20, 30" })).toMatchObject({ results: [{ value: 60 }, { value: 3 }, { value: 20 }] });
     expect(calculateAverage({ numbers: "1.5, 2.5, 6" })).toMatchObject({ results: [{ value: 10 }, { value: 3 }, { value: 3.33 }] });
     expect(calculateAverage({ numbers: "1,000; 2,000" })).toMatchObject({ results: [{ value: 3000 }, { value: 2 }, { value: 1500 }] });
     expect(calculateAverage({ numbers: "" })).toHaveProperty("error");

@@ -41,6 +41,13 @@ export const currencyOptions: readonly CurrencyOption[] = [
   { code: "VND", intlLocale: "vi-VN", nativeName: "Đồng Việt Nam" },
 ] as const satisfies readonly CurrencyOption[];
 
+/** Stable symbols for the currency picker; Intl data differs between Node and browsers. */
+export const currencySymbolByCode: Readonly<Record<CurrencyCode, string>> = {
+  AUD: "$", BDT: "৳", BRL: "R$", CAD: "$", CHF: "CHF", CNY: "¥", CZK: "Kč", EUR: "€", GBP: "£", HKD: "HK$",
+  IDR: "Rp", INR: "₹", JPY: "￥", KRW: "₩", MYR: "RM", NZD: "$", PHP: "₱", PLN: "zł", RON: "RON", RUB: "₽",
+  SEK: "kr", SGD: "$", THB: "฿", TRY: "₺", TWD: "$", UAH: "грн", USD: "$", VND: "₫",
+};
+
 export const defaultCurrencyByLocale = {
   ko: "KRW", en: "USD", ja: "JPY", zh: "CNY", es: "EUR", "pt-br": "BRL", de: "EUR", fr: "EUR", vi: "VND", id: "IDR", th: "THB", "zh-tw": "TWD", it: "EUR", nl: "EUR", hi: "INR",
   ru: "RUB", tr: "TRY", pl: "PLN", fil: "PHP", bn: "BDT", uk: "UAH", ms: "MYR", sv: "SEK", cs: "CZK", ro: "RON", el: "EUR",

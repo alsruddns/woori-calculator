@@ -5,7 +5,7 @@ import type { CalculatorPageDefinition } from "@/types/calculator-page";
 const amount = (name: string, label: string, extra: object = {}) => ({ name, label, type: "number" as const, min: 0, step: 1, ...extra });
 const select = (name: string, label: string, options: readonly { label: string; value: string }[]) => ({ name, label, type: "select" as const, options, defaultValue: options[0]?.value });
 
-export const taxCalculatorPages: readonly CalculatorPageDefinition[] = [
+const taxCalculatorPageData: readonly CalculatorPageDefinition[] = [
   createCalculatorPage({
     slug: "vat", name: "부가세 계산기", shortName: "부가세", category: "tax", description: "공급가액에서 부가세와 합계를 구하거나 부가세 포함 금액을 나누어 계산합니다.", title: "부가세 계산기: 공급가액·부가세·합계 계산", keywords: ["부가세 계산기", "부가가치세 계산", "공급가액 계산"], relatedCalculatorIds: ["discount", "unit-price", "margin"],
     fields: [select("mode", "계산 방식", [{ label: "공급가액에서 계산", value: "supply" }, { label: "부가세 포함 합계에서 역산", value: "gross" }]), amount("amount", "공급가액 (원)", { showWhen: { field: "mode", value: "supply" } }), amount("gross", "부가세 포함 합계 (원)", { showWhen: { field: "mode", value: "gross" } })], calculate: calculateVat,
@@ -43,3 +43,35 @@ export const taxCalculatorPages: readonly CalculatorPageDefinition[] = [
     notes: ["사업소득 3.3%를 가정한 단순 참고 계산입니다. 개인별 공제, 신고 및 최종 세액은 반영하지 않습니다."], faqs: [{ question: "모든 프리랜서 지급에 3.3%가 적용되나요?", answer: "지급의 성격과 개인 상황에 따라 달라질 수 있습니다. 이 계산기는 사업소득 3.3%를 가정한 참고용입니다." }, { question: "세액은 어떻게 원 단위로 처리하나요?", answer: "소득세와 지방소득세를 각각 계산한 뒤 원 미만을 버리는 방식으로 추정합니다." }],
   }),
 ];
+
+export const taxCalculatorPages: readonly CalculatorPageDefinition[] = taxCalculatorPageData.map((page) => {
+  if (page.slug === "vat") return {
+    ...page,
+    policyType: "POLICY",
+    countryCode: "KR",
+    countryName: "South Korea",
+    countrySpecific: true,
+    policyYear: 2026,
+    updatedAt: "2026-10-28",
+    example: { question: "공급가액 10,000원을 대한민국 표준세율 10%로 계산하면?", answer: "공급가액 10,000원에 부가세 1,000원을 더해 합계 11,000원입니다." },
+    sources: [
+      { name: "Korea VAT Act, Article 30 (10% standard rate; effective 2026-01-02)", url: "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1031738785", checkedAt: "2026-10-28" },
+      { name: "National Tax Service: VAT overview and taxpayer categories", url: "https://i.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7693&mi=2401", checkedAt: "2026-10-28" },
+    ],
+  };
+  if (page.slug === "withholding-tax-3-3") return {
+    ...page,
+    policyType: "POLICY",
+    countryCode: "KR",
+    countryName: "South Korea",
+    countrySpecific: true,
+    policyYear: 2026,
+    updatedAt: "2026-10-28",
+    example: { question: "사업소득 지급액 1,000,000원의 참고 원천징수액은?", answer: "지급액 1,000,000원 기준으로 소득세 30,000원과 지방소득세 3,000원을 계산해 총 33,000원을 원천징수하며, 참고 실수령액은 967,000원입니다. 최종 종합소득세는 아닙니다." },
+    sources: [
+      { name: "National Tax Service: business-income withholding reference", url: "https://b.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7902&mi=6466", checkedAt: "2026-10-28" },
+      { name: "National Tax Service: 2026-10-01 proposal to reduce personal-service withholding", url: "https://www.nts.go.kr/nts/na/ntt/selectNttInfo.do?mi=2163&nttSn=1355351", checkedAt: "2026-10-28" },
+    ],
+  };
+  return page;
+});

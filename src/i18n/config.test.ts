@@ -427,7 +427,7 @@ describe("locale routing and translated calculator catalog", () => {
         expect(Object.keys(page.resultLabels).length).toBeGreaterThan(0);
         expect(Object.keys(page.fields).length).toBeGreaterThan(0);
         const visibleCopy = [page.name, page.title, page.description, page.howTo, page.formula, page.example.question, page.example.answer, page.validation, page.resultNote, ...page.keywords!, ...page.faqs.flatMap(({ question, answer }) => [question, answer]), ...Object.values(page.fields).map(({ label }) => label), ...Object.values(page.options).flatMap(Object.values), ...Object.values(page.resultLabels)];
-        expect(visibleCopy.some((value) => /[\uAC00-\uD7AF]/.test(value))).toBe(false);
+        expect(visibleCopy.some((value) => /[\uAC00-\uD7AF]/.test(value)), `${locale}/${slug} contains Korean copy`).toBe(false);
         expect(page.related).not.toContain(slug);
         for (const related of page.related) expect(localizedCalculatorSlugs).toContain(related);
       }

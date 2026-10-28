@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { calculateBySlug } from "@/calculators/calculate";
 import { globalCountryCalculatorSlugs } from "@/data/calculator-content/country-specific-global";
-import { locales, type LocalizedCalculatorSlug } from "@/i18n/config";
+import { locales, supportedLocales, type LocalizedCalculatorSlug } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { uaeLaborVatFollowups } from "@/i18n/dictionaries/uae-labor-vat-followups";
+import { newZealandPayrollSavingsFollowups } from "@/i18n/dictionaries/new-zealand-payroll-savings-followups";
 
 const values = (slug: string, input: Record<string, string>) => {
   const result = calculateBySlug(slug, input);
@@ -58,6 +60,93 @@ describe("global country calculators", () => {
     const annual = values("uk-gross-net-salary-calculator", { salary: "60000", frequency: "annual" });
     expect(monthly[0]).toBe(annual[0]);
     expect(monthly[4]).toBe(annual[4]);
+    const monthlyNi = values("uk-national-insurance-calculator", { salary: "3000", frequency: "monthly" });
+    const annualNi = values("uk-national-insurance-calculator", { salary: "36000", frequency: "annual" });
+    expect(monthlyNi).toEqual([156.16, 1873.92]);
+    expect(annualNi).toEqual(monthlyNi);
+    expect(values("uk-national-insurance-calculator", { salary: "50000", frequency: "annual" })).toEqual([249.49, 2993.92]);
     expect(values("uae-vat-calculator", { amount: "100", rate: "5", direction: "exclusive" })[1]).toBe(5);
+    expect(values("canada-gst-hst-calculator", { amount: "100", rate: "5", direction: "exclusive" })).toEqual([100, 5, 105]);
+    expect(values("australia-gst-calculator", { amount: "100", rate: "10", direction: "exclusive" })).toEqual([100, 10, 110]);
+    expect(values("singapore-gst-calculator", { amount: "100", rate: "9", direction: "exclusive" })).toEqual([100, 9, 109]);
+    expect(values("new-zealand-gst-calculator", { amount: "100", rate: "15", direction: "exclusive" })).toEqual([100, 15, 115]);
+    expect(values("australia-income-tax-calculator", { income: "80000" })).toEqual([80000, 14520, 18.15]);
+    expect(values("australia-superannuation-calculator", { annualSalary: "100000", annualContribution: "6000", employerRate: "12", rate: "0", years: "1" })).toEqual([6000, 12000, 0, 18000]);
+    expect(values("singapore-cpf-calculator", { salary: "6000", age: "35" })).toEqual([1200, 1020, 2220]);
+  });
+
+  it("applies the entered French payroll contribution assumption", () => {
+    expect(values("france-gross-net-salary-calculator", { salary: "60000", frequency: "annual", socialRate: "22" })).toEqual([60000, 11103.99, 13200, 0, 35696.01, 2974.67]);
+  });
+
+  it("applies Spain gross-net rates entered in the calculator and rejects invalid rates", () => {
+    expect(values("spain-gross-net-salary-calculator", { salary: "50000", frequency: "annual", taxRate: "15", socialRate: "6.48" })).toEqual([50000, 7500, 3240, 0, 39260, 3271.67]);
+    expect(values("spain-gross-net-salary-calculator", { salary: "5000", frequency: "monthly", taxRate: "15", socialRate: "6.48" })).toEqual([60000, 9000, 3888, 0, 47112, 3926]);
+    expect(calculateBySlug("spain-gross-net-salary-calculator", { salary: "50000", taxRate: "101", socialRate: "6.48" })).toHaveProperty("error");
+    expect(calculateBySlug("spain-gross-net-salary-calculator", { salary: "50000", taxRate: "15", socialRate: "-1" })).toHaveProperty("error");
+  });
+
+  it("matches Philippine payroll content examples to the current engine", () => {
+    expect(values("philippines-philhealth-calculator", { salary: "30000" })).toEqual([750, 750, 1500]);
+    expect(values("philippines-pagibig-calculator", { salary: "30000" })).toEqual([200, 200, 400]);
+    expect(values("philippines-gross-net-salary-calculator", { salary: "60000", frequency: "monthly" })).toEqual([720000, 86500, 39000, 0, 594500, 49541.67]);
+  });
+
+  it("provides UAE law-grounded examples and distinct guidance in all 26 locales", () => {
+    const slugs = ["uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator"] as const;
+    const ko = getDictionary("ko");
+    expect(uaeLaborVatFollowups.ko["uae-vat-calculator"]?.formula).toBeTruthy();
+    for (const locale of supportedLocales) for (const slug of slugs) {
+      const page = getDictionary(locale).calculators[slug]!;
+      expect(page.formula, `${locale}/${slug} formula`).toBe(uaeLaborVatFollowups[locale][slug]!.formula);
+      expect(page.example.answer, `${locale}/${slug} example`).toContain("AED");
+      expect(page.faqs[0]?.answer, `${locale}/${slug} FAQ`).toBeTruthy();
+      if (locale !== "en") expect(page.formula, `${locale}/${slug} localized formula`).not.toBe(getDictionary("en").calculators[slug]!.formula);
+    }
+    expect(ko.calculators["uae-gratuity-calculator"]!.example.answer).toContain("AED 54,000");
+    expect(getDictionary("en").calculators["uae-vat-calculator"]!.example.answer).toContain("AED 1,050");
+  });
+
+  it("matches New Zealand 2026-27 tax, ACC and KiwiSaver examples to the engine", () => {
+    expect(values("new-zealand-income-tax-calculator", { income: "60000" })).toEqual([60000, 10220.5, 17.03]);
+    expect(values("new-zealand-gross-net-salary-calculator", { salary: "60000", frequency: "annual" })).toEqual([60000, 10220.5, 0, 1050, 48729.5, 4060.79]);
+    expect(values("new-zealand-kiwisaver-calculator", { annualSalary: "60000", annualContribution: "2100", employerRate: "3.5", rate: "0", years: "1" })).toEqual([2100, 2100, 0, 4200]);
+  });
+
+  it("provides New Zealand-specific formula and examples in all 26 locales", () => {
+    const slugs = ["new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-kiwisaver-calculator"] as const;
+    for (const locale of supportedLocales) for (const slug of slugs) {
+      const page = getDictionary(locale).calculators[slug]!;
+      const copy = newZealandPayrollSavingsFollowups[locale][slug]!;
+      expect(page.formula, `${locale}/${slug} formula`).toBe(copy.formula);
+      expect(page.example.answer, `${locale}/${slug} example`).toContain("NZD");
+      expect(page.faqs[0]?.question, `${locale}/${slug} FAQ`).toBe(copy.faq?.question);
+      if (locale !== "en") expect(page.formula, `${locale}/${slug} translation`).not.toBe(getDictionary("en").calculators[slug]!.formula);
+    }
+    expect(getDictionary("en").calculators["new-zealand-gross-net-salary-calculator"]!.example.answer).toContain("48,729.50");
+    expect(getDictionary("en").calculators["new-zealand-income-tax-calculator"]!.example.answer).toContain("10,220.50");
+    expect(getDictionary("en").calculators["new-zealand-kiwisaver-calculator"]!.example.answer).toContain("4,200");
+  });
+
+  it("matches UAE end-of-service Article 51 accrual after one completed year", () => {
+    expect(values("uae-gratuity-calculator", { salary: "12000", years: "0", months: "11" })[1]).toBe(0);
+    expect(values("uae-gratuity-calculator", { salary: "12000", years: "1", months: "0" })[1]).toBe(8400);
+    expect(values("uae-gratuity-calculator", { salary: "12000", years: "6", months: "0" })).toEqual([6, 54000]);
+    expect(values("uae-end-of-service-calculator", { salary: "12000", years: "6", months: "0" })).toEqual([12000, 42000, 12000, 54000]);
+    expect(values("uae-gratuity-calculator", { salary: "10000", years: "30", months: "0" })[1]).toBe(240000);
+  });
+
+  it("provides calculator-specific localized payroll guidance in all 26 locales", () => {
+    const slugs = ["philippines-philhealth-calculator", "philippines-pagibig-calculator", "philippines-gross-net-salary-calculator"] as const;
+    for (const locale of supportedLocales) for (const slug of slugs) {
+      const page = getDictionary(locale).calculators[slug]!;
+      expect(page.howTo, `${locale}/${slug} instructions`).toContain("PHP");
+      if (locale !== "en") expect(page.formula, `${locale}/${slug} formula`).not.toBe(getDictionary("en").calculators[slug]!.formula);
+      expect(page.example.answer, `${locale}/${slug} example`).toBeTruthy();
+      expect(page.faqs[0]?.question, `${locale}/${slug} FAQ`).toBeTruthy();
+    }
+    for (const locale of supportedLocales) {
+      for (const slug of slugs) expect(getDictionary(locale).calculators[slug]!.howTo).toBeTruthy();
+    }
   });
 });

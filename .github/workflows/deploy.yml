@@ -271,6 +271,50 @@ jobs:
           '
           echo "Verified 26 localized listings and detail pages, canonical/hreflang metadata, and the complete calculator sitemap."
 
+      - name: Remove previous Calculator image after successful verification
+        if: ${{ steps.verify.outcome == 'success' }}
+        uses: appleboy/ssh-action@v1
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT
+          script: |
+            set -eu
+            cd /opt/services/compose
+            rollback_ref="ghcr.io/alsruddns/woori-calculator:rollback-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            old_image_id="$(docker image inspect "$rollback_ref" --format '{{.Id}}')"
+            current_image_id="$(docker inspect calculator --format '{{.Image}}')"
+            health="$(docker inspect calculator --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}')"
+            if [ "$health" != "healthy" ] || [ "$old_image_id" = "$current_image_id" ]; then
+              echo "Refusing image cleanup: current Calculator health=$health; previous image is still active or unverifiable." >&2
+              exit 1
+            fi
+            if [ -n "$(docker ps -aq --no-trunc --filter "ancestor=$old_image_id")" ]; then
+              echo "Refusing image cleanup: a container still references the previous Calculator image." >&2
+              exit 1
+            fi
+            image_refs="$(docker image ls --no-trunc --format '{{.Repository}}:{{.Tag}} {{.ID}}' | awk -v image_id="$old_image_id" '$2 == image_id {print $1}')"
+            if [ -z "$image_refs" ]; then
+              echo "Previous Calculator image has no remaining local tags; removing its saved image ID."
+              docker image rm "$old_image_id"
+            else
+              printf '%s\n' "$image_refs" | while IFS= read -r image_ref; do
+                [ -n "$image_ref" ] && docker image rm "$image_ref"
+              done
+              if docker image inspect "$old_image_id" >/dev/null 2>&1; then
+                docker image rm "$old_image_id"
+              fi
+            fi
+            if docker image inspect "$old_image_id" >/dev/null 2>&1; then
+              echo "Previous Calculator image remains after targeted cleanup." >&2
+              exit 1
+            fi
+            echo "Previous Calculator image removed after verified deployment; current image=$current_image_id health=$health."
+
       - name: Roll back Calculator after failed deployment or URL verification
         if: ${{ always() && (steps.deploy.outcome == 'failure' || steps.verify.outcome == 'failure') }}
         uses: appleboy/ssh-action@v1

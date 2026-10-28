@@ -22,6 +22,8 @@ describe("country-specific calculator models", () => {
   it("calculates tax-inclusive/exclusive VAT, zero input, and invalid rates", () => {
     expect(values("germany-vat-calculator", { amount: "100", rate: "19", direction: "exclusive" })).toEqual([100, 19, 119]);
     expect(values("germany-vat-calculator", { amount: "119", rate: "19", direction: "inclusive" })).toEqual([100, 19, 119]);
+    expect(values("uk-vat-calculator", { amount: "100", rate: "20", direction: "exclusive" })).toEqual([100, 20, 120]);
+    expect(values("uk-vat-calculator", { amount: "120", rate: "20", direction: "inclusive" })).toEqual([100, 20, 120]);
     expect(values("italy-vat-calculator", { amount: "0", rate: "22", direction: "exclusive" })).toEqual([0, 0, 0]);
     expect(calculateBySlug("china-vat-calculator", { amount: "100", rate: "101", direction: "exclusive" })).toHaveProperty("error");
   });
@@ -55,6 +57,13 @@ describe("country-specific calculator models", () => {
     expect(values("brazil-fgts-calculator", { salary: "3000" })).toEqual([240, 2880]);
   });
 
+  it("prorates the Brazil 13th-salary gross estimate over the entered months", () => {
+    expect(values("brazil-thirteenth-salary-calculator", { salary: "3000", months: "7" })).toEqual([1750, 7]);
+    expect(values("brazil-thirteenth-salary-calculator", { salary: "3000", months: "0" })).toEqual([0, 0]);
+    expect(values("brazil-thirteenth-salary-calculator", { salary: "3000", months: "12" })).toEqual([3000, 12]);
+    expect(calculateBySlug("brazil-thirteenth-salary-calculator", { salary: "3000", months: "13" })).toHaveProperty("error");
+  });
+
   it("separates India investment return scenarios from tax treatment", () => {
     expect(values("india-ppf-calculator", { monthlyDeposit: "0", rate: "7.1", years: "15" })).toEqual([0, 0, 0]);
     const projection = values("india-sip-calculator", { monthlyDeposit: "1000", rate: "8", years: "10" });
@@ -62,6 +71,16 @@ describe("country-specific calculator models", () => {
     expect(projection[1]).toBeGreaterThan(0);
     expect(projection[2]).toBe(projection[0] + projection[1]);
     expect(values("india-income-tax-calculator", { income: "1200000" })[1]).toBe(0);
+  });
+
+  it("applies the India new-regime salary standard deduction only to gross-net salary income", () => {
+    expect(countryRates.IN?.annualStandardDeduction).toBe(75000);
+    expect(values("india-gross-net-salary-calculator", { salary: "50000", frequency: "annual", socialRate: "0" })).toEqual([50000, 0, 0, 50000, 4166.67]);
+    expect(values("india-gross-net-salary-calculator", { salary: "75000", frequency: "annual", socialRate: "0" })).toEqual([75000, 0, 0, 75000, 6250]);
+    const example = values("india-gross-net-salary-calculator", { salary: "1500000", frequency: "annual", socialRate: "0" });
+    expect(example).toEqual([1500000, 93750, 0, 1406250, 117187.5]);
+    expect(values("india-gross-net-salary-calculator", { salary: "125000", frequency: "monthly", socialRate: "0" })).toEqual(example);
+    expect(values("india-income-tax-calculator", { income: "1500000" })[1]).toBe(105000);
   });
 
   it("rejects negative, excessive and out-of-range inputs without non-finite output", () => {
