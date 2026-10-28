@@ -50,6 +50,9 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://pco.gov.ph/other_releases/pag-ibig-members-to-gain-more-benefits-under-new-rates-starting-february-2024/",
   "https://bir-cdn.bir.gov.ph/local/pdf/RR%20No.%2011-2018.pdf",
   "https://web-services.bir.gov.ph/tax_calculator/wt_calculator.html",
+  "https://www.mohre.gov.ae/assets/download/e82f7872/Federal%20Decree-Law%20No.%2033%20of%202021%20Regarding%20the%20Regulation%20of%20Employment%20Relationship%20and%20its%20amendments_638990571068264034.pdf.aspx",
+  "https://tax.gov.ae/en/faq.aspx?keyword=What+is+the+standard+rate+of+VAT+in+the+UAE%3F",
+  "https://tax.gov.ae/en/faq.aspx?keyword=Does+VAT+apply+to+all+goods+and+services",
 ]);
 
 function buildAuditReport() {
@@ -177,7 +180,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(38);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(41);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

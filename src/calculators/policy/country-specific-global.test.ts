@@ -3,6 +3,7 @@ import { calculateBySlug } from "@/calculators/calculate";
 import { globalCountryCalculatorSlugs } from "@/data/calculator-content/country-specific-global";
 import { locales, supportedLocales, type LocalizedCalculatorSlug } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { uaeLaborVatFollowups } from "@/i18n/dictionaries/uae-labor-vat-followups";
 
 const values = (slug: string, input: Record<string, string>) => {
   const result = calculateBySlug(slug, input);
@@ -72,6 +73,29 @@ describe("global country calculators", () => {
     expect(values("philippines-philhealth-calculator", { salary: "30000" })).toEqual([750, 750, 1500]);
     expect(values("philippines-pagibig-calculator", { salary: "30000" })).toEqual([200, 200, 400]);
     expect(values("philippines-gross-net-salary-calculator", { salary: "60000", frequency: "monthly" })).toEqual([720000, 86500, 39000, 0, 594500, 49541.67]);
+  });
+
+  it("provides UAE law-grounded examples and distinct guidance in all 26 locales", () => {
+    const slugs = ["uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator"] as const;
+    const ko = getDictionary("ko");
+    expect(uaeLaborVatFollowups.ko["uae-vat-calculator"]?.formula).toBeTruthy();
+    for (const locale of supportedLocales) for (const slug of slugs) {
+      const page = getDictionary(locale).calculators[slug]!;
+      expect(page.formula, `${locale}/${slug} formula`).toBe(uaeLaborVatFollowups[locale][slug]!.formula);
+      expect(page.example.answer, `${locale}/${slug} example`).toContain("AED");
+      expect(page.faqs[0]?.answer, `${locale}/${slug} FAQ`).toBeTruthy();
+      if (locale !== "en") expect(page.formula, `${locale}/${slug} localized formula`).not.toBe(getDictionary("en").calculators[slug]!.formula);
+    }
+    expect(ko.calculators["uae-gratuity-calculator"]!.example.answer).toContain("AED 54,000");
+    expect(getDictionary("en").calculators["uae-vat-calculator"]!.example.answer).toContain("AED 1,050");
+  });
+
+  it("matches UAE end-of-service Article 51 accrual after one completed year", () => {
+    expect(values("uae-gratuity-calculator", { salary: "12000", years: "0", months: "11" })[1]).toBe(0);
+    expect(values("uae-gratuity-calculator", { salary: "12000", years: "1", months: "0" })[1]).toBe(8400);
+    expect(values("uae-gratuity-calculator", { salary: "12000", years: "6", months: "0" })).toEqual([6, 54000]);
+    expect(values("uae-end-of-service-calculator", { salary: "12000", years: "6", months: "0" })).toEqual([12000, 42000, 12000, 54000]);
+    expect(values("uae-gratuity-calculator", { salary: "10000", years: "30", months: "0" })[1]).toBe(240000);
   });
 
   it("provides calculator-specific localized payroll guidance in all 26 locales", () => {

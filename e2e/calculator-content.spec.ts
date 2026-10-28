@@ -7,6 +7,7 @@ import { hkPolicyFollowups } from "../src/i18n/dictionaries/hk-policy-followups"
 import { malaysiaPolicyFollowups } from "../src/i18n/dictionaries/malaysia-policy-followups";
 import { malaysiaPhilippinesFollowups } from "../src/i18n/dictionaries/malaysia-philippines-followups";
 import { philippinesPayrollFollowups } from "../src/i18n/dictionaries/philippines-payroll-followups";
+import { uaeLaborVatFollowups } from "../src/i18n/dictionaries/uae-labor-vat-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -1732,6 +1733,72 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#scale-ratio-outputUnit").selectOption("m");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator('[aria-live="polite"]')).toContainText("5");
+    expect(errors).toEqual([]);
+  });
+
+  test("UAE calculator pages render localized law and VAT details in SSR HTML", async ({ page }) => {
+    test.setTimeout(120_000);
+    for (const locale of locales) for (const slug of ["uae-gratuity-calculator", "uae-end-of-service-calculator", "uae-vat-calculator"] as const) {
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response?.status(), locale + "/" + slug).toBe(200);
+      const copy = uaeLaborVatFollowups[locale][slug]!;
+      const html = await response!.text();
+      expect(html).toContain(copy.formula);
+      expect(html).toContain(copy.exampleNote);
+      expect(html).toContain(copy.faq?.question ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("UAE gratuity, end-of-service and VAT live examples fit eight viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/uae-gratuity-calculator");
+    await waitForCalculatorHydration(page);
+    await expect(page.locator('article a[href*="mohre.gov.ae"]').first()).toBeVisible();
+    await page.locator("#uae-gratuity-calculator-salary").fill("12000");
+    await page.locator("#uae-gratuity-calculator-years").fill("6");
+    await page.locator("#uae-gratuity-calculator-months").fill("0");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("54,000");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "UAE gratuity detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/uae-end-of-service-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#uae-end-of-service-calculator-salary").fill("12000");
+    await page.locator("#uae-end-of-service-calculator-years").fill("6");
+    await page.locator("#uae-end-of-service-calculator-months").fill("0");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("42,000");
+    await expect(page.locator("[aria-live='polite']")).toContainText("54,000");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "UAE end-of-service detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/uae-vat-calculator");
+    await waitForCalculatorHydration(page);
+    await expect(page.locator('article a[href*="tax.gov.ae"]').first()).toBeVisible();
+    await page.locator("#uae-vat-calculator-amount").fill("1000");
+    await page.locator("#uae-vat-calculator-rate").fill("5");
+    await page.locator("#uae-vat-calculator-direction").selectOption("exclusive");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("50 AED");
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,050 AED");
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "UAE VAT detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
     expect(errors).toEqual([]);
   });
 });
