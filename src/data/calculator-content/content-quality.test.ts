@@ -20,6 +20,7 @@ import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
 import { netherlandsPolicyFollowups } from "@/i18n/dictionaries/netherlands-policy-followups";
+import { indiaPolicyFollowups } from "@/i18n/dictionaries/india-policy-followups";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
@@ -718,6 +719,38 @@ describe("calculator content quality", () => {
         expect(addition?.howTo, `${locale}/${slug} instructions`).toBeTruthy();
         expect(addition?.exampleNote, `${locale}/${slug} example`).toBeTruthy();
         expect(addition?.faq, `${locale}/${slug} limitation FAQ`).toBeTruthy();
+        expect(page?.howTo).toBe(addition?.howTo);
+        expect(page?.formula).toBe(addition?.formula);
+        expect(page?.example.answer).toContain(addition?.exampleNote);
+        expect(page?.faqs[0]).toEqual(addition?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+        if (locale !== "en") expect(page?.formula, `${locale}/${slug} localized formula`).not.toBe(getDictionary("en").calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.formula);
+      }
+    }
+  });
+
+  it("renders India GST, AY tax, and gross-net scenarios against the engine in all locales", () => {
+    const cases = {
+      "india-gst-calculator": { input: { amount: "10000", rate: "18", direction: "exclusive" }, values: [10000, 1800, 11800] },
+      "india-income-tax-calculator": { input: { income: "1500000" }, values: [1500000, 105000, 7] },
+      "india-gross-net-salary-calculator": { input: { salary: "1500000", frequency: "annual", socialRate: "0" }, values: [1500000, 105000, 0, 1395000, 116250] },
+    } as const;
+    const officialUrls = [
+      "https://www.incometaxindia.gov.in/w/tax-rates-and-computation",
+      "https://cbic-gst.gov.in/hindi/gst-goods-services-rates.html",
+      "https://www.incometaxindia.gov.in/w/deductions/allowances-allowed-to-a-salaried-employee",
+    ];
+    for (const url of officialUrls) expect(countryRates.IN?.sources.find((source) => source.url === url)?.checkedAt).toBe("2026-10-28");
+    for (const [slug, sample] of Object.entries(cases)) {
+      const result = calculateBySlug(slug, sample.input);
+      expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const addition = indiaPolicyFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(addition?.howTo, `${locale}/${slug} instructions`).toBeTruthy();
+        expect(addition?.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(addition?.exampleNote, `${locale}/${slug} example`).toBeTruthy();
+        expect(addition?.faq, `${locale}/${slug} FAQ`).toBeTruthy();
         expect(page?.howTo).toBe(addition?.howTo);
         expect(page?.formula).toBe(addition?.formula);
         expect(page?.example.answer).toContain(addition?.exampleNote);

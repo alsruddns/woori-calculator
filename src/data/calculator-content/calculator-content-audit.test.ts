@@ -15,6 +15,9 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.gov.br/inss/pt-br/direitos-e-deveres/inscricao-e-contribuicao/tabela-de-contribuicao-mensal",
   "https://www3.agenciatributaria.gob.es/Sede/iva/calculo-iva-repercutido-clientes/tipos-impositivos-iva.html",
   "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/coming-to-work-in-the-netherlands-30-percent-facility",
+  "https://www.incometaxindia.gov.in/w/tax-rates-and-computation",
+  "https://cbic-gst.gov.in/hindi/gst-goods-services-rates.html",
+  "https://www.incometaxindia.gov.in/w/deductions/allowances-allowed-to-a-salaried-employee",
   "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1031738785",
   "https://i.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7693&mi=2401",
   "https://b.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7902&mi=6466",
@@ -196,7 +199,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(56);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(59);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

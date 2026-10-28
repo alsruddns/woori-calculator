@@ -1,5 +1,6 @@
 ﻿import { expect, test, type Page } from "@playwright/test";
 import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
+import { indiaPolicyFollowups } from "../src/i18n/dictionaries/india-policy-followups";
 import { auSgPayrollTaxFollowups } from "../src/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { singaporeGrossNetCorrections } from "../src/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "../src/i18n/dictionaries/germany-vat-followups";
@@ -2044,6 +2045,60 @@ test.describe("calculator input and result flows", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "Netherlands 30% facility at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  test("India policy copy is in initial HTML for every locale", async ({ page }) => {
+    test.setTimeout(120_000);
+    const slugs = ["india-gst-calculator", "india-income-tax-calculator", "india-gross-net-salary-calculator"] as const;
+    for (const locale of locales) for (const slug of slugs) {
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response?.status(), locale + "/" + slug).toBe(200);
+      const html = await response!.text();
+      const content = indiaPolicyFollowups[locale][slug]!;
+      expect(html).toContain(content.howTo);
+      expect(html).toContain(content.formula);
+      expect(html).toContain(content.exampleNote);
+      expect(html).toContain(content.faq?.question ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("India GST, tax and salary flows fit all required viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440];
+    await page.goto("/en/calculators/india-gst-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#india-gst-calculator-amount").fill("10000");
+    await page.locator("#india-gst-calculator-rate").fill("18");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("11,800");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "India GST at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/india-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#india-income-tax-calculator-income").fill("1500000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("105,000");
+    await page.goto("/en/calculators/india-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#india-gross-net-salary-calculator-salary").fill("1500000");
+    await page.locator("#india-gross-net-salary-calculator-socialRate").fill("0");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,395,000");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "India salary at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });
