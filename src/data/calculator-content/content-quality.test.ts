@@ -32,6 +32,7 @@ import { globalCountryRates } from "@/data/country-rates/global";
 import { brazilPayrollFollowups } from "@/i18n/dictionaries/brazil-payroll-followups";
 import { brazilGrossNetFollowups } from "@/i18n/dictionaries/brazil-gross-net-followups";
 import { japanSalaryFollowups } from "@/i18n/dictionaries/japan-salary-followups";
+import { germanyGrossNetFollowups } from "@/i18n/dictionaries/germany-gross-net-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -136,6 +137,27 @@ describe("calculator content quality", () => {
         expect(page?.faqs[0]).toEqual(copy.faq);
         expect(supportedLocalesForCalculator(sample.slug)).toContain(locale);
       }
+    }
+  });
+  it("renders the Germany gross-to-net model assumptions and exact example in every locale", () => {
+    const slug = "germany-gross-net-salary-calculator";
+    const input = { salary: "50000", frequency: "annual", socialRate: "21.15" };
+    const output = calculateBySlug(slug, input);
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([50000, 10548.33, 10575, 28876.67, 2406.39]);
+    for (const locale of supportedLocales) {
+      const copy = germanyGrossNetFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
     }
   });
   it("renders German VAT purpose, formula, engine-matched examples, limits and FAQ in all locales", () => {
