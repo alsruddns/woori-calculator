@@ -11,6 +11,7 @@ import { japanNightHolidayFollowups } from "@/i18n/dictionaries/japan-night-holi
 import { franceOvertimeFollowups } from "@/i18n/dictionaries/france-overtime-followups";
 import { netherlandsHolidayFollowups } from "@/i18n/dictionaries/netherlands-holiday-followups";
 import { brazilThirteenthFollowups } from "@/i18n/dictionaries/brazil-thirteenth-followups";
+import { vietnamGrossNetFollowups } from "@/i18n/dictionaries/vietnam-gross-net-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -341,6 +342,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} engine formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} legal limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Vietnam gross-net configured brackets, engine example and policy limits in every locale", () => {
+    const slug = "vietnam-gross-net-salary-calculator";
+    const output = calculateBySlug(slug, { salary: "30000000", frequency: "monthly", socialRate: "10.5" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([360000000, 11400000, 37800000, 310800000, 25900000]);
+    for (const locale of supportedLocales) {
+      const copy = vietnamGrossNetFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and modeled scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input and frequency meaning`).toBeTruthy();
+      expect(copy.formula, `${locale} configured engine formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} model-matched example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} policy limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

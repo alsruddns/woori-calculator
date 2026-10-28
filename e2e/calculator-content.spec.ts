@@ -28,6 +28,7 @@ import { japanNightHolidayFollowups } from "../src/i18n/dictionaries/japan-night
 import { franceOvertimeFollowups } from "../src/i18n/dictionaries/france-overtime-followups";
 import { netherlandsHolidayFollowups } from "../src/i18n/dictionaries/netherlands-holiday-followups";
 import { brazilThirteenthFollowups } from "../src/i18n/dictionaries/brazil-thirteenth-followups";
+import { vietnamGrossNetFollowups } from "../src/i18n/dictionaries/vietnam-gross-net-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -898,6 +899,29 @@ test.describe("Policy calculator worked examples", () => {
     await page.locator("#brazil-thirteenth-salary-calculator-months").fill("7");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("1,750");
+  });
+
+  test("Vietnam gross-net editorial is localized in SSR and the calculator returns the documented example", async ({ page }) => {
+    for (const locale of ["ko", "en", "vi", "fr"] as const) {
+      const response = await page.goto("/" + locale + "/calculators/vietnam-gross-net-salary-calculator");
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toContain(vietnamGrossNetFollowups[locale].formula);
+      expect(html).toContain(vietnamGrossNetFollowups[locale].example?.answer ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("canonical");
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+
+    await page.goto("/en/calculators/vietnam-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#vietnam-gross-net-salary-calculator-salary").fill("30000000");
+    await page.locator("#vietnam-gross-net-salary-calculator-frequency").selectOption("monthly");
+    await page.locator("#vietnam-gross-net-salary-calculator-socialRate").fill("10.5");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("25,900,000");
   });
 });
 
