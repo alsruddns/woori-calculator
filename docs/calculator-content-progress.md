@@ -6,9 +6,9 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 73
+- Content COMPLETE: 76
 - VALIDATING: 0
-- Content DRAFT: 96
+- Content DRAFT: 93
 - Policy VERIFIED: 9 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, minimum-wage, japan-overtime-pay-calculator, japan-night-holiday-pay-calculator, germany-vat-calculator)
 - Policy PARTIAL: 8 (japan-consumption-tax-calculator; future schedule not date-modeled; canada-gst-hst-calculator; province/place classification absent; australia-income-tax-calculator; Medicare levy/offsets excluded; australia-superannuation-calculator; eligibility/contribution caps/tax excluded; singapore-cpf-calculator; graduated PR and additional-wage rules not modeled; severance-pay; eligibility and statutory average-wage calculation omitted; social-insurance; exact eligibility/pay-base adjustments excluded; unemployment-benefit; fixed 8-hour lower limit and monthly-wage × 3 ÷ 90 approximation do not establish eligibility or a legal personal daily wage)
 - Policy BLOCKED: 84 (including withholding-tax-3-3)
@@ -76,6 +76,8 @@ average, weighted-average, unit-price, probability, area. Added localized worked
 ## Current batch under validation
 
 `unemployment-benefit`: completed its calculator-specific localized worked example and policy source review on 2026-10-28. The official MOEL 1350 answer dated 2026-07-10 confirms the 2026-01-01 leaver daily cap of KRW 68,100, the 60% rate, the 8-hour floor of KRW 66,048 from the 2026 minimum wage, and duration bands. The Korea Minimum Wage Commission confirms KRW 10,320/hour for 2026. Example inputs KRW 3,400,000 monthly wage / age 35 / 0.9 insured years produce daily KRW 68,000, 120 days, and modeled total KRW 8,160,000 in the current engine. Sources checked 2026-10-28: https://1350.moel.go.kr/rtmview.do?id=1000324861 and https://www.minimumwage.go.kr/index.jsp. Policy status is PARTIAL because the model fixes 8 hours, approximates daily wage as monthly wage × 3 ÷ 90, and does not decide eligibility, separation reason, exact wage basis, prior benefit history, or official award. The generic Employment Insurance amount page was excluded from the listed current sources because it still displays the superseded KRW 66,000 cap. Example copy is authored in all 26 locales; native-speaker review was not performed.
+
+`minimum-wage`, `severance-pay`, `social-insurance`: added distinct localized explanations of each model's scope in all 26 locales, retaining the previously authored engine-matched examples. The 2026 minimum-wage hourly/daily/monthly equivalents are source-verified; severance's 30-day-per-year method and NHIS/NPS/employment-insurance rates are checked, while legal average-wage construction, eligibility, contribution-base exceptions, employer portions and reconciliation remain outside the models. Existing browser tests cover 26-locale SSR examples, all three live calculations, and the eight required viewports. No calculation logic changed. Native-speaker review was not performed.
 
 Next policy candidates: continue with remaining country-specific POLICY DRAFT pages that can be safely described from the actual engine and checked official sources. Japan annual/monthly payroll pages remain BLOCKED pending resolution of current deduction schedule and simplified insurance assumptions. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; policy status remains separate from localized content completion.
 
@@ -154,9 +156,9 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 | `tip-calculator` | life | STATIC | 26/26 | COMPLETE | N/A | Entered tip rate and equal split explained; 50,000 at 10% split by two yields 27,500 each. |
 | `unit-converter` | math | STATIC | 26/26 | COMPLETE | N/A | Mile conversion and temperature offset example match engine tests; browser flow and responsive checks passed. |
 | `unemployment-benefit` | salary | POLICY | 26/26 | COMPLETE | PARTIAL | KR 2026 60%/limits/duration checked against MOEL 1350 and minimum wage source; example matches engine. Fixed 8-hour floor, simplified 90-day wage proxy and eligibility/award limits disclosed. |
-| `minimum-wage` | salary | POLICY | 26/26 | DRAFT | VERIFIED | Minimum Wage Commission confirms 2026 KRW 10,320/h, 82,560/day (8h), 2,156,880/month (209h); individual exemptions and wage compliance are outside scope. |
-| `severance-pay` | salary | POLICY | 26/26 | DRAFT | PARTIAL | Article 8 30-day-per-year rule and MOEL formula checked; this engine takes average daily wage and does not calculate eligibility or legal average wage. |
-| `social-insurance` | salary | POLICY | 26/26 | DRAFT | PARTIAL | NPS/NHIS/EI 2026 rates and bases checked; pay eligibility, exemptions and settlement specifics remain outside model. |
+| `minimum-wage` | salary | POLICY | 26/26 | COMPLETE | VERIFIED | Minimum Wage Commission confirms 2026 KRW 10,320/h, 82,560/day (8h), 2,156,880/month (209h); individual exemptions and wage compliance are outside scope. |
+| `severance-pay` | salary | POLICY | 26/26 | COMPLETE | PARTIAL | Article 8 30-day-per-year rule and MOEL formula checked; this engine takes average daily wage and does not calculate eligibility or legal average wage. |
+| `social-insurance` | salary | POLICY | 26/26 | COMPLETE | PARTIAL | NPS/NHIS/EI 2026 rates and bases checked; pay eligibility, exemptions and settlement specifics remain outside model. |
 | `japan-consumption-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | NTA source checked 2026-10-28 confirms 10% standard/8% reduced options and eligibility limits; it also lists a temporary food-tax reduction scheduled 2027-04-01 through 2029-03-31. No transaction-date field exists, so future rates are not date-modeled. |
 | `japan-annual-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | 2026 deduction schedule applicability and simplified health/social-insurance assumptions require further reconciliation; do not describe as a verified current take-home result. |
 | `japan-monthly-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | 2026 deduction schedule applicability and simplified health/social-insurance assumptions require further reconciliation; do not describe as a verified current take-home result. |

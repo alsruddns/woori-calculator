@@ -1,5 +1,5 @@
 ﻿import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -238,14 +238,18 @@ test.describe("South Korea wage and employee policy examples", () => {
     test(locale + "/" + slug + " includes South Korea example in SSR HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
       const note = sixthPolicyExampleNotes[locale]?.[slug];
+      const context = koreanPolicyContextDescriptions[locale]?.[slug];
       expect(response?.status()).toBe(200);
       expect(note).toBeTruthy();
+      expect(context).toBeTruthy();
       const html = await response!.text();
       expect(html).toContain(note);
+      expect(html).toContain(context);
       expect(html).toMatch(/<h1\b/);
       expect(html).toMatch(/<h2\b/);
       expect(html.toLowerCase()).toContain("hreflang");
       await expect(page.locator("article")).toContainText(note ?? "");
+      await expect(page.locator("article")).toContainText(context ?? "");
     });
   }
 
@@ -255,7 +259,7 @@ test.describe("South Korea wage and employee policy examples", () => {
     await waitForCalculatorHydration(page);
     await page.locator("#minimum-wage-hourlyWage").fill("10000");
     await page.locator('form button[type="submit"]').click();
-    await expect(page.locator("[aria-live='polite']")).toContainText("-??20");
+    await expect(page.locator("[aria-live='polite']")).toContainText("-₩320");
     await expect(page.locator("[aria-live='polite']")).toContainText("2,156,880");
 
     await page.goto("/ko/calculators/severance-pay");

@@ -8,7 +8,10 @@ import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExamp
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
-import { unemploymentBenefitExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
+import { calculateMinimumWage } from "@/calculators/finance/calculate";
+import { calculateSeveranceEstimate } from "@/calculators/policy/severance";
+import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -32,6 +35,33 @@ describe("calculator content quality", () => {
       expect(content?.formula).toBeTruthy();
       expect(content?.faqs.length).toBeGreaterThanOrEqual(2);
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("keeps distinct South Korea wage, severance, and insurance scope explanations in all locales", () => {
+    const engineValues: Record<string, readonly number[]> = {
+      "minimum-wage": (calculateMinimumWage({ hourlyWage: "10000" }) as { results: { value: number }[] }).results.map(({ value }) => value),
+      "severance-pay": (calculateSeveranceEstimate({ start: "2025-01-01", lastWorkday: "2025-12-31", averageDailyWage: "100000" }) as { results: { value: number }[] }).results.map(({ value }) => value),
+      "social-insurance": (calculateSocialInsurance({ monthlyWage: "4000000" }) as { results: { value: number }[] }).results.map(({ value }) => value),
+    };
+    expect(engineValues["minimum-wage"]).toEqual([10320, -320, 82560, 2156880]);
+    expect(engineValues["severance-pay"]).toEqual([365, 3000000]);
+    expect(engineValues["social-insurance"]).toEqual([190000, 143800, 18896, 36000, 0, 388696]);
+    const slugs = Object.keys(engineValues);
+    for (const slug of slugs) {
+      const definition = publishedCalculatorPages.find((page) => page.slug === slug);
+      expect(definition?.countryCode).toBe("KR");
+      for (const locale of locales) {
+        const description = koreanPolicyContextDescriptions[locale]?.[slug];
+        const note = sixthPolicyExampleNotes[locale]?.[slug];
+        const content = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(description, `${locale}/${slug} localized scope`).toBeTruthy();
+        expect(content?.description, `${locale}/${slug} rendered scope`).toContain(description);
+        expect(content?.example.answer, `${locale}/${slug} example`).toContain(note);
+        expect(content?.howTo).toBeTruthy();
+        expect(content?.formula).toBeTruthy();
+        expect(content?.faqs.length).toBeGreaterThanOrEqual(2);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      }
     }
   });
   it("keeps four country GST examples localized and linked to checked official rate sources", () => {
