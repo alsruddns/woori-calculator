@@ -2,6 +2,7 @@
 import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
 import { indiaPolicyFollowups } from "../src/i18n/dictionaries/india-policy-followups";
 import { indiaSalaryStandardDeductionFollowups } from "../src/i18n/dictionaries/india-salary-standard-deduction-followups";
+import { indiaInvestmentScenarioFollowups } from "../src/i18n/dictionaries/india-investment-scenario-followups";
 import { auSgPayrollTaxFollowups } from "../src/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { singaporeGrossNetCorrections } from "../src/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "../src/i18n/dictionaries/germany-vat-followups";
@@ -2096,12 +2097,12 @@ test.describe("calculator input and result flows", () => {
 
   test("India policy copy is in initial HTML for every locale", async ({ page }) => {
     test.setTimeout(120_000);
-    const slugs = ["india-gst-calculator", "india-income-tax-calculator", "india-gross-net-salary-calculator"] as const;
+    const slugs = ["india-gst-calculator", "india-income-tax-calculator", "india-gross-net-salary-calculator", "india-sip-calculator", "india-ppf-calculator", "india-nps-calculator"] as const;
     for (const locale of locales) for (const slug of slugs) {
       const response = await page.request.get("/" + locale + "/calculators/" + slug);
       expect(response?.status(), locale + "/" + slug).toBe(200);
       const html = await response!.text();
-      const content = slug === "india-gross-net-salary-calculator" ? indiaSalaryStandardDeductionFollowups[locale] : indiaPolicyFollowups[locale][slug]!;
+      const content = slug === "india-gross-net-salary-calculator" ? indiaSalaryStandardDeductionFollowups[locale] : slug === "india-sip-calculator" || slug === "india-ppf-calculator" || slug === "india-nps-calculator" ? indiaInvestmentScenarioFollowups[locale][slug] : indiaPolicyFollowups[locale][slug]!;
       expect(html).toContain(content.howTo);
       expect(html).toContain(content.formula);
       if (content.example) {
@@ -2147,6 +2148,26 @@ test.describe("calculator input and result flows", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "India salary at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    const scenarios = [
+      { slug: "india-sip-calculator", monthly: "1000", rate: "8", years: "10", balance: "184,165.68" },
+      { slug: "india-ppf-calculator", monthly: "5000", rate: "7.1", years: "15", balance: "1,608,120.46" },
+      { slug: "india-nps-calculator", monthly: "5000", rate: "8", years: "20", balance: "2,964,736.09" },
+    ] as const;
+    for (const scenario of scenarios) {
+      await page.goto("/en/calculators/" + scenario.slug);
+      await waitForCalculatorHydration(page);
+      await page.locator("#" + scenario.slug + "-monthlyDeposit").fill(scenario.monthly);
+      await page.locator("#" + scenario.slug + "-rate").fill(scenario.rate);
+      await page.locator("#" + scenario.slug + "-years").fill(scenario.years);
+      await page.locator('form button[type="submit"]').click();
+      await expect(page.locator("[aria-live='polite']")).toContainText(scenario.balance);
+      for (const width of viewports) {
+        await page.setViewportSize({ width, height: 900 });
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, scenario.slug + " at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
     }
     expect(errors).toEqual([]);
   });

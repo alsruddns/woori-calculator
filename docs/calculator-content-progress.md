@@ -6,14 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 120
+- Content COMPLETE: 123
 - VALIDATING: 0
-- Content DRAFT: 49
+- Content DRAFT: 46
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
 - Policy PENDING: 0
-- Latest audit signals: short-content 12 (down from 15 in the previous checkpoint; original baseline 71). Exact-duplicate occurrences across locales: 194 (down from 209; the Brazil editorial blocks removed 15 flagged occurrences). Review indicators only, not a completion score.
+- Latest audit signals: short-content 12 (unchanged from the previous checkpoint; original baseline 71). Exact-duplicate occurrences across locales: 182 (down from 194; the India investment scenario copy removed 12 flagged occurrences). Review indicators only, not a completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Completion gate
@@ -37,6 +37,8 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 `japan-overtime-pay-calculator`, `japan-night-holiday-pay-calculator`, and `germany-vat-calculator`: added distinct worked examples and scope notes for all 26 locales (78 localized calculator/locale records). MHLW confirms Japan's general minimum premium rates: overtime 25%, night work 25%, statutory holiday 35%, and overtime beyond 60 monthly hours 50%; the source also explains adding overlapping premiums. The overtime and night/holiday policy statuses are VERIFIED for those statutory minimum arithmetic rules; the calculator still relies on user-entered hours, base pay and rates. Example engine outputs: ¥1,500/hour × 10 ordinary overtime hours at 25% yields ¥15,000 base + ¥3,750 premium = ¥18,750; two overtime-and-night hours yield ¥3,000 base + ¥750 + ¥750 = ¥4,500. Germany VAT Act §12 confirms 19% standard and 7% reduced rates for specified supplies; the calculator accepts a user-entered rate and does not classify the transaction, so Germany VAT is VERIFIED for rate arithmetic only. Its example is €100 net at 19% = €19 VAT and €119 gross. Official pages checked 2026-10-28. Focused engine/content/audit/catalog checks: 27 tests passed; typecheck, lint and diff check passed. Playwright passed 26 locale SSR cases plus the live calculator case at 320, 360, 375, 390, 430, 768, 1024, and 1440px with no horizontal overflow or page errors. Payroll tax and social-insurance assumptions on Japan annual/monthly salary pages remain unreviewed and BLOCKED. Native-speaker review not performed.
 
 ## Latest completed batch
+
+`india-sip-calculator`, `india-ppf-calculator`, and `india-nps-calculator`: authored distinct scenario purpose, inputs, implemented monthly-compounding formula, engine-matched examples, result interpretation, limitations and FAQs in all 26 locales (78 localized records). Examples: SIP ₹1,000/month at assumed 8% for 10 years projects ₹1,84,165.68; PPF ₹5,000/month at assumed 7.1% for 15 years projects ₹16,08,120.46; NPS ₹5,000/month at assumed 8% for 20 years projects ₹29,64,736.09. Returns are scenario assumptions, not guaranteed or official product-rate quotes; PPF rules/rates and NPS-specific tax/annuity treatment are not modeled, so all three policy statuses remain BLOCKED. Focused calculator/content tests passed (33), typecheck and changed-file lint passed; Playwright passed 2/2, including SSR for six India calculator pages in all 26 locales, live investment flows and eight viewport widths. Audit test passed. Native-speaker review not performed.
 
 `new-zealand-gross-net-salary-calculator`, `new-zealand-income-tax-calculator`, and `new-zealand-kiwisaver-calculator`: added distinct formulas, examples, interpretation and FAQs in all 26 locales (78 localized records). IRD's annual individual tax bands effective 2025-04-01, ACC 1.75%/NZD 156,641 cap for 2026-04-01–2027-03-31, and KiwiSaver 3.5% defaults effective 2026-04-01 were checked 2026-10-28. Engine examples for NZD 60,000: income tax NZD 10,220.50 (17.03% average); gross-net includes NZD 1,050 ACC and estimates NZD 48,729.50 annually/NZD 4,060.79 monthly; KiwiSaver with NZD 2,100 employee contribution, 3.5% employer, 0% return and one year projects NZD 4,200 before ESCT. Income-tax bracket arithmetic is VERIFIED; gross-net is PARTIAL because individual PAYE and other deductions are not modeled; KiwiSaver is PARTIAL because ESCT, eligibility, government contributions and fees are excluded. No calculation logic changed. Focused engine/content/audit tests passed (10), TypeScript, lint and diff checks passed. Playwright passed 2/2: SSR HTML for all 78 locale routes, three live input/result flows, source links, and all eight viewport widths on each page without horizontal overflow. The existing AdSense script warning appeared; no calculator or hydration errors. Native-speaker review not performed.
 
@@ -191,9 +193,9 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `netherlands-30-percent-ruling-calculator` | salary | POLICY | 26/26 | COMPLETE | PARTIAL | 2026 Expat Scheme source checked 2026-10-28: general salary norm over €48,013 and annual maximum €78,600. Engine only applies min(entered salary×rate, €78,600); it does not test qualifications, approval, or part-year proration. |
 | `netherlands-holiday-allowance-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `india-gst-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | CBIC rate schedules checked 2026-10-28; entered-rate arithmetic is verified, but HSN/SAC classification and CGST/SGST versus IGST are not modeled. |
-| `india-sip-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `india-ppf-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `india-nps-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `india-sip-calculator` | finance | POLICY | 26/26 | COMPLETE | BLOCKED | Assumed-return monthly SIP scenario only; fund returns are not guaranteed and product/tax rules are not modeled. |
+| `india-ppf-calculator` | finance | POLICY | 26/26 | COMPLETE | BLOCKED | Assumed-rate scenario only; official PPF eligibility, annual contribution rules and current rate are not verified/modelled. |
+| `india-nps-calculator` | finance | POLICY | 26/26 | COMPLETE | BLOCKED | Assumed-return contribution projection only; NPS tax, annuity and withdrawal rules are not modeled. |
 | `india-gross-net-salary-calculator` | salary | POLICY 2026 | 26/26 | COMPLETE | BLOCKED | New-regime salary standard deduction applied; Section 87A residence eligibility and payroll deductions remain outside the model. |
 | `india-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | Configured new-regime AY 2026–27 brackets and simplified Section 87A checked 2026-10-28; residence, special income, cess, surcharge and complete eligibility are not modeled. |
 | `brazil-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |

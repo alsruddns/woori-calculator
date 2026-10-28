@@ -22,6 +22,7 @@ import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followu
 import { netherlandsPolicyFollowups } from "@/i18n/dictionaries/netherlands-policy-followups";
 import { indiaPolicyFollowups } from "@/i18n/dictionaries/india-policy-followups";
 import { indiaSalaryStandardDeductionFollowups } from "@/i18n/dictionaries/india-salary-standard-deduction-followups";
+import { indiaInvestmentScenarioFollowups } from "@/i18n/dictionaries/india-investment-scenario-followups";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
@@ -33,6 +34,31 @@ import { brazilPayrollFollowups } from "@/i18n/dictionaries/brazil-payroll-follo
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
 describe("calculator content quality", () => {
+  it("keeps India SIP, PPF and NPS investment scenarios distinct and engine-matched in every locale", () => {
+    const cases = {
+      "india-sip-calculator": { input: { monthlyDeposit: "1000", rate: "8", years: "10" }, values: [120000, 64165.68, 184165.68] },
+      "india-ppf-calculator": { input: { monthlyDeposit: "5000", rate: "7.1", years: "15" }, values: [900000, 708120.46, 1608120.46] },
+      "india-nps-calculator": { input: { monthlyDeposit: "5000", rate: "8", years: "20" }, values: [1200000, 1764736.09, 2964736.09] },
+    } as const;
+    for (const [slug, sample] of Object.entries(cases)) {
+      const result = calculateBySlug(slug, sample.input);
+      expect(result && "results" in result ? result.results.map(({ value }) => value) : result, slug).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const copy = indiaInvestmentScenarioFollowups[locale][slug as keyof typeof indiaInvestmentScenarioFollowups.en];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(copy.description, `${locale}/${slug} purpose`).toBeTruthy();
+        expect(copy.howTo, `${locale}/${slug} guidance`).toBeTruthy();
+        expect(copy.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(copy.example?.answer, `${locale}/${slug} example`).toBeTruthy();
+        expect(copy.faq?.answer, `${locale}/${slug} limitation`).toBeTruthy();
+        expect(page?.description).toContain(copy.description);
+        expect(page?.howTo).toBe(copy.howTo);
+        expect(page?.formula).toBe(copy.formula);
+        expect(page?.example).toEqual(copy.example);
+        expect(page?.faqs[0]).toEqual(copy.faq);
+      }
+    }
+  });
   it("renders distinct Brazil INSS, IRRF and FGTS models with matching examples in all locales", () => {
     const examples = {
       "brazil-inss-calculator": { input: { salary: "5000" }, values: [501.51] },
