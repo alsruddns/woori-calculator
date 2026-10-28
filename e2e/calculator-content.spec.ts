@@ -16,6 +16,7 @@ import { spainPolicyFollowups } from "../src/i18n/dictionaries/spain-policy-foll
 import { francePolicyFollowups } from "../src/i18n/dictionaries/france-policy-followups";
 import { netherlandsPolicyFollowups } from "../src/i18n/dictionaries/netherlands-policy-followups";
 import { brazilPayrollFollowups } from "../src/i18n/dictionaries/brazil-payroll-followups";
+import { brazilGrossNetFollowups } from "../src/i18n/dictionaries/brazil-gross-net-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -113,6 +114,44 @@ test("Brazil payroll detail cards render in SSR and calculator flows remain usab
     await page.setViewportSize({ width, height: 900 });
     const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
     expect(dimensions.body, "Brazil payroll cards at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+  }
+  expect(errors).toEqual([]);
+});
+
+test("Brazil gross-to-net assumptions render in every locale and calculate the documented scenario", async ({ page }) => {
+  const errors = collectBrowserErrors(page);
+  const ssrResponses = await Promise.all(locales.map(async (locale) => {
+    const copy = brazilGrossNetFollowups[locale];
+    const response = await page.request.get("/" + locale + "/calculators/brazil-gross-net-salary-calculator");
+    expect(response?.status()).toBe(200);
+    const html = await response!.text();
+    expect(html).toContain(copy.description!);
+    expect(html).toContain(copy.howTo!);
+    expect(html).toContain(copy.formula!);
+    expect(html).toContain(copy.example!.answer);
+    expect(html).toContain(copy.faq!.question);
+    expect(html).toMatch(/<h1\b/);
+    expect(html).toMatch(/<h2\b/);
+    expect(html).toMatch(/rel=["']canonical["']/i);
+    expect(html).toMatch(/hrefLang=/i);
+    expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    return locale;
+  }));
+  expect(ssrResponses).toHaveLength(26);
+
+  await page.goto("/pt-br/calculators/brazil-gross-net-salary-calculator");
+  await waitForCalculatorHydration(page);
+  await page.locator("#brazil-gross-net-salary-calculator-salary").fill("5000");
+  await page.locator("#brazil-gross-net-salary-calculator-frequency").selectOption("monthly");
+  await page.locator("#brazil-gross-net-salary-calculator-socialRate").fill("5");
+  await page.locator("#brazil-gross-net-salary-calculator-taxRate").fill("15");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("48.000");
+  await expect(page.locator("[aria-live='polite']")).toContainText("4.000");
+  for (const width of viewports) {
+    await page.setViewportSize({ width, height: 900 });
+    const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+    expect(dimensions.body, "Brazil gross-net page at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
   }
   expect(errors).toEqual([]);
 });
