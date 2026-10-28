@@ -6,9 +6,9 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 76
+- Content COMPLETE: 80
 - VALIDATING: 0
-- Content DRAFT: 93
+- Content DRAFT: 89
 - Policy VERIFIED: 9 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, minimum-wage, japan-overtime-pay-calculator, japan-night-holiday-pay-calculator, germany-vat-calculator)
 - Policy PARTIAL: 8 (japan-consumption-tax-calculator; future schedule not date-modeled; canada-gst-hst-calculator; province/place classification absent; australia-income-tax-calculator; Medicare levy/offsets excluded; australia-superannuation-calculator; eligibility/contribution caps/tax excluded; singapore-cpf-calculator; graduated PR and additional-wage rules not modeled; severance-pay; eligibility and statutory average-wage calculation omitted; social-insurance; exact eligibility/pay-base adjustments excluded; unemployment-benefit; fixed 8-hour lower limit and monthly-wage × 3 ÷ 90 approximation do not establish eligibility or a legal personal daily wage)
 - Policy BLOCKED: 84 (including withholding-tax-3-3)
@@ -78,6 +78,8 @@ average, weighted-average, unit-price, probability, area. Added localized worked
 `unemployment-benefit`: completed its calculator-specific localized worked example and policy source review on 2026-10-28. The official MOEL 1350 answer dated 2026-07-10 confirms the 2026-01-01 leaver daily cap of KRW 68,100, the 60% rate, the 8-hour floor of KRW 66,048 from the 2026 minimum wage, and duration bands. The Korea Minimum Wage Commission confirms KRW 10,320/hour for 2026. Example inputs KRW 3,400,000 monthly wage / age 35 / 0.9 insured years produce daily KRW 68,000, 120 days, and modeled total KRW 8,160,000 in the current engine. Sources checked 2026-10-28: https://1350.moel.go.kr/rtmview.do?id=1000324861 and https://www.minimumwage.go.kr/index.jsp. Policy status is PARTIAL because the model fixes 8 hours, approximates daily wage as monthly wage × 3 ÷ 90, and does not decide eligibility, separation reason, exact wage basis, prior benefit history, or official award. The generic Employment Insurance amount page was excluded from the listed current sources because it still displays the superseded KRW 66,000 cap. Example copy is authored in all 26 locales; native-speaker review was not performed.
 
 `minimum-wage`, `severance-pay`, `social-insurance`: added distinct localized explanations of each model's scope in all 26 locales, retaining the previously authored engine-matched examples. The 2026 minimum-wage hourly/daily/monthly equivalents are source-verified; severance's 30-day-per-year method and NHIS/NPS/employment-insurance rates are checked, while legal average-wage construction, eligibility, contribution-base exceptions, employer portions and reconciliation remain outside the models. Existing browser tests cover 26-locale SSR examples, all three live calculations, and the eight required viewports. No calculation logic changed. Native-speaker review was not performed.
+
+`canada-gst-hst-calculator`, `australia-gst-calculator`, `singapore-gst-calculator`, `new-zealand-gst-calculator`: added country-specific scope explanations in all 26 locales while retaining the existing engine-matched numeric examples. CRA confirms Canadian rates depend on place/type of supply; ATO describes 10% GST for most taxable supplies; IRAS states 9% since 2024-01-01; Inland Revenue states 15% for most taxable supplies. The calculator applies the user-entered rate and inclusive/exclusive direction; it does not classify transaction eligibility, exemptions, zero-rated supplies, or Canadian PST/QST. Policy status remains PARTIAL for Canada and VERIFIED for the other three, independently of content completion. Browser coverage checks all 26 locales' SSR descriptions and examples, four live calculations, and all eight viewport widths on each page. Native-speaker review was not performed.
 
 Next policy candidates: continue with remaining country-specific POLICY DRAFT pages that can be safely described from the actual engine and checked official sources. Japan annual/monthly payroll pages remain BLOCKED pending resolution of current deduction schedule and simplified insurance assumptions. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; policy status remains separate from localized content completion.
 
@@ -220,18 +222,18 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 | `uk-pension-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `canada-gst-hst-calculator` | tax | POLICY | 26/26 | DRAFT | PARTIAL | CRA rates checked 2026-10-28; province/place-of-supply and PST/QST classification are not modeled. |
+| `canada-gst-hst-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | CRA rates checked 2026-10-28; province/place-of-supply and PST/QST classification are not modeled. |
 | `canada-cpp-ei-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-rrsp-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `australia-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `australia-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | PARTIAL | Resident 2026–27 brackets source-checked; Medicare levy, offsets and non-resident rules excluded. |
-| `australia-gst-calculator` | tax | POLICY | 26/26 | DRAFT | VERIFIED | ATO confirms 10% on most goods/services; checked 2026-10-28. No GST-free classification. |
+| `australia-gst-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | ATO confirms 10% on most goods/services; checked 2026-10-28. No GST-free classification. |
 | `australia-superannuation-calculator` | finance | POLICY | 26/26 | DRAFT | PARTIAL | ATO confirms 12% SG from 2025-07-01; eligibility, contribution caps, tax and fund fees are not modeled. |
 | `australia-stamp-duty-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `singapore-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `singapore-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `singapore-cpf-calculator` | salary | POLICY | 26/26 | DRAFT | PARTIAL | CPF Board 2026 full-rate table and SGD 8,000 OW ceiling source-checked; graduated PR, low-wage, additional-wage rules not modeled. |
-| `singapore-gst-calculator` | tax | POLICY | 26/26 | DRAFT | VERIFIED | IRAS confirms 9% from 2024-01-01; checked 2026-10-28. Transaction transition/exemption classification is not modeled. |
+| `singapore-gst-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | IRAS confirms 9% from 2024-01-01; checked 2026-10-28. Transaction transition/exemption classification is not modeled. |
 | `hong-kong-salary-tax-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `hong-kong-mpf-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `hong-kong-stamp-duty-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -250,7 +252,7 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 | `uae-corporate-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `new-zealand-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `new-zealand-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `new-zealand-gst-calculator` | tax | POLICY | 26/26 | DRAFT | VERIFIED | Inland Revenue confirms 15% on most taxable supplies; checked 2026-10-28. Exempt/zero-rated classification is not modeled. |
+| `new-zealand-gst-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | Inland Revenue confirms 15% on most taxable supplies; checked 2026-10-28. Exempt/zero-rated classification is not modeled. |
 | `new-zealand-kiwisaver-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `spain-freelancer-tax-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `france-social-contribution-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |

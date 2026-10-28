@@ -8,7 +8,7 @@ import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExamp
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
-import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
+import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
 import { calculateSeveranceEstimate } from "@/calculators/policy/severance";
 import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
@@ -76,7 +76,10 @@ describe("calculator content quality", () => {
       expect(definition?.sources?.some((item) => item.url.includes(source) && item.checkedAt === "2026-10-28"), `${slug} checked source`).toBe(true);
       for (const locale of locales) {
         const note = fourthPolicyExampleNotes[locale]?.[slug];
+        const context = gstCountryContextDescriptions[locale]?.[slug];
         expect(note, `${locale}/${slug} authored example note`).toBeTruthy();
+        expect(context, `${locale}/${slug} localized policy scope`).toBeTruthy();
+        expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.description).toContain(context);
         expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.example.answer).toContain(note);
         expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
       }

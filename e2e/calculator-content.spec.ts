@@ -1,5 +1,5 @@
 ﻿import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -105,6 +105,8 @@ test.describe("next policy batch localized SSR", () => {
       expect(html).toMatch(/<h1\b/);
       expect(html).toMatch(/<h2\b/);
       expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article")).toContainText(note ?? "");
     });
   }
@@ -149,14 +151,20 @@ test.describe("four country GST policy examples", () => {
     test(locale + "/" + slug + " includes localized tax example in SSR HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
       const note = fourthPolicyExampleNotes[locale]?.[slug];
+      const context = gstCountryContextDescriptions[locale]?.[slug];
       expect(response?.status()).toBe(200);
       expect(note).toBeTruthy();
+      expect(context).toBeTruthy();
       const html = await response!.text();
       expect(html).toContain(note);
+      expect(html).toContain(context);
       expect(html).toMatch(/<h1\b/);
       expect(html).toMatch(/<h2\b/);
       expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article")).toContainText(note ?? "");
+      await expect(page.locator("article")).toContainText(context ?? "");
     });
   }
 
@@ -169,11 +177,11 @@ test.describe("four country GST policy examples", () => {
       await page.locator("#" + slug + "-rate").fill(rate);
       await page.locator('form button[type="submit"]').click();
       await expect(page.locator("article")).toContainText(total);
-    }
-    for (const width of viewports) {
-      await page.setViewportSize({ width, height: 900 });
-      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
-      expect(dimensions.body, "GST detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      for (const width of viewports) {
+        await page.setViewportSize({ width, height: 900 });
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, slug + " detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
     }
     expect(errors).toEqual([]);
   });
