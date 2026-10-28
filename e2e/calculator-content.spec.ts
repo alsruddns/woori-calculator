@@ -31,6 +31,7 @@ import { brazilThirteenthFollowups } from "../src/i18n/dictionaries/brazil-thirt
 import { vietnamGrossNetFollowups } from "../src/i18n/dictionaries/vietnam-gross-net-followups";
 import { vietnamIncomeTaxFollowups } from "../src/i18n/dictionaries/vietnam-income-tax-followups";
 import { vietnamSocialInsuranceFollowups } from "../src/i18n/dictionaries/vietnam-social-insurance-followups";
+import { chinaGrossNetFollowups } from "../src/i18n/dictionaries/china-gross-net-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2619,6 +2620,37 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#vietnam-social-insurance-calculator-rate").fill("10.5");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("3,150,000");
+    expect(errors).toEqual([]);
+  });
+
+  test("China gross-to-net explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = chinaGrossNetFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/china-gross-net-salary-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("China gross-to-net calculator returns the documented annualized model", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/china-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#china-gross-net-salary-calculator-salary").fill("30000");
+    await page.locator("#china-gross-net-salary-calculator-frequency").selectOption("monthly");
+    await page.locator("#china-gross-net-salary-calculator-socialRate").fill("0");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("316,920");
+    await expect(page.locator("[aria-live='polite']")).toContainText("26,410");
     expect(errors).toEqual([]);
   });
 });
