@@ -6,14 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 156
+- Content COMPLETE: 157
 - VALIDATING: 0
-- Content DRAFT: 13
+- Content DRAFT: 12
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
 - Policy PENDING: 0
-- Latest audit signals: short-content 9 and exact-duplicate occurrences 79 (from the latest full content audit; original short-content baseline 71). Review indicators only, not a completion score.
+- Latest audit signals: short-content 7 and exact-duplicate occurrences 47 (from the latest full content audit; original short-content baseline 71). Review indicators only, not a completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Latest completed batch (2026-10-28): U.S. paycheck model
@@ -265,7 +265,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `us-401k-calculator` | finance | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the configured contribution cap, employer-match formula and assumed-return projection; current legal limit, plan eligibility, fees, vesting and plan-specific matching rules are not verified or modeled. |
 | `us-roth-ira-calculator` | finance | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the configured IRA cap and linear income-phaseout projection; current legal limits, MAGI computation, eligibility, tax treatment and withdrawal rules are not verified or modeled. |
 | `us-capital-gains-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured short/long-term arithmetic and entered state-rate estimate; current thresholds, holding-period classification, adjusted basis, loss offsets and state/local rules are not verified or fully modeled. |
-| `uk-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `uk-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the current annualized engine model and matching GBP 60,000 example in 26 locales. Income-tax/NI thresholds and effective dates were not rechecked against official sources; PAYE timing, tax codes, regional differences and personal payroll deductions are not modeled. |
 | `uk-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `uk-national-insurance-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `uk-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | GOV.UK VAT rates page checked 2026-10-28 confirms the 20% standard rate. Example uses £100 × entered 20%; product classification, reduced/zero/exempt treatment, and place of supply are outside the tool. |
@@ -350,3 +350,5 @@ Latest batch: `netherlands-gross-net-salary-calculator`, `netherlands-vat-calcul
 `italy-income-tax-calculator`: added localized annual taxable-income basis, configured progressive marginal-band formula, EUR 60,000 example (EUR 6,440 + EUR 7,260 + EUR 4,300 = EUR 18,000 model tax; 30% average rate), result interpretation and personal/local-tax limitations in all 26 locales. The example matches the engine. Current legal applicability of the configured 2026 schedule and personal deductions, credits, regional/municipal surcharges, income categories and filing details remain unverified/outside the model; policy remains BLOCKED. No engine or policy values changed. Focused content test passed 49/49; TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR/SEO for all 26 locales and live annual calculation; no page or hydration errors. Existing external AdSense script warning appeared. Native-speaker review not performed. Next DRAFT: `italy-vat-calculator`.
 
 `italy-vat-calculator`: added localized rate-entry guidance, inclusive/exclusive IVA formulas, EUR 1,000 examples at the entered 22% (EUR 220/EUR 1,220 exclusive; EUR 819.67 net/EUR 180.33 tax inclusive), result interpretation and Italy transaction-scope FAQ in all 26 locales. 22% is explicitly described as a code default example, not a verified universal transaction rate. Product/service classification, reduced or exempt treatment, and current applicability remain unverified/outside the model; policy remains BLOCKED. No engine or policy values changed. Focused content test passed 50/50; TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR/SEO for all 26 locale routes and live exclusive/inclusive calculation; no page or hydration errors. Existing external AdSense script warning appeared. Native-speaker review not performed. Next DRAFT: `us-paycheck-calculator`.
+
+`uk-gross-net-salary-calculator`: replaced the generic policy-page copy with localized descriptions of the actual annualized engine model in all 26 locales, including annual/monthly input meaning, configured income-tax and NI formulas, a GBP 60,000 example, interpretation and PAYE/personal-deduction limitations. The engine returns modeled taxable base GBP 47,430, income tax GBP 11,432, NI GBP 3,210.60, annual net GBP 45,357.40 and monthly average GBP 3,779.78. The formula example matches the existing engine; no calculation logic or policy values changed. Current legal alignment and effective dates were not rechecked against official sources, so policy remains BLOCKED. Content is COMPLETE (157/169); the next DRAFT is `uk-income-tax-calculator`. Focused content tests passed 57/57; audit passed and reports 7 short-content signals and 47 exact-duplicate occurrences; TypeScript, changed-file ESLint and diff check passed. Playwright passed 1/1, checking localized SSR HTML, H1/H2, hreflang, no noindex on all 26 routes, and the live GBP 60,000 calculation. Existing external AdSense `data-nscript` console warning appeared; no page or hydration errors. Native-speaker review not performed.

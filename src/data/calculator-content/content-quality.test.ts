@@ -40,6 +40,7 @@ import { usSalesTaxFollowups } from "@/i18n/dictionaries/us-sales-tax-followups"
 import { us401kFollowups } from "@/i18n/dictionaries/us-401k-followups";
 import { usRothIraFollowups } from "@/i18n/dictionaries/us-roth-ira-followups";
 import { usCapitalGainsFollowups } from "@/i18n/dictionaries/us-capital-gains-followups";
+import { ukGrossNetFollowups } from "@/i18n/dictionaries/uk-gross-net-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -253,6 +254,26 @@ describe("calculator content quality", () => {
     expect(longTerm && "results" in longTerm ? longTerm.results.map(({ value }) => value) : longTerm).toEqual([15000, 2250, 750]);
     for (const locale of supportedLocales) {
       const copy = usCapitalGainsFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders the UK gross-to-net model example in every locale and matches the engine", () => {
+    const slug = "uk-gross-net-salary-calculator";
+    const outcome = calculateBySlug(slug, { salary: "60000", frequency: "annual" });
+    expect(outcome && "results" in outcome ? outcome.results.map(({ value }) => value) : outcome).toEqual([60000, 11432, 3210.6, 0, 45357.4, 3779.78]);
+    for (const locale of supportedLocales) {
+      const copy = ukGrossNetFollowups[locale];
       const page = getDictionary(locale).calculators[slug];
       expect(copy.description, `${locale} purpose`).toBeTruthy();
       expect(copy.howTo, `${locale} inputs`).toBeTruthy();
