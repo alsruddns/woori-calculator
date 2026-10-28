@@ -25,6 +25,9 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst",
   "https://www.iras.gov.sg/taxes/goods-services-tax-%28gst%29/charging-gst-%28output-tax%29/when-to-charge-goods-and-services-tax-%28gst%29/prevailing-rate-of-9",
   "https://www.ird.govt.nz/gst/charging-gst",
+  "https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents",
+  "https://www.ato.gov.au/tax-rates-and-codes/key-superannuation-rates-and-thresholds/super-guarantee",
+  "https://www.cpf.gov.sg/employer/employer-obligations/how-much-cpf-contributions-to-pay",
 ]);
 
 function buildAuditReport() {
@@ -152,7 +155,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(14);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(17);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

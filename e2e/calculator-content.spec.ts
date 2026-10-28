@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -138,6 +138,58 @@ test.describe("four country GST policy examples", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "GST detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("Australia income/super and Singapore CPF examples", () => {
+  const slugs = ["australia-income-tax-calculator", "australia-superannuation-calculator", "singapore-cpf-calculator"] as const;
+  for (const [index, locale] of locales.entries()) {
+    const slug = slugs[index % slugs.length]!;
+    test(locale + "/" + slug + " renders its localized worked example in SSR HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      const note = fifthPolicyExampleNotes[locale]?.[slug];
+      expect(response?.status()).toBe(200);
+      expect(note).toBeTruthy();
+      const html = await response!.text();
+      expect(html).toContain(note);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      await expect(page.locator("article")).toContainText(note ?? "");
+    });
+  }
+
+  test("checks browser examples and responsive widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/australia-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#australia-income-tax-calculator-income").fill("80000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("14,520");
+
+    await page.goto("/en/calculators/australia-superannuation-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#australia-superannuation-calculator-annualSalary").fill("100000");
+    await page.locator("#australia-superannuation-calculator-annualContribution").fill("6000");
+    await page.locator("#australia-superannuation-calculator-employerRate").fill("12");
+    await page.locator("#australia-superannuation-calculator-rate").fill("0");
+    await page.locator("#australia-superannuation-calculator-years").fill("1");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("18,000");
+
+    await page.goto("/en/calculators/singapore-cpf-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#singapore-cpf-calculator-salary").fill("6000");
+    await page.locator("#singapore-cpf-calculator-age").fill("35");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("2,220");
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

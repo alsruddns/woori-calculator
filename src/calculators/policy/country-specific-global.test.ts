@@ -63,5 +63,8 @@ describe("global country calculators", () => {
     expect(values("australia-gst-calculator", { amount: "100", rate: "10", direction: "exclusive" })).toEqual([100, 10, 110]);
     expect(values("singapore-gst-calculator", { amount: "100", rate: "9", direction: "exclusive" })).toEqual([100, 9, 109]);
     expect(values("new-zealand-gst-calculator", { amount: "100", rate: "15", direction: "exclusive" })).toEqual([100, 15, 115]);
+    expect(values("australia-income-tax-calculator", { income: "80000" })).toEqual([80000, 14520, 18.15]);
+    expect(values("australia-superannuation-calculator", { annualSalary: "100000", annualContribution: "6000", employerRate: "12", rate: "0", years: "1" })).toEqual([6000, 12000, 0, 18000]);
+    expect(values("singapore-cpf-calculator", { salary: "6000", age: "35" })).toEqual([1200, 1020, 2220]);
   });
 });
