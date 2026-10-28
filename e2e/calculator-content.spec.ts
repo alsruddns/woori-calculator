@@ -1,5 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+﻿import { expect, test, type Page } from "@playwright/test";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -21,6 +21,42 @@ const twelfthEditorialBatchSlugs = ["fraction", "standard-deviation", "vehicle-c
 const thirteenthEditorialBatchSlugs = ["average", "weighted-average", "unit-price", "probability", "area"] as const;
 const fourteenthEditorialBatchSlugs = ["percentile", "aspect-ratio", "scale-ratio"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
+
+test.describe("South Korea unemployment benefit localized example", () => {
+  for (const locale of locales) {
+    test(locale + " renders the localized example in initial SSR HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/unemployment-benefit");
+      expect(response?.status()).toBe(200);
+      const note = unemploymentBenefitExampleNotes[locale]?.["unemployment-benefit"];
+      expect(note).toBeTruthy();
+      const html = await response!.text();
+      expect(html).toContain(note);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article")).toContainText(note ?? "");
+    });
+  }
+
+  test("matches the modeled KRW result and fits all required widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/ko/calculators/unemployment-benefit");
+    await waitForCalculatorHydration(page);
+    await page.locator("#unemployment-benefit-monthlyWage").fill("3400000");
+    await page.locator("#unemployment-benefit-age").fill("35");
+    await page.locator("#unemployment-benefit-insuredYears").fill("0.9");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("68,000");
+    await expect(page.locator("[aria-live='polite']")).toContainText("8,160,000");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "unemployment benefit page at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
 
 test.describe("South Korea VAT policy content", () => {
   for (const locale of locales) {
@@ -219,7 +255,7 @@ test.describe("South Korea wage and employee policy examples", () => {
     await waitForCalculatorHydration(page);
     await page.locator("#minimum-wage-hourlyWage").fill("10000");
     await page.locator('form button[type="submit"]').click();
-    await expect(page.locator("[aria-live='polite']")).toContainText("-₩320");
+    await expect(page.locator("[aria-live='polite']")).toContainText("-??20");
     await expect(page.locator("[aria-live='polite']")).toContainText("2,156,880");
 
     await page.goto("/ko/calculators/severance-pay");
@@ -777,15 +813,15 @@ test.describe("calculator input and result flows", () => {
       ["tenure", "From 2024-01-15 to 2025-03-20, the calendar difference"],
       ["time-arithmetic", "Adding 2 hours 45 minutes and 1 hour 30 minutes"],
       ["pregnancy", "An LMP date of 2026-01-01 plus the calculator's 280-day estimate"],
-      ["utility-bill", "Usage 20 × entered rate 500 plus base fee 1,000"],
+      ["utility-bill", "Usage 20 횞 entered rate 500 plus base fee 1,000"],
       ["vehicle-cost", "At 1,000 km per month, 10 km/L, and fuel at 1,700 per liter"],
       ["taxi-fare", "A 4,000 base fare, 2 km included, 5 km trip, 1,000 per extra km"],
       ["tip-calculator", "Adding an entered 10% tip to 50,000 gives a 5,000 tip"],
       ["average", "For 10, 20, and 30, the sum 60 divided by 3 gives an arithmetic mean of 20"],
-      ["weighted-average", "Weighting 80 by 1 and 100 by 3 gives (80×1 + 100×3) ÷ 4 = 95"],
+      ["weighted-average", "Weighting 80 by 1 and 100 by 3 gives (80횞1 + 100횞3) 첨 4 = 95"],
       ["unit-price", "A total of 10,000 divided by 3 units is 3,333.33 per unit"],
-      ["probability", "With independent trials and a 20% success chance each, three trials give 1−0.8³ = 48.8%"],
-      ["area", "Ten pyeong multiplied by 400/121 is 33.06 m²"],
+      ["probability", "With independent trials and a 20% success chance each, three trials give 1??.8쨀 = 48.8%"],
+      ["area", "Ten pyeong multiplied by 400/121 is 33.06 m짼"],
   ] as const;
   for (const [slug, note] of batch) {
     test(slug + " renders its calculator-specific example and FAQ", async ({ page }) => {

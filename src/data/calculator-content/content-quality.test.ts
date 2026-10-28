@@ -7,10 +7,33 @@ import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-conten
 import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
+import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
+import { unemploymentBenefitExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
 describe("calculator content quality", () => {
+  it("validates the South Korea 2026 unemployment example against the engine and all locale pages", () => {
+    const slug = "unemployment-benefit";
+    const definition = publishedCalculatorPages.find((page) => page.slug === slug);
+    expect(definition?.countryCode).toBe("KR");
+    expect(definition?.policyYear).toBe(2026);
+    expect(definition?.sources?.some((source) => source.url === "https://1350.moel.go.kr/rtmview.do?id=1000324861" && source.checkedAt === "2026-10-28")).toBe(true);
+    expect(definition?.sources?.some((source) => source.url === "https://www.minimumwage.go.kr/index.jsp" && source.checkedAt === "2026-10-28")).toBe(true);
+    expect(definition?.sources?.some((source) => source.url.includes("edrm.ei.go.kr"))).toBe(false);
+    const output = calculateUnemploymentBenefit({ monthlyWage: "3400000", age: "35", insuredYears: "0.9" });
+    expect("results" in output ? output.results.map(({ value }) => value) : output).toEqual([68000, 120, 8160000, 68000, 66048, 68100]);
+    for (const locale of locales) {
+      const note = unemploymentBenefitExampleNotes[locale]?.[slug];
+      const content = getDictionary(locale).calculators[slug];
+      expect(note, `${locale} authored example`).toBeTruthy();
+      expect(content?.example.answer, `${locale} rendered detail`).toContain(note);
+      expect(content?.howTo).toBeTruthy();
+      expect(content?.formula).toBeTruthy();
+      expect(content?.faqs.length).toBeGreaterThanOrEqual(2);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
   it("keeps four country GST examples localized and linked to checked official rate sources", () => {
     const checkedSources: Record<string, string> = {
       "canada-gst-hst-calculator": "canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate.html",

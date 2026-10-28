@@ -21,6 +21,8 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.nts.go.kr/nts/na/ntt/selectNttInfo.do?mi=2163&nttSn=1355351",
   "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6102.htm",
   "https://www.gov.uk/vat-rates",
+  "https://1350.moel.go.kr/rtmview.do?id=1000324861",
+  "https://www.minimumwage.go.kr/index.jsp",
   "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate.html",
   "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst",
   "https://www.iras.gov.sg/taxes/goods-services-tax-%28gst%29/charging-gst-%28output-tax%29/when-to-charge-goods-and-services-tax-%28gst%29/prevailing-rate-of-9",
@@ -163,7 +165,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(25);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(26);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);
