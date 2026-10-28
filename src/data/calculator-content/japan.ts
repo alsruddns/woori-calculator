@@ -5,7 +5,7 @@ import type { CalculatorPageDefinition } from "@/types/calculator-page";
 
 const amount = (name: string, label: string, unit = "円", defaultValue?: string) => ({ name, label, type: "number" as const, min: 0, step: 0.01, unit, ...(defaultValue === undefined ? {} : { defaultValue }) });
 const select = (name: string, label: string, options: readonly { label: string; value: string }[], showWhen?: { field: string; value: string }) => ({ name, label, type: "select" as const, options, defaultValue: options[0]?.value, ...(showWhen ? { showWhen } : {}) });
-const sources = (urls: readonly string[]) => urls.map((url) => ({ name: url.includes("nta.go.jp") || url.includes("keisan.nta.go.jp") ? "National Tax Agency of Japan" : url.includes("mhlw.go.jp") || url.includes("check-roudou") ? "Ministry of Health, Labour and Welfare" : url.includes("nenkin.go.jp") ? "Japan Pension Service" : "Tokyo Metropolitan Government", url, checkedAt: policy.updatedAt }));
+const sources = (urls: readonly string[]) => urls.map((url) => ({ name: url.includes("nta.go.jp") || url.includes("keisan.nta.go.jp") ? "National Tax Agency of Japan" : url.includes("mhlw.go.jp") || url.includes("check-roudou") ? "Ministry of Health, Labour and Welfare" : url.includes("nenkin.go.jp") ? "Japan Pension Service" : "Tokyo Metropolitan Government", url, checkedAt: url === "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6102.htm" ? "2026-10-28" : policy.updatedAt }));
 
 const payrollRefs = [policy.sources.salaryDeduction, policy.sources.basicDeduction, policy.sources.incomeTax, policy.sources.pension, policy.sources.employmentInsurance, policy.sources.residentTax] as const;
 const overtimeRefs = [policy.sources.overtime] as const;

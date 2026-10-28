@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -50,6 +50,57 @@ test.describe("South Korea VAT policy content", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "VAT page at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("next policy batch localized SSR", () => {
+  const slugs = ["withholding-tax-3-3", "japan-consumption-tax-calculator", "uk-vat-calculator"] as const;
+  for (const [index, locale] of locales.entries()) {
+    const slug = slugs[index % slugs.length]!;
+    test(locale + "/" + slug + " renders its localized policy example in initial HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      const note = nextPolicyExampleNotes[locale]?.[slug];
+      const html = await response!.text();
+      expect(note).toBeTruthy();
+      expect(html).toContain(note);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      await expect(page.locator("article")).toContainText(note ?? "");
+    });
+  }
+
+  test("verifies live tax examples and responsive layout at eight widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/ko/calculators/withholding-tax-3-3");
+    await waitForCalculatorHydration(page);
+    await page.locator("#withholding-tax-3-3-amount").fill("1000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("article")).toContainText("33,000");
+    await expect(page.locator("article")).toContainText("967,000");
+
+    await page.goto("/ja/calculators/japan-consumption-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#japan-consumption-tax-calculator-net").fill("1000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("article")).toContainText("100");
+    await expect(page.locator("article")).toContainText("1,100");
+
+    await page.goto("/en/calculators/uk-vat-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#uk-vat-calculator-amount").fill("100");
+    await page.locator("#uk-vat-calculator-rate").fill("20");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("article")).toContainText("20.00");
+    await expect(page.locator("article")).toContainText("120.00");
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

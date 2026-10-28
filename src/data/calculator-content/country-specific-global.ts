@@ -51,6 +51,10 @@ export const globalCountryCalculatorPages: readonly CalculatorPageDefinition[] =
   const inputs = page.fields.map((field) => field.label).join(", ");
   return {
     ...page,
+    ...(page.slug === "uk-vat-calculator" ? {
+      updatedAt: "2026-10-28",
+      sources: page.sources?.map((source) => source.url === "https://www.gov.uk/vat-rates" ? { ...source, checkedAt: "2026-10-28" } : source),
+    } : {}),
     howTo: `${page.name} uses ${inputs}. The estimate follows the ${page.policyYear} reference data linked below; check whether your personal and regional conditions are represented.`,
     example: example ? { question: `What does ${page.name} show for ${example.input}?`, answer: `${example.result}. The displayed components follow the entered values and the stated reference assumptions.` } : page.example,
     faqs: [{ question: `Which inputs affect ${page.name}?`, answer: `The model uses ${inputs}. It does not infer circumstances that are not entered on this page.` }, page.faqs[1]!],

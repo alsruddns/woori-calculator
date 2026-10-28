@@ -4,7 +4,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
@@ -21,6 +21,23 @@ describe("calculator content quality", () => {
       expect(note, `${locale} localized VAT note`).toBeTruthy();
       expect(page?.example.answer, `${locale} example contains localized scope`).toContain(note);
       expect(supportedLocalesForCalculator("vat"), `${locale} route`).toContain(locale);
+    }
+  });
+  it("keeps the withholding, Japan consumption tax, and UK VAT examples localized", () => {
+    const withholding = publishedCalculatorPages.find((page) => page.slug === "withholding-tax-3-3");
+    const japan = publishedCalculatorPages.find((page) => page.slug === "japan-consumption-tax-calculator");
+    const uk = publishedCalculatorPages.find((page) => page.slug === "uk-vat-calculator");
+    expect(withholding?.countryCode).toBe("KR");
+    expect(withholding?.sources?.map((source) => source.checkedAt)).toEqual(["2026-10-28", "2026-10-28"]);
+    expect(japan?.sources?.some((source) => source.url.includes("taxanswer/shohi/6102.htm") && source.checkedAt === "2026-10-28")).toBe(true);
+    expect(uk?.sources?.some((source) => source.url === "https://www.gov.uk/vat-rates" && source.checkedAt === "2026-10-28")).toBe(true);
+    for (const locale of locales) {
+      for (const slug of ["withholding-tax-3-3", "japan-consumption-tax-calculator", "uk-vat-calculator"] as const) {
+        const note = nextPolicyExampleNotes[locale]?.[slug];
+        expect(note, `${locale}/${slug} localized example`).toBeTruthy();
+        expect(getDictionary(locale).calculators[slug]?.example.answer, `${locale}/${slug} SSR content`).toContain(note);
+        expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
+      }
     }
   });
   it("keeps every public page complete, linked, and free of exact content duplicates", () => {

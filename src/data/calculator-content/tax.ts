@@ -44,16 +44,34 @@ const taxCalculatorPageData: readonly CalculatorPageDefinition[] = [
   }),
 ];
 
-export const taxCalculatorPages: readonly CalculatorPageDefinition[] = taxCalculatorPageData.map((page) => page.slug === "vat" ? {
-  ...page,
-  policyType: "POLICY",
-  countryCode: "KR",
-  countryName: "South Korea",
-  countrySpecific: true,
-  policyYear: 2026,
-  updatedAt: "2026-10-28",
-  sources: [
-    { name: "Korea VAT Act, Article 30 (10% standard rate; effective 2026-01-02)", url: "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1031738785", checkedAt: "2026-10-28" },
-    { name: "National Tax Service: VAT overview and taxpayer categories", url: "https://i.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7693&mi=2401", checkedAt: "2026-10-28" },
-  ],
-} : page);
+export const taxCalculatorPages: readonly CalculatorPageDefinition[] = taxCalculatorPageData.map((page) => {
+  if (page.slug === "vat") return {
+    ...page,
+    policyType: "POLICY",
+    countryCode: "KR",
+    countryName: "South Korea",
+    countrySpecific: true,
+    policyYear: 2026,
+    updatedAt: "2026-10-28",
+    example: { question: "공급가액 10,000원을 대한민국 표준세율 10%로 계산하면?", answer: "공급가액 10,000원에 부가세 1,000원을 더해 합계 11,000원입니다." },
+    sources: [
+      { name: "Korea VAT Act, Article 30 (10% standard rate; effective 2026-01-02)", url: "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1031738785", checkedAt: "2026-10-28" },
+      { name: "National Tax Service: VAT overview and taxpayer categories", url: "https://i.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7693&mi=2401", checkedAt: "2026-10-28" },
+    ],
+  };
+  if (page.slug === "withholding-tax-3-3") return {
+    ...page,
+    policyType: "POLICY",
+    countryCode: "KR",
+    countryName: "South Korea",
+    countrySpecific: true,
+    policyYear: 2026,
+    updatedAt: "2026-10-28",
+    example: { question: "사업소득 지급액 1,000,000원의 참고 원천징수액은?", answer: "지급액 1,000,000원 기준으로 소득세 30,000원과 지방소득세 3,000원을 계산해 총 33,000원을 원천징수하며, 참고 실수령액은 967,000원입니다. 최종 종합소득세는 아닙니다." },
+    sources: [
+      { name: "National Tax Service: business-income withholding reference", url: "https://b.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7902&mi=6466", checkedAt: "2026-10-28" },
+      { name: "National Tax Service: 2026-10-01 proposal to reduce personal-service withholding", url: "https://www.nts.go.kr/nts/na/ntt/selectNttInfo.do?mi=2163&nttSn=1355351", checkedAt: "2026-10-28" },
+    ],
+  };
+  return page;
+});

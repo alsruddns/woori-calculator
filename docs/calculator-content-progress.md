@@ -6,13 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 69
+- Content COMPLETE: 72
 - VALIDATING: 0
-- Content DRAFT: 100
-- Policy VERIFIED: 1 (vat)
-- Policy BLOCKED: 100 (including withholding-tax-3-3)
+- Content DRAFT: 97
+- Policy VERIFIED: 2 (vat, uk-vat-calculator)
+- Policy PARTIAL: 1 (japan-consumption-tax-calculator; scheduled food-tax change is not date-modeled)
+- Policy BLOCKED: 98 (including withholding-tax-3-3)
 - Policy PENDING: 0
-- Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 354 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
+- Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 353 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
 - Content completion and policy verification are tracked independently. The 100 DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Completion gate
@@ -22,6 +23,8 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 ## Latest completed batch
 
 `vat` (South Korea): completed the policy review and calculator-specific content in all 26 locales. The 2026-01-02 effective VAT Act Article 30 confirms the 10% standard rate; the National Tax Service source distinguishes the simple calculation from exempt and simplified-taxpayer treatment. The localized example is KRW 100,000 supply → KRW 10,000 VAT → KRW 110,000 total; inclusive extraction divides by 1.1. It explains whole-won rounding, policy scope limits, and that display currency does not change the South Korean basis. Engine/content tests (23), TypeScript, lint, 26-locale SSR, live calculation, and all eight viewports passed. Native-speaker review was not performed.
+
+`withholding-tax-3-3`, `japan-consumption-tax-calculator`, and `uk-vat-calculator`: added distinct worked examples and scope notes in all 26 locales. The examples match the existing engines: KRW 1,000,000 produces KRW 33,000 withholding under the coded 3% + 0.3% rule; ¥1,000 produces ¥100/¥80 tax at selected 10%/8%; £100 produces £20 VAT at the entered 20% rate. NTS sources confirm the 3.3% context and identify 2.2% as a proposal whose enactment/effective date remain unresolved, so withholding policy stays BLOCKED. NTA source checked 2026-10-28 confirms the 10%/8% options and identifies a scheduled 2027-04-01–2029-03-31 food-tax reduction; no date input exists, so Japan policy is PARTIAL. GOV.UK confirms the 20% standard rate; product classification and place-of-supply rules remain outside this rate-entry calculator. Focused engine/content tests (36), content audit, and TypeScript passed. Playwright passed all 27 cases, including locale SSR examples, live calculator flows, and eight responsive widths without horizontal overflow. Native-speaker review was not performed.
 
 fraction, standard-deviation, vehicle-cost, taxi-fare, tip-calculator. Added calculator-specific worked examples and interpretation limits across all 26 locales. Tests verify each localized detail has purpose, input guidance, formula, example, and at least two FAQs; engine/content tests passed (16), full regression passed (1,105 tests across 210 files), content audit passed, TypeScript/lint passed, and production build generated all 4,423 static routes. Playwright verified 26 locale SSR examples, all five browser calculation flows, and all five detail pages at eight viewport widths without horizontal overflow. Native-speaker review was not performed.
 
@@ -56,7 +59,7 @@ average, weighted-average, unit-price, probability, area. Added localized worked
 
 ## Current batch under validation
 
-No open implementation batch. Next content candidate: `withholding-tax-3-3`; write safe, engine-grounded copy while keeping policy verification BLOCKED until the proposed rate change's enactment and effective date are confirmed. Then continue with unedited country-specific policy pages.
+No open implementation batch. Next policy candidate: `canada-gst-hst-calculator`, followed by remaining country-specific POLICY DRAFT pages. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; its reference content is already complete.
 
 ## Calculator register
 
@@ -112,7 +115,7 @@ No open implementation batch. Next content candidate: `withholding-tax-3-3`; wri
 | `margin` | finance | STATIC | 26/26 | COMPLETE | N/A | Sales-based margin denominator distinguished and example verified. |
 | `markup` | finance | STATIC | 26/26 | COMPLETE | N/A | Cost-based markup denominator distinguished and example verified. |
 | `product-margin` | finance | STATIC | 26/26 | COMPLETE | N/A | Localized example, engine output, 26-locale SSR, browser flow, and eight viewport checks passed. |
-| `withholding-tax-3-3` | tax | POLICY | DRAFT | BLOCKED | NTS pages show 3.3% for qualifying resident personal-service business income; NTS reported a proposed 2.2% rate on 2026-10-01. Verify enactment/effective date before current-rule claims. Engine-grounded reference content may proceed without asserting a current rule. |
+| `withholding-tax-3-3` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Localized example matches the implemented 3% + 0.3% whole-won truncation. NTS confirms qualifying context; the 2026-10-01 2.2% proposal enactment/effective date remain unconfirmed. No current-rule claim is made. |
 | `date-difference` | date-time | STATIC | 26/26 | COMPLETE | N/A | Engine example, localized endpoint-count explanation, SSR, browser form, and responsive checks passed. |
 | `dday` | date-time | STATIC | 26/26 | COMPLETE | N/A | Engine example, localized D−N interpretation, SSR, browser form, and responsive checks passed. |
 | `age` | life | STATIC | 26/26 | COMPLETE | N/A | Completed age and year-based reference values explained; browser example passed. Legal age is not asserted. |
@@ -136,7 +139,7 @@ No open implementation batch. Next content candidate: `withholding-tax-3-3`; wri
 | `minimum-wage` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `severance-pay` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `social-insurance` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `japan-consumption-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `japan-consumption-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | NTA source checked 2026-10-28 confirms 10% standard/8% reduced options and eligibility limits; it also lists a temporary food-tax reduction scheduled 2027-04-01 through 2029-03-31. No transaction-date field exists, so future rates are not date-modeled. |
 | `japan-annual-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `japan-monthly-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `japan-overtime-pay-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -192,7 +195,7 @@ No open implementation batch. Next content candidate: `withholding-tax-3-3`; wri
 | `uk-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `uk-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `uk-national-insurance-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `uk-vat-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `uk-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | GOV.UK VAT rates page checked 2026-10-28 confirms the 20% standard rate. Example uses £100 × entered 20%; product classification, reduced/zero/exempt treatment, and place of supply are outside the tool. |
 | `uk-stamp-duty-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `uk-pension-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -234,4 +237,4 @@ No open implementation batch. Next content candidate: `withholding-tax-3-3`; wri
 
 ## Next batch queue
 
-`withholding-tax-3-3`, then the next country-specific POLICY DRAFT pages. The VAT rule is verified; remaining policy rules require separate official-source review.
+`canada-gst-hst-calculator`, then the next country-specific POLICY DRAFT pages. Content completion is tracked separately from VERIFIED, PARTIAL, and BLOCKED policy review.

@@ -22,6 +22,8 @@ describe("country-specific calculator models", () => {
   it("calculates tax-inclusive/exclusive VAT, zero input, and invalid rates", () => {
     expect(values("germany-vat-calculator", { amount: "100", rate: "19", direction: "exclusive" })).toEqual([100, 19, 119]);
     expect(values("germany-vat-calculator", { amount: "119", rate: "19", direction: "inclusive" })).toEqual([100, 19, 119]);
+    expect(values("uk-vat-calculator", { amount: "100", rate: "20", direction: "exclusive" })).toEqual([100, 20, 120]);
+    expect(values("uk-vat-calculator", { amount: "120", rate: "20", direction: "inclusive" })).toEqual([100, 20, 120]);
     expect(values("italy-vat-calculator", { amount: "0", rate: "22", direction: "exclusive" })).toEqual([0, 0, 0]);
     expect(calculateBySlug("china-vat-calculator", { amount: "100", rate: "101", direction: "exclusive" })).toHaveProperty("error");
   });

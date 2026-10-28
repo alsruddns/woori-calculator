@@ -56,7 +56,7 @@ export const japanPolicy2026 = {
     nightEndsHour: 5,
   },
   sources: {
-    consumptionTax: "https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2019/pdf/050.pdf",
+    consumptionTax: "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6102.htm",
     reducedRate: "https://www.keisan.nta.go.jp/r7yokuaru_sp/shohizei/sonota/scid1916.html",
     salaryDeduction: "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm",
     basicDeduction: "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1199.htm",
