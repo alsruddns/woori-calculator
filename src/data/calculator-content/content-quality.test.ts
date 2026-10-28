@@ -24,6 +24,7 @@ import { taiwanLaborInsuranceFollowups } from "@/i18n/dictionaries/taiwan-labor-
 import { taiwanVatFollowups } from "@/i18n/dictionaries/taiwan-vat-followups";
 import { italyGrossNetFollowups } from "@/i18n/dictionaries/italy-gross-net-followups";
 import { italyIncomeTaxFollowups } from "@/i18n/dictionaries/italy-income-tax-followups";
+import { italyVatFollowups } from "@/i18n/dictionaries/italy-vat-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -628,6 +629,29 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} progressive-band formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
+    }
+  });
+  it("renders Italy VAT direction formulas and both examples in every locale", () => {
+    const slug = "italy-vat-calculator";
+    const exclusive = calculateBySlug(slug, { amount: "1000", rate: "22", direction: "exclusive" });
+    const inclusive = calculateBySlug(slug, { amount: "1000", rate: "22", direction: "inclusive" });
+    expect(exclusive && "results" in exclusive ? exclusive.results.map(({ value }) => value) : exclusive).toEqual([1000, 220, 1220]);
+    expect(inclusive && "results" in inclusive ? inclusive.results.map(({ value }) => value) : inclusive).toEqual([819.67, 180.33, 1000]);
+    for (const locale of supportedLocales) {
+      const copy = italyVatFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} direction guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} exclusive/inclusive formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched examples`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} rate limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
