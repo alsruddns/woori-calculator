@@ -33,6 +33,7 @@ import { brazilPayrollFollowups } from "@/i18n/dictionaries/brazil-payroll-follo
 import { brazilGrossNetFollowups } from "@/i18n/dictionaries/brazil-gross-net-followups";
 import { japanSalaryFollowups } from "@/i18n/dictionaries/japan-salary-followups";
 import { germanyGrossNetFollowups } from "@/i18n/dictionaries/germany-gross-net-followups";
+import { germanyIncomeTaxFollowups } from "@/i18n/dictionaries/germany-income-tax-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -152,6 +153,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Germany income-tax formula, code-matched example and limitations in every locale", () => {
+    const slug = "germany-income-tax-calculator";
+    const output = calculateBySlug(slug, { income: "50000" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([50000, 10548.33, 21.1]);
+    for (const locale of supportedLocales) {
+      const copy = germanyIncomeTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input meaning`).toBeTruthy();
+      expect(copy.formula, `${locale} implemented formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched example`).toMatch(/21[.,]10/);
+      expect(copy.faq?.answer, `${locale} legal and model limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

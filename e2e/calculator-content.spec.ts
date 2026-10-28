@@ -19,6 +19,7 @@ import { brazilPayrollFollowups } from "../src/i18n/dictionaries/brazil-payroll-
 import { brazilGrossNetFollowups } from "../src/i18n/dictionaries/brazil-gross-net-followups";
 import { japanSalaryFollowups } from "../src/i18n/dictionaries/japan-salary-followups";
 import { germanyGrossNetFollowups } from "../src/i18n/dictionaries/germany-gross-net-followups";
+import { germanyIncomeTaxFollowups } from "../src/i18n/dictionaries/germany-income-tax-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -243,6 +244,36 @@ test("Germany gross-to-net scenario content is SSR-localized and the example wor
     const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
     expect(dimensions.body, "Germany gross-net page at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
   }
+  expect(errors).toEqual([]);
+});
+
+test("Germany income-tax content is SSR-localized and the implemented example works", async ({ page }) => {
+  const responses = await Promise.all(locales.map(async (locale) => {
+    const copy = germanyIncomeTaxFollowups[locale];
+    const response = await page.request.get("/" + locale + "/calculators/germany-income-tax-calculator");
+    expect(response.status()).toBe(200);
+    const html = await response.text();
+    expect(html).toContain(copy.description);
+    expect(html).toContain(copy.howTo);
+    expect(html).toContain(copy.formula);
+    expect(html).toContain(copy.example!.answer);
+    expect(html).toContain(copy.faq!.question);
+    expect(html).toMatch(/<h1\b/);
+    expect(html).toMatch(/<h2\b/);
+    expect(html).toMatch(/rel=["']canonical["']/i);
+    expect(html).toMatch(/hrefLang=/i);
+    expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    return locale;
+  }));
+  expect(responses).toHaveLength(26);
+
+  const errors = collectBrowserErrors(page);
+  await page.goto("/en/calculators/germany-income-tax-calculator");
+  await waitForCalculatorHydration(page);
+  await page.locator("#germany-income-tax-calculator-income").fill("50000");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("10,548.33");
+  await expect(page.locator("[aria-live='polite']")).toContainText("21.1");
   expect(errors).toEqual([]);
 });
 
