@@ -24,6 +24,7 @@ import { germanyOvertimeFollowups } from "../src/i18n/dictionaries/germany-overt
 import { germanyVacationPayFollowups } from "../src/i18n/dictionaries/germany-vacation-pay-followups";
 import { spainGrossNetFollowups } from "../src/i18n/dictionaries/spain-gross-net-followups";
 import { japanOvertimeFollowups } from "../src/i18n/dictionaries/japan-overtime-followups";
+import { japanNightHolidayFollowups } from "../src/i18n/dictionaries/japan-night-holiday-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -780,7 +781,11 @@ test.describe("Japan wage premiums and German VAT examples", () => {
     const slug = slugs[index % slugs.length]!;
     test(locale + "/" + slug + " includes the localized worked example in SSR HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
-      const note = seventhPolicyExampleNotes[locale]?.[slug];
+      const note = slug === "japan-night-holiday-pay-calculator"
+        ? japanNightHolidayFollowups[locale].example?.answer
+        : slug === "japan-overtime-pay-calculator"
+          ? japanOvertimeFollowups[locale].example?.answer
+          : seventhPolicyExampleNotes[locale]?.[slug];
       expect(response?.status()).toBe(200);
       expect(note).toBeTruthy();
       const html = await response!.text();

@@ -7,6 +7,7 @@ import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-conten
 import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
+import { japanNightHolidayFollowups } from "@/i18n/dictionaries/japan-night-holiday-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -265,6 +266,26 @@ describe("calculator content quality", () => {
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
     }
   });
+  it("renders Japan night and statutory-holiday premiums, overlap arithmetic, and limits in every locale", () => {
+    const slug = "japan-night-holiday-pay-calculator";
+    const output = calculateBySlug(slug, { wageMode: "hourly", hourlyWage: "1500", overtimeHours: "0", over60Hours: "0", nightOnlyHours: "0", holidayHours: "0", overtimeNightHours: "2", over60NightHours: "0", holidayNightHours: "0", overtimeRate: "25", nightRate: "25", holidayRate: "35" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([3000, 750, 750, 0, 1500, 4500]);
+    for (const locale of supportedLocales) {
+      const copy = japanNightHolidayFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} category guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} implemented arithmetic and reference scope`).toBeTruthy();
+      expect((copy.example?.answer ?? "").length, `${locale} worked example`).toBeGreaterThan(80);
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
   it("renders German VAT purpose, formula, engine-matched examples, limits and FAQ in all locales", () => {
     const slug = "germany-vat-calculator";
     const definition = publishedCalculatorPages.find((page) => page.slug === slug);
@@ -487,7 +508,7 @@ describe("calculator content quality", () => {
       for (const locale of locales) {
         const note = seventhPolicyExampleNotes[locale]?.[slug];
         expect(note, `${locale}/${slug} authored example`).toBeTruthy();
-        if (slug !== "japan-overtime-pay-calculator") expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.example.answer).toContain(note);
+        if (slug !== "japan-overtime-pay-calculator" && slug !== "japan-night-holiday-pay-calculator") expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.example.answer).toContain(note);
         expect(supportedLocalesForCalculator(slug)).toContain(locale);
       }
     }
