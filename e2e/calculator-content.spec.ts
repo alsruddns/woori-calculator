@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -21,6 +21,39 @@ const twelfthEditorialBatchSlugs = ["fraction", "standard-deviation", "vehicle-c
 const thirteenthEditorialBatchSlugs = ["average", "weighted-average", "unit-price", "probability", "area"] as const;
 const fourteenthEditorialBatchSlugs = ["percentile", "aspect-ratio", "scale-ratio"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
+
+test.describe("South Korea VAT policy content", () => {
+  for (const locale of locales) {
+    test(locale + " VAT localized scope is present in server HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/vat");
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toContain(vatPolicyExampleNotes[locale]?.vat);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article")).toContainText(vatPolicyExampleNotes[locale]?.vat ?? "");
+    });
+  }
+
+  test("rounds in won, exposes sources, and fits all required widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/ko/calculators/vat");
+    await waitForCalculatorHydration(page);
+    await page.locator("#vat-amount").fill("100000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("article")).toContainText("10,000");
+    await expect(page.locator("article")).toContainText("110,000");
+    await expect(page.locator('a[href*="law.go.kr"]')).toBeVisible();
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "VAT page at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
 
 function collectBrowserErrors(page: Page) {
   const errors: string[] = [];

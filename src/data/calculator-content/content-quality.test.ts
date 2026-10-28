@@ -4,12 +4,25 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
 describe("calculator content quality", () => {
+  it("keeps the South Korea VAT scope, official sources, and localized worked example", () => {
+    const vat = publishedCalculatorPages.find((page) => page.slug === "vat");
+    expect(vat?.policyType).toBe("POLICY");
+    expect(vat?.sources?.map((source) => source.checkedAt)).toEqual(["2026-10-28", "2026-10-28"]);
+    expect(vat?.sources?.[0]?.url).toContain("law.go.kr");
+    for (const locale of locales) {
+      const page = getDictionary(locale).calculators.vat;
+      const note = vatPolicyExampleNotes[locale]?.vat;
+      expect(note, `${locale} localized VAT note`).toBeTruthy();
+      expect(page?.example.answer, `${locale} example contains localized scope`).toContain(note);
+      expect(supportedLocalesForCalculator("vat"), `${locale} route`).toContain(locale);
+    }
+  });
   it("keeps every public page complete, linked, and free of exact content duplicates", () => {
     const publicSlugs = new Set(publishedCalculatorPages.map((page) => page.slug));
     const missing: string[] = [];

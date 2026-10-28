@@ -3,6 +3,8 @@ import { calculateMargin, calculateMarkup, calculateProductMargin, calculateUnit
 
 describe("tax and price calculators", () => {
   it("calculates 10 percent VAT and whole-won rounding", () => {
+    expect(calculateVat({ amount: "100000", mode: "supply" })).toMatchObject({ results: [{ value: 100000 }, { value: 10000 }, { value: 110000 }] });
+    expect(calculateVat({ gross: "110000", mode: "gross" })).toMatchObject({ results: [{ value: 100000 }, { value: 10000 }, { value: 110000 }] });
     expect(calculateVat({ amount: "12345", mode: "supply" })).toMatchObject({ results: [{ value: 12345 }, { value: 1235 }, { value: 13580 }] });
     expect(calculateVat({ gross: "11000", mode: "gross" })).toMatchObject({ results: [{ value: 10000 }, { value: 1000 }, { value: 11000 }] });
     expect(calculateVat({ amount: "1000000000000000", mode: "supply" })).toHaveProperty("results");
