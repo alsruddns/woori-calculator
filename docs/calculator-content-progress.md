@@ -87,7 +87,7 @@ average, weighted-average, unit-price, probability, area. Added localized worked
 
 `canada-gst-hst-calculator`, `australia-gst-calculator`, `singapore-gst-calculator`, `new-zealand-gst-calculator`: added country-specific scope explanations in all 26 locales while retaining the existing engine-matched numeric examples. CRA confirms Canadian rates depend on place/type of supply; ATO describes 10% GST for most taxable supplies; IRAS states 9% since 2024-01-01; Inland Revenue states 15% for most taxable supplies. The calculator applies the user-entered rate and inclusive/exclusive direction; it does not classify transaction eligibility, exemptions, zero-rated supplies, or Canadian PST/QST. Policy status remains PARTIAL for Canada and VERIFIED for the other three, independently of content completion. Browser coverage checks all 26 locales' SSR descriptions and examples, four live calculations, and all eight viewport widths on each page. Native-speaker review was not performed.
 
-Next policy candidates: continue with remaining country-specific POLICY DRAFT pages that can be safely described from the actual engine and checked official sources. Japan annual/monthly payroll pages remain BLOCKED pending resolution of current deduction schedule and simplified insurance assumptions. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; policy status remains separate from localized content completion.
+Next policy batch: `brazil-inss-calculator`, `brazil-irrf-calculator`, and `brazil-fgts-calculator`; their 2026 INSS/IRRF rules and FGTS employer-deposit scope are being source-checked separately from India.
 
 ## Calculator register
 
@@ -189,12 +189,12 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 | `netherlands-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | Belastingdienst 2026 page confirms 21%, 9%, and 0% tariffs; example is user-entered €1,000×21%=€210 / €1,210. Product, exemption, reverse-charge, and transaction classification are not modeled. |
 | `netherlands-30-percent-ruling-calculator` | salary | POLICY | 26/26 | COMPLETE | PARTIAL | 2026 Expat Scheme source checked 2026-10-28: general salary norm over €48,013 and annual maximum €78,600. Engine only applies min(entered salary×rate, €78,600); it does not test qualifications, approval, or part-year proration. |
 | `netherlands-holiday-allowance-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `india-gst-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `india-gst-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | CBIC rate schedules checked 2026-10-28; entered-rate arithmetic is verified, but HSN/SAC classification and CGST/SGST versus IGST are not modeled. |
 | `india-sip-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `india-ppf-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `india-nps-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `india-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `india-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `india-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | AY 2026?27 scenario description is explicit; current engine omits the ?75,000 standard deduction and payroll-specific deductions, so net pay is not legally complete. |
+| `india-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | Configured new-regime AY 2026?27 brackets and simplified Section 87A checked 2026-10-28; residence, special income, cess, surcharge and complete eligibility are not modeled. |
 | `brazil-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `brazil-inss-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `brazil-irrf-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
