@@ -35,6 +35,7 @@ import { japanSalaryFollowups } from "@/i18n/dictionaries/japan-salary-followups
 import { germanyGrossNetFollowups } from "@/i18n/dictionaries/germany-gross-net-followups";
 import { germanyIncomeTaxFollowups } from "@/i18n/dictionaries/germany-income-tax-followups";
 import { germanyOvertimeFollowups } from "@/i18n/dictionaries/germany-overtime-followups";
+import { germanyVacationPayFollowups } from "@/i18n/dictionaries/germany-vacation-pay-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -194,6 +195,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} implemented formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toMatch(/240/);
       expect(copy.faq?.answer, `${locale} policy limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Germany vacation-bonus arithmetic and user-entered rate limits in every locale", () => {
+    const slug = "germany-vacation-pay-calculator";
+    const output = calculateBySlug(slug, { salary: "50000", rate: "5" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([50000, 5, 2500]);
+    for (const locale of supportedLocales) {
+      const copy = germanyVacationPayFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toMatch(/2[\s.,]500/);
+      expect(copy.faq?.answer, `${locale} eligibility limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
