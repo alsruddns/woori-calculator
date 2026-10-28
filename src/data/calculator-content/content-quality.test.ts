@@ -36,6 +36,7 @@ import { germanyGrossNetFollowups } from "@/i18n/dictionaries/germany-gross-net-
 import { germanyIncomeTaxFollowups } from "@/i18n/dictionaries/germany-income-tax-followups";
 import { germanyOvertimeFollowups } from "@/i18n/dictionaries/germany-overtime-followups";
 import { germanyVacationPayFollowups } from "@/i18n/dictionaries/germany-vacation-pay-followups";
+import { spainGrossNetFollowups } from "@/i18n/dictionaries/spain-gross-net-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -215,6 +216,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toMatch(/2[\s.,]500/);
       expect(copy.faq?.answer, `${locale} eligibility limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Spain gross-to-net assumptions, exact scenario and policy limitations in every locale", () => {
+    const slug = "spain-gross-net-salary-calculator";
+    const output = calculateBySlug(slug, { salary: "50000", frequency: "annual", taxRate: "15", socialRate: "6.48" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([50000, 7500, 3240, 0, 39260, 3271.67]);
+    for (const locale of supportedLocales) {
+      const copy = spainGrossNetFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} implementation`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} exact scenario explanation`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} policy limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

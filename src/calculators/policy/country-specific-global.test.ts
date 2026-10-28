@@ -74,6 +74,13 @@ describe("global country calculators", () => {
     expect(values("france-gross-net-salary-calculator", { salary: "60000", frequency: "annual", socialRate: "22" })).toEqual([60000, 11103.99, 13200, 0, 35696.01, 2974.67]);
   });
 
+  it("applies Spain gross-net rates entered in the calculator and rejects invalid rates", () => {
+    expect(values("spain-gross-net-salary-calculator", { salary: "50000", frequency: "annual", taxRate: "15", socialRate: "6.48" })).toEqual([50000, 7500, 3240, 0, 39260, 3271.67]);
+    expect(values("spain-gross-net-salary-calculator", { salary: "5000", frequency: "monthly", taxRate: "15", socialRate: "6.48" })).toEqual([60000, 9000, 3888, 0, 47112, 3926]);
+    expect(calculateBySlug("spain-gross-net-salary-calculator", { salary: "50000", taxRate: "101", socialRate: "6.48" })).toHaveProperty("error");
+    expect(calculateBySlug("spain-gross-net-salary-calculator", { salary: "50000", taxRate: "15", socialRate: "-1" })).toHaveProperty("error");
+  });
+
   it("matches Philippine payroll content examples to the current engine", () => {
     expect(values("philippines-philhealth-calculator", { salary: "30000" })).toEqual([750, 750, 1500]);
     expect(values("philippines-pagibig-calculator", { salary: "30000" })).toEqual([200, 200, 400]);

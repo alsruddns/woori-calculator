@@ -22,6 +22,7 @@ import { germanyGrossNetFollowups } from "../src/i18n/dictionaries/germany-gross
 import { germanyIncomeTaxFollowups } from "../src/i18n/dictionaries/germany-income-tax-followups";
 import { germanyOvertimeFollowups } from "../src/i18n/dictionaries/germany-overtime-followups";
 import { germanyVacationPayFollowups } from "../src/i18n/dictionaries/germany-vacation-pay-followups";
+import { spainGrossNetFollowups } from "../src/i18n/dictionaries/spain-gross-net-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -337,6 +338,39 @@ test("Germany vacation-pay content is SSR-localized and the percentage example w
   await page.locator("#germany-vacation-pay-calculator-rate").fill("5");
   await page.locator('form button[type="submit"]').click();
   await expect(page.locator("[aria-live='polite']")).toContainText("2,500");
+  expect(errors).toEqual([]);
+});
+
+test("Spain gross-to-net content is SSR-localized and the modeled salary flow works", async ({ page }) => {
+  const responses = await Promise.all(locales.map(async (locale) => {
+    const copy = spainGrossNetFollowups[locale];
+    const response = await page.request.get("/" + locale + "/calculators/spain-gross-net-salary-calculator");
+    expect(response.status()).toBe(200);
+    const html = await response.text();
+    expect(html).toContain(copy.description);
+    expect(html).toContain(copy.howTo);
+    expect(html).toContain(copy.formula);
+    expect(html).toContain(copy.example!.answer);
+    expect(html).toContain(copy.faq!.question);
+    expect(html).toMatch(/<h1\b/);
+    expect(html).toMatch(/<h2\b/);
+    expect(html).toMatch(/rel=["']canonical["']/i);
+    expect(html).toMatch(/hrefLang=/i);
+    expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    return locale;
+  }));
+  expect(responses).toHaveLength(26);
+
+  const errors = collectBrowserErrors(page);
+  await page.goto("/en/calculators/spain-gross-net-salary-calculator");
+  await waitForCalculatorHydration(page);
+  await page.locator("#spain-gross-net-salary-calculator-salary").fill("50000");
+  await page.locator("#spain-gross-net-salary-calculator-frequency").selectOption("annual");
+  await page.locator("#spain-gross-net-salary-calculator-taxRate").fill("15");
+  await page.locator("#spain-gross-net-salary-calculator-socialRate").fill("6.48");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("39,260");
+  await expect(page.locator("[aria-live='polite']")).toContainText("3,271.67");
   expect(errors).toEqual([]);
 });
 
