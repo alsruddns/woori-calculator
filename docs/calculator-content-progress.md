@@ -6,14 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 117
+- Content COMPLETE: 120
 - VALIDATING: 0
-- Content DRAFT: 52
-- Policy VERIFIED: 11 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, new-zealand-income-tax-calculator, minimum-wage, japan-overtime-pay-calculator, japan-night-holiday-pay-calculator, germany-vat-calculator, singapore-income-tax-calculator)
-- Policy PARTIAL: 29 (includes India GST and income tax: CBIC classification and AY 2026–27 rates/Section 87A were checked, but item classification, residence, income type, cess and surcharge are not fully modeled.)
-- Policy BLOCKED: 61 (includes India gross-net salary because the engine omits the ₹75,000 standard deduction and payroll components; also France gross-net salary, Spain IRPF/severance, Hong Kong salary tax/stamp duty, Malaysia SOCSO, Philippines SSS, withholding-tax-3-3, and Singapore gross-net salary annual-mode CPF handling.)
+- Content DRAFT: 49
+- Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
+- Policy PARTIAL: 30 (includes Brazil FGTS: the model assumes the general 8% employer deposit and cannot select the 2% apprentice category)
+- Policy BLOCKED: 59 (includes Brazil IRRF because the model omits the simplified monthly deduction and individual deductions; India gross-net salary because the standard deduction and payroll components are not modeled)
 - Policy PENDING: 0
-- Latest audit signals: short-content 12 (down from 15 in the previous checkpoint; the original audit baseline was 71). Exact-duplicate occurrences across locales: 209 (down from 226 in the previous checkpoint). These are review indicators, not a content-completion score.
+- Latest audit signals: short-content 12 (down from 15 in the previous checkpoint; the original audit baseline was 71). Exact-duplicate occurrences across locales: 194 (down from 209 in the previous checkpoint; the Brazil localized blocks removed 15 flagged occurrences). These are review indicators, not a content-completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Completion gate
@@ -87,7 +87,7 @@ average, weighted-average, unit-price, probability, area. Added localized worked
 
 `canada-gst-hst-calculator`, `australia-gst-calculator`, `singapore-gst-calculator`, `new-zealand-gst-calculator`: added country-specific scope explanations in all 26 locales while retaining the existing engine-matched numeric examples. CRA confirms Canadian rates depend on place/type of supply; ATO describes 10% GST for most taxable supplies; IRAS states 9% since 2024-01-01; Inland Revenue states 15% for most taxable supplies. The calculator applies the user-entered rate and inclusive/exclusive direction; it does not classify transaction eligibility, exemptions, zero-rated supplies, or Canadian PST/QST. Policy status remains PARTIAL for Canada and VERIFIED for the other three, independently of content completion. Browser coverage checks all 26 locales' SSR descriptions and examples, four live calculations, and all eight viewport widths on each page. Native-speaker review was not performed.
 
-Next policy batch: `brazil-inss-calculator`, `brazil-irrf-calculator`, and `brazil-fgts-calculator`; their 2026 INSS/IRRF rules and FGTS employer-deposit scope are being source-checked separately from India.
+`brazil-inss-calculator`, `brazil-irrf-calculator`, and `brazil-fgts-calculator`: added distinct purpose, inputs, formulas, engine-matched examples, interpretation and limitations in all 26 locales (78 localized records). The 2026 employee INSS bands and R$8,475.55 monthly ceiling match the engine; R$5,000 gross returns R$501.51. The monthly IRRF model subtracts that INSS estimate and returns RNext policy batch: `brazil-inss-calculator`, `brazil-irrf-calculator`, and `brazil-fgts-calculator`; their 2026 INSS/IRRF rules and FGTS employer-deposit scope are being source-checked separately from India. for R$5,000 gross; its missing R$607.20 simplified deduction and personal-deduction conditions are disclosed, so policy remains BLOCKED. FGTS on R$3,000 returns R$240 monthly / R$2,880 for twelve months; the 8% employer model lacks the official 2% apprentice category, so policy remains PARTIAL. INSS employee-table arithmetic is VERIFIED within the stated scope. Sources were checked 2026-10-27; native-speaker review was not performed. Focused engine/content/audit tests passed (31), typecheck and diff check passed. No calculation logic changed. Next: analyze India gross-net salary standard-deduction eligibility; do not implement a blanket deduction.
 
 ## Calculator register
 
@@ -196,9 +196,9 @@ Next policy batch: `brazil-inss-calculator`, `brazil-irrf-calculator`, and `braz
 | `india-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | AY 2026–27 scenario description is explicit; current engine omits the ₹75,000 standard deduction and payroll-specific deductions, so net pay is not legally complete. |
 | `india-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | Configured new-regime AY 2026–27 brackets and simplified Section 87A checked 2026-10-28; residence, special income, cess, surcharge and complete eligibility are not modeled. |
 | `brazil-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `brazil-inss-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `brazil-irrf-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `brazil-fgts-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `brazil-inss-calculator` | salary | POLICY 2026 | 26/26 | COMPLETE | VERIFIED | Employee table checked; model inputs and progressive example match. |
+| `brazil-irrf-calculator` | tax | POLICY 2026 | 26/26 | COMPLETE | BLOCKED | Simplified deduction and personal deduction conditions are not modeled; page discloses limits. |
+| `brazil-fgts-calculator` | salary | POLICY 2026 | 26/26 | COMPLETE | PARTIAL | Engine assumes 8%; apprentice 2% is not selectable and is disclosed. |
 | `brazil-thirteenth-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `vietnam-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `vietnam-personal-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |

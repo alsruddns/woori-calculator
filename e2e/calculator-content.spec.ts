@@ -13,6 +13,7 @@ import { newZealandPayrollSavingsFollowups } from "../src/i18n/dictionaries/new-
 import { spainPolicyFollowups } from "../src/i18n/dictionaries/spain-policy-followups";
 import { francePolicyFollowups } from "../src/i18n/dictionaries/france-policy-followups";
 import { netherlandsPolicyFollowups } from "../src/i18n/dictionaries/netherlands-policy-followups";
+import { brazilPayrollFollowups } from "../src/i18n/dictionaries/brazil-payroll-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -69,6 +70,49 @@ test.describe("South Korea unemployment benefit localized example", () => {
     }
     expect(errors).toEqual([]);
   });
+});
+
+test("Brazil payroll detail cards render in SSR and calculator flows remain usable", async ({ page }) => {
+  const errors = collectBrowserErrors(page);
+  const slugs = ["brazil-inss-calculator", "brazil-irrf-calculator", "brazil-fgts-calculator"] as const;
+  for (const slug of slugs) {
+    const content = brazilPayrollFollowups["pt-br"]![slug];
+    const response = await page.goto("/pt-br/calculators/" + slug);
+    expect(response?.status()).toBe(200);
+    const html = await response!.text();
+    expect(html).toContain(content.description!);
+    expect(html).toContain(content.formula!);
+    expect(html).toContain(content.example!.answer);
+    expect(html).toContain(content.faq!.question);
+    expect(html).toMatch(/<h1\b/);
+    expect(html).toMatch(/<h2\b/);
+    expect(html).toMatch(/rel=["']canonical["']/i);
+    expect(html).toMatch(/hrefLang=/i);
+    expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+  }
+
+  await page.goto("/pt-br/calculators/brazil-inss-calculator");
+  await page.locator("#brazil-inss-calculator-salary").fill("5000");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("501,51");
+
+  await page.goto("/pt-br/calculators/brazil-irrf-calculator");
+  await page.locator("#brazil-irrf-calculator-salary").fill("5000");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("0");
+
+  await page.goto("/pt-br/calculators/brazil-fgts-calculator");
+  await page.locator("#brazil-fgts-calculator-salary").fill("3000");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("240");
+  await expect(page.locator("[aria-live='polite']")).toContainText("2.880");
+
+  for (const width of viewports) {
+    await page.setViewportSize({ width, height: 900 });
+    const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+    expect(dimensions.body, "Brazil payroll cards at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+  }
+  expect(errors).toEqual([]);
 });
 
 test.describe("South Korea VAT policy content", () => {

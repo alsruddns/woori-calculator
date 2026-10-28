@@ -27,10 +27,41 @@ import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
 import { malaysiaPolicyFollowups } from "@/i18n/dictionaries/malaysia-policy-followups";
 import { malaysiaPhilippinesFollowups } from "@/i18n/dictionaries/malaysia-philippines-followups";
 import { globalCountryRates } from "@/data/country-rates/global";
+import { brazilPayrollFollowups } from "@/i18n/dictionaries/brazil-payroll-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
 describe("calculator content quality", () => {
+  it("renders distinct Brazil INSS, IRRF and FGTS models with matching examples in all locales", () => {
+    const examples = {
+      "brazil-inss-calculator": { input: { salary: "5000" }, values: [501.51] },
+      "brazil-irrf-calculator": { input: { salary: "5000" }, values: [0] },
+      "brazil-fgts-calculator": { input: { salary: "3000" }, values: [240, 2880] },
+    } as const;
+    const sources = countryRates.BR?.sources ?? [];
+    expect(sources.find((source) => source.name.startsWith("INSS"))?.checkedAt).toBe("2026-10-27");
+    expect(sources.find((source) => source.name.startsWith("Receita"))?.checkedAt).toBe("2026-10-27");
+    expect(sources.find((source) => source.name.startsWith("FGTS"))?.checkedAt).toBe("2026-10-27");
+    for (const [slug, sample] of Object.entries(examples)) {
+      const output = calculateCountrySpecific(slug, sample.input);
+      expect(output && "results" in output ? output.results.map(({ value }) => value) : output, slug).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const editorial = brazilPayrollFollowups[locale]?.[slug as keyof typeof brazilPayrollFollowups.en];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(editorial?.description, `${locale}/${slug} purpose`).toBeTruthy();
+        expect(editorial?.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
+        expect(editorial?.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(editorial?.example?.answer, `${locale}/${slug} worked example`).toBeTruthy();
+        expect(editorial?.faq?.answer, `${locale}/${slug} limitation`).toBeTruthy();
+        expect(page?.description).toBe(editorial?.description);
+        expect(page?.howTo).toBe(editorial?.howTo);
+        expect(page?.formula).toBe(editorial?.formula);
+        expect(page?.example).toEqual(editorial?.example);
+        expect(page?.faqs[0]).toEqual(editorial?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      }
+    }
+  });
   it("renders German VAT purpose, formula, engine-matched examples, limits and FAQ in all locales", () => {
     const slug = "germany-vat-calculator";
     const definition = publishedCalculatorPages.find((page) => page.slug === slug);

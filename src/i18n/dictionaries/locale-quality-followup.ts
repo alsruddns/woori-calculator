@@ -13,8 +13,9 @@ import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
 import { netherlandsPolicyFollowups } from "@/i18n/dictionaries/netherlands-policy-followups";
 import { indiaPolicyFollowups } from "@/i18n/dictionaries/india-policy-followups";
+import { brazilPayrollFollowups } from "@/i18n/dictionaries/brazil-payroll-followups";
 
-export type LocaleFollowup = Partial<Record<string, { description?: string; howTo?: string; formula?: string; exampleNote?: string; faq?: { question: string; answer: string } }>>;
+export type LocaleFollowup = Partial<Record<string, { description?: string; howTo?: string; formula?: string; exampleNote?: string; example?: { question: string; answer: string }; faq?: { question: string; answer: string } }>>;
 
 export const localeContentFollowupTargets = {
   ru: ["percentage", "unit-price", "unit-converter", "area", "average", "weighted-average", "probability", "fraction", "percentile", "standard-deviation", "aspect-ratio", "scale-ratio"],
@@ -988,8 +989,9 @@ export function improveLocalizedQualityContent(locale: SupportedLocale, content:
   const francePolicyForLocale = francePolicyFollowups[locale] ?? {};
   const netherlandsPolicyForLocale = netherlandsPolicyFollowups[locale] ?? {};
   const indiaPolicyForLocale = indiaPolicyFollowups[locale] ?? {};
+  const brazilPayrollForLocale: LocaleFollowup = brazilPayrollFollowups[locale] ?? {};
   return Object.fromEntries(Object.entries(content).map(([slug, page]) => {
-    const addition = { ...auSgPayrollTaxForLocale[slug], ...additions[slug], ...germanyVatForLocale[slug], ...hkPolicyForLocale[slug], ...malaysiaPolicyForLocale[slug], ...malaysiaPhilippinesForLocale[slug], ...philippinesPayrollForLocale[slug], ...uaeLaborVatForLocale[slug], ...newZealandPayrollSavingsForLocale[slug], ...spainPolicyForLocale[slug], ...francePolicyForLocale[slug], ...netherlandsPolicyForLocale[slug], ...indiaPolicyForLocale[slug] };
+    const addition = { ...auSgPayrollTaxForLocale[slug], ...additions[slug], ...germanyVatForLocale[slug], ...hkPolicyForLocale[slug], ...malaysiaPolicyForLocale[slug], ...malaysiaPhilippinesForLocale[slug], ...philippinesPayrollForLocale[slug], ...uaeLaborVatForLocale[slug], ...newZealandPayrollSavingsForLocale[slug], ...spainPolicyForLocale[slug], ...francePolicyForLocale[slug], ...netherlandsPolicyForLocale[slug], ...indiaPolicyForLocale[slug], ...brazilPayrollForLocale[slug] };
     const singaporeGrossNetCorrection = slug === "singapore-gross-net-salary-calculator" ? singaporeGrossNetCorrections[locale] : undefined;
     const exampleNotes = [addition.exampleNote ?? batchNotes[slug], nextBatchNotes[slug], slug === "ratio" ? undefined : reviewedBatchNotes[slug], secondReviewedBatchNotes[slug], thirdReviewedBatchNotes[slug], fourthReviewedBatchNotes[slug], fifthReviewedBatchNotes[slug], sixthReviewedBatchNotes[slug], seventhReviewedBatchNotes[slug], eighthReviewedBatchNotes[slug], ninthReviewedBatchNotes[slug], tenthReviewedBatchNotes[slug], eleventhReviewedBatchNotes[slug], twelfthReviewedBatchNotes[slug], thirteenthReviewedBatchNotes[slug], fourteenthReviewedBatchNotes[slug], vatPolicyNotes[slug], policyExampleNotes[slug], fourthPolicyNotes[slug], fifthPolicyNotes[slug], sixthPolicyNotes[slug], seventhPolicyNotes[slug], unemploymentBenefitNotes[slug], slug === "japan-consumption-tax-calculator" ? japanPolicyScheduleNotes[locale] : undefined].filter((note): note is string => Boolean(note));
     const exampleNote = exampleNotes.join(" ");
@@ -997,9 +999,10 @@ export function improveLocalizedQualityContent(locale: SupportedLocale, content:
     if (!page || (!addition.description && !addition.howTo && !addition.formula && !addition.faq && !exampleNote && !ratioInterpretation && !koreanPolicyDescriptionsForLocale[slug] && !gstDescriptionsForLocale[slug] && !auSgDescriptionsForLocale[slug] && !singaporeGrossNetCorrection)) return [slug, page];
     const updated: LocalizedCalculatorContent = {
       ...page,
-      ...((addition.description || ratioInterpretation || koreanPolicyDescriptionsForLocale[slug] || gstDescriptionsForLocale[slug] || auSgDescriptionsForLocale[slug] || singaporeGrossNetCorrection) ? { description: [page.description, addition.description, ratioInterpretation, koreanPolicyDescriptionsForLocale[slug], gstDescriptionsForLocale[slug], auSgDescriptionsForLocale[slug], singaporeGrossNetCorrection?.description].filter(Boolean).join(" ") } : {}),
+      ...((addition.description || ratioInterpretation || koreanPolicyDescriptionsForLocale[slug] || gstDescriptionsForLocale[slug] || auSgDescriptionsForLocale[slug] || singaporeGrossNetCorrection) ? { description: brazilPayrollForLocale[slug]?.description ?? [page.description, addition.description, ratioInterpretation, koreanPolicyDescriptionsForLocale[slug], gstDescriptionsForLocale[slug], auSgDescriptionsForLocale[slug], singaporeGrossNetCorrection?.description].filter(Boolean).join(" ") } : {}),
       ...(singaporeGrossNetCorrection?.howTo ? { howTo: singaporeGrossNetCorrection.howTo } : addition.howTo ? { howTo: addition.howTo } : {}),
       ...(singaporeGrossNetCorrection?.formula ? { formula: singaporeGrossNetCorrection.formula } : addition.formula ? { formula: addition.formula } : {}),
+      ...(addition.example ? { example: addition.example } : {}),
       ...(exampleNote ? { example: { ...page.example, answer: `${page.example.answer} ${exampleNote}` } } : {}),
       ...(addition.faq ? { faqs: [addition.faq, ...page.faqs] } : {}),
     };
