@@ -19,6 +19,7 @@ import { calculateBySlug } from "@/calculators/calculate";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
+import { netherlandsPolicyFollowups } from "@/i18n/dictionaries/netherlands-policy-followups";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
@@ -693,5 +694,37 @@ describe("calculator content quality", () => {
     expect(calculateBySlug("france-vat-calculator", { amount: "1200", rate: "20", direction: "inclusive" })).toMatchObject({ results: [{ value: 1000 }, { value: 200 }, { value: 1200 }] });
     expect(francePolicyFollowups.en?.["france-income-tax-calculator"]?.exampleNote).toContain("€2,103.99");
     expect(francePolicyFollowups.en?.["france-gross-net-salary-calculator"]?.exampleNote).toContain("€35,696.01");
+  });
+
+  it("renders Netherlands salary, VAT, and 30% facility scenarios against the engine in all locales", () => {
+    const cases = {
+      "netherlands-gross-net-salary-calculator": { input: { salary: "50000", frequency: "annual", socialRate: "0" }, values: [50000, 18076.22, 0, 31923.78, 2660.32] },
+      "netherlands-vat-calculator": { input: { amount: "1000", rate: "21", direction: "exclusive" }, values: [1000, 210, 1210] },
+      "netherlands-30-percent-ruling-calculator": { input: { salary: "80000", rate: "30" }, values: [80000, 24000, 56000] },
+    } as const;
+    const nlSources = countryRates.NL?.sources ?? [];
+    for (const url of [
+      "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/boxen_en_tarieven/box_1/",
+      "https://www.belastingdienst.nl/wps/wcm/connect/bldcontenten/belastingdienst/business/vat/vat_in_the_netherlands/calculating_vat/vat_tariffs",
+      "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/coming-to-work-in-the-netherlands-30-percent-facility",
+    ]) expect(nlSources.find((source) => source.url === url)?.checkedAt).toBe("2026-10-28");
+    for (const [slug, sample] of Object.entries(cases)) {
+      const result = calculateBySlug(slug, sample.input);
+      expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const addition = netherlandsPolicyFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(addition?.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(addition?.howTo, `${locale}/${slug} instructions`).toBeTruthy();
+        expect(addition?.exampleNote, `${locale}/${slug} example`).toBeTruthy();
+        expect(addition?.faq, `${locale}/${slug} limitation FAQ`).toBeTruthy();
+        expect(page?.howTo).toBe(addition?.howTo);
+        expect(page?.formula).toBe(addition?.formula);
+        expect(page?.example.answer).toContain(addition?.exampleNote);
+        expect(page?.faqs[0]).toEqual(addition?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+        if (locale !== "en") expect(page?.formula, `${locale}/${slug} localized formula`).not.toBe(getDictionary("en").calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.formula);
+      }
+    }
   });
 });

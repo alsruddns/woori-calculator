@@ -11,6 +11,7 @@ import { uaeLaborVatFollowups } from "../src/i18n/dictionaries/uae-labor-vat-fol
 import { newZealandPayrollSavingsFollowups } from "../src/i18n/dictionaries/new-zealand-payroll-savings-followups";
 import { spainPolicyFollowups } from "../src/i18n/dictionaries/spain-policy-followups";
 import { francePolicyFollowups } from "../src/i18n/dictionaries/france-policy-followups";
+import { netherlandsPolicyFollowups } from "../src/i18n/dictionaries/netherlands-policy-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -1983,6 +1984,66 @@ test.describe("calculator input and result flows", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "France gross-net at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  test("Netherlands policy copy is in initial HTML for every locale", async ({ page }) => {
+    test.setTimeout(120_000);
+    const slugs = ["netherlands-gross-net-salary-calculator", "netherlands-vat-calculator", "netherlands-30-percent-ruling-calculator"] as const;
+    for (const locale of locales) for (const slug of slugs) {
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response?.status(), locale + "/" + slug).toBe(200);
+      const html = await response!.text();
+      const content = netherlandsPolicyFollowups[locale][slug]!;
+      expect(html).toContain(content.howTo);
+      expect(html).toContain(content.formula);
+      expect(html).toContain(content.exampleNote);
+      expect(html).toContain(content.faq?.question ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Netherlands VAT, salary and 30% scenarios fit all required viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/netherlands-vat-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#netherlands-vat-calculator-amount").fill("1000");
+    await page.locator("#netherlands-vat-calculator-rate").fill("21");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,210");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Netherlands VAT at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/netherlands-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#netherlands-gross-net-salary-calculator-salary").fill("50000");
+    await page.locator("#netherlands-gross-net-salary-calculator-socialRate").fill("0");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("31,923.78");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Netherlands salary at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/netherlands-30-percent-ruling-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#netherlands-30-percent-ruling-calculator-salary").fill("80000");
+    await page.locator("#netherlands-30-percent-ruling-calculator-rate").fill("30");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("24,000");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Netherlands 30% facility at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });
