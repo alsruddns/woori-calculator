@@ -34,6 +34,7 @@ import { vietnamSocialInsuranceFollowups } from "../src/i18n/dictionaries/vietna
 import { chinaGrossNetFollowups } from "../src/i18n/dictionaries/china-gross-net-followups";
 import { chinaIncomeTaxFollowups } from "../src/i18n/dictionaries/china-income-tax-followups";
 import { chinaSocialInsuranceFollowups } from "../src/i18n/dictionaries/china-social-insurance-followups";
+import { chinaVatFollowups } from "../src/i18n/dictionaries/china-vat-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2711,6 +2712,39 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#china-social-insurance-calculator-rate").fill("8");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("1,600");
+    expect(errors).toEqual([]);
+  });
+
+  test("China VAT explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = chinaVatFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/china-vat-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("China VAT calculator matches its exclusive and inclusive examples", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/china-vat-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#china-vat-calculator-amount").fill("1000");
+    await page.locator("#china-vat-calculator-rate").fill("13");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,130");
+    await page.locator("#china-vat-calculator-direction").selectOption("inclusive");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("884.96");
+    await expect(page.locator("[aria-live='polite']")).toContainText("115.04");
     expect(errors).toEqual([]);
   });
 });

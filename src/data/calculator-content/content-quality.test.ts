@@ -17,6 +17,7 @@ import { vietnamSocialInsuranceFollowups } from "@/i18n/dictionaries/vietnam-soc
 import { chinaGrossNetFollowups } from "@/i18n/dictionaries/china-gross-net-followups";
 import { chinaIncomeTaxFollowups } from "@/i18n/dictionaries/china-income-tax-followups";
 import { chinaSocialInsuranceFollowups } from "@/i18n/dictionaries/china-social-insurance-followups";
+import { chinaVatFollowups } from "@/i18n/dictionaries/china-vat-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -477,6 +478,29 @@ describe("calculator content quality", () => {
       expect(page?.example).toEqual(copy.example);
       expect(page?.faqs[0]).toEqual(copy.faq);
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders China VAT direction formulas and both engine examples in every locale", () => {
+    const slug = "china-vat-calculator";
+    const exclusive = calculateBySlug(slug, { amount: "1000", rate: "13", direction: "exclusive" });
+    const inclusive = calculateBySlug(slug, { amount: "1000", rate: "13", direction: "inclusive" });
+    expect(exclusive && "results" in exclusive ? exclusive.results.map(({ value }) => value) : exclusive).toEqual([1000, 130, 1130]);
+    expect(inclusive && "results" in inclusive ? inclusive.results.map(({ value }) => value) : inclusive).toEqual([884.96, 115.04, 1000]);
+    for (const locale of supportedLocales) {
+      const copy = chinaVatFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} direction guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} exclusive/inclusive formulas`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched examples`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} classification limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
     }
   });
   it("renders German VAT purpose, formula, engine-matched examples, limits and FAQ in all locales", () => {
