@@ -26,6 +26,7 @@ import { spainGrossNetFollowups } from "../src/i18n/dictionaries/spain-gross-net
 import { japanOvertimeFollowups } from "../src/i18n/dictionaries/japan-overtime-followups";
 import { japanNightHolidayFollowups } from "../src/i18n/dictionaries/japan-night-holiday-followups";
 import { franceOvertimeFollowups } from "../src/i18n/dictionaries/france-overtime-followups";
+import { netherlandsHolidayFollowups } from "../src/i18n/dictionaries/netherlands-holiday-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -852,6 +853,28 @@ test.describe("Policy calculator worked examples", () => {
     await page.locator("#france-overtime-pay-calculator-multiplier").fill("1.5");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("240");
+  });
+
+  test("Netherlands holiday editorial is localized in SSR and the calculator returns the documented example", async ({ page }) => {
+    for (const locale of ["ko", "en", "nl", "de"] as const) {
+      const response = await page.goto("/" + locale + "/calculators/netherlands-holiday-allowance-calculator");
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toContain(netherlandsHolidayFollowups[locale].formula);
+      expect(html).toContain(netherlandsHolidayFollowups[locale].example?.answer ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("canonical");
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+
+    await page.goto("/nl/calculators/netherlands-holiday-allowance-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#netherlands-holiday-allowance-calculator-salary").fill("50000");
+    await page.locator("#netherlands-holiday-allowance-calculator-rate").fill("8");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("4.000");
   });
 });
 

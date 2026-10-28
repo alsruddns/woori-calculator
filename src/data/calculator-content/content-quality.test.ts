@@ -9,6 +9,7 @@ import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
 import { japanNightHolidayFollowups } from "@/i18n/dictionaries/japan-night-holiday-followups";
 import { franceOvertimeFollowups } from "@/i18n/dictionaries/france-overtime-followups";
+import { netherlandsHolidayFollowups } from "@/i18n/dictionaries/netherlands-holiday-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -299,6 +300,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} current-engine formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Netherlands holiday-allowance assumptions and engine-matched example in every locale", () => {
+    const slug = "netherlands-holiday-allowance-calculator";
+    const output = calculateBySlug(slug, { salary: "50000", rate: "8" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([50000, 8, 4000]);
+    for (const locale of supportedLocales) {
+      const copy = netherlandsHolidayFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and assumed rate`).toBeTruthy();
+      expect(copy.howTo, `${locale} input meaning`).toBeTruthy();
+      expect(copy.formula, `${locale} current-engine formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
