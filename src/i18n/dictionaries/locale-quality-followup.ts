@@ -3,6 +3,7 @@ import type { LocaleDictionary, LocalizedCalculatorContent } from "@/i18n/dictio
 import { auSgPayrollTaxFollowups } from "@/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
+import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
 
 export type LocaleFollowup = Partial<Record<string, { description?: string; howTo?: string; formula?: string; exampleNote?: string; faq?: { question: string; answer: string } }>>;
 
@@ -968,8 +969,9 @@ export function improveLocalizedQualityContent(locale: SupportedLocale, content:
   const auSgDescriptionsForLocale = auSgPolicyContextDescriptions[locale] ?? {};
   const auSgPayrollTaxForLocale = auSgPayrollTaxFollowups[locale] ?? {};
   const germanyVatForLocale = germanyVatFollowups[locale] ?? {};
+  const hkPolicyForLocale = hkPolicyFollowups[locale] ?? {};
   return Object.fromEntries(Object.entries(content).map(([slug, page]) => {
-    const addition = { ...auSgPayrollTaxForLocale[slug], ...additions[slug], ...germanyVatForLocale[slug] };
+    const addition = { ...auSgPayrollTaxForLocale[slug], ...additions[slug], ...germanyVatForLocale[slug], ...hkPolicyForLocale[slug] };
     const singaporeGrossNetCorrection = slug === "singapore-gross-net-salary-calculator" ? singaporeGrossNetCorrections[locale] : undefined;
     const exampleNotes = [addition.exampleNote ?? batchNotes[slug], nextBatchNotes[slug], slug === "ratio" ? undefined : reviewedBatchNotes[slug], secondReviewedBatchNotes[slug], thirdReviewedBatchNotes[slug], fourthReviewedBatchNotes[slug], fifthReviewedBatchNotes[slug], sixthReviewedBatchNotes[slug], seventhReviewedBatchNotes[slug], eighthReviewedBatchNotes[slug], ninthReviewedBatchNotes[slug], tenthReviewedBatchNotes[slug], eleventhReviewedBatchNotes[slug], twelfthReviewedBatchNotes[slug], thirteenthReviewedBatchNotes[slug], fourteenthReviewedBatchNotes[slug], vatPolicyNotes[slug], policyExampleNotes[slug], fourthPolicyNotes[slug], fifthPolicyNotes[slug], sixthPolicyNotes[slug], seventhPolicyNotes[slug], unemploymentBenefitNotes[slug], slug === "japan-consumption-tax-calculator" ? japanPolicyScheduleNotes[locale] : undefined].filter((note): note is string => Boolean(note));
     const exampleNote = exampleNotes.join(" ");

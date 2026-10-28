@@ -17,6 +17,7 @@ import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-spe
 import { calculateCountrySpecific } from "@/calculators/policy/country-specific";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
+import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -45,6 +46,42 @@ describe("calculator content quality", () => {
       expect(page?.example.answer).toContain(copy?.exampleNote);
       expect(page?.faqs[0]).toEqual(copy?.faq);
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("keeps Hong Kong salary-tax, MPF, and stamp-duty content distinct and engine-matched in all locales", () => {
+    const expected = {
+      "hong-kong-salary-tax-calculator": { input: { income: "100000" }, values: [100000, 4000, 15000, 4000] },
+      "hong-kong-mpf-calculator": { input: { salary: "20000" }, values: [1000, 1000, 2000] },
+      "hong-kong-stamp-duty-calculator": { input: { propertyValue: "5000000" }, values: [50000] },
+    } as const;
+    const sources = [
+      "https://www.ird.gov.hk/eng/pdf/2026/BriefGuide20252026.pdf",
+      "https://www.mpfa.org.hk/en/mpf-system/mandatory-contributions/employees",
+      "https://www.ird.gov.hk/eng/faq/avd.htm?module=inline&pgtype=article",
+    ];
+    const defs = Object.values(expected).map((_, index) => publishedCalculatorPages.find((page) => page.slug === Object.keys(expected)[index]));
+    expect(defs.every((definition) => definition?.countryCode === "HK")).toBe(true);
+    for (const source of sources) expect(defs[0]?.sources?.some((item) => item.url === source && item.checkedAt === "2026-10-28")).toBe(true);
+    for (const [slug, sample] of Object.entries(expected)) {
+      const output = calculateGlobalCountrySpecific(slug, sample.input);
+      expect(output && "results" in output ? output.results.map(({ value }) => value) : output, slug).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const copy = hkPolicyFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(copy?.description, `${locale}/${slug} purpose and scope`).toBeTruthy();
+        expect(copy?.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
+        expect(copy?.formula, `${locale}/${slug} engine formula`).toBeTruthy();
+        expect(copy?.exampleNote, `${locale}/${slug} worked example`).toBeTruthy();
+        expect(copy?.faq?.question, `${locale}/${slug} FAQ question`).toBeTruthy();
+        expect(copy?.faq?.answer, `${locale}/${slug} limitation`).toBeTruthy();
+        expect(page?.description).toContain(copy?.description);
+        expect(page?.howTo).toBe(copy?.howTo);
+        expect(page?.formula).toBe(copy?.formula);
+        expect(page?.example.answer).toContain(copy?.exampleNote);
+        expect(page?.faqs[0]).toEqual(copy?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+        if (locale !== "en") expect(copy?.description).not.toBe(hkPolicyFollowups.en?.[slug]?.description);
+      }
     }
   });
   it("validates the South Korea 2026 unemployment example against the engine and all locale pages", () => {

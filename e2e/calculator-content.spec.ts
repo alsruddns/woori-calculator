@@ -3,6 +3,7 @@ import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReview
 import { auSgPayrollTaxFollowups } from "../src/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { singaporeGrossNetCorrections } from "../src/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "../src/i18n/dictionaries/germany-vat-followups";
+import { hkPolicyFollowups } from "../src/i18n/dictionaries/hk-policy-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -417,6 +418,56 @@ test.describe("Japan wage premiums and German VAT examples", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "Japan/Germany policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("Hong Kong policy calculators", () => {
+  const slugs = ["hong-kong-salary-tax-calculator", "hong-kong-mpf-calculator", "hong-kong-stamp-duty-calculator"] as const;
+  for (const locale of ["ko", "en", "zh-tw"] as const) {
+    for (const slug of slugs) {
+      test(locale + "/" + slug + " has localized content in initial HTML", async ({ page }) => {
+        const copy = hkPolicyFollowups[locale]?.[slug];
+        const response = await page.goto("/" + locale + "/calculators/" + slug);
+        expect(response?.status()).toBe(200);
+        const html = await response!.text();
+        expect(html).toContain(copy?.description ?? "");
+        expect(html).toContain(copy?.formula ?? "");
+        expect(html).toContain(copy?.exampleNote ?? "");
+        expect(html).toContain(copy?.faq?.question ?? "");
+        expect(html.toLowerCase()).toContain("canonical");
+        expect(html.toLowerCase()).toContain("hreflang");
+        expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+        await expect(page.locator("article")).toContainText(copy?.faq?.answer ?? "");
+      });
+    }
+  }
+
+  test("calculator examples run and Hong Kong policy notes fit the tested viewports", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/hong-kong-salary-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#hong-kong-salary-tax-calculator-income").fill("100000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("4,000");
+
+    await page.goto("/en/calculators/hong-kong-mpf-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#hong-kong-mpf-calculator-salary").fill("20000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("2,000");
+
+    await page.goto("/en/calculators/hong-kong-stamp-duty-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#hong-kong-stamp-duty-calculator-propertyValue").fill("5000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("50,000");
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Hong Kong content at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });
