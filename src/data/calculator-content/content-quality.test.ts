@@ -37,6 +37,7 @@ import { calculateBySlug } from "@/calculators/calculate";
 import { usPaycheckFollowups } from "@/i18n/dictionaries/us-paycheck-followups";
 import { usIncomeTaxFollowups } from "@/i18n/dictionaries/us-income-tax-followups";
 import { usSalesTaxFollowups } from "@/i18n/dictionaries/us-sales-tax-followups";
+import { us401kFollowups } from "@/i18n/dictionaries/us-401k-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -195,6 +196,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders the U.S. 401(k) contribution projection and example in every locale", () => {
+    const slug = "us-401k-calculator";
+    const output = calculateBySlug(slug, { annualSalary: "100000", annualContribution: "6000", matchRate: "50", matchCap: "6", rate: "6", years: "10" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([60000, 30000, 33524.06, 123524.06]);
+    for (const locale of supportedLocales) {
+      const copy = us401kFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

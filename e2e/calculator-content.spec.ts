@@ -45,6 +45,7 @@ import { italyVatFollowups } from "../src/i18n/dictionaries/italy-vat-followups"
 import { usPaycheckFollowups } from "../src/i18n/dictionaries/us-paycheck-followups";
 import { usIncomeTaxFollowups } from "../src/i18n/dictionaries/us-income-tax-followups";
 import { usSalesTaxFollowups } from "../src/i18n/dictionaries/us-sales-tax-followups";
+import { us401kFollowups } from "../src/i18n/dictionaries/us-401k-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3066,6 +3067,37 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#us-sales-tax-calculator-direction").selectOption("inclusive");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("100");
+    expect(errors).toEqual([]);
+  });
+
+  test("U.S. 401(k) projection explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = us401kFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/us-401k-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("U.S. 401(k) calculator matches the contribution and match projection", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/us-401k-calculator");
+    await waitForCalculatorHydration(page);
+    for (const [field, value] of Object.entries({ annualSalary: "100000", annualContribution: "6000", matchRate: "50", matchCap: "6", rate: "6", years: "10" })) {
+      await page.locator(`#us-401k-calculator-${field}`).fill(value);
+    }
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("123,524.06");
+    await expect(page.locator("[aria-live='polite']")).toContainText("33,524.06");
     expect(errors).toEqual([]);
   });
 });
