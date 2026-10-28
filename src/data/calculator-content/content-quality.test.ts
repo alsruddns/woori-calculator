@@ -13,6 +13,7 @@ import { netherlandsHolidayFollowups } from "@/i18n/dictionaries/netherlands-hol
 import { brazilThirteenthFollowups } from "@/i18n/dictionaries/brazil-thirteenth-followups";
 import { vietnamGrossNetFollowups } from "@/i18n/dictionaries/vietnam-gross-net-followups";
 import { vietnamIncomeTaxFollowups } from "@/i18n/dictionaries/vietnam-income-tax-followups";
+import { vietnamSocialInsuranceFollowups } from "@/i18n/dictionaries/vietnam-social-insurance-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -383,6 +384,27 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} configured progressive formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} policy limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
+    }
+  });
+  it("renders Vietnam social-insurance entered-rate example and legal-scope limits in every locale", () => {
+    const slug = "vietnam-social-insurance-calculator";
+    const output = calculateBySlug(slug, { salary: "30000000", rate: "10.5" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([30000000, 10.5, 3150000]);
+    for (const locale of supportedLocales) {
+      const copy = vietnamSocialInsuranceFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} entered-rate formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} legal limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

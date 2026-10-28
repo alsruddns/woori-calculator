@@ -30,6 +30,7 @@ import { netherlandsHolidayFollowups } from "../src/i18n/dictionaries/netherland
 import { brazilThirteenthFollowups } from "../src/i18n/dictionaries/brazil-thirteenth-followups";
 import { vietnamGrossNetFollowups } from "../src/i18n/dictionaries/vietnam-gross-net-followups";
 import { vietnamIncomeTaxFollowups } from "../src/i18n/dictionaries/vietnam-income-tax-followups";
+import { vietnamSocialInsuranceFollowups } from "../src/i18n/dictionaries/vietnam-social-insurance-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2589,6 +2590,35 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("18,000,000");
     await expect(page.locator("[aria-live='polite']")).toContainText("7.5");
+    expect(errors).toEqual([]);
+  });
+
+  test("Vietnam social-insurance content is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = vietnamSocialInsuranceFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/vietnam-social-insurance-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Vietnam social-insurance calculator returns the documented employee estimate", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/vietnam-social-insurance-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#vietnam-social-insurance-calculator-salary").fill("30000000");
+    await page.locator("#vietnam-social-insurance-calculator-rate").fill("10.5");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("3,150,000");
     expect(errors).toEqual([]);
   });
 });
