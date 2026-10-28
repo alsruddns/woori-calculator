@@ -124,7 +124,7 @@ export function calculateCountrySpecific(slug: string, input: Record<string, str
   if (slug.endsWith("-gross-net-salary-calculator")) {
     const frequency = input.frequency === "monthly" ? 12 : 1;
     const annual = amount * frequency;
-    const taxable = country === "CN" ? Math.max(0, annual - 60000) : country === "VN" ? Math.max(0, annual - (page.annualPersonalAllowance ?? 0)) : annual;
+    const taxable = country === "CN" ? Math.max(0, annual - 60000) : country === "VN" ? Math.max(0, annual - (page.annualPersonalAllowance ?? 0)) : country === "IN" ? Math.max(0, annual - Math.min(annual, page.annualStandardDeduction ?? 0)) : annual;
     let incomeTax = country === "DE" ? germanTax(taxable) : page.annualTaxBrackets ? progressive(taxable, page.annualTaxBrackets) : annual * number(input, "taxRate", country === "ES" ? 15 : country === "VN" ? 10 : 15) / 100;
     if (country === "IN" && taxable > 0) incomeTax -= Math.min(60000, incomeTax, Math.max(0, incomeTax - Math.max(0, taxable - 1200000)));
     const social = annual * number(input, "socialRate", page.socialEmployeeRate ?? 0) / 100;

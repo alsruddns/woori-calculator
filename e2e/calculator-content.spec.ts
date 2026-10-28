@@ -1,6 +1,7 @@
 ﻿import { expect, test, type Page } from "@playwright/test";
 import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
 import { indiaPolicyFollowups } from "../src/i18n/dictionaries/india-policy-followups";
+import { indiaSalaryStandardDeductionFollowups } from "../src/i18n/dictionaries/india-salary-standard-deduction-followups";
 import { auSgPayrollTaxFollowups } from "../src/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { singaporeGrossNetCorrections } from "../src/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "../src/i18n/dictionaries/germany-vat-followups";
@@ -2100,10 +2101,13 @@ test.describe("calculator input and result flows", () => {
       const response = await page.request.get("/" + locale + "/calculators/" + slug);
       expect(response?.status(), locale + "/" + slug).toBe(200);
       const html = await response!.text();
-      const content = indiaPolicyFollowups[locale][slug]!;
+      const content = slug === "india-gross-net-salary-calculator" ? indiaSalaryStandardDeductionFollowups[locale] : indiaPolicyFollowups[locale][slug]!;
       expect(html).toContain(content.howTo);
       expect(html).toContain(content.formula);
-      expect(html).toContain(content.exampleNote);
+      if (content.example) {
+        expect(html).toContain(content.example.question);
+        expect(html).toContain(content.example.answer);
+      } else expect(html).toContain(content.exampleNote);
       expect(html).toContain(content.faq?.question ?? "");
       expect(html).toMatch(/<h1\b/);
       expect(html).toMatch(/<h2\b/);
@@ -2138,7 +2142,7 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#india-gross-net-salary-calculator-salary").fill("1500000");
     await page.locator("#india-gross-net-salary-calculator-socialRate").fill("0");
     await page.locator('form button[type="submit"]').click();
-    await expect(page.locator("[aria-live='polite']")).toContainText("1,395,000");
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,406,250");
     for (const width of viewports) {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));

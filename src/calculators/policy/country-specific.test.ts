@@ -66,6 +66,16 @@ describe("country-specific calculator models", () => {
     expect(values("india-income-tax-calculator", { income: "1200000" })[1]).toBe(0);
   });
 
+  it("applies the India new-regime salary standard deduction only to gross-net salary income", () => {
+    expect(countryRates.IN?.annualStandardDeduction).toBe(75000);
+    expect(values("india-gross-net-salary-calculator", { salary: "50000", frequency: "annual", socialRate: "0" })).toEqual([50000, 0, 0, 50000, 4166.67]);
+    expect(values("india-gross-net-salary-calculator", { salary: "75000", frequency: "annual", socialRate: "0" })).toEqual([75000, 0, 0, 75000, 6250]);
+    const example = values("india-gross-net-salary-calculator", { salary: "1500000", frequency: "annual", socialRate: "0" });
+    expect(example).toEqual([1500000, 93750, 0, 1406250, 117187.5]);
+    expect(values("india-gross-net-salary-calculator", { salary: "125000", frequency: "monthly", socialRate: "0" })).toEqual(example);
+    expect(values("india-income-tax-calculator", { income: "1500000" })[1]).toBe(105000);
+  });
+
   it("rejects negative, excessive and out-of-range inputs without non-finite output", () => {
     expect(calculateBySlug("france-overtime-pay-calculator", { salary: "20", hours: "-1", multiplier: "1.5" })).toHaveProperty("error");
     expect(calculateBySlug("india-ppf-calculator", { monthlyDeposit: "1", rate: "8", years: "61" })).toHaveProperty("error");
