@@ -6,9 +6,9 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 152
+- Content COMPLETE: 153
 - VALIDATING: 0
-- Content DRAFT: 17
+- Content DRAFT: 16
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
@@ -21,6 +21,8 @@ This register separates earlier result-note work from full content completion. A
 `us-paycheck-calculator`: connected calculator-specific purpose, input guidance, implemented annualization/federal-band/FICA formula, an USD 80,000 single-filer example, interpretation, and limitations in all 26 locales. Current engine output is USD 8,770 modeled federal tax, USD 6,120 combined Social Security/Medicare, USD 0 entered state/local estimate, USD 65,110 annual net, and USD 5,425.83 monthly average. This reflects configured code assumptions only; source rules/effective date and individual withholding are not revalidated, so policy remains BLOCKED. Focused content tests passed (51/51); Playwright passed all 26 locale SSR checks and the live annual calculation (2/2). No engine or UI changes. Native-speaker review not performed. Next DRAFT: `us-income-tax-calculator`.
 
 `us-income-tax-calculator`: replaced generic income-tax copy with an engine-specific explanation and corrected the localized input label to clarify that the entered annual income is before the configured standard deduction. The USD 100,000 Single example yields USD 83,900 modeled taxable income, USD 13,170 modeled federal tax, and a 15.70% average rate on that taxable base. These are configured-engine outputs, not verified current legal liabilities; policy remains BLOCKED. Focused content tests passed (52/52); TypeScript, changed-file ESLint and diff check passed. Playwright passed all 26 locale SSR checks and the live calculation (2/2). No engine formula changed. Native-speaker review not performed. Next DRAFT: `us-sales-tax-calculator`.
+
+`us-sales-tax-calculator`: added localized purpose, rate-input guidance, inclusive/exclusive formulas, interpretation and scope FAQ in all 26 locales. Both USD 100 before tax and USD 108.25 tax-included at the user-entered 8.25% example produce a USD 8.25 tax and USD 108.25 total. The rate is illustrative only; location/product classification and current legal rate are not verified, so policy remains BLOCKED. Focused content tests passed (53/53); TypeScript, changed-file ESLint and diff check passed. Playwright passed all 26 locale SSR checks and both add/extract interactions (2/2). No engine changes. Native-speaker review not performed. Next DRAFT: `us-401k-calculator`.
 
 ## Completion gate
 
@@ -251,7 +253,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `italy-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents rate-based inclusive/exclusive arithmetic; product/service classification, applicable rate and current legal treatment remain unverified/outside the model. |
 | `us-paycheck-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the configured federal bands, standard deduction, simplified FICA model and entered state/local rate; current legal alignment, withholding choices, credits and individual deductions are not verified/modelled. |
 | `us-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured marginal bands and standard deduction; deduction eligibility and current-year legal alignment, personal credits/deductions, special income and state/local tax are not fully verified or modeled. |
-| `us-sales-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `us-sales-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents user-entered rate arithmetic only; state/local sourcing, product classification, exemptions and current legal rate are not verified or modeled. |
 | `us-401k-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `us-roth-ira-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `us-capital-gains-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |

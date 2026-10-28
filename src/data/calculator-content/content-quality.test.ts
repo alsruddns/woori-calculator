@@ -36,6 +36,7 @@ import { calculateCountrySpecific } from "@/calculators/policy/country-specific"
 import { calculateBySlug } from "@/calculators/calculate";
 import { usPaycheckFollowups } from "@/i18n/dictionaries/us-paycheck-followups";
 import { usIncomeTaxFollowups } from "@/i18n/dictionaries/us-income-tax-followups";
+import { usSalesTaxFollowups } from "@/i18n/dictionaries/us-sales-tax-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -177,6 +178,28 @@ describe("calculator content quality", () => {
       expect(page?.example).toEqual(copy.example);
       expect(page?.faqs[0]).toEqual(copy.faq);
       expect(page?.fields.income.label).toBe(copy.fieldLabels.income);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders U.S. sales-tax rate arithmetic and examples in every locale", () => {
+    const slug = "us-sales-tax-calculator";
+    const exclusive = calculateBySlug(slug, { amount: "100", rate: "8.25", direction: "exclusive" });
+    const inclusive = calculateBySlug(slug, { amount: "108.25", rate: "8.25", direction: "inclusive" });
+    expect(exclusive && "results" in exclusive ? exclusive.results.map(({ value }) => value) : exclusive).toEqual([100, 8.25, 108.25]);
+    expect(inclusive && "results" in inclusive ? inclusive.results.map(({ value }) => value) : inclusive).toEqual([100, 8.25, 108.25]);
+    for (const locale of supportedLocales) {
+      const copy = usSalesTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
     }
   });
