@@ -17,6 +17,7 @@ import { francePolicyFollowups } from "../src/i18n/dictionaries/france-policy-fo
 import { netherlandsPolicyFollowups } from "../src/i18n/dictionaries/netherlands-policy-followups";
 import { brazilPayrollFollowups } from "../src/i18n/dictionaries/brazil-payroll-followups";
 import { brazilGrossNetFollowups } from "../src/i18n/dictionaries/brazil-gross-net-followups";
+import { japanSalaryFollowups } from "../src/i18n/dictionaries/japan-salary-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -152,6 +153,57 @@ test("Brazil gross-to-net assumptions render in every locale and calculate the d
     await page.setViewportSize({ width, height: 900 });
     const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
     expect(dimensions.body, "Brazil gross-net page at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+  }
+  expect(errors).toEqual([]);
+});
+
+for (const [slug, copyKey] of [["japan-annual-salary-calculator", "annual"], ["japan-monthly-salary-calculator", "monthly"]] as const) {
+  test(slug + " localized model content is present in SSR HTML", async ({ page }) => {
+    const responses = await Promise.all(locales.map(async (locale) => {
+      const copy = japanSalaryFollowups[locale][copyKey];
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response.status()).toBe(200);
+      const html = await response.text();
+      expect(html).toContain(copy.description);
+      expect(html).toContain(copy.howTo);
+      expect(html).toContain(copy.formula);
+      expect(html).toContain(copy.example!.answer);
+      expect(html).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toMatch(/rel=["']canonical["']/i);
+      expect(html).toMatch(/hrefLang=/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      return locale;
+    }));
+    expect(responses).toHaveLength(26);
+  });
+}
+
+test("Japan annual and monthly salary examples calculate and fit all required widths", async ({ page }) => {
+  const errors = collectBrowserErrors(page);
+  await page.goto("/ja/calculators/japan-annual-salary-calculator");
+  await waitForCalculatorHydration(page);
+  await page.locator("#japan-annual-salary-calculator-annualSalary").fill("3600000");
+  await page.locator("#japan-annual-salary-calculator-ageGroup").selectOption("under40");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("2,872,272");
+  for (const width of viewports) {
+    await page.setViewportSize({ width, height: 900 });
+    const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+    expect(dimensions.body, "Japan annual salary at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+  }
+
+  await page.goto("/ja/calculators/japan-monthly-salary-calculator");
+  await waitForCalculatorHydration(page);
+  await page.locator("#japan-monthly-salary-calculator-monthlySalary").fill("300000");
+  await page.locator("#japan-monthly-salary-calculator-ageGroup").selectOption("under40");
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("239,356");
+  for (const width of viewports) {
+    await page.setViewportSize({ width, height: 900 });
+    const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+    expect(dimensions.body, "Japan monthly salary at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
   }
   expect(errors).toEqual([]);
 });

@@ -22,6 +22,8 @@ describe("Japan calculator calculations", () => {
     expect("results" in annual).toBe(true);
     expect("results" in monthly).toBe(true);
     if (!("results" in annual) || !("results" in monthly)) return;
+    expect(annual.results.map(({ value }) => value)).toEqual([2440000, 47068, 153260, 527400, 727728, 2872272, 239356]);
+    expect(monthly.results.map(({ value }) => value)).toEqual([3600000, 3922, 12772, 43950, 60644, 239356]);
     expect(annual.results[5]?.value).toBeGreaterThan(0);
     expect(monthly.results[0]?.value).toBe(3600000);
     expect(monthly.results[5]?.value).toBe(Math.round(Number(annual.results[5]?.value) / 12));
