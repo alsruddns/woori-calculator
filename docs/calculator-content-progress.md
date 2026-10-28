@@ -6,9 +6,9 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 80
+- Content COMPLETE: 83
 - VALIDATING: 0
-- Content DRAFT: 89
+- Content DRAFT: 86
 - Policy VERIFIED: 9 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, minimum-wage, japan-overtime-pay-calculator, japan-night-holiday-pay-calculator, germany-vat-calculator)
 - Policy PARTIAL: 8 (japan-consumption-tax-calculator; future schedule not date-modeled; canada-gst-hst-calculator; province/place classification absent; australia-income-tax-calculator; Medicare levy/offsets excluded; australia-superannuation-calculator; eligibility/contribution caps/tax excluded; singapore-cpf-calculator; graduated PR and additional-wage rules not modeled; severance-pay; eligibility and statutory average-wage calculation omitted; social-insurance; exact eligibility/pay-base adjustments excluded; unemployment-benefit; fixed 8-hour lower limit and monthly-wage × 3 ÷ 90 approximation do not establish eligibility or a legal personal daily wage)
 - Policy BLOCKED: 84 (including withholding-tax-3-3)
@@ -26,7 +26,7 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 
 ## Latest policy/content batch (2026-10-28): Australia tax/super and Singapore CPF
 
-`australia-income-tax-calculator`, `australia-superannuation-calculator`, and `singapore-cpf-calculator`: added individually scoped worked examples to all 26 locales (78 localized calculator/locale records). Engine checks confirm AUD 80,000 gives AUD 14,520 income tax and 18.15% average rate in the configured resident 2026–27 schedule; AUD 100,000 salary with AUD 6,000 employee contribution, 12% employer, 0% return for one year projects AUD 18,000; SGD 6,000 monthly ordinary wages at age 35 gives SGD 1,200 employee + SGD 1,020 employer = SGD 2,220 under the configured full-rate category. ATO sources confirm the 2026–27 resident bands, SG 12% from 2025-07-01, and SG contribution cap/rules caveats. CPF Board confirms full contribution rates from 2026-01-01 and the SGD 8,000 ordinary-wage ceiling. All three policy entries remain PARTIAL because model exclusions affect the user's total liability/contribution. Source URLs checked 2026-10-28. Focused engine/content/audit tests passed (13 tests); TypeScript, lint and diff checks passed; Playwright passed 27 cases for locale SSR, the three live calculations and eight viewport widths with no horizontal overflow. Source URLs opened and compared this run: 17 total cumulative. No core calculation formula was changed.
+`australia-income-tax-calculator`, `australia-superannuation-calculator`, and `singapore-cpf-calculator`: added individually scoped worked examples and additional calculator-specific policy context in all 26 locales (78 localized calculator/locale records). Engine checks confirm AUD 80,000 gives AUD 14,520 income tax and 18.15% average rate in the configured resident 2026–27 schedule; AUD 100,000 salary with AUD 6,000 employee contribution, 12% employer, 0% return for one year projects AUD 18,000; SGD 6,000 monthly ordinary wages at age 35 gives SGD 1,200 employee + SGD 1,020 employer = SGD 2,220 under the configured full-rate category. ATO sources confirm the 2026–27 resident bands, SG 12% from 2025-07-01, and SG contribution cap/rules caveats. CPF Board confirms full contribution rates from 2026-01-01 and the SGD 8,000 ordinary-wage ceiling. All three policy entries remain PARTIAL because model exclusions affect the user's total liability/contribution. Content is COMPLETE for all three; focused engine/content/audit tests: 17 passed; TypeScript, lint and diff checks passed. Playwright passed 27/27: all 26 localized SSR cases, three live calculations, and all eight viewport widths on each calculator with no horizontal overflow/page errors. No core calculation formula was changed. Source URLs checked 2026-10-28. Native-speaker review not performed.
 
 ## Latest policy/content batch (2026-10-28): South Korea minimum wage, severance, employee insurance
 
@@ -226,13 +226,13 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 | `canada-cpp-ei-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-rrsp-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `australia-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `australia-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | PARTIAL | Resident 2026–27 brackets source-checked; Medicare levy, offsets and non-resident rules excluded. |
+| `australia-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | Resident 2026–27 brackets source-checked; Medicare levy, offsets and non-resident rules excluded. |
 | `australia-gst-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | ATO confirms 10% on most goods/services; checked 2026-10-28. No GST-free classification. |
-| `australia-superannuation-calculator` | finance | POLICY | 26/26 | DRAFT | PARTIAL | ATO confirms 12% SG from 2025-07-01; eligibility, contribution caps, tax and fund fees are not modeled. |
+| `australia-superannuation-calculator` | finance | POLICY | 26/26 | COMPLETE | PARTIAL | ATO confirms 12% SG from 2025-07-01; eligibility, contribution caps, tax and fund fees are not modeled. |
 | `australia-stamp-duty-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `singapore-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `singapore-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `singapore-cpf-calculator` | salary | POLICY | 26/26 | DRAFT | PARTIAL | CPF Board 2026 full-rate table and SGD 8,000 OW ceiling source-checked; graduated PR, low-wage, additional-wage rules not modeled. |
+| `singapore-cpf-calculator` | salary | POLICY | 26/26 | COMPLETE | PARTIAL | CPF Board 2026 full-rate table and SGD 8,000 OW ceiling source-checked; graduated PR, low-wage, additional-wage rules not modeled. |
 | `singapore-gst-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | IRAS confirms 9% from 2024-01-01; checked 2026-10-28. Transaction transition/exemption classification is not modeled. |
 | `hong-kong-salary-tax-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `hong-kong-mpf-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -259,4 +259,4 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 
 ## Next batch queue
 
-Next: continue with country-policy calculators that can be described safely from the engine and official sources. The three South Korea pages remain DRAFT pending full content structure and browser verification. Keep the reviewed GST and Australia/CPF pages DRAFT until full calculator-specific page sections are authored and validated. Content completion is tracked separately from VERIFIED, PARTIAL, and BLOCKED policy review.
+Next: `australia-gross-net-salary-calculator`, `singapore-gross-net-salary-calculator`, and `singapore-income-tax-calculator`. Content completion is tracked separately from VERIFIED, PARTIAL, and BLOCKED policy review; policy source review does not prevent safe, engine-grounded localized content work.

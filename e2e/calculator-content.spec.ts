@@ -1,5 +1,5 @@
 ﻿import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -194,10 +194,13 @@ test.describe("Australia income/super and Singapore CPF examples", () => {
     test(locale + "/" + slug + " renders its localized worked example in SSR HTML", async ({ page }) => {
       const response = await page.goto("/" + locale + "/calculators/" + slug);
       const note = fifthPolicyExampleNotes[locale]?.[slug];
+      const context = auSgPolicyContextDescriptions[locale]?.[slug];
       expect(response?.status()).toBe(200);
       expect(note).toBeTruthy();
+      expect(context).toBeTruthy();
       const html = await response!.text();
       expect(html).toContain(note);
+      expect(html).toContain(context);
       expect(html).toMatch(/<h1\b/);
       expect(html).toMatch(/<h2\b/);
       expect(html.toLowerCase()).toContain("hreflang");
@@ -230,10 +233,13 @@ test.describe("Australia income/super and Singapore CPF examples", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("2,220");
 
-    for (const width of viewports) {
-      await page.setViewportSize({ width, height: 900 });
-      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
-      expect(dimensions.body, "policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    for (const slug of slugs) {
+      await page.goto("/en/calculators/" + slug);
+      for (const width of viewports) {
+        await page.setViewportSize({ width, height: 900 });
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, slug + " detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
     }
     expect(errors).toEqual([]);
   });
