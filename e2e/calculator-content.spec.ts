@@ -49,6 +49,7 @@ import { us401kFollowups } from "../src/i18n/dictionaries/us-401k-followups";
 import { usRothIraFollowups } from "../src/i18n/dictionaries/us-roth-ira-followups";
 import { usCapitalGainsFollowups } from "../src/i18n/dictionaries/us-capital-gains-followups";
 import { ukGrossNetFollowups } from "../src/i18n/dictionaries/uk-gross-net-followups";
+import { ukIncomeTaxFollowups } from "../src/i18n/dictionaries/uk-income-tax-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3194,6 +3195,31 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("45,357.40");
     await expect(page.locator("[aria-live='polite']")).toContainText("3,779.78");
+    expect(errors).toEqual([]);
+  });
+
+  test("UK income-tax details render in all locales and the marginal example works", async ({ page, request }) => {
+    for (const locale of locales) {
+      const copy = ukIncomeTaxFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/uk-income-tax-calculator");
+      expect(response.status(), locale).toBe(200);
+      const html = await response.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/uk-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#uk-income-tax-calculator-income").fill("60000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("11,432");
+    await expect(page.locator("[aria-live='polite']")).toContainText("19.05");
     expect(errors).toEqual([]);
   });
 });
