@@ -193,8 +193,8 @@ Next policy batch: `brazil-inss-calculator`, `brazil-irrf-calculator`, and `braz
 | `india-sip-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `india-ppf-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `india-nps-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `india-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | AY 2026?27 scenario description is explicit; current engine omits the ?75,000 standard deduction and payroll-specific deductions, so net pay is not legally complete. |
-| `india-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | Configured new-regime AY 2026?27 brackets and simplified Section 87A checked 2026-10-28; residence, special income, cess, surcharge and complete eligibility are not modeled. |
+| `india-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | AY 2026–27 scenario description is explicit; current engine omits the ₹75,000 standard deduction and payroll-specific deductions, so net pay is not legally complete. |
+| `india-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | Configured new-regime AY 2026–27 brackets and simplified Section 87A checked 2026-10-28; residence, special income, cess, surcharge and complete eligibility are not modeled. |
 | `brazil-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `brazil-inss-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `brazil-irrf-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
