@@ -8,6 +8,7 @@ import { malaysiaPolicyFollowups } from "../src/i18n/dictionaries/malaysia-polic
 import { malaysiaPhilippinesFollowups } from "../src/i18n/dictionaries/malaysia-philippines-followups";
 import { philippinesPayrollFollowups } from "../src/i18n/dictionaries/philippines-payroll-followups";
 import { uaeLaborVatFollowups } from "../src/i18n/dictionaries/uae-labor-vat-followups";
+import { newZealandPayrollSavingsFollowups } from "../src/i18n/dictionaries/new-zealand-payroll-savings-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -1798,6 +1799,69 @@ test.describe("calculator input and result flows", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "UAE VAT detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  test("New Zealand tax and KiwiSaver examples render in all locale SSR pages", async ({ page }) => {
+    test.setTimeout(120_000);
+    for (const locale of locales) for (const slug of ["new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-kiwisaver-calculator"] as const) {
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response?.status(), locale + "/" + slug).toBe(200);
+      const content = newZealandPayrollSavingsFollowups[locale][slug]!;
+      const html = await response!.text();
+      expect(html).toContain(content.formula);
+      expect(html).toContain(content.exampleNote);
+      expect(html).toContain(content.faq?.question ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("New Zealand tax and KiwiSaver flows work and fit eight viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    const slugs = ["new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-kiwisaver-calculator"] as const;
+    await page.goto("/en/calculators/new-zealand-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await expect(page.locator('article a[href*="ird.govt.nz/acclevy"]')).toBeVisible();
+    await page.locator("#new-zealand-gross-net-salary-calculator-salary").fill("60000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("48,729.50");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, slugs[0] + " at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/new-zealand-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await expect(page.locator('article a[href*="tax-rates-for-individuals"]')).toBeVisible();
+    await page.locator("#new-zealand-income-tax-calculator-income").fill("60000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("10,220.50");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, slugs[1] + " at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/new-zealand-kiwisaver-calculator");
+    await waitForCalculatorHydration(page);
+    await expect(page.locator('article a[href*="kiwisaver-changes"]')).toBeVisible();
+    await page.locator("#new-zealand-kiwisaver-calculator-annualSalary").fill("60000");
+    await page.locator("#new-zealand-kiwisaver-calculator-annualContribution").fill("2100");
+    await page.locator("#new-zealand-kiwisaver-calculator-employerRate").fill("3.5");
+    await page.locator("#new-zealand-kiwisaver-calculator-rate").fill("0");
+    await page.locator("#new-zealand-kiwisaver-calculator-years").fill("1");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("4,200");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, slugs[2] + " at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

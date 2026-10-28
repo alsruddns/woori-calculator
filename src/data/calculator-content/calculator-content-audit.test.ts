@@ -53,6 +53,10 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.mohre.gov.ae/assets/download/e82f7872/Federal%20Decree-Law%20No.%2033%20of%202021%20Regarding%20the%20Regulation%20of%20Employment%20Relationship%20and%20its%20amendments_638990571068264034.pdf.aspx",
   "https://tax.gov.ae/en/faq.aspx?keyword=What+is+the+standard+rate+of+VAT+in+the+UAE%3F",
   "https://tax.gov.ae/en/faq.aspx?keyword=Does+VAT+apply+to+all+goods+and+services",
+  "https://www.ird.govt.nz/en/income-tax/income-tax-for-individuals/tax-codes-and-tax-rates-for-individuals/tax-rates-for-individuals",
+  "https://www.ird.govt.nz/acclevy",
+  "https://www.ird.govt.nz/kiwisaver-changes",
+  "https://www.ird.govt.nz/kiwisaver/kiwisaver-individuals/growing-my-kiwisaver-account/employer-contributions-to-kiwisaver",
 ]);
 
 function buildAuditReport() {
@@ -180,7 +184,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(41);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(45);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

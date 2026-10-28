@@ -4,6 +4,7 @@ import { globalCountryCalculatorSlugs } from "@/data/calculator-content/country-
 import { locales, supportedLocales, type LocalizedCalculatorSlug } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { uaeLaborVatFollowups } from "@/i18n/dictionaries/uae-labor-vat-followups";
+import { newZealandPayrollSavingsFollowups } from "@/i18n/dictionaries/new-zealand-payroll-savings-followups";
 
 const values = (slug: string, input: Record<string, string>) => {
   const result = calculateBySlug(slug, input);
@@ -88,6 +89,27 @@ describe("global country calculators", () => {
     }
     expect(ko.calculators["uae-gratuity-calculator"]!.example.answer).toContain("AED 54,000");
     expect(getDictionary("en").calculators["uae-vat-calculator"]!.example.answer).toContain("AED 1,050");
+  });
+
+  it("matches New Zealand 2026-27 tax, ACC and KiwiSaver examples to the engine", () => {
+    expect(values("new-zealand-income-tax-calculator", { income: "60000" })).toEqual([60000, 10220.5, 17.03]);
+    expect(values("new-zealand-gross-net-salary-calculator", { salary: "60000", frequency: "annual" })).toEqual([60000, 10220.5, 0, 1050, 48729.5, 4060.79]);
+    expect(values("new-zealand-kiwisaver-calculator", { annualSalary: "60000", annualContribution: "2100", employerRate: "3.5", rate: "0", years: "1" })).toEqual([2100, 2100, 0, 4200]);
+  });
+
+  it("provides New Zealand-specific formula and examples in all 26 locales", () => {
+    const slugs = ["new-zealand-gross-net-salary-calculator", "new-zealand-income-tax-calculator", "new-zealand-kiwisaver-calculator"] as const;
+    for (const locale of supportedLocales) for (const slug of slugs) {
+      const page = getDictionary(locale).calculators[slug]!;
+      const copy = newZealandPayrollSavingsFollowups[locale][slug]!;
+      expect(page.formula, `${locale}/${slug} formula`).toBe(copy.formula);
+      expect(page.example.answer, `${locale}/${slug} example`).toContain("NZD");
+      expect(page.faqs[0]?.question, `${locale}/${slug} FAQ`).toBe(copy.faq?.question);
+      if (locale !== "en") expect(page.formula, `${locale}/${slug} translation`).not.toBe(getDictionary("en").calculators[slug]!.formula);
+    }
+    expect(getDictionary("en").calculators["new-zealand-gross-net-salary-calculator"]!.example.answer).toContain("48,729.50");
+    expect(getDictionary("en").calculators["new-zealand-income-tax-calculator"]!.example.answer).toContain("10,220.50");
+    expect(getDictionary("en").calculators["new-zealand-kiwisaver-calculator"]!.example.answer).toContain("4,200");
   });
 
   it("matches UAE end-of-service Article 51 accrual after one completed year", () => {
