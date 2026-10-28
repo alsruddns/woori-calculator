@@ -54,6 +54,7 @@ import { ukNationalInsuranceFollowups } from "../src/i18n/dictionaries/uk-nation
 import { ukStampDutyFollowups } from "../src/i18n/dictionaries/uk-stamp-duty-followups";
 import { ukPensionFollowups } from "../src/i18n/dictionaries/uk-pension-followups";
 import { canadaGrossNetFollowups } from "../src/i18n/dictionaries/canada-gross-net-followups";
+import { canadaIncomeTaxFollowups } from "../src/i18n/dictionaries/canada-income-tax-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3327,6 +3328,31 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("47,164.25");
     await expect(page.locator("[aria-live='polite']")).toContainText("3,930.35");
+    expect(errors).toEqual([]);
+  });
+
+  test("Canada income-tax details render in all locales and the federal model works", async ({ page, request }) => {
+    for (const locale of locales) {
+      const copy = canadaIncomeTaxFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/canada-income-tax-calculator");
+      expect(response.status(), locale).toBe(200);
+      const html = await response.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/canada-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#canada-income-tax-calculator-income").fill("60000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("8,496.00");
+    await expect(page.locator("[aria-live='polite']")).toContainText("14.16");
     expect(errors).toEqual([]);
   });
 });

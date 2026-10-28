@@ -46,6 +46,7 @@ import { ukNationalInsuranceFollowups } from "@/i18n/dictionaries/uk-national-in
 import { ukStampDutyFollowups } from "@/i18n/dictionaries/uk-stamp-duty-followups";
 import { ukPensionFollowups } from "@/i18n/dictionaries/uk-pension-followups";
 import { canadaGrossNetFollowups } from "@/i18n/dictionaries/canada-gross-net-followups";
+import { canadaIncomeTaxFollowups } from "@/i18n/dictionaries/canada-income-tax-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -391,6 +392,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("explains Canada's configured federal marginal-band model in every locale", () => {
+    const slug = "canada-income-tax-calculator";
+    const result = calculateBySlug(slug, { income: "60000" });
+    expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual([60000, 8496, 14.16]);
+    for (const locale of supportedLocales) {
+      const copy = canadaIncomeTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input`).toBeTruthy();
+      expect(copy.formula, `${locale} configured bands`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
