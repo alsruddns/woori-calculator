@@ -22,6 +22,7 @@ import { taiwanGrossNetFollowups } from "@/i18n/dictionaries/taiwan-gross-net-fo
 import { taiwanIncomeTaxFollowups } from "@/i18n/dictionaries/taiwan-income-tax-followups";
 import { taiwanLaborInsuranceFollowups } from "@/i18n/dictionaries/taiwan-labor-insurance-followups";
 import { taiwanVatFollowups } from "@/i18n/dictionaries/taiwan-vat-followups";
+import { italyGrossNetFollowups } from "@/i18n/dictionaries/italy-gross-net-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -584,6 +585,27 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} exclusive/inclusive formulas`).toBeTruthy();
       expect(copy.example?.answer, `${locale} engine-matched examples`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
+    }
+  });
+  it("renders Italy gross-to-net configured bands and annualized example in every locale", () => {
+    const slug = "italy-gross-net-salary-calculator";
+    const output = calculateBySlug(slug, { salary: "3000", frequency: "monthly", socialRate: "0" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([36000, 9080, 0, 26920, 2243.33]);
+    for (const locale of supportedLocales) {
+      const copy = italyGrossNetFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} frequency and contribution guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} annual progressive formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
