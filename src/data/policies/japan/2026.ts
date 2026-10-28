@@ -1,4 +1,4 @@
-/** Japan reference assumptions checked 2026-10-13. Keep rates separate from formulas. */
+/** Japan reference assumptions; wage premium rule source rechecked 2026-10-28. Keep rates separate from formulas. */
 export const japanPolicy2026 = {
   updatedAt: "2026-10-13",
   incomeTaxYear: 2026,
@@ -64,6 +64,6 @@ export const japanPolicy2026 = {
     pension: "https://www.nenkin.go.jp/service/kounen/hokenryo/ryogaku/ryogakuhyo/20200825.html",
     employmentInsurance: "https://www.mhlw.go.jp/stf/newpage_71570.html",
     residentTax: "https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju",
-    overtime: "https://www.check-roudou.mhlw.go.jp/study/roudousya_jikangai.html",
+    overtime: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudouseisaku/chushoukigyou/joken_kankyou_rule.html",
   },
 } as const;

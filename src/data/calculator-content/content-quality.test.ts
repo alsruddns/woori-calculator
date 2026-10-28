@@ -4,8 +4,9 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
+import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -59,6 +60,29 @@ describe("calculator content quality", () => {
         expect(supportedLocalesForCalculator(slug)).toContain(locale);
       }
     }
+  });
+  it("keeps Japanese wage-premium and German VAT examples localized to checked official rules", () => {
+    const pages = {
+      "japan-overtime-pay-calculator": "mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudouseisaku/chushoukigyou/joken_kankyou_rule.html",
+      "japan-night-holiday-pay-calculator": "mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudouseisaku/chushoukigyou/joken_kankyou_rule.html",
+      "germany-vat-calculator": "gesetze-im-internet.de/ustg_1980/__12.html",
+    };
+    for (const [slug, source] of Object.entries(pages)) {
+      const definition = publishedCalculatorPages.find((page) => page.slug === slug);
+      expect(definition?.sources?.some((item) => item.url.includes(source) && item.checkedAt === "2026-10-28"), `${slug} checked source`).toBe(true);
+      for (const locale of locales) {
+        const note = seventhPolicyExampleNotes[locale]?.[slug];
+        expect(note, `${locale}/${slug} authored example`).toBeTruthy();
+        expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.example.answer).toContain(note);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      }
+    }
+    expect(seventhPolicyExampleNotes).toHaveProperty("ko");
+    expect(seventhPolicyExampleNotes).toHaveProperty("en");
+    expect(Object.keys(seventhPolicyExampleNotes)).toHaveLength(26);
+    const overtime = calculateJapanOvertimePay({ wageMode: "hourly", hourlyWage: "1500", overtimeHours: "10", over60Hours: "0", overtimeRate: "25" });
+    expect("results" in overtime).toBe(true);
+    if ("results" in overtime) expect(overtime.results.map(({ value }) => value)).toEqual([15_000, 3_750, 18_750]);
   });
   it("keeps the South Korea VAT scope, official sources, and localized worked example", () => {
     const vat = publishedCalculatorPages.find((page) => page.slug === "vat");

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -240,6 +240,58 @@ test.describe("South Korea wage and employee policy examples", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "South Korea policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("Japan wage premiums and German VAT examples", () => {
+  const slugs = ["japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator", "germany-vat-calculator"] as const;
+  for (const [index, locale] of locales.entries()) {
+    const slug = slugs[index % slugs.length]!;
+    test(locale + "/" + slug + " includes the localized worked example in SSR HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      const note = seventhPolicyExampleNotes[locale]?.[slug];
+      expect(response?.status()).toBe(200);
+      expect(note).toBeTruthy();
+      const html = await response!.text();
+      expect(html).toContain(note);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html.toLowerCase()).toContain("canonical");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      await expect(page.locator("article")).toContainText(note ?? "");
+    });
+  }
+
+  test("matches the overtime, overlapping night premium, VAT result, and responsive widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/ja/calculators/japan-overtime-pay-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#japan-overtime-pay-calculator-hourlyWage").fill("1500");
+    await page.locator("#japan-overtime-pay-calculator-overtimeHours").fill("10");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("18,750");
+
+    await page.goto("/ja/calculators/japan-night-holiday-pay-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#japan-night-holiday-pay-calculator-hourlyWage").fill("1500");
+    await page.locator("#japan-night-holiday-pay-calculator-overtimeNightHours").fill("2");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("4,500");
+
+    await page.goto("/de/calculators/germany-vat-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#germany-vat-calculator-amount").fill("100");
+    await page.locator("#germany-vat-calculator-rate").fill("19");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("119");
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Japan/Germany policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

@@ -34,6 +34,8 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.nps.or.kr/pnsinfo/ntpsklg/getOHAF0038M0.do?menuId=MN24001113",
   "https://edi.nhis.or.kr/portal/images/popup/20251204_pop01longdesc.html",
   "https://edrm.ei.go.kr/ei/eih/eg/ei/eiEminsr/retrieveEi0102Info.do",
+  "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudouseisaku/chushoukigyou/joken_kankyou_rule.html",
+  "https://www.gesetze-im-internet.de/ustg_1980/__12.html",
 ]);
 
 function buildAuditReport() {
@@ -161,7 +163,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(23);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(25);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

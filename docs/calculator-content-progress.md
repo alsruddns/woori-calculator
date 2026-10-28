@@ -9,11 +9,11 @@ This register separates earlier result-note work from full content completion. A
 - Content COMPLETE: 72
 - VALIDATING: 0
 - Content DRAFT: 97
-- Policy VERIFIED: 6 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, minimum-wage)
+- Policy VERIFIED: 9 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, minimum-wage, japan-overtime-pay-calculator, japan-night-holiday-pay-calculator, germany-vat-calculator)
 - Policy PARTIAL: 7 (japan-consumption-tax-calculator; future schedule not date-modeled; canada-gst-hst-calculator; province/place classification absent; australia-income-tax-calculator; Medicare levy/offsets excluded; australia-superannuation-calculator; eligibility/contribution caps/tax excluded; singapore-cpf-calculator; graduated PR and additional-wage rules not modeled; severance-pay; eligibility and statutory average-wage calculation omitted; social-insurance; exact eligibility/pay-base adjustments excluded)
-- Policy BLOCKED: 88 (including withholding-tax-3-3)
+- Policy BLOCKED: 85 (including withholding-tax-3-3)
 - Policy PENDING: 0
-- Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 353 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
+- Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 345 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
 - Content completion and policy verification are tracked independently. The 97 DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Completion gate
@@ -31,6 +31,10 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 ## Latest policy/content batch (2026-10-28): South Korea minimum wage, severance, employee insurance
 
 `minimum-wage`, `severance-pay`, and `social-insurance`: added worked examples and scope notes in all 26 locales (78 localized calculator/locale records). Official source review: the Minimum Wage Commission confirms the 2026 KRW 10,320 hourly, KRW 82,560 daily (8h), and KRW 2,156,880 monthly (209h) values; minimum-wage policy is VERIFIED for this displayed standard schedule. The Employee Retirement Benefit Security Act Article 8, effective 2026-09-18, confirms at least 30 days of average wage per continuous-service year; MOEL's calculator confirms 3-month wage averaging and ordinarily uses regular wage when higher. Since this engine takes average daily wage directly and does not test eligibility or statutory average-wage rules, severance is PARTIAL. NHIS confirms 2026 health 7.19% and long-term care 0.9448%; NPS confirms employee pension share 4.75% and July 2026–June 2027 standard monthly income limits KRW 410,000–6,590,000; EI confirms worker unemployment insurance 0.9%. Insurance remains PARTIAL for eligibility, pay-base exemptions and settlement detail. Example outcomes match current engines: KRW 10,000/hour is KRW 320 below the minimum; one inclusive service year at entered KRW 100,000 average daily wage estimates KRW 3,000,000; July–December 2026 employee insurance at KRW 4,000,000 wage base totals KRW 388,696. Sources checked 2026-10-28. Engine/content/audit tests passed (23); Playwright passed 26 locale SSR cases and the live calculation/responsive case across eight widths with no horizontal overflow or browser page errors. Full regression: 1,112/1,112 unit tests, lint, typecheck, production build (4,423 static routes) passed. Native-speaker review not performed.
+
+## Latest policy/content batch (2026-10-28): Japan wage premiums and Germany VAT
+
+`japan-overtime-pay-calculator`, `japan-night-holiday-pay-calculator`, and `germany-vat-calculator`: added distinct worked examples and scope notes for all 26 locales (78 localized calculator/locale records). MHLW confirms Japan's general minimum premium rates: overtime 25%, night work 25%, statutory holiday 35%, and overtime beyond 60 monthly hours 50%; the source also explains adding overlapping premiums. The overtime and night/holiday policy statuses are VERIFIED for those statutory minimum arithmetic rules; the calculator still relies on user-entered hours, base pay and rates. Example engine outputs: ¥1,500/hour × 10 ordinary overtime hours at 25% yields ¥15,000 base + ¥3,750 premium = ¥18,750; two overtime-and-night hours yield ¥3,000 base + ¥750 + ¥750 = ¥4,500. Germany VAT Act §12 confirms 19% standard and 7% reduced rates for specified supplies; the calculator accepts a user-entered rate and does not classify the transaction, so Germany VAT is VERIFIED for rate arithmetic only. Its example is €100 net at 19% = €19 VAT and €119 gross. Official pages checked 2026-10-28. Focused engine/content/audit/catalog checks: 27 tests passed; typecheck, lint and diff check passed. Playwright passed 26 locale SSR cases plus the live calculator case at 320, 360, 375, 390, 430, 768, 1024, and 1440px with no horizontal overflow or page errors. Payroll tax and social-insurance assumptions on Japan annual/monthly salary pages remain unreviewed and BLOCKED. Native-speaker review not performed.
 
 ## Latest completed batch
 
@@ -71,7 +75,7 @@ average, weighted-average, unit-price, probability, area. Added localized worked
 
 ## Current batch under validation
 
-Latest policy-source batch reviewed `minimum-wage`, `severance-pay`, and `social-insurance`; their content remains DRAFT pending full page-section completion. Next policy candidate: `unemployment-benefit`, followed by remaining country-specific POLICY DRAFT pages. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; policy status remains separate from its localized example notes.
+Latest policy-source batch reviewed Japanese wage-premium rules and German VAT arithmetic; all three pages remain DRAFT pending full page-section completion. Japan annual/monthly payroll pages remain BLOCKED pending resolution of current deduction schedule and simplified insurance assumptions. Next policy candidate: `unemployment-benefit`, followed by remaining country-specific POLICY DRAFT pages. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; policy status remains separate from its localized example notes.
 
 ## Calculator register
 
@@ -152,13 +156,13 @@ Latest policy-source batch reviewed `minimum-wage`, `severance-pay`, and `social
 | `severance-pay` | salary | POLICY | 26/26 | DRAFT | PARTIAL | Article 8 30-day-per-year rule and MOEL formula checked; this engine takes average daily wage and does not calculate eligibility or legal average wage. |
 | `social-insurance` | salary | POLICY | 26/26 | DRAFT | PARTIAL | NPS/NHIS/EI 2026 rates and bases checked; pay eligibility, exemptions and settlement specifics remain outside model. |
 | `japan-consumption-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | NTA source checked 2026-10-28 confirms 10% standard/8% reduced options and eligibility limits; it also lists a temporary food-tax reduction scheduled 2027-04-01 through 2029-03-31. No transaction-date field exists, so future rates are not date-modeled. |
-| `japan-annual-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `japan-monthly-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `japan-overtime-pay-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `japan-night-holiday-pay-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `japan-annual-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | 2026 deduction schedule applicability and simplified health/social-insurance assumptions require further reconciliation; do not describe as a verified current take-home result. |
+| `japan-monthly-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | 2026 deduction schedule applicability and simplified health/social-insurance assumptions require further reconciliation; do not describe as a verified current take-home result. |
+| `japan-overtime-pay-calculator` | salary | POLICY | 26/26 | DRAFT | VERIFIED | MHLW confirms minimum 25% ordinary overtime and 50% for hours beyond 60/month; user-entered base wage/rate still determine arithmetic. |
+| `japan-night-holiday-pay-calculator` | salary | POLICY | 26/26 | DRAFT | VERIFIED | MHLW confirms 25% night, 35% statutory holiday, and additive overlapping premiums; legal schedule classification remains user-supplied. |
 | `germany-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `germany-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `germany-vat-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `germany-vat-calculator` | tax | POLICY | 26/26 | DRAFT | VERIFIED | German VAT Act §12 confirms 19% standard and 7% reduced rates for listed supplies; calculator does not classify eligibility. |
 | `germany-overtime-pay-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `germany-vacation-pay-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `spain-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
