@@ -5,6 +5,7 @@ import { singaporeGrossNetCorrections } from "../src/i18n/dictionaries/sg-gross-
 import { germanyVatFollowups } from "../src/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "../src/i18n/dictionaries/hk-policy-followups";
 import { malaysiaPolicyFollowups } from "../src/i18n/dictionaries/malaysia-policy-followups";
+import { malaysiaPhilippinesFollowups } from "../src/i18n/dictionaries/malaysia-philippines-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -519,6 +520,58 @@ test.describe("Malaysia policy calculators", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "Malaysia content at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("Malaysia SST and Philippines tax/SSS calculators", () => {
+  const slugs = ["malaysia-sst-calculator", "philippines-income-tax-calculator", "philippines-sss-calculator"] as const;
+  for (const locale of ["ko", "en", "zh-tw"] as const) {
+    for (const slug of slugs) {
+      test(locale + "/" + slug + " has localized content in initial HTML", async ({ page }) => {
+        const copy = malaysiaPhilippinesFollowups[locale]?.[slug];
+        const response = await page.goto("/" + locale + "/calculators/" + slug);
+        expect(response?.status()).toBe(200);
+        const html = await response!.text();
+        expect(html).toContain(copy?.description ?? "");
+        expect(html).toContain(copy?.formula ?? "");
+        expect(html).toContain(copy?.exampleNote ?? "");
+        expect(html).toContain(copy?.faq?.question ?? "");
+        expect(html.toLowerCase()).toContain("canonical");
+        expect(html.toLowerCase()).toContain("hreflang");
+        expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+        await expect(page.locator("article")).toContainText(copy?.faq?.answer ?? "");
+      });
+    }
+  }
+
+  test("examples run and policy notes fit all tested widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/malaysia-sst-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#malaysia-sst-calculator-amount").fill("100");
+    await page.locator("#malaysia-sst-calculator-rate").fill("8");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("108");
+
+    await page.goto("/en/calculators/philippines-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#philippines-income-tax-calculator-income").fill("1000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("152,500");
+
+    await page.goto("/en/calculators/philippines-sss-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#philippines-sss-calculator-salary").fill("20000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,000");
+    await expect(page.locator("[aria-live='polite']")).toContainText("2,000");
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Malaysia/Philippines content at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

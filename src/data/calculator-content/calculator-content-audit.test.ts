@@ -38,6 +38,12 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://edrm.ei.go.kr/ei/eih/eg/ei/eiEminsr/retrieveEi0102Info.do",
   "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudouseisaku/chushoukigyou/joken_kankyou_rule.html",
   "https://www.gesetze-im-internet.de/ustg_1980/__12.html",
+  "https://mysst.customs.gov.my/background/",
+  "https://mysst.customs.gov.my/sst-orders/",
+  "https://mysst.customs.gov.my/faq-transition-of-sales-tax-rate-changes-2025/",
+  "https://bir-cdn.bir.gov.ph/BIR/pdf/RMC%20No.%2034-2025%20Annex%20A.pdf",
+  "https://www.sss.gov.ph/pay-contribution/",
+  "https://www.sss.gov.ph/wp-content/uploads/2024/12/2025-SSS-Contribution-Table-rev.pdf",
 ]);
 
 function buildAuditReport() {
@@ -165,7 +171,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(26);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(32);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

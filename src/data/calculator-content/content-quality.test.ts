@@ -19,6 +19,7 @@ import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-c
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
 import { malaysiaPolicyFollowups } from "@/i18n/dictionaries/malaysia-policy-followups";
+import { malaysiaPhilippinesFollowups } from "@/i18n/dictionaries/malaysia-philippines-followups";
 import { globalCountryRates } from "@/data/country-rates/global";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
@@ -586,5 +587,36 @@ describe("calculator content quality", () => {
       }
     }
     expect(malaysiaPolicyFollowups.en?.["malaysia-socso-calculator"]?.exampleNote).toContain("RM29.75");
+  });
+
+  it("renders Malaysia SST and Philippines tax/SSS content against current engine examples in all locales", () => {
+    const cases = {
+      "malaysia-sst-calculator": { input: { amount: "100", rate: "8", direction: "exclusive" }, values: [100, 8, 108] },
+      "philippines-income-tax-calculator": { input: { income: "1000000" }, values: [1000000, 152500, 15.25] },
+      "philippines-sss-calculator": { input: { salary: "20000" }, values: [1000, 2000] },
+    } as const;
+    expect(globalCountryRates.MY?.sources?.some(({ url, checkedAt }) => url.includes("mysst.customs.gov.my") && checkedAt === "2026-10-28")).toBe(true);
+    expect(globalCountryRates.PH?.sources?.some(({ url, checkedAt }) => url.includes("bir-cdn.bir.gov.ph") && checkedAt === "2026-10-28")).toBe(true);
+    expect(globalCountryRates.PH?.sources?.some(({ url, checkedAt }) => url.includes("sss.gov.ph/pay-contribution") && checkedAt === "2026-10-28")).toBe(true);
+    for (const [slug, sample] of Object.entries(cases)) {
+      const result = calculateGlobalCountrySpecific(slug, sample.input);
+      expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const copy = malaysiaPhilippinesFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(copy?.description, `${locale}/${slug} description`).toBeTruthy();
+        expect(copy?.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
+        expect(copy?.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(copy?.exampleNote, `${locale}/${slug} example`).toBeTruthy();
+        expect(copy?.faq, `${locale}/${slug} FAQ`).toBeTruthy();
+        expect(page?.description).toContain(copy?.description);
+        expect(page?.howTo).toBe(copy?.howTo);
+        expect(page?.formula).toBe(copy?.formula);
+        expect(page?.example.answer).toContain(copy?.exampleNote);
+        expect(page?.faqs[0]).toEqual(copy?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      }
+    }
+    expect(malaysiaPhilippinesFollowups.en?.["philippines-sss-calculator"]?.exampleNote).toContain("₱1,000");
   });
 });
