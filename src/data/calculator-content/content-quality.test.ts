@@ -45,6 +45,7 @@ import { ukIncomeTaxFollowups } from "@/i18n/dictionaries/uk-income-tax-followup
 import { ukNationalInsuranceFollowups } from "@/i18n/dictionaries/uk-national-insurance-followups";
 import { ukStampDutyFollowups } from "@/i18n/dictionaries/uk-stamp-duty-followups";
 import { ukPensionFollowups } from "@/i18n/dictionaries/uk-pension-followups";
+import { canadaGrossNetFollowups } from "@/i18n/dictionaries/canada-gross-net-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -365,6 +366,29 @@ describe("calculator content quality", () => {
       expect(copy.description, `${locale} purpose`).toBeTruthy();
       expect(copy.howTo, `${locale} inputs`).toBeTruthy();
       expect(copy.formula, `${locale} projection`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Canada's federal/CPP/EI-only take-home model in every locale", () => {
+    const slug = "canada-gross-net-salary-calculator";
+    const annual = calculateBySlug(slug, { salary: "60000", frequency: "annual" });
+    const monthly = calculateBySlug(slug, { salary: "5000", frequency: "monthly" });
+    const values = (result: typeof annual) => result && "results" in result ? result.results.map(({ value }) => value) : result;
+    expect(values(annual)).toEqual([60000, 8496, 4339.75, 0, 47164.25, 3930.35]);
+    expect(values(monthly)).toEqual(values(annual));
+    for (const locale of supportedLocales) {
+      const copy = canadaGrossNetFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
