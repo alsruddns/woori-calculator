@@ -6,9 +6,9 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 137
+- Content COMPLETE: 138
 - VALIDATING: 0
-- Content DRAFT: 32
+- Content DRAFT: 31
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
@@ -230,7 +230,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `brazil-fgts-calculator` | salary | POLICY 2026 | 26/26 | COMPLETE | PARTIAL | General 8% employer model; apprentice 2% category is not selectable. |
 | `brazil-thirteenth-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Gross proration from user-entered months only; qualifying month rules, deductions and current legal entitlement are unverified and not modeled. |
 | `vietnam-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Describes configured 2026 annual tax and flat employee-rate model; dependent deductions, insurance bases/ceilings and current legal alignment remain unverified. |
-| `vietnam-personal-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `vietnam-personal-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Configured annual progressive engine, VND 240,000,000 example and personal-deduction limits described in 26 locales; current statutory schedule remains unverified. |
 | `vietnam-social-insurance-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `china-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `china-individual-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -311,4 +311,4 @@ Latest batch: `netherlands-gross-net-salary-calculator`, `netherlands-vat-calcul
 
 `india-gst-calculator`, `india-income-tax-calculator`, and `india-gross-net-salary-calculator`: calculator-specific guidance, configured formula, engine-matched example, interpretation, limitations, and FAQ were added in 26 locales (78 records). Examples verified against the existing engine: INR 10,000 at user-entered 18% returns [10,000, 1,800, 11,800]; INR 1,500,000 taxable income returns INR 105,000 estimated slab tax and 7% average rate; INR 1,500,000 annual gross with 0% separately entered contributions returns INR 105,000 modeled tax and INR 1,395,000 annual / INR 116,250 monthly modeled net. CBIC's GST schedules and Income Tax Department AY 2026–27 rates/Section 87A and salary deduction pages were checked 2026-10-28. GST and income tax are PARTIAL: product classification and individual tax eligibility/special-rate income/cess/surcharge are not fully modeled. Gross-net salary remains BLOCKED: the engine omits the ₹75,000 standard deduction and payroll-specific deductions. The AY 2026–27 scenario is not represented as current AY 2027–28 liability. Sources: https://cbic-gst.gov.in/hindi/gst-goods-services-rates.html ; https://www.incometaxindia.gov.in/w/tax-rates-and-computation ; https://www.incometaxindia.gov.in/w/deductions/allowances-allowed-to-a-salaried-employee . Content/engine/audit tests passed 31/31; TypeScript, lint and diff-check passed. Playwright passed 2/2: SSR/canonical/hreflang/noindex inspection for all 78 locale routes and live GST, tax and salary flows, with eight viewport widths on GST/salary and no browser errors. The external AdSense `data-nscript` warning appeared. Native-speaker review not performed.
 
-Next DRAFT content candidate: `vietnam-personal-income-tax-calculator`. Select from the live register; keep policy verification separate and reuse recorded source checks where applicable.
+`vietnam-personal-income-tax-calculator`: added localized purpose, annual taxable-income input meaning, configured progressive formula, VND 240,000,000 example (18,000,000 model tax; 7.5% average rate), interpretation and limits in all 26 locales. The example matches the active engine; it assumes entered income is already taxable and does not subtract personal or dependent deductions. Policy remains BLOCKED because the current 2026 schedule and effective date have not been verified against official law; no policy source was reopened and no engine changed. Focused content/country-engine tests passed (11), TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR text, H1/H2, hreflang and noindex checks for all 26 locale routes plus the live VND 240,000,000 calculation. Existing external AdSense script warning appeared; no page/hydration errors. Native-speaker review not performed. Next DRAFT: `vietnam-social-insurance-calculator`.

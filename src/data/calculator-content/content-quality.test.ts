@@ -12,6 +12,7 @@ import { franceOvertimeFollowups } from "@/i18n/dictionaries/france-overtime-fol
 import { netherlandsHolidayFollowups } from "@/i18n/dictionaries/netherlands-holiday-followups";
 import { brazilThirteenthFollowups } from "@/i18n/dictionaries/brazil-thirteenth-followups";
 import { vietnamGrossNetFollowups } from "@/i18n/dictionaries/vietnam-gross-net-followups";
+import { vietnamIncomeTaxFollowups } from "@/i18n/dictionaries/vietnam-income-tax-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -368,6 +369,27 @@ describe("calculator content quality", () => {
       expect(page?.example).toEqual(copy.example);
       expect(page?.faqs[0]).toEqual(copy.faq);
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders Vietnam personal income-tax engine example and unverified-policy limits in every locale", () => {
+    const slug = "vietnam-personal-income-tax-calculator";
+    const output = calculateBySlug(slug, { income: "240000000" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([240000000, 18000000, 7.5]);
+    for (const locale of supportedLocales) {
+      const copy = vietnamIncomeTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} taxable-income input meaning`).toBeTruthy();
+      expect(copy.formula, `${locale} configured progressive formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} policy limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
     }
   });
   it("renders German VAT purpose, formula, engine-matched examples, limits and FAQ in all locales", () => {

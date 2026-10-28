@@ -29,6 +29,7 @@ import { franceOvertimeFollowups } from "../src/i18n/dictionaries/france-overtim
 import { netherlandsHolidayFollowups } from "../src/i18n/dictionaries/netherlands-holiday-followups";
 import { brazilThirteenthFollowups } from "../src/i18n/dictionaries/brazil-thirteenth-followups";
 import { vietnamGrossNetFollowups } from "../src/i18n/dictionaries/vietnam-gross-net-followups";
+import { vietnamIncomeTaxFollowups } from "../src/i18n/dictionaries/vietnam-income-tax-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2559,6 +2560,35 @@ test.describe("calculator input and result flows", () => {
         expect(dimensions.body, scenario.slug + " at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
       }
     }
+    expect(errors).toEqual([]);
+  });
+
+  test("Vietnam personal income-tax content is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = vietnamIncomeTaxFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/vietnam-personal-income-tax-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Vietnam personal income-tax calculator returns the documented engine example", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/vietnam-personal-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#vietnam-personal-income-tax-calculator-income").fill("240000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("18,000,000");
+    await expect(page.locator("[aria-live='polite']")).toContainText("7.5");
     expect(errors).toEqual([]);
   });
 });
