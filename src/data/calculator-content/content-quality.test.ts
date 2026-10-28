@@ -21,6 +21,7 @@ import { chinaVatFollowups } from "@/i18n/dictionaries/china-vat-followups";
 import { taiwanGrossNetFollowups } from "@/i18n/dictionaries/taiwan-gross-net-followups";
 import { taiwanIncomeTaxFollowups } from "@/i18n/dictionaries/taiwan-income-tax-followups";
 import { taiwanLaborInsuranceFollowups } from "@/i18n/dictionaries/taiwan-labor-insurance-followups";
+import { taiwanVatFollowups } from "@/i18n/dictionaries/taiwan-vat-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -560,6 +561,29 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} entered-rate formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
+    }
+  });
+  it("renders Taiwan VAT direction formulas and both examples in every locale", () => {
+    const slug = "taiwan-vat-calculator";
+    const exclusive = calculateBySlug(slug, { amount: "1000", rate: "5", direction: "exclusive" });
+    const inclusive = calculateBySlug(slug, { amount: "1000", rate: "5", direction: "inclusive" });
+    expect(exclusive && "results" in exclusive ? exclusive.results.map(({ value }) => value) : exclusive).toEqual([1000, 50, 1050]);
+    expect(inclusive && "results" in inclusive ? inclusive.results.map(({ value }) => value) : inclusive).toEqual([952.38, 47.62, 1000]);
+    for (const locale of supportedLocales) {
+      const copy = taiwanVatFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} direction guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} exclusive/inclusive formulas`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched examples`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

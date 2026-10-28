@@ -6,9 +6,9 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 146
+- Content COMPLETE: 147
 - VALIDATING: 0
-- Content DRAFT: 23
+- Content DRAFT: 22
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
@@ -239,7 +239,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `taiwan-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured 2026 progressive bands and user-entered employee rate; current legal alignment, personal deductions, insurance tiers/ceilings and employment categories remain unverified or outside the model. |
 | `taiwan-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured 2026 progressive brackets and taxable-income input; current legal applicability, personal deductions, credits and individual filing details remain unverified or outside the model. |
 | `taiwan-labor-insurance-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents monthly base × entered/default employee rate; current insured-wage brackets, eligibility, ceilings, employer share and 2.4% legal applicability remain unverified/outside the model. |
-| `taiwan-vat-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `taiwan-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents rate-based inclusive/exclusive arithmetic; supply classification, applicable rate and current legal treatment remain unverified/outside the model. |
 | `italy-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `italy-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `italy-vat-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -326,3 +326,5 @@ Latest batch: `netherlands-gross-net-salary-calculator`, `netherlands-vat-calcul
 `taiwan-income-tax-calculator`: added localized purpose, annual taxable-income input meaning, configured progressive marginal-band formula, TWD 1,000,000 example (TWD 77,300 model tax; 7.73% average rate), interpretation and personal-deduction/scope limits in all 26 locales. The example matches the engine's configured bands. Current legal applicability and individual exemptions, deductions, credits, income categories and filing details remain unverified or outside the model; policy remains BLOCKED, with no policy values or engine changed. Focused content test passed 45/45; TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR/SEO checks for all 26 locale routes and live annual calculation; no page or hydration errors. Existing external AdSense script warning appeared. Native-speaker review not performed. Next DRAFT: `taiwan-labor-insurance-calculator`.
 
 `taiwan-labor-insurance-calculator`: added localized purpose, monthly insured-wage-base and employee-rate meaning, the implemented multiplication, TWD 40,000×2.4%=TWD 960 example, interpretation and limits in all 26 locales. The 2.4% is stated as a code default only; official insured-wage brackets, eligibility, caps, employer share, other insurance charges and current legal application remain unverified/outside scope. Policy remains BLOCKED; no engine or policy values changed. Focused content test passed 46/46; TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR/SEO on all 26 locale routes and live entered-rate calculation; no page or hydration errors. Existing external AdSense script warning appeared. Native-speaker review not performed. Next DRAFT: `taiwan-vat-calculator`.
+
+`taiwan-vat-calculator`: added localized guidance for the two implemented directions, exclusive/inclusive formulas, TWD 1,000 examples at a user-entered 5% (50 tax/1,050 total exclusive; 952.38 net/47.62 tax inclusive), result meaning and Taiwan transaction-classification limits in all 26 locales. The 5% code default is not claimed as the applicable legal rate; classification, exemptions and current legal treatment remain unverified/outside the model. Policy remains BLOCKED; no engine or policy values changed. Focused content test passed 47/47; TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR/SEO on all 26 locale routes and live exclusive/inclusive flows; no page or hydration errors. Existing external AdSense script warning appeared. Native-speaker review not performed. Next DRAFT: `italy-gross-net-salary-calculator`.
