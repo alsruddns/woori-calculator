@@ -48,6 +48,7 @@ import { ukPensionFollowups } from "@/i18n/dictionaries/uk-pension-followups";
 import { canadaGrossNetFollowups } from "@/i18n/dictionaries/canada-gross-net-followups";
 import { canadaIncomeTaxFollowups } from "@/i18n/dictionaries/canada-income-tax-followups";
 import { canadaCppEiFollowups } from "@/i18n/dictionaries/canada-cpp-ei-followups";
+import { canadaRrspFollowups } from "@/i18n/dictionaries/canada-rrsp-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -433,6 +434,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} caveat`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("matches Canada's RRSP monthly annuity-due projection in every locale", () => {
+    const slug = "canada-rrsp-calculator";
+    const result = calculateBySlug(slug, { annualContribution: "6000", rate: "6", years: "10" });
+    expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual([60000, 0, 22349.37, 82349.37]);
+    for (const locale of supportedLocales) {
+      const copy = canadaRrspFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
