@@ -59,6 +59,7 @@ import { canadaCppEiFollowups } from "../src/i18n/dictionaries/canada-cpp-ei-fol
 import { canadaRrspFollowups } from "../src/i18n/dictionaries/canada-rrsp-followups";
 import { australiaStampDutyFollowups } from "../src/i18n/dictionaries/australia-stamp-duty-followups";
 import { uaeCorporateTaxFollowups } from "../src/i18n/dictionaries/uae-corporate-tax-followups";
+import { spainFreelancerFinalFollowups, franceSocialFinalFollowups } from "../src/i18n/dictionaries/spain-france-final-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -80,6 +81,52 @@ const twelfthEditorialBatchSlugs = ["fraction", "standard-deviation", "vehicle-c
 const thirteenthEditorialBatchSlugs = ["average", "weighted-average", "unit-price", "probability", "area"] as const;
 const fourteenthEditorialBatchSlugs = ["percentile", "aspect-ratio", "scale-ratio"] as const;
 const viewports = [320, 360, 375, 390, 430, 768, 1024, 1440] as const;
+
+test("Spain freelancer and France social contribution content is server-rendered in all locales", async ({ page }) => {
+  const errors = collectBrowserErrors(page);
+  for (const [slug, followups] of [
+    ["spain-freelancer-tax-calculator", spainFreelancerFinalFollowups],
+    ["france-social-contribution-calculator", franceSocialFinalFollowups],
+  ] as const) {
+    const responses = await Promise.all(locales.map(async (locale) => {
+      const copy = followups[locale][slug];
+      if (!copy?.description || !copy.howTo || !copy.formula || !copy.exampleNote || !copy.faq) {
+        throw new Error(`Missing ${locale}/${slug} localized SSR content`);
+      }
+      const response = await page.request.get(`/${locale}/calculators/${slug}`);
+      expect(response.status()).toBe(200);
+      const html = await response.text();
+      expect(html).toContain(copy.description);
+      expect(html).toContain(copy.howTo);
+      expect(html).toContain(copy.formula);
+      expect(html).toContain(copy.exampleNote);
+      expect(html).toContain(copy.faq.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html).toMatch(/rel=["']canonical["']/i);
+      expect(html).toMatch(/hrefLang=/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+      return locale;
+    }));
+    expect(responses).toHaveLength(26);
+  }
+
+  await page.goto("/ko/calculators/spain-freelancer-tax-calculator");
+  await waitForCalculatorHydration(page);
+  for (const [field, value] of Object.entries({ income: "50000", expenses: "10000", rate: "15", contributionBase: "1000", socialRate: "10" })) {
+    await page.locator(`#spain-freelancer-tax-calculator-${field}`).fill(value);
+  }
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator("[aria-live='polite']")).toContainText("32,800");
+
+  await page.goto("/ko/calculators/france-social-contribution-calculator");
+  await waitForCalculatorHydration(page);
+  await page.locator("#france-social-contribution-calculator-salary").fill("40000");
+  await page.locator('form button[type="submit"]').click();
+  // The default KRW display rounds to whole currency units even though the engine example retains cents.
+  await expect(page.locator("[aria-live='polite']")).toContainText("33,268");
+  expect(errors).toEqual([]);
+});
 
 test.describe("South Korea unemployment benefit localized example", () => {
   for (const locale of locales) {

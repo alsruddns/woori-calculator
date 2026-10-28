@@ -52,6 +52,7 @@ import { canadaRrspFollowups } from "@/i18n/dictionaries/canada-rrsp-followups";
 import { australiaStampDutyFollowups } from "@/i18n/dictionaries/australia-stamp-duty-followups";
 import { uaeCorporateTaxFollowups } from "@/i18n/dictionaries/uae-corporate-tax-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
+import { spainFreelancerFinalFollowups, franceSocialFinalFollowups } from "@/i18n/dictionaries/spain-france-final-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
 import { netherlandsPolicyFollowups } from "@/i18n/dictionaries/netherlands-policy-followups";
@@ -1625,6 +1626,7 @@ describe("calculator content quality", () => {
 
   it("renders Spain VAT, IRPF, and severance examples and scope notes in all 26 locales", () => {
     const cases = {
+      "spain-freelancer-tax-calculator": { input: { income: "50000", expenses: "10000", rate: "15", contributionBase: "1000", socialRate: "10" }, values: [40000, 6000, 1200, 32800] },
       "spain-vat-calculator": { input: { amount: "1000", rate: "21", direction: "exclusive" }, values: [1000, 210, 1210] },
       "spain-irpf-calculator": { input: { income: "30000", rate: "15" }, values: [30000, 4500, 15] },
       "spain-severance-pay-calculator": { input: { salary: "2500", years: "5", daysPerYear: "20" }, values: [82.19, 5, 8219.18] },
@@ -1640,7 +1642,7 @@ describe("calculator content quality", () => {
       const result = calculateBySlug(slug, sample.input);
       expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
       for (const locale of supportedLocales) {
-        const addition = spainPolicyFollowups[locale]?.[slug];
+        const addition = slug === "spain-freelancer-tax-calculator" ? spainFreelancerFinalFollowups[locale]?.[slug] : spainPolicyFollowups[locale]?.[slug];
         const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
         expect(addition?.formula, `${locale}/${slug} model`).toBeTruthy();
         expect(addition?.exampleNote, `${locale}/${slug} verified example`).toBeTruthy();
@@ -1653,6 +1655,7 @@ describe("calculator content quality", () => {
         expect(supportedLocalesForCalculator(slug)).toContain(locale);
       }
     }
+    expect(spainFreelancerFinalFollowups.en["spain-freelancer-tax-calculator"]?.exampleNote).toContain("€32,800");
     expect(calculateCountrySpecific("spain-vat-calculator", { amount: "1210", rate: "21", direction: "inclusive" })).toMatchObject({ results: [{ value: 1000 }, { value: 210 }, { value: 1210 }] });
     expect(spainPolicyFollowups.en?.["spain-irpf-calculator"]?.exampleNote).toContain("€4,500");
     expect(spainPolicyFollowups.en?.["spain-severance-pay-calculator"]?.exampleNote).toContain("€8,219.18");
@@ -1660,6 +1663,7 @@ describe("calculator content quality", () => {
 
   it("renders France salary, income-tax, and VAT scenarios against the engine in all locales", () => {
     const cases = {
+      "france-social-contribution-calculator": { input: { salary: "40000" }, values: [943.2, 2672.4, 196.5, 2920, 6732.1, 33267.9] },
       "france-gross-net-salary-calculator": { input: { salary: "60000", frequency: "annual", socialRate: "22" }, values: [60000, 11103.99, 13200, 0, 35696.01, 2974.67] },
       "france-income-tax-calculator": { input: { income: "30000" }, values: [30000, 2103.99, 7.01] },
       "france-vat-calculator": { input: { amount: "1000", rate: "20", direction: "exclusive" }, values: [1000, 200, 1200] },
@@ -1676,7 +1680,7 @@ describe("calculator content quality", () => {
       const result = calculateBySlug(slug, sample.input);
       expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
       for (const locale of supportedLocales) {
-        const addition = francePolicyFollowups[locale]?.[slug];
+        const addition = slug === "france-social-contribution-calculator" ? franceSocialFinalFollowups[locale]?.[slug] : francePolicyFollowups[locale]?.[slug];
         const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
         expect(addition?.formula, `${locale}/${slug} formula`).toBeTruthy();
         expect(addition?.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
@@ -1689,6 +1693,7 @@ describe("calculator content quality", () => {
         expect(supportedLocalesForCalculator(slug)).toContain(locale);
       }
     }
+    expect(franceSocialFinalFollowups.en["france-social-contribution-calculator"]?.exampleNote).toContain("€33,267.90");
     expect(calculateBySlug("france-vat-calculator", { amount: "1200", rate: "20", direction: "inclusive" })).toMatchObject({ results: [{ value: 1000 }, { value: 200 }, { value: 1200 }] });
     expect(francePolicyFollowups.en?.["france-income-tax-calculator"]?.exampleNote).toContain("€2,103.99");
     expect(francePolicyFollowups.en?.["france-gross-net-salary-calculator"]?.exampleNote).toContain("€35,696.01");

@@ -6,14 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 167
+- Content COMPLETE: 169
 - VALIDATING: 0
-- Content DRAFT: 2
+- Content DRAFT: 0
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
 - Policy PENDING: 0
-- Latest audit signals: short-content 6 and exact-duplicate occurrences 57 (from the latest full content audit; original short-content baseline 71). Review indicators only, not a completion score.
+- Latest audit signals: short-content 8 and exact-duplicate occurrences 36 (from the final full content audit; original short-content baseline 71). Review indicators only, not a completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Latest completed batch (2026-10-28): U.S. paycheck model
@@ -372,3 +372,9 @@ Latest batch: `netherlands-gross-net-salary-calculator`, `netherlands-vat-calcul
 `australia-stamp-duty-calculator`: added calculator-specific content in all 26 locales. The page multiplies property value by one user-entered rate; it does not implement state/territory brackets, first-home concessions, foreign-purchaser surcharges or buyer eligibility. At AUD 500,000 and an entered 4%, the engine returns AUD 20,000. Policy stays BLOCKED because no current jurisdiction schedule was verified; copy treats the rate as a user assumption. Content is COMPLETE (166/169); next DRAFT: `uae-corporate-tax-calculator`. Focused content test passed 66/66; TypeScript, changed-file ESLint and diff check passed. Playwright passed 1/1: SSR content, H1/H2, FAQ, hreflang and noindex checks across all 26 locale routes plus the live rate calculation. Last audit snapshot remains 8 short-content candidates and 48 exact-duplicate occurrences; no new audit was run for this batch. The existing external AdSense `data-nscript` warning appeared; no page or hydration errors. Native-speaker review not performed.
 
 `uae-corporate-tax-calculator`: added UAE-specific model guidance in all 26 locales. The engine currently encodes 0% through AED 375,000 of taxable profit and 9% on the excess; an AED 500,000 example returns AED 11,250. Copy identifies these as code settings and does not claim they are current law. Entity type, free-zone status, exemptions/reliefs, losses and group rules are not modeled; policy remains BLOCKED pending official rule/effective-date verification. Content is COMPLETE (167/169); next DRAFT: `spain-freelancer-tax-calculator`. Focused content test passed 67/67; TypeScript, changed-file ESLint and diff check passed. Playwright passed 1/1: SSR content, H1/H2, FAQ, hreflang and noindex checks for all 26 locale routes plus the live AED 500,000 calculation. Last audit snapshot remains 8 short-content candidates and 48 exact-duplicate occurrences; no new audit was run for this batch. The existing external AdSense `data-nscript` warning appeared; no page or hydration errors. Native-speaker review not performed.
+
+`spain-freelancer-tax-calculator`: completed calculator-specific content in all 26 locales. It explains the engine's profit floor, user-entered IRPF rate, monthly contribution base and annualization, with a €50,000 receipts / €10,000 expenses example. The engine returns €40,000 profit, €6,000 estimated tax, €1,200 estimated annual contributions and €32,800 remainder. No Spanish statutory rate, regional assessment, personal deduction or RETA bracket is asserted; policy remains BLOCKED pending rule-by-rule source verification. Content quality tests passed (67/67), including exact engine outputs in all locales; typecheck and changed-file ESLint passed. Playwright verified SSR content, metadata and locale routes in all 26 locales plus the live input flow. Native-speaker review not performed.
+
+`france-social-contribution-calculator`: completed model-specific explanation in all 26 locales for the encoded 98.25% base, CSG/CRDS percentages and old-age formula, including the model's €192,240 cap operand. At €40,000 annual salary, the engine returns €943.20 and €2,672.40 CSG components, €196.50 CRDS, €2,920 old-age component, €6,732.10 total and €33,267.90 before income tax. The figures describe code arithmetic only, not current statutory compliance or full French take-home pay; policy remains BLOCKED pending source and scope validation. Content quality tests passed (67/67); typecheck and changed-file ESLint passed. Playwright verified SSR content, metadata and routes for all 26 locales plus the live input flow; the default KRW display rounds the remainder to ₩33,268. Native-speaker review not performed.
+
+Content completion is now 169/169 (4,394 locale detail pages); policy verification remains separate at VERIFIED 12, PARTIAL 30, BLOCKED 59. Final audit review signals are short-content 8 and exact-duplicate occurrences 36. The audit checks do not certify translation quality or policy correctness.
