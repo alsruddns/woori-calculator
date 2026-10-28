@@ -43,6 +43,7 @@ import { usCapitalGainsFollowups } from "@/i18n/dictionaries/us-capital-gains-fo
 import { ukGrossNetFollowups } from "@/i18n/dictionaries/uk-gross-net-followups";
 import { ukIncomeTaxFollowups } from "@/i18n/dictionaries/uk-income-tax-followups";
 import { ukNationalInsuranceFollowups } from "@/i18n/dictionaries/uk-national-insurance-followups";
+import { ukStampDutyFollowups } from "@/i18n/dictionaries/uk-stamp-duty-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -322,6 +323,28 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders UK Stamp Duty bands and matches standard/additional property examples", () => {
+    const slug = "uk-stamp-duty-calculator";
+    const standard = calculateBySlug(slug, { propertyValue: "500000", buyer: "standard" });
+    const additional = calculateBySlug(slug, { propertyValue: "500000", buyer: "additional" });
+    expect(standard && "results" in standard ? standard.results.map(({ value }) => value) : standard).toEqual([15000]);
+    expect(additional && "results" in additional ? additional.results.map(({ value }) => value) : additional).toEqual([40000]);
+    for (const locale of supportedLocales) {
+      const copy = ukStampDutyFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} bands`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} jurisdiction and limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

@@ -51,6 +51,7 @@ import { usCapitalGainsFollowups } from "../src/i18n/dictionaries/us-capital-gai
 import { ukGrossNetFollowups } from "../src/i18n/dictionaries/uk-gross-net-followups";
 import { ukIncomeTaxFollowups } from "../src/i18n/dictionaries/uk-income-tax-followups";
 import { ukNationalInsuranceFollowups } from "../src/i18n/dictionaries/uk-national-insurance-followups";
+import { ukStampDutyFollowups } from "../src/i18n/dictionaries/uk-stamp-duty-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3247,6 +3248,31 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("156.16");
     await expect(page.locator("[aria-live='polite']")).toContainText("1,873.92");
+    expect(errors).toEqual([]);
+  });
+
+  test("UK Stamp Duty details render in all locales and property-price bands work", async ({ page, request }) => {
+    for (const locale of locales) {
+      const copy = ukStampDutyFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/uk-stamp-duty-calculator");
+      expect(response.status(), locale).toBe(200);
+      const html = await response.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/uk-stamp-duty-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#uk-stamp-duty-calculator-propertyValue").fill("500000");
+    await page.locator("#uk-stamp-duty-calculator-buyer").selectOption("standard");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("15,000");
     expect(errors).toEqual([]);
   });
 });

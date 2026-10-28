@@ -6,14 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 159
+- Content COMPLETE: 160
 - VALIDATING: 0
-- Content DRAFT: 10
+- Content DRAFT: 9
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
 - Policy PENDING: 0
-- Latest audit signals: short-content 6 and exact-duplicate occurrences 64 (from the latest full content audit; original short-content baseline 71). Review indicators only, not a completion score.
+- Latest audit signals: short-content 6 and exact-duplicate occurrences 60 (from the latest full content audit; original short-content baseline 71). Review indicators only, not a completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Latest completed batch (2026-10-28): U.S. paycheck model
@@ -269,7 +269,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `uk-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured marginal bands and a matching GBP 60,000 example in 26 locales. Personal deductions, credits, income-specific rules, regional regimes, statutory alignment and effective dates remain unverified or outside the model. |
 | `uk-national-insurance-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents monthly thresholds and 8%/2% employee contribution model with engine-matched annual/monthly examples. Selector handling was corrected to match the existing annual/monthly UI; current statutory thresholds, effective date, eligibility and payroll rounding remain unverified. |
 | `uk-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | GOV.UK VAT rates page checked 2026-10-28 confirms the 20% standard rate. Example uses £100 × entered 20%; product classification, reduced/zero/exempt treatment, and place of supply are outside the tool. |
-| `uk-stamp-duty-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `uk-stamp-duty-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the configured progressive property-price bands and standard/additional-property examples in 26 locales. Legal applicability, current rates, regional systems and buyer eligibility remain unverified. |
 | `uk-pension-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -356,3 +356,5 @@ Latest batch: `netherlands-gross-net-salary-calculator`, `netherlands-vat-calcul
 `uk-income-tax-calculator`: replaced generic copy with calculator-specific explanations of the configured marginal bands in all 26 locales. The GBP 60,000 example yields GBP 11,432 modeled tax and a 19.05% average rate, matching the calculation engine. The zero-rate band and subsequent marginal portions are explained; deductions, credits, tax codes, income type and regional rules are outside scope. Official policy rates and effective dates were not re-verified, so policy remains BLOCKED; no engine or rate data changed. Content is COMPLETE (158/169); next DRAFT: `uk-national-insurance-calculator`. Focused content tests passed 58/58; audit passed and reports 6 short-content signals and 69 exact-duplicate occurrences; TypeScript, changed-file ESLint and diff check passed. Playwright passed 1/1, checking SSR explanation/formula/example/FAQ and H1/H2/hreflang/no noindex for all 26 routes, plus live calculation. The existing external AdSense console warning appeared; no page or hydration errors. Native-speaker review not performed.
 
 `uk-national-insurance-calculator`: added localized employee Class 1 model guidance and a GBP 3,000 monthly example (GBP 156.16 monthly; GBP 1,873.92 annualized) across all 26 locales. Inspection found the UI exposed annual/monthly selection while the calculation always divided input by 12; fixed the selector handling and added a regression proving GBP 3,000 monthly equals GBP 36,000 annually, plus an upper-band case. Threshold/rate legal alignment and effective date were not re-verified, so policy remains BLOCKED. Content is COMPLETE (159/169); next DRAFT is `uk-stamp-duty-calculator`. Related engine/content tests passed (11 engine, 59 content); TypeScript, changed-file ESLint, diff check, and audit passed. Audit reports 6 short-content signals and 64 exact-duplicate occurrences. Playwright passed 1/1, verifying SSR/SEO in all 26 locales and live monthly calculation; the existing AdSense warning appeared without page or hydration errors. Native-speaker review not performed.
+
+`uk-stamp-duty-calculator`: added localized purpose, configured property-price bands, standard/additional-property distinction, GBP 500,000 worked example (GBP 15,000 standard estimate; GBP 40,000 under the model's additional-property option), and jurisdiction/eligibility caveats across all 26 locales. The example matches the existing calculation engine; no policy data or formula changed. Current rates, effective date, buyer eligibility and Scotland/Wales system rules remain unverified, so policy remains BLOCKED. Content is COMPLETE (160/169); next DRAFT: `uk-pension-calculator`. Focused content test passed 60/60; audit passed with 6 short-content signals and 60 exact-duplicate occurrences; TypeScript, changed-file ESLint and diff check passed. Playwright passed 1/1 for SSR and SEO checks across all 26 locales plus live standard purchase calculation. Existing AdSense warning appeared; no page/hydration error. Native-speaker review not performed.
