@@ -18,6 +18,8 @@ import { calculateCountrySpecific } from "@/calculators/policy/country-specific"
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
+import { malaysiaPolicyFollowups } from "@/i18n/dictionaries/malaysia-policy-followups";
+import { globalCountryRates } from "@/data/country-rates/global";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -555,5 +557,34 @@ describe("calculator content quality", () => {
         expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
       }
     }
+  });
+
+  it("renders Malaysia tax, EPF, and SOCSO engine-specific content in all locales", () => {
+    const examples = {
+      "malaysia-income-tax-calculator": { input: { income: "100000" }, values: [100000, 9400, 9.4] },
+      "malaysia-epf-calculator": { input: { salary: "6000", ageBand: "under60" }, values: [660, 720, 1380] },
+      "malaysia-socso-calculator": { input: { salary: "6000" }, values: [30, 6000] },
+    } as const;
+    expect(globalCountryRates.MY?.sources?.every(({ checkedAt }) => checkedAt === "2026-10-28")).toBe(true);
+    for (const [slug, example] of Object.entries(examples)) {
+      const result = calculateGlobalCountrySpecific(slug, example.input);
+      expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(example.values);
+      for (const locale of supportedLocales) {
+        const copy = malaysiaPolicyFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(copy?.description, `${locale}/${slug} description`).toBeTruthy();
+        expect(copy?.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
+        expect(copy?.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(copy?.exampleNote, `${locale}/${slug} example interpretation`).toBeTruthy();
+        expect(copy?.faq, `${locale}/${slug} FAQ`).toBeTruthy();
+        expect(page?.description).toContain(copy?.description);
+        expect(page?.howTo).toBe(copy?.howTo);
+        expect(page?.formula).toBe(copy?.formula);
+        expect(page?.example.answer).toContain(copy?.exampleNote);
+        expect(page?.faqs[0]).toEqual(copy?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      }
+    }
+    expect(malaysiaPolicyFollowups.en?.["malaysia-socso-calculator"]?.exampleNote).toContain("RM29.75");
   });
 });
