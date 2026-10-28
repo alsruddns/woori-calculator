@@ -1,5 +1,7 @@
 ﻿import { expect, test, type Page } from "@playwright/test";
 import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
+import { auSgPayrollTaxFollowups } from "../src/i18n/dictionaries/au-sg-payroll-tax-followups";
+import { singaporeGrossNetCorrections } from "../src/i18n/dictionaries/sg-gross-net-corrections";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -239,6 +241,58 @@ test.describe("Australia income/super and Singapore CPF examples", () => {
         await page.setViewportSize({ width, height: 900 });
         const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
         expect(dimensions.body, slug + " detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+      }
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("Australia and Singapore payroll/tax detail", () => {
+  const slugs = ["australia-gross-net-salary-calculator", "singapore-gross-net-salary-calculator", "singapore-income-tax-calculator"] as const;
+  for (const [index, locale] of locales.entries()) {
+    const slug = slugs[index % slugs.length]!;
+    test(locale + "/" + slug + " serves localized detail in initial HTML", async ({ page }) => {
+      const copy = auSgPayrollTaxFollowups[locale]?.[slug];
+      const correction = slug === "singapore-gross-net-salary-calculator" ? singaporeGrossNetCorrections[locale] : undefined;
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      expect(response?.status()).toBe(200);
+      expect(copy?.description).toBeTruthy();
+      expect(copy?.howTo).toBeTruthy();
+      expect(copy?.formula).toBeTruthy();
+      expect(copy?.exampleNote).toBeTruthy();
+      expect(copy?.faq).toBeTruthy();
+      const html = await response!.text();
+      for (const text of [copy!.description!, correction?.howTo ?? copy!.howTo!, correction?.formula ?? copy!.formula!, copy!.exampleNote!, copy!.faq!.question, copy!.faq!.answer, correction?.description]) if (text) expect(html).toContain(text);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("canonical");
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html.toLowerCase()).not.toContain('name="robots" content="noindex');
+      await expect(page.locator("article")).toContainText(copy!.exampleNote!);
+      await expect(page.locator("article")).toContainText(copy!.faq!.question);
+    });
+  }
+
+  test("checks the worked pay/tax calculations and all responsive widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    const examples: readonly [string, string, string][] = [
+      ["australia-gross-net-salary-calculator", "#australia-gross-net-salary-calculator-salary", "63,880"],
+      ["singapore-gross-net-salary-calculator", "#singapore-gross-net-salary-calculator-salary", "54,810"],
+      ["singapore-income-tax-calculator", "#singapore-income-tax-calculator-income", "5,650"],
+    ];
+    for (const [slug, selector, result] of examples) {
+      await page.goto("/en/calculators/" + slug);
+      await waitForCalculatorHydration(page);
+      await page.locator(selector).fill(slug === "singapore-gross-net-salary-calculator" ? "6000" : slug === "singapore-income-tax-calculator" ? "100000" : "80000");
+      if (slug.includes("gross-net-salary")) {
+        await page.locator("#" + slug + "-frequency").selectOption(slug === "singapore-gross-net-salary-calculator" ? "monthly" : "annual");
+      }
+      await page.locator('form button[type="submit"]').click();
+      await expect(page.locator("[aria-live='polite']")).toContainText(result);
+      for (const width of viewports) {
+        await page.setViewportSize({ width, height: 900 });
+        const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+        expect(dimensions.body, slug + " at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
       }
     }
     expect(errors).toEqual([]);

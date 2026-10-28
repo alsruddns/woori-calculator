@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { publishedCalculatorPages } from "@/data/calculator-content";
 import { getDictionary } from "@/i18n/dictionaries";
-import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
+import { locales, routingLocales, supportedLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
 import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
@@ -12,6 +12,9 @@ import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCo
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
 import { calculateSeveranceEstimate } from "@/calculators/policy/severance";
 import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
+import { auSgPayrollTaxFollowups } from "@/i18n/dictionaries/au-sg-payroll-tax-followups";
+import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-specific-global";
+import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
@@ -104,6 +107,50 @@ describe("calculator content quality", () => {
         expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
       }
     }
+  });
+  it("renders Australia take-home and Singapore salary/tax explanations, formulas, examples, and FAQs in all 26 locales", () => {
+    const expected = {
+      "australia-gross-net-salary-calculator": [80000, 14520, 0, 1600, 63880, 5323.33],
+      "singapore-gross-net-salary-calculator": [72000, 2790, 14400, 0, 54810, 4567.5],
+      "singapore-income-tax-calculator": [100000, 5650, 5.65],
+    } as const;
+    const inputs = {
+      "australia-gross-net-salary-calculator": { salary: "80000", frequency: "annual" },
+      "singapore-gross-net-salary-calculator": { salary: "6000", frequency: "monthly", age: "35" },
+      "singapore-income-tax-calculator": { income: "100000" },
+    } as const;
+    for (const slug of Object.keys(expected)) {
+      const output = calculateGlobalCountrySpecific(slug, inputs[slug as keyof typeof inputs]);
+      if (!output || !("results" in output)) throw new Error(`${slug} example did not return calculation results`);
+      expect(output.results.map(({ value }) => value)).toEqual(expected[slug as keyof typeof expected]);
+      for (const locale of supportedLocales) {
+        const copy = auSgPayrollTaxFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(copy?.description, `${locale}/${slug} description`).toBeTruthy();
+        expect(copy?.howTo, `${locale}/${slug} instructions`).toBeTruthy();
+        expect(copy?.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(copy?.exampleNote, `${locale}/${slug} checked example`).toBeTruthy();
+        expect(copy?.faq, `${locale}/${slug} FAQ`).toBeTruthy();
+        expect(page?.description).toContain(copy?.description);
+        const correction = slug === "singapore-gross-net-salary-calculator" ? singaporeGrossNetCorrections[locale] : undefined;
+        expect(page?.howTo).toBe(correction?.howTo ?? copy?.howTo);
+        expect(page?.formula).toBe(correction?.formula ?? copy?.formula);
+        expect(page?.example.answer).toContain(copy?.exampleNote);
+        expect(page?.faqs[0]).toEqual(copy?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+        if (slug === "singapore-gross-net-salary-calculator") {
+          const correction = singaporeGrossNetCorrections[locale];
+          expect(page?.description).toContain(correction.description);
+          expect(page?.howTo).toBe(correction.howTo);
+          expect(page?.formula).toBe(correction.formula);
+          expect(publishedCalculatorPages.find(({ slug: pageSlug }) => pageSlug === slug)?.fields.some(({ name }) => name === "age")).toBe(false);
+        }
+      }
+    }
+    const pages = Object.keys(expected);
+    const incomeTax = publishedCalculatorPages.find(({ slug }) => slug === "singapore-income-tax-calculator");
+    expect(incomeTax?.sources?.some(({ url, checkedAt }) => url.includes("iras.gov.sg/taxes/individual-income-tax/basics-of-individual-income-tax/tax-residency-and-tax-rates/individual-income-tax-rates") && checkedAt === "2026-10-28")).toBe(true);
+    expect(pages).toHaveLength(3);
   });
   it("keeps South Korea minimum wage, severance, and insurance examples localized with checked sources", () => {
     const slugs = ["minimum-wage", "severance-pay", "social-insurance"] as const;
