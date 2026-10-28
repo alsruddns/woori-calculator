@@ -10,6 +10,7 @@ import { philippinesPayrollFollowups } from "../src/i18n/dictionaries/philippine
 import { uaeLaborVatFollowups } from "../src/i18n/dictionaries/uae-labor-vat-followups";
 import { newZealandPayrollSavingsFollowups } from "../src/i18n/dictionaries/new-zealand-payroll-savings-followups";
 import { spainPolicyFollowups } from "../src/i18n/dictionaries/spain-policy-followups";
+import { francePolicyFollowups } from "../src/i18n/dictionaries/france-policy-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -1923,6 +1924,65 @@ test.describe("calculator input and result flows", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "Spain severance at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  test("France policy copy is in initial HTML for every locale", async ({ page }) => {
+    test.setTimeout(120_000);
+    const slugs = ["france-gross-net-salary-calculator", "france-income-tax-calculator", "france-vat-calculator"] as const;
+    for (const locale of locales) for (const slug of slugs) {
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response?.status(), locale + "/" + slug).toBe(200);
+      const html = await response!.text();
+      const content = francePolicyFollowups[locale][slug]!;
+      expect(html).toContain(content.howTo);
+      expect(html).toContain(content.formula);
+      expect(html).toContain(content.exampleNote);
+      expect(html).toContain(content.faq?.question ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("France tax, net-pay and TVA flows fit all required viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/france-vat-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#france-vat-calculator-amount").fill("1000");
+    await page.locator("#france-vat-calculator-rate").fill("20");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,200");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "France TVA at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/france-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#france-income-tax-calculator-income").fill("30000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("2,103.99");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "France income tax at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/france-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#france-gross-net-salary-calculator-salary").fill("60000");
+    await page.locator("#france-gross-net-salary-calculator-socialRate").fill("22");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("35,696.01");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "France gross-net at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

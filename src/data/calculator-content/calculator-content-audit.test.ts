@@ -61,6 +61,11 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.boe.es/eli/es/l/1992/12/28/37/con",
   "https://www.boe.es/eli/es/l/2006/11/28/35/con",
   "https://www.boe.es/eli/es/rdlg/2015/10/23/2/con",
+  "https://www.impots.gouv.fr/sites/default/files/media/1_metier/5_international/actualite/dossier-de-presse-dinr-revenus-2025_03_2026.pdf",
+  "https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407",
+  "https://www.impots.gouv.fr/international-professionnel/fiscalite-des-entreprises",
+  "https://www.urssaf.fr/accueil/outils-documentation/taux-baremes/taux-cotisations-secteur-prive.html",
+  "https://www.urssaf.fr/accueil/employeur/cotisations/comprendre-cotisations/calcul-cotisations-employeur.html",
 ]);
 
 function buildAuditReport() {
@@ -188,7 +193,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(49);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(54);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

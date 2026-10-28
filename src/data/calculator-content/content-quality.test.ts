@@ -15,8 +15,10 @@ import { calculateSocialInsurance } from "@/calculators/policy/social-insurance"
 import { auSgPayrollTaxFollowups } from "@/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-specific-global";
 import { calculateCountrySpecific } from "@/calculators/policy/country-specific";
+import { calculateBySlug } from "@/calculators/calculate";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
+import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
@@ -636,7 +638,7 @@ describe("calculator content quality", () => {
       "https://www.boe.es/eli/es/rdlg/2015/10/23/2/con",
     ]) expect(spainSources.find((source) => source.url === url)?.checkedAt).toBe("2026-10-28");
     for (const [slug, sample] of Object.entries(cases)) {
-      const result = calculateCountrySpecific(slug, sample.input);
+      const result = calculateBySlug(slug, sample.input);
       expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
       for (const locale of supportedLocales) {
         const addition = spainPolicyFollowups[locale]?.[slug];
@@ -655,5 +657,41 @@ describe("calculator content quality", () => {
     expect(calculateCountrySpecific("spain-vat-calculator", { amount: "1210", rate: "21", direction: "inclusive" })).toMatchObject({ results: [{ value: 1000 }, { value: 210 }, { value: 1210 }] });
     expect(spainPolicyFollowups.en?.["spain-irpf-calculator"]?.exampleNote).toContain("€4,500");
     expect(spainPolicyFollowups.en?.["spain-severance-pay-calculator"]?.exampleNote).toContain("€8,219.18");
+  });
+
+  it("renders France salary, income-tax, and VAT scenarios against the engine in all locales", () => {
+    const cases = {
+      "france-gross-net-salary-calculator": { input: { salary: "60000", frequency: "annual", socialRate: "22" }, values: [60000, 11103.99, 13200, 0, 35696.01, 2974.67] },
+      "france-income-tax-calculator": { input: { income: "30000" }, values: [30000, 2103.99, 7.01] },
+      "france-vat-calculator": { input: { amount: "1000", rate: "20", direction: "exclusive" }, values: [1000, 200, 1200] },
+    } as const;
+    const franceSources = countryRates.FR?.sources ?? [];
+    for (const url of [
+      "https://www.impots.gouv.fr/sites/default/files/media/1_metier/5_international/actualite/dossier-de-presse-dinr-revenus-2025_03_2026.pdf",
+      "https://bofip.impots.gouv.fr/bofip/2491-PGP.html/identifiant=BOI-IR-LIQ-20-10-20260407",
+      "https://www.impots.gouv.fr/international-professionnel/fiscalite-des-entreprises",
+      "https://www.urssaf.fr/accueil/outils-documentation/taux-baremes/taux-cotisations-secteur-prive.html",
+      "https://www.urssaf.fr/accueil/employeur/cotisations/comprendre-cotisations/calcul-cotisations-employeur.html",
+    ]) expect(franceSources.find((source) => source.url === url)?.checkedAt).toBe("2026-10-28");
+    for (const [slug, sample] of Object.entries(cases)) {
+      const result = calculateBySlug(slug, sample.input);
+      expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const addition = francePolicyFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(addition?.formula, `${locale}/${slug} formula`).toBeTruthy();
+        expect(addition?.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
+        expect(addition?.exampleNote, `${locale}/${slug} example`).toBeTruthy();
+        expect(addition?.faq, `${locale}/${slug} limitation FAQ`).toBeTruthy();
+        expect(page?.howTo).toBe(addition?.howTo);
+        expect(page?.formula).toBe(addition?.formula);
+        expect(page?.example.answer).toContain(addition?.exampleNote);
+        expect(page?.faqs[0]).toEqual(addition?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      }
+    }
+    expect(calculateBySlug("france-vat-calculator", { amount: "1200", rate: "20", direction: "inclusive" })).toMatchObject({ results: [{ value: 1000 }, { value: 200 }, { value: 1200 }] });
+    expect(francePolicyFollowups.en?.["france-income-tax-calculator"]?.exampleNote).toContain("€2,103.99");
+    expect(francePolicyFollowups.en?.["france-gross-net-salary-calculator"]?.exampleNote).toContain("€35,696.01");
   });
 });

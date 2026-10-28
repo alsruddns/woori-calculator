@@ -70,6 +70,10 @@ describe("global country calculators", () => {
     expect(values("singapore-cpf-calculator", { salary: "6000", age: "35" })).toEqual([1200, 1020, 2220]);
   });
 
+  it("applies the entered French payroll contribution assumption", () => {
+    expect(values("france-gross-net-salary-calculator", { salary: "60000", frequency: "annual", socialRate: "22" })).toEqual([60000, 11103.99, 13200, 0, 35696.01, 2974.67]);
+  });
+
   it("matches Philippine payroll content examples to the current engine", () => {
     expect(values("philippines-philhealth-calculator", { salary: "30000" })).toEqual([750, 750, 1500]);
     expect(values("philippines-pagibig-calculator", { salary: "30000" })).toEqual([200, 200, 400]);
