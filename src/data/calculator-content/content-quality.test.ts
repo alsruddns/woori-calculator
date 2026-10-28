@@ -49,6 +49,7 @@ import { canadaGrossNetFollowups } from "@/i18n/dictionaries/canada-gross-net-fo
 import { canadaIncomeTaxFollowups } from "@/i18n/dictionaries/canada-income-tax-followups";
 import { canadaCppEiFollowups } from "@/i18n/dictionaries/canada-cpp-ei-followups";
 import { canadaRrspFollowups } from "@/i18n/dictionaries/canada-rrsp-followups";
+import { australiaStampDutyFollowups } from "@/i18n/dictionaries/australia-stamp-duty-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -454,6 +455,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("documents Australia's user-entered single-rate stamp-duty estimate in every locale", () => {
+    const slug = "australia-stamp-duty-calculator";
+    const result = calculateBySlug(slug, { propertyValue: "500000", rate: "4" });
+    expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual([20000]);
+    for (const locale of supportedLocales) {
+      const copy = australiaStampDutyFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} scope`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
