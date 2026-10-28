@@ -28,6 +28,12 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents",
   "https://www.ato.gov.au/tax-rates-and-codes/key-superannuation-rates-and-thresholds/super-guarantee",
   "https://www.cpf.gov.sg/employer/employer-obligations/how-much-cpf-contributions-to-pay",
+  "https://www.minimumwage.go.kr/index.jsp",
+  "https://law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1023689759",
+  "https://moel.go.kr/retirementpayCal.do",
+  "https://www.nps.or.kr/pnsinfo/ntpsklg/getOHAF0038M0.do?menuId=MN24001113",
+  "https://edi.nhis.or.kr/portal/images/popup/20251204_pop01longdesc.html",
+  "https://edrm.ei.go.kr/ei/eih/eg/ei/eiEminsr/retrieveEi0102Info.do",
 ]);
 
 function buildAuditReport() {
@@ -155,7 +161,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(17);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(23);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

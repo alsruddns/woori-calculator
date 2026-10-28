@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -190,6 +190,56 @@ test.describe("Australia income/super and Singapore CPF examples", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("South Korea wage and employee policy examples", () => {
+  const slugs = ["minimum-wage", "severance-pay", "social-insurance"] as const;
+  for (const [index, locale] of locales.entries()) {
+    const slug = slugs[index % slugs.length]!;
+    test(locale + "/" + slug + " includes South Korea example in SSR HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      const note = sixthPolicyExampleNotes[locale]?.[slug];
+      expect(response?.status()).toBe(200);
+      expect(note).toBeTruthy();
+      const html = await response!.text();
+      expect(html).toContain(note);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      await expect(page.locator("article")).toContainText(note ?? "");
+    });
+  }
+
+  test("checks live KRW examples and all required viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/ko/calculators/minimum-wage");
+    await waitForCalculatorHydration(page);
+    await page.locator("#minimum-wage-hourlyWage").fill("10000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("-₩320");
+    await expect(page.locator("[aria-live='polite']")).toContainText("2,156,880");
+
+    await page.goto("/ko/calculators/severance-pay");
+    await waitForCalculatorHydration(page);
+    await page.locator("#severance-pay-start").fill("2025-01-01");
+    await page.locator("#severance-pay-lastWorkday").fill("2025-12-31");
+    await page.locator("#severance-pay-averageDailyWage").fill("100000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("3,000,000");
+
+    await page.goto("/ko/calculators/social-insurance");
+    await waitForCalculatorHydration(page);
+    await page.locator("#social-insurance-monthlyWage").fill("4000000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("388,696");
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "South Korea policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

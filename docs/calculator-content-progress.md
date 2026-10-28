@@ -9,9 +9,9 @@ This register separates earlier result-note work from full content completion. A
 - Content COMPLETE: 72
 - VALIDATING: 0
 - Content DRAFT: 97
-- Policy VERIFIED: 5 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator)
-- Policy PARTIAL: 5 (japan-consumption-tax-calculator; future schedule not date-modeled; canada-gst-hst-calculator; province/place classification absent; australia-income-tax-calculator; Medicare levy/offsets excluded; australia-superannuation-calculator; eligibility/contribution caps/tax excluded; singapore-cpf-calculator; graduated PR and additional-wage rules not modeled)
-- Policy BLOCKED: 91 (including withholding-tax-3-3)
+- Policy VERIFIED: 6 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, minimum-wage)
+- Policy PARTIAL: 7 (japan-consumption-tax-calculator; future schedule not date-modeled; canada-gst-hst-calculator; province/place classification absent; australia-income-tax-calculator; Medicare levy/offsets excluded; australia-superannuation-calculator; eligibility/contribution caps/tax excluded; singapore-cpf-calculator; graduated PR and additional-wage rules not modeled; severance-pay; eligibility and statutory average-wage calculation omitted; social-insurance; exact eligibility/pay-base adjustments excluded)
+- Policy BLOCKED: 88 (including withholding-tax-3-3)
 - Policy PENDING: 0
 - Latest audit signals: short-content 16 (baseline 71); exact duplicate blocks 353 (baseline 359). These totals include locale records and remain review indicators, not quality completion scores.
 - Content completion and policy verification are tracked independently. The 97 DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
@@ -26,7 +26,11 @@ COMPLETE requires calculator-specific purpose, input/unit meaning, implemented f
 
 ## Latest policy/content batch (2026-10-28): Australia tax/super and Singapore CPF
 
-`australia-income-tax-calculator`, `australia-superannuation-calculator`, and `singapore-cpf-calculator`: added individually scoped worked examples to all 26 locales (78 localized calculator/locale records). Engine checks confirm AUD 80,000 gives AUD 14,520 income tax and 18.15% average rate in the configured resident 2026?27 schedule; AUD 100,000 salary with AUD 6,000 employee contribution, 12% employer, 0% return for one year projects AUD 18,000; SGD 6,000 monthly ordinary wages at age 35 gives SGD 1,200 employee + SGD 1,020 employer = SGD 2,220 under the configured full-rate category. ATO sources confirm the 2026?27 resident bands, SG 12% from 2025-07-01, and SG contribution cap/rules caveats. CPF Board confirms full contribution rates from 2026-01-01 and the SGD 8,000 ordinary-wage ceiling. All three policy entries remain PARTIAL because model exclusions affect the user's total liability/contribution. Source URLs checked 2026-10-28. Focused engine/content/audit tests passed (13 tests); TypeScript, lint and diff checks passed; Playwright passed 27 cases for locale SSR, the three live calculations and eight viewport widths with no horizontal overflow. Source URLs opened and compared this run: 17 total cumulative. No core calculation formula was changed.
+`australia-income-tax-calculator`, `australia-superannuation-calculator`, and `singapore-cpf-calculator`: added individually scoped worked examples to all 26 locales (78 localized calculator/locale records). Engine checks confirm AUD 80,000 gives AUD 14,520 income tax and 18.15% average rate in the configured resident 2026–27 schedule; AUD 100,000 salary with AUD 6,000 employee contribution, 12% employer, 0% return for one year projects AUD 18,000; SGD 6,000 monthly ordinary wages at age 35 gives SGD 1,200 employee + SGD 1,020 employer = SGD 2,220 under the configured full-rate category. ATO sources confirm the 2026–27 resident bands, SG 12% from 2025-07-01, and SG contribution cap/rules caveats. CPF Board confirms full contribution rates from 2026-01-01 and the SGD 8,000 ordinary-wage ceiling. All three policy entries remain PARTIAL because model exclusions affect the user's total liability/contribution. Source URLs checked 2026-10-28. Focused engine/content/audit tests passed (13 tests); TypeScript, lint and diff checks passed; Playwright passed 27 cases for locale SSR, the three live calculations and eight viewport widths with no horizontal overflow. Source URLs opened and compared this run: 17 total cumulative. No core calculation formula was changed.
+
+## Latest policy/content batch (2026-10-28): South Korea minimum wage, severance, employee insurance
+
+`minimum-wage`, `severance-pay`, and `social-insurance`: added worked examples and scope notes in all 26 locales (78 localized calculator/locale records). Official source review: the Minimum Wage Commission confirms the 2026 KRW 10,320 hourly, KRW 82,560 daily (8h), and KRW 2,156,880 monthly (209h) values; minimum-wage policy is VERIFIED for this displayed standard schedule. The Employee Retirement Benefit Security Act Article 8, effective 2026-09-18, confirms at least 30 days of average wage per continuous-service year; MOEL's calculator confirms 3-month wage averaging and ordinarily uses regular wage when higher. Since this engine takes average daily wage directly and does not test eligibility or statutory average-wage rules, severance is PARTIAL. NHIS confirms 2026 health 7.19% and long-term care 0.9448%; NPS confirms employee pension share 4.75% and July 2026–June 2027 standard monthly income limits KRW 410,000–6,590,000; EI confirms worker unemployment insurance 0.9%. Insurance remains PARTIAL for eligibility, pay-base exemptions and settlement detail. Example outcomes match current engines: KRW 10,000/hour is KRW 320 below the minimum; one inclusive service year at entered KRW 100,000 average daily wage estimates KRW 3,000,000; July–December 2026 employee insurance at KRW 4,000,000 wage base totals KRW 388,696. Sources checked 2026-10-28. Engine/content/audit tests passed (23); Playwright passed 26 locale SSR cases and the live calculation/responsive case across eight widths with no horizontal overflow or browser page errors. Full regression: 1,112/1,112 unit tests, lint, typecheck, production build (4,423 static routes) passed. Native-speaker review not performed.
 
 ## Latest completed batch
 
@@ -67,7 +71,7 @@ average, weighted-average, unit-price, probability, area. Added localized worked
 
 ## Current batch under validation
 
-No open implementation batch. Next policy candidate: `canada-gst-hst-calculator`, followed by remaining country-specific POLICY DRAFT pages. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; its reference content is already complete.
+Latest policy-source batch reviewed `minimum-wage`, `severance-pay`, and `social-insurance`; their content remains DRAFT pending full page-section completion. Next policy candidate: `unemployment-benefit`, followed by remaining country-specific POLICY DRAFT pages. Keep withholding policy BLOCKED until the proposed rate change's enactment and effective date are confirmed; policy status remains separate from its localized example notes.
 
 ## Calculator register
 
@@ -144,9 +148,9 @@ No open implementation batch. Next policy candidate: `canada-gst-hst-calculator`
 | `tip-calculator` | life | STATIC | 26/26 | COMPLETE | N/A | Entered tip rate and equal split explained; 50,000 at 10% split by two yields 27,500 each. |
 | `unit-converter` | math | STATIC | 26/26 | COMPLETE | N/A | Mile conversion and temperature offset example match engine tests; browser flow and responsive checks passed. |
 | `unemployment-benefit` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `minimum-wage` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `severance-pay` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `social-insurance` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `minimum-wage` | salary | POLICY | 26/26 | DRAFT | VERIFIED | Minimum Wage Commission confirms 2026 KRW 10,320/h, 82,560/day (8h), 2,156,880/month (209h); individual exemptions and wage compliance are outside scope. |
+| `severance-pay` | salary | POLICY | 26/26 | DRAFT | PARTIAL | Article 8 30-day-per-year rule and MOEL formula checked; this engine takes average daily wage and does not calculate eligibility or legal average wage. |
+| `social-insurance` | salary | POLICY | 26/26 | DRAFT | PARTIAL | NPS/NHIS/EI 2026 rates and bases checked; pay eligibility, exemptions and settlement specifics remain outside model. |
 | `japan-consumption-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | PARTIAL | NTA source checked 2026-10-28 confirms 10% standard/8% reduced options and eligibility limits; it also lists a temporary food-tax reduction scheduled 2027-04-01 through 2029-03-31. No transaction-date field exists, so future rates are not date-modeled. |
 | `japan-annual-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `japan-monthly-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -212,7 +216,7 @@ No open implementation batch. Next policy candidate: `canada-gst-hst-calculator`
 | `canada-cpp-ei-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `canada-rrsp-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `australia-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `australia-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | PARTIAL | Resident 2026?27 brackets source-checked; Medicare levy, offsets and non-resident rules excluded. |
+| `australia-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | PARTIAL | Resident 2026–27 brackets source-checked; Medicare levy, offsets and non-resident rules excluded. |
 | `australia-gst-calculator` | tax | POLICY | 26/26 | DRAFT | VERIFIED | ATO confirms 10% on most goods/services; checked 2026-10-28. No GST-free classification. |
 | `australia-superannuation-calculator` | finance | POLICY | 26/26 | DRAFT | PARTIAL | ATO confirms 12% SG from 2025-07-01; eligibility, contribution caps, tax and fund fees are not modeled. |
 | `australia-stamp-duty-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -245,4 +249,4 @@ No open implementation batch. Next policy candidate: `canada-gst-hst-calculator`
 
 ## Next batch queue
 
-Next: continue with country-policy calculators that can be described safely from the engine and official sources. Keep the reviewed GST and Australia/CPF pages DRAFT until full calculator-specific page sections are authored and validated. Content completion is tracked separately from VERIFIED, PARTIAL, and BLOCKED policy review.
+Next: continue with country-policy calculators that can be described safely from the engine and official sources. The three South Korea pages remain DRAFT pending full content structure and browser verification. Keep the reviewed GST and Australia/CPF pages DRAFT until full calculator-specific page sections are authored and validated. Content completion is tracked separately from VERIFIED, PARTIAL, and BLOCKED policy review.

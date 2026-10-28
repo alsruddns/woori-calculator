@@ -51,12 +51,12 @@
 | 40 | 월급·연봉 변환 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `salary-conversion` |
 | 41 | 시급 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `hourly-wage` |
 | 42 | 연차수당 간편 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `annual-leave-allowance` |
-| 43 | 부가세 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `vat` |
+| 43 | 부가세 계산기 | open | true | 2026 | [국가법령정보센터 — 부가가치세법 제30조](https://www.law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1031738785)<br>[국세청 — 부가가치세 개요](https://i.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7693&mi=2401) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `vat` |
 | 44 | 단가 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `unit-price` |
 | 45 | 마진율 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `margin` |
 | 46 | 마크업률 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `markup` |
 | 47 | 판매 수익·목표 마진 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `product-margin` |
-| 48 | 3.3% 원천징수 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `withholding-tax-3-3` |
+| 48 | 3.3% 원천징수 계산기 | open | true | 2026 | [국세청 — 사업소득 원천징수 안내](https://b.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7902&mi=6466) | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `withholding-tax-3-3` |
 | 49 | 날짜 차이 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `date-difference` |
 | 50 | D-Day 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `dday` |
 | 51 | 만 나이 계산기 | open | false | - | - | ko, en, ja, zh, es, pt-br, de, fr, vi, id, th, zh-tw, it, nl, hi, ru, tr, pl, fil, bn, uk, ms, sv, cs, ro, el | `age` |

@@ -25,7 +25,7 @@ export const policyCalculatorPages: readonly CalculatorPageDefinition[] = [
     howTo: "입사일, 마지막 근무일과 확인한 1일 평균임금을 입력하세요. 계속근로일수에 비례해 30일분 평균임금 기준 예상액을 계산합니다.", formula: "예상 퇴직금 = 1일 평균임금 × 30 × 계속근로일수 ÷ 365", example: { question: "1일 평균임금 100,000원, 계속근로 365일이라면?", answer: "단순 산식 기준 예상 퇴직금은 3,000,000원입니다." },
     notes: ["평균임금은 퇴직 전 3개월 임금과 총일수 등 법정 기준으로 산정해야 합니다. 이 계산기는 평균임금을 입력값으로 받아 단순 추정하며 지급 자격이나 실제 지급액을 판정하지 않습니다."],
     faqs: [{ question: "평균임금은 어떻게 구하나요?", answer: "일반적으로 산정 사유 발생 전 3개월간 지급된 임금 총액을 그 기간의 총일수로 나누는 법정 기준이 적용됩니다. 실제 산정에는 제외 기간 등 추가 규칙이 있어 고용노동부 안내를 확인하세요." }, { question: "퇴직금 지급 자격도 판정하나요?", answer: "아닙니다. 근속기간과 입력한 평균임금으로 금액을 단순 추정하며 근로시간·고용 형태 등 지급 요건을 판단하지 않습니다." }],
-    sources: [{ name: severancePolicy2026.source.name, url: severancePolicy2026.source.url, checkedAt: severancePolicy2026.source.checkedAt }, { name: "고용노동부 — 퇴직금 산정 안내", url: "https://1350.moel.go.kr/home/hp/retirementpaycal/retirementpaycal.jsp", checkedAt: severancePolicy2026.source.checkedAt }], updatedAt: severancePolicy2026.updatedAt,
+    sources: [{ name: severancePolicy2026.source.name, url: severancePolicy2026.source.url, checkedAt: severancePolicy2026.source.checkedAt }, { name: "고용노동부 — 퇴직금 산정 안내", url: "https://moel.go.kr/retirementpayCal.do", checkedAt: severancePolicy2026.source.checkedAt }], updatedAt: severancePolicy2026.updatedAt,
   }),
   createCalculatorPage({
     slug: "social-insurance", name: "2026 4대보험 계산기", shortName: "4대보험", category: "salary", countryCode: "KR", countryName: "대한민국", policyType: "POLICY", policyYear: employeeInsurance2026.policyYear,

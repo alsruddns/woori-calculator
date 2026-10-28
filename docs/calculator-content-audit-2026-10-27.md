@@ -6,7 +6,7 @@ This report records reproducible structural and calculation checks for the 169 p
 
 - Published calculators: **169** (unique slugs: 169)
 - Configured public locales: **26**; per-locale published calculator counts: ko 169, en 169, ja 169, zh 169, es 169, pt-br 169, de 169, fr 169, vi 169, id 169, th 169, zh-tw 169, it 169, nl 169, hi 169, ru 169, tr 169, pl 169, fil 169, bn 169, uk 169, ms 169, sv 169, cs 169, ro 169, el 169
-- Policy calculators: **101**; with at least one listed source: **101/101**. Source records contain a check date for **34 unique URLs**, referenced by **44/101 pages**; **17 URLs** were opened and their relevant content compared with the configured rule or rate in this run. This does not validate every rule or input model on a page.
+- Policy calculators: **101**; with at least one listed source: **101/101**. Source records contain a check date for **34 unique URLs**, referenced by **44/101 pages**; **23 URLs** were opened and their relevant content compared with the configured rule or rate in this run. This does not validate every rule or input model on a page.
 - Country-policy pages with a calculator-specific displayed formula or calculation explanation: **92/101**. Their examples are generated from the page calculation function; this does not certify policy eligibility, translation quality or legal completeness.
 - Country-specific examples matching calculated result values: **92/92**. The check runs the page calculation function with the calculator example inputs (or the configured defaults) and verifies the displayed numeric results.
 - Locale-aware short-content signals (review candidates, not automatic failures): ko 0, en 0, ja 0, zh 0, es 0, pt-br 0, de 0, fr 0, vi 0, id 0, th 0, zh-tw 0, it 0, nl 0, hi 0, ru 0, tr 0, pl 2, fil 7, bn 2, uk 1, ms 0, sv 1, cs 1, ro 1, el 1. The published route count does not certify translation quality.
@@ -90,10 +90,10 @@ This report records reproducible structural and calculation checks for the 169 p
 | `trip-split` | life | STATIC | 2 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `tip-calculator` | life | STATIC | 3 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
 | `unit-converter` | math | STATIC | 4 | 3 | 26/26 | manual | 0 | — | No structural flag; human usefulness review remains required |
-| `unemployment-benefit` | salary | POLICY 2026 | 3 | 3 | 26/26 | manual | 3 | — | official source and effective rule not live-verified in this audit |
-| `minimum-wage` | salary | POLICY 2026 | 1 | 2 | 26/26 | manual | 1 | — | official source and effective rule not live-verified in this audit |
-| `severance-pay` | salary | POLICY 2026 | 3 | 3 | 26/26 | manual | 2 | tr: exact duplicate FAQ with minimum-wage | official source and effective rule not live-verified in this audit |
-| `social-insurance` | salary | POLICY 2026 | 1 | 2 | 26/26 | manual | 4 | — | official source and effective rule not live-verified in this audit |
+| `unemployment-benefit` | salary | POLICY 2026 | 3 | 3 | 26/26 | manual | 3 | — | No structural flag; human usefulness review remains required |
+| `minimum-wage` | salary | POLICY 2026 | 1 | 2 | 26/26 | manual | 1 | — | No structural flag; human usefulness review remains required |
+| `severance-pay` | salary | POLICY 2026 | 3 | 3 | 26/26 | manual | 2 | tr: exact duplicate FAQ with minimum-wage | No structural flag; human usefulness review remains required |
+| `social-insurance` | salary | POLICY 2026 | 1 | 2 | 26/26 | manual | 4 | — | No structural flag; human usefulness review remains required |
 | `japan-consumption-tax-calculator` | tax | POLICY 2026 | 4 | 3 | 26/26 | manual | 2 | — | No structural flag; human usefulness review remains required |
 | `japan-annual-salary-calculator` | salary | POLICY 2026 | 2 | 3 | 26/26 | manual | 6 | — | official source and effective rule not live-verified in this audit |
 | `japan-monthly-salary-calculator` | salary | POLICY 2026 | 2 | 3 | 26/26 | manual | 6 | — | official source and effective rule not live-verified in this audit |

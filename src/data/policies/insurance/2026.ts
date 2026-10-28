@@ -9,7 +9,7 @@ export const employeeInsurance2026: PolicyDataMetadata & {
   id: "employee-social-insurance-kr-2026",
   policyYear: 2026,
   version: "1.0.0",
-  updatedAt: "2026-10-05",
+  updatedAt: "2026-10-28",
   effectiveFrom: "2026-07-01",
   effectiveTo: "2026-12-31",
   source: {
@@ -25,7 +25,7 @@ export const employeeInsurance2026: PolicyDataMetadata & {
 
 export const insuranceSources = [
   employeeInsurance2026.source,
-  { name: "국민건강보험공단 — 2026년 보험료율 안내", url: "https://edi.nhis.or.kr/portal/images/popup/20251204_pop01longdesc.html", checkedAt: employeeInsurance2026.updatedAt },
-  { name: "국가법령정보센터 — 월별 건강보험료 상·하한 고시", url: "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000270472", checkedAt: employeeInsurance2026.updatedAt },
-  { name: "고용보험 — 근로자 실업급여 보험료", url: "https://edrm.ei.go.kr/ei/eih/eg/ei/eiEminsr/retrieveEi0102Info.do", checkedAt: employeeInsurance2026.updatedAt },
+  { name: "국민건강보험공단 — 2026년 보험료율 안내", url: "https://edi.nhis.or.kr/portal/images/popup/20251204_pop01longdesc.html", checkedAt: "2026-10-28" },
+  { name: "국가법령정보센터 — 월별 건강보험료 상·하한 고시", url: "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000270472", checkedAt: "2026-10-28" },
+  { name: "고용보험 — 근로자 실업급여 보험료", url: "https://edrm.ei.go.kr/ei/eih/eg/ei/eiEminsr/retrieveEi0102Info.do", checkedAt: "2026-10-28" },
 ] as const;
