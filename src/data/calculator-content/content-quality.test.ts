@@ -18,6 +18,7 @@ import { chinaGrossNetFollowups } from "@/i18n/dictionaries/china-gross-net-foll
 import { chinaIncomeTaxFollowups } from "@/i18n/dictionaries/china-income-tax-followups";
 import { chinaSocialInsuranceFollowups } from "@/i18n/dictionaries/china-social-insurance-followups";
 import { chinaVatFollowups } from "@/i18n/dictionaries/china-vat-followups";
+import { taiwanGrossNetFollowups } from "@/i18n/dictionaries/taiwan-gross-net-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -494,6 +495,27 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} exclusive/inclusive formulas`).toBeTruthy();
       expect(copy.example?.answer, `${locale} engine-matched examples`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} classification limits`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
+    }
+  });
+  it("renders Taiwan gross-to-net configured bands and monthly example in every locale", () => {
+    const slug = "taiwan-gross-net-salary-calculator";
+    const output = calculateBySlug(slug, { salary: "80000", frequency: "monthly", socialRate: "2.4" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([960000, 72500, 23040, 864460, 72038.33]);
+    for (const locale of supportedLocales) {
+      const copy = taiwanGrossNetFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} configured formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} policy limitations`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

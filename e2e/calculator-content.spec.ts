@@ -35,6 +35,7 @@ import { chinaGrossNetFollowups } from "../src/i18n/dictionaries/china-gross-net
 import { chinaIncomeTaxFollowups } from "../src/i18n/dictionaries/china-income-tax-followups";
 import { chinaSocialInsuranceFollowups } from "../src/i18n/dictionaries/china-social-insurance-followups";
 import { chinaVatFollowups } from "../src/i18n/dictionaries/china-vat-followups";
+import { taiwanGrossNetFollowups } from "../src/i18n/dictionaries/taiwan-gross-net-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2745,6 +2746,37 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("884.96");
     await expect(page.locator("[aria-live='polite']")).toContainText("115.04");
+    expect(errors).toEqual([]);
+  });
+
+  test("Taiwan gross-to-net explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = taiwanGrossNetFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/taiwan-gross-net-salary-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Taiwan gross-to-net calculator matches the monthly worked example", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/taiwan-gross-net-salary-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#taiwan-gross-net-salary-calculator-salary").fill("80000");
+    await page.locator("#taiwan-gross-net-salary-calculator-frequency").selectOption("monthly");
+    await page.locator("#taiwan-gross-net-salary-calculator-socialRate").fill("2.4");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("864,460");
+    await expect(page.locator("[aria-live='polite']")).toContainText("72,038.33");
     expect(errors).toEqual([]);
   });
 });

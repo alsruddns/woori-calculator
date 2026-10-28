@@ -6,14 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 143
+- Content COMPLETE: 144
 - VALIDATING: 0
-- Content DRAFT: 26
+- Content DRAFT: 25
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
 - Policy PENDING: 0
-- Latest audit signals: short-content 12 (unchanged) and exact-duplicate occurrences 163 (down from 166; original short-content baseline 71). Review indicators only, not a completion score.
+- Latest audit signals: short-content 10 and exact-duplicate occurrences 127 (from the latest full audit; original short-content baseline 71). Review indicators only, not a completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Completion gate
@@ -236,7 +236,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `china-individual-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Engine subtracts configured CNY 60,000 then applies progressive bands; example and limits documented. Current statutory alignment and individual reliefs remain unverified. |
 | `china-social-insurance-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Monthly wage-base × entered-rate arithmetic documented; city-specific insurance categories, bases and ceilings remain unverified and are not modeled. |
 | `china-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Exclusive/inclusive formulas and code-matched examples documented; 13% is described only as a configurable code default, while supply classification and legal application remain unverified. |
-| `taiwan-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `taiwan-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured 2026 progressive bands and user-entered employee rate; current legal alignment, personal deductions, insurance tiers/ceilings and employment categories remain unverified or outside the model. |
 | `taiwan-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `taiwan-labor-insurance-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `taiwan-vat-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -320,3 +320,5 @@ Latest batch: `netherlands-gross-net-salary-calculator`, `netherlands-vat-calcul
 `china-social-insurance-calculator`: added localized purpose, monthly wage-base and entered-rate guidance, the exact multiplication formula, CNY 20,000 × 8% = CNY 1,600 example, interpretation and regional/insurance limits in all 26 locales. The 8% is explicitly illustrative, not a legal rate. Focused content test passed (1), TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR content and SEO checks across all locales plus the live rate calculation; no page/hydration errors. Existing AdSense script warning appeared. Policy remains BLOCKED because city-specific insurance types, bases and ceilings were not verified. Native-speaker review not performed. Next DRAFT: `taiwan-gross-net-salary-calculator`.
 
 `china-vat-calculator`: added distinct purpose, direction guidance, exclusive/inclusive formulas, both CNY 1,000 at 13% examples, result interpretation and supply-classification limits in all 26 locales. Engine outputs were [1,000, 130, 1,130] exclusive and [884.96, 115.04, 1,000] inclusive; 13% is explicitly a configurable code default, not a verified applicable rate. Policy remains BLOCKED because product/service classification and current legal application were not revalidated. Focused content test passed (1), TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR/SEO checks for all 26 locales and live exclusive/inclusive flows; no page or hydration errors. The 5-batch integrated checkpoint passed: `pnpm test` 210 files/1,154 tests, `pnpm lint`, `pnpm typecheck`, and `pnpm build` (4,423 static pages). The regenerated audit signal counts decreased from 12 to 10 short-content candidates and from 150 to 127 exact duplicate occurrences; these are review signals, not quality certifications. Native-speaker review not performed. Next DRAFT: `taiwan-gross-net-salary-calculator`.
+
+`taiwan-gross-net-salary-calculator`: added calculator-specific purpose, monthly/annual input meaning, exact configured progressive-band and flat entered-rate arithmetic, modeled TWD 80,000/month example (TWD 960,000 annual gross, TWD 72,500 modeled tax, TWD 23,040 at 2.4%, TWD 864,460 annual net and TWD 72,038.33 monthly average), interpretation and limits across all 26 locales. The engine example was tested with the rate entered explicitly; the UI default rate remains 2.4% from the Taiwan config, while unverified legal alignment, personal deductions, insurance tiers/ceilings and employment category are clearly excluded. No policy values or engine changed; policy remains BLOCKED. Focused content test passed 44/44; TypeScript, changed-file ESLint and diff check passed. Playwright passed 2/2: SSR/SEO content across all 26 locale routes plus the live monthly calculation; no page or hydration errors. Existing external AdSense script warning appeared. Native-speaker review not performed. Next DRAFT: `taiwan-income-tax-calculator`.
