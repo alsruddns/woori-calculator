@@ -14,11 +14,39 @@ import { calculateSeveranceEstimate } from "@/calculators/policy/severance";
 import { calculateSocialInsurance } from "@/calculators/policy/social-insurance";
 import { auSgPayrollTaxFollowups } from "@/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-specific-global";
+import { calculateCountrySpecific } from "@/calculators/policy/country-specific";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
+import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
 describe("calculator content quality", () => {
+  it("renders German VAT purpose, formula, engine-matched examples, limits and FAQ in all locales", () => {
+    const slug = "germany-vat-calculator";
+    const definition = publishedCalculatorPages.find((page) => page.slug === slug);
+    expect(definition?.countryCode).toBe("DE");
+    expect(definition?.policyYear).toBe(2026);
+    expect(definition?.sources?.some((source) => source.url === "https://www.gesetze-im-internet.de/ustg_1980/__12.html" && source.checkedAt === "2026-10-28")).toBe(true);
+    const output = calculateCountrySpecific(slug, { amount: "100", rate: "19", direction: "exclusive" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([100, 19, 119]);
+    for (const locale of supportedLocales) {
+      const copy = germanyVatFollowups[locale]?.[slug];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy?.description, `${locale} description`).toBeTruthy();
+      expect(copy?.howTo, `${locale} instructions`).toBeTruthy();
+      expect(copy?.formula, `${locale} formula`).toBeTruthy();
+      expect(copy?.exampleNote, `${locale} example`).toContain("19");
+      expect(copy?.faq?.question, `${locale} FAQ question`).toBeTruthy();
+      expect((copy?.faq?.answer ?? "").length, `${locale} scope detail`).toBeGreaterThan(50);
+      if (locale !== "en") expect(copy?.faq?.answer).not.toBe(germanyVatFollowups.en?.[slug]?.faq?.answer);
+      expect(page?.description).toContain(copy?.description);
+      expect(page?.howTo).toBe(copy?.howTo);
+      expect(page?.formula).toBe(copy?.formula);
+      expect(page?.example.answer).toContain(copy?.exampleNote);
+      expect(page?.faqs[0]).toEqual(copy?.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
   it("validates the South Korea 2026 unemployment example against the engine and all locale pages", () => {
     const slug = "unemployment-benefit";
     const definition = publishedCalculatorPages.find((page) => page.slug === slug);

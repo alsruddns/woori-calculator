@@ -6,9 +6,9 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 86
+- Content COMPLETE: 87
 - VALIDATING: 0
-- Content DRAFT: 83
+- Content DRAFT: 82
 - Policy VERIFIED: 10 (vat, uk-vat-calculator, australia-gst-calculator, singapore-gst-calculator, new-zealand-gst-calculator, minimum-wage, japan-overtime-pay-calculator, japan-night-holiday-pay-calculator, germany-vat-calculator, singapore-income-tax-calculator)
 - Policy PARTIAL: 9 (japan-consumption-tax-calculator; future schedule not date-modeled; canada-gst-hst-calculator; province/place classification absent; australia-income-tax-calculator; Medicare levy/offsets excluded; australia-gross-net-salary-calculator; levy reductions and exemptions are not modeled; australia-superannuation-calculator; eligibility/contribution caps/tax excluded; singapore-cpf-calculator; graduated PR and additional-wage rules not modeled; severance-pay; eligibility and statutory average-wage calculation omitted; social-insurance; exact eligibility/pay-base adjustments excluded; unemployment-benefit; fixed 8-hour lower limit and monthly-wage × 3 ÷ 90 approximation do not establish eligibility or a legal personal daily wage)
 - Policy BLOCKED: 82 (including withholding-tax-3-3 and singapore-gross-net-salary-calculator; annual-pay mode applies the CPF monthly formula to the raw annual entry, and non-monthly use is not a reliable CPF estimate)
@@ -170,7 +170,7 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 | `japan-night-holiday-pay-calculator` | salary | POLICY | 26/26 | DRAFT | VERIFIED | MHLW confirms 25% night, 35% statutory holiday, and additive overlapping premiums; legal schedule classification remains user-supplied. |
 | `germany-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `germany-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
-| `germany-vat-calculator` | tax | POLICY | 26/26 | DRAFT | VERIFIED | German VAT Act §12 confirms 19% standard and 7% reduced rates for listed supplies; calculator does not classify eligibility. |
+| `germany-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | VERIFIED | UStG §12 checked 2026-10-28; localized formulas/examples complete. Verified for user-entered rate arithmetic only; product classification, exemptions and eligibility are not modeled. |
 | `germany-overtime-pay-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `germany-vacation-pay-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `spain-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
@@ -260,5 +260,8 @@ Next policy candidates: continue with remaining country-specific POLICY DRAFT pa
 | `france-social-contribution-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 
 ## Next batch queue
+
+Latest batch: `germany-vat-calculator` completed in 26 locales. The page explains net/gross inputs, the exact calculator formula, €100 examples at 19% and 7%, and why the tool cannot classify goods or determine reduced-rate eligibility. The Federal Ministry of Justice's current UStG §12 page was checked 2026-10-28; it confirms 19% standard and 7% for specified supplies. The engine returned [100, 19, 119] for €100 net at 19%. No calculation logic changed. Native-speaker review not performed.
+Validation: `src/data/calculator-content/content-quality.test.ts` passed 15/15; TypeScript, lint, and `git diff --check` passed. Playwright passed 34/34 for all 26 locales' initial HTML and locale page content, plus 1/1 live calculator flow and overflow checks at 320, 360, 375, 390, 430, 768, 1024, and 1440 px. The existing AdSense external script emitted a console warning; no page or hydration errors occurred.
 
 Next: `hong-kong-salary-tax-calculator`, `hong-kong-mpf-calculator`, and `hong-kong-stamp-duty-calculator`. Content completion is tracked separately from VERIFIED, PARTIAL, and BLOCKED policy review; policy source review does not prevent safe, engine-grounded localized content work.

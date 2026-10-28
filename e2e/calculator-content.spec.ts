@@ -2,6 +2,7 @@
 import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes, fifthPolicyExampleNotes, sixthPolicyExampleNotes, seventhPolicyExampleNotes, unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "../src/i18n/dictionaries/locale-quality-followup";
 import { auSgPayrollTaxFollowups } from "../src/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { singaporeGrossNetCorrections } from "../src/i18n/dictionaries/sg-gross-net-corrections";
+import { germanyVatFollowups } from "../src/i18n/dictionaries/germany-vat-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -110,6 +111,22 @@ test.describe("next policy batch localized SSR", () => {
       expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
       expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
       await expect(page.locator("article")).toContainText(note ?? "");
+    });
+  }
+
+  for (const locale of locales) {
+    test(locale + "/germany-vat-calculator renders localized details in initial HTML", async ({ page }) => {
+      const copy = germanyVatFollowups[locale]?.["germany-vat-calculator"];
+      expect(copy?.description).toBeTruthy();
+      const response = await page.goto("/" + locale + "/calculators/germany-vat-calculator");
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toContain(copy?.description ?? "");
+      expect(html).toContain(copy?.formula ?? "");
+      expect(html).toContain(copy?.exampleNote ?? "");
+      expect(html).toContain(copy?.faq?.question ?? "");
+      await expect(page.locator("article")).toContainText(copy?.faq?.question ?? "");
+      await expect(page.locator("article")).toContainText(copy?.faq?.answer ?? "");
     });
   }
 
