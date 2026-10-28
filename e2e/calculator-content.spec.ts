@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
+import { reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes } from "../src/i18n/dictionaries/locale-quality-followup";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -101,6 +101,43 @@ test.describe("next policy batch localized SSR", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, "policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("four country GST policy examples", () => {
+  const slugs = ["canada-gst-hst-calculator", "australia-gst-calculator", "singapore-gst-calculator", "new-zealand-gst-calculator"] as const;
+  for (const [index, locale] of locales.entries()) {
+    const slug = slugs[index % slugs.length]!;
+    test(locale + "/" + slug + " includes localized tax example in SSR HTML", async ({ page }) => {
+      const response = await page.goto("/" + locale + "/calculators/" + slug);
+      const note = fourthPolicyExampleNotes[locale]?.[slug];
+      expect(response?.status()).toBe(200);
+      expect(note).toBeTruthy();
+      const html = await response!.text();
+      expect(html).toContain(note);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      await expect(page.locator("article")).toContainText(note ?? "");
+    });
+  }
+
+  test("checks live GST arithmetic, SSR cards, and all required viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    for (const [slug, rate, total] of [["canada-gst-hst-calculator", "5", "105.00"], ["australia-gst-calculator", "10", "110.00"], ["singapore-gst-calculator", "9", "109.00"], ["new-zealand-gst-calculator", "15", "115.00"]] as const) {
+      await page.goto("/en/calculators/" + slug);
+      await waitForCalculatorHydration(page);
+      await page.locator("#" + slug + "-amount").fill("100");
+      await page.locator("#" + slug + "-rate").fill(rate);
+      await page.locator('form button[type="submit"]').click();
+      await expect(page.locator("article")).toContainText(total);
+    }
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "GST detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

@@ -59,5 +59,9 @@ describe("global country calculators", () => {
     expect(monthly[0]).toBe(annual[0]);
     expect(monthly[4]).toBe(annual[4]);
     expect(values("uae-vat-calculator", { amount: "100", rate: "5", direction: "exclusive" })[1]).toBe(5);
+    expect(values("canada-gst-hst-calculator", { amount: "100", rate: "5", direction: "exclusive" })).toEqual([100, 5, 105]);
+    expect(values("australia-gst-calculator", { amount: "100", rate: "10", direction: "exclusive" })).toEqual([100, 10, 110]);
+    expect(values("singapore-gst-calculator", { amount: "100", rate: "9", direction: "exclusive" })).toEqual([100, 9, 109]);
+    expect(values("new-zealand-gst-calculator", { amount: "100", rate: "15", direction: "exclusive" })).toEqual([100, 15, 115]);
   });
 });

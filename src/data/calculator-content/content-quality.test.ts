@@ -4,12 +4,30 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { locales, routingLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { calculatorExample } from "@/lib/content-quality/examples";
 import { koreanContentImprovementSlugs } from "@/i18n/dictionaries/korean-content-improvements";
-import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
+import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExampleNotes, secondReviewedBatchExampleNotes, thirdReviewedBatchExampleNotes, fourthReviewedBatchExampleNotes, fifthReviewedBatchExampleNotes, sixthReviewedBatchExampleNotes, seventhReviewedBatchExampleNotes, eighthReviewedBatchExampleNotes, ninthReviewedBatchExampleNotes, tenthReviewedBatchExampleNotes, eleventhReviewedBatchExampleNotes, twelfthReviewedBatchExampleNotes, thirteenthReviewedBatchExampleNotes, fourteenthReviewedBatchExampleNotes, vatPolicyExampleNotes, nextPolicyExampleNotes, fourthPolicyExampleNotes } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 
 type Content = { description: string; howTo: string; formula: string; example: { question: string; answer: string }; faqs: readonly { question: string; answer: string }[]; related: readonly string[] };
 
 describe("calculator content quality", () => {
+  it("keeps four country GST examples localized and linked to checked official rate sources", () => {
+    const checkedSources: Record<string, string> = {
+      "canada-gst-hst-calculator": "canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate.html",
+      "australia-gst-calculator": "ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst",
+      "singapore-gst-calculator": "iras.gov.sg/taxes/goods-services-tax",
+      "new-zealand-gst-calculator": "ird.govt.nz/gst/charging-gst",
+    };
+    for (const [slug, source] of Object.entries(checkedSources)) {
+      const definition = publishedCalculatorPages.find((page) => page.slug === slug);
+      expect(definition?.sources?.some((item) => item.url.includes(source) && item.checkedAt === "2026-10-28"), `${slug} checked source`).toBe(true);
+      for (const locale of locales) {
+        const note = fourthPolicyExampleNotes[locale]?.[slug];
+        expect(note, `${locale}/${slug} authored example note`).toBeTruthy();
+        expect(getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.example.answer).toContain(note);
+        expect(supportedLocalesForCalculator(slug), `${locale}/${slug} route`).toContain(locale);
+      }
+    }
+  });
   it("keeps the South Korea VAT scope, official sources, and localized worked example", () => {
     const vat = publishedCalculatorPages.find((page) => page.slug === "vat");
     expect(vat?.policyType).toBe("POLICY");
