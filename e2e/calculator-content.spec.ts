@@ -9,6 +9,7 @@ import { malaysiaPhilippinesFollowups } from "../src/i18n/dictionaries/malaysia-
 import { philippinesPayrollFollowups } from "../src/i18n/dictionaries/philippines-payroll-followups";
 import { uaeLaborVatFollowups } from "../src/i18n/dictionaries/uae-labor-vat-followups";
 import { newZealandPayrollSavingsFollowups } from "../src/i18n/dictionaries/new-zealand-payroll-savings-followups";
+import { spainPolicyFollowups } from "../src/i18n/dictionaries/spain-policy-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -1862,6 +1863,66 @@ test.describe("calculator input and result flows", () => {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
       expect(dimensions.body, slugs[2] + " at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  test("Spain policy copy is in initial HTML for every locale", async ({ page }) => {
+    test.setTimeout(120_000);
+    const slugs = ["spain-vat-calculator", "spain-irpf-calculator", "spain-severance-pay-calculator"] as const;
+    for (const locale of locales) for (const slug of slugs) {
+      const response = await page.request.get("/" + locale + "/calculators/" + slug);
+      expect(response?.status(), locale + "/" + slug).toBe(200);
+      const html = await response!.text();
+      const content = spainPolicyFollowups[locale][slug]!;
+      expect(html).toContain(content.formula);
+      expect(html).toContain(content.exampleNote);
+      expect(html).toContain(content.faq?.question ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).toMatch(/<link[^>]+rel=["']canonical["']/i);
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Spain VAT, IRPF and severance flows fit all required viewport widths", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/spain-vat-calculator");
+    await waitForCalculatorHydration(page);
+    await expect(page.locator('article a[href*="/iva/calculo-iva-repercutido-clientes/"]')).toBeVisible();
+    await page.locator("#spain-vat-calculator-amount").fill("1000");
+    await page.locator("#spain-vat-calculator-rate").fill("21");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("1,210");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Spain IVA at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/spain-irpf-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#spain-irpf-calculator-income").fill("30000");
+    await page.locator("#spain-irpf-calculator-rate").fill("15");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("4,500");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Spain IRPF at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    }
+
+    await page.goto("/en/calculators/spain-severance-pay-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#spain-severance-pay-calculator-salary").fill("2500");
+    await page.locator("#spain-severance-pay-calculator-years").fill("5");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("8,219.18");
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, body: document.body.scrollWidth }));
+      expect(dimensions.body, "Spain severance at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
   });

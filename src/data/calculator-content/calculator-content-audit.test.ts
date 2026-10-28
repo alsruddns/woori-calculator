@@ -57,6 +57,10 @@ const policySourceUrlsComparedThisRun = new Set([
   "https://www.ird.govt.nz/acclevy",
   "https://www.ird.govt.nz/kiwisaver-changes",
   "https://www.ird.govt.nz/kiwisaver/kiwisaver-individuals/growing-my-kiwisaver-account/employer-contributions-to-kiwisaver",
+  "https://sede.agenciatributaria.gob.es/Sede/iva/calculo-iva-repercutido-clientes/tipos-impositivos-iva.html",
+  "https://www.boe.es/eli/es/l/1992/12/28/37/con",
+  "https://www.boe.es/eli/es/l/2006/11/28/35/con",
+  "https://www.boe.es/eli/es/rdlg/2015/10/23/2/con",
 ]);
 
 function buildAuditReport() {
@@ -184,7 +188,7 @@ describe("calculator content audit register", () => {
     expect(report.computedPolicyExamples).toBe(publishedCalculatorPages.filter((page) => page.countrySpecific).length);
     expect(report.modelSpecificPolicyPages).toBe(92);
     expect(report.verifiedPolicySourceUrls.size).toBeGreaterThan(0);
-    expect(report.policySourceUrlsComparedThisRun.size).toBe(45);
+    expect(report.policySourceUrlsComparedThisRun.size).toBe(49);
     expect(report.pagesWithVerifiedSources).toBeGreaterThan(0);
     expect(Object.values(report.localeCoverage)).toEqual(Array(supportedLocales.length).fill(169));
     expect(report.rows.every(({ concerns, localizedBrokenLinks }) => !concerns.some((item) => item.startsWith("broken related links:")) && localizedBrokenLinks.length === 0)).toBe(true);

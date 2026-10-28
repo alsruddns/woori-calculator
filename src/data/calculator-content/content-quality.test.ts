@@ -15,6 +15,8 @@ import { calculateSocialInsurance } from "@/calculators/policy/social-insurance"
 import { auSgPayrollTaxFollowups } from "@/i18n/dictionaries/au-sg-payroll-tax-followups";
 import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-specific-global";
 import { calculateCountrySpecific } from "@/calculators/policy/country-specific";
+import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
+import { countryRates } from "@/data/country-rates";
 import { singaporeGrossNetCorrections } from "@/i18n/dictionaries/sg-gross-net-corrections";
 import { germanyVatFollowups } from "@/i18n/dictionaries/germany-vat-followups";
 import { hkPolicyFollowups } from "@/i18n/dictionaries/hk-policy-followups";
@@ -618,5 +620,40 @@ describe("calculator content quality", () => {
       }
     }
     expect(malaysiaPhilippinesFollowups.en?.["philippines-sss-calculator"]?.exampleNote).toContain("₱1,000");
+  });
+
+  it("renders Spain VAT, IRPF, and severance examples and scope notes in all 26 locales", () => {
+    const cases = {
+      "spain-vat-calculator": { input: { amount: "1000", rate: "21", direction: "exclusive" }, values: [1000, 210, 1210] },
+      "spain-irpf-calculator": { input: { income: "30000", rate: "15" }, values: [30000, 4500, 15] },
+      "spain-severance-pay-calculator": { input: { salary: "2500", years: "5", daysPerYear: "20" }, values: [82.19, 5, 8219.18] },
+    } as const;
+    const spainSources = countryRates.ES?.sources ?? [];
+    for (const url of [
+      "https://sede.agenciatributaria.gob.es/Sede/iva/calculo-iva-repercutido-clientes/tipos-impositivos-iva.html",
+      "https://www.boe.es/eli/es/l/1992/12/28/37/con",
+      "https://www.boe.es/eli/es/l/2006/11/28/35/con",
+      "https://www.boe.es/eli/es/rdlg/2015/10/23/2/con",
+    ]) expect(spainSources.find((source) => source.url === url)?.checkedAt).toBe("2026-10-28");
+    for (const [slug, sample] of Object.entries(cases)) {
+      const result = calculateCountrySpecific(slug, sample.input);
+      expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual(sample.values);
+      for (const locale of supportedLocales) {
+        const addition = spainPolicyFollowups[locale]?.[slug];
+        const page = getDictionary(locale).calculators[slug as keyof ReturnType<typeof getDictionary>["calculators"]];
+        expect(addition?.formula, `${locale}/${slug} model`).toBeTruthy();
+        expect(addition?.exampleNote, `${locale}/${slug} verified example`).toBeTruthy();
+        expect(addition?.faq, `${locale}/${slug} limitation FAQ`).toBeTruthy();
+        expect(addition?.howTo, `${locale}/${slug} input guidance`).toBeTruthy();
+        expect(page?.howTo).toBe(addition?.howTo);
+        expect(page?.formula).toBe(addition?.formula);
+        expect(page?.example.answer).toContain(addition?.exampleNote);
+        expect(page?.faqs[0]).toEqual(addition?.faq);
+        expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      }
+    }
+    expect(calculateCountrySpecific("spain-vat-calculator", { amount: "1210", rate: "21", direction: "inclusive" })).toMatchObject({ results: [{ value: 1000 }, { value: 210 }, { value: 1210 }] });
+    expect(spainPolicyFollowups.en?.["spain-irpf-calculator"]?.exampleNote).toContain("€4,500");
+    expect(spainPolicyFollowups.en?.["spain-severance-pay-calculator"]?.exampleNote).toContain("€8,219.18");
   });
 });
