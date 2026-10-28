@@ -37,6 +37,7 @@ import { chinaSocialInsuranceFollowups } from "../src/i18n/dictionaries/china-so
 import { chinaVatFollowups } from "../src/i18n/dictionaries/china-vat-followups";
 import { taiwanGrossNetFollowups } from "../src/i18n/dictionaries/taiwan-gross-net-followups";
 import { taiwanIncomeTaxFollowups } from "../src/i18n/dictionaries/taiwan-income-tax-followups";
+import { taiwanLaborInsuranceFollowups } from "../src/i18n/dictionaries/taiwan-labor-insurance-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2807,6 +2808,35 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("77,300");
     await expect(page.locator("[aria-live='polite']")).toContainText("7.73");
+    expect(errors).toEqual([]);
+  });
+
+  test("Taiwan labor-insurance explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = taiwanLaborInsuranceFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/taiwan-labor-insurance-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Taiwan labor-insurance calculator matches the entered-rate example", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/taiwan-labor-insurance-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#taiwan-labor-insurance-calculator-salary").fill("40000");
+    await page.locator("#taiwan-labor-insurance-calculator-rate").fill("2.4");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("960");
     expect(errors).toEqual([]);
   });
 });
