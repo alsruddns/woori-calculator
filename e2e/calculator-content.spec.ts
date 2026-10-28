@@ -46,6 +46,7 @@ import { usPaycheckFollowups } from "../src/i18n/dictionaries/us-paycheck-follow
 import { usIncomeTaxFollowups } from "../src/i18n/dictionaries/us-income-tax-followups";
 import { usSalesTaxFollowups } from "../src/i18n/dictionaries/us-sales-tax-followups";
 import { us401kFollowups } from "../src/i18n/dictionaries/us-401k-followups";
+import { usRothIraFollowups } from "../src/i18n/dictionaries/us-roth-ira-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3098,6 +3099,40 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("123,524.06");
     await expect(page.locator("[aria-live='polite']")).toContainText("33,524.06");
+    expect(errors).toEqual([]);
+  });
+
+  test("Roth IRA phaseout explanation and inputs render in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = usRothIraFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/us-roth-ira-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html, `${locale} income label`).toContain(copy.fieldLabels.income);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Roth IRA calculator matches the configured income-phaseout projection", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/us-roth-ira-calculator");
+    await waitForCalculatorHydration(page);
+    for (const [field, value] of Object.entries({ annualContribution: "6000", income: "160000", filingStatus: "single", rate: "6", years: "10" })) {
+      const input = page.locator(`#us-roth-ira-calculator-${field}`);
+      if (field === "filingStatus") await input.selectOption(value);
+      else await input.fill(value);
+    }
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("43,919.66");
+    await expect(page.locator("[aria-live='polite']")).toContainText("11,919.66");
     expect(errors).toEqual([]);
   });
 });

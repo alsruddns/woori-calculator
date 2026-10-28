@@ -6,14 +6,14 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 154
+- Content COMPLETE: 155
 - VALIDATING: 0
-- Content DRAFT: 15
+- Content DRAFT: 14
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
 - Policy PENDING: 0
-- Latest audit signals: short-content 9 and exact-duplicate occurrences 83 (from the latest full audit; original short-content baseline 71). Review indicators only, not a completion score.
+- Latest audit signals: short-content 9 and exact-duplicate occurrences 79 (from the latest full content audit; original short-content baseline 71). Review indicators only, not a completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
 
 ## Latest completed batch (2026-10-28): U.S. paycheck model
@@ -25,6 +25,8 @@ This register separates earlier result-note work from full content completion. A
 `us-sales-tax-calculator`: added localized purpose, rate-input guidance, inclusive/exclusive formulas, interpretation and scope FAQ in all 26 locales. Both USD 100 before tax and USD 108.25 tax-included at the user-entered 8.25% example produce a USD 8.25 tax and USD 108.25 total. The rate is illustrative only; location/product classification and current legal rate are not verified, so policy remains BLOCKED. Focused content tests passed (53/53); TypeScript, changed-file ESLint and diff check passed. Playwright passed all 26 locale SSR checks and both add/extract interactions (2/2). No engine changes. Native-speaker review not performed. Next DRAFT: `us-401k-calculator`.
 
 `us-401k-calculator`: added a plan-specific contribution/match projection explanation and 10-year scenario to all 26 locales. With USD 100,000 salary, USD 6,000 annual employee contribution, 50% match up to 6% of salary, 6% assumed return and 10 years, the engine returns USD 60,000 employee principal, USD 30,000 employer principal, USD 33,524.06 modeled growth, and USD 123,524.06 projected balance. The projection assumes monthly compounding and beginning-of-month deposits; returns, plan match, fees, vesting, taxes and eligibility are not guaranteed or fully modeled. Policy remains BLOCKED. Focused content tests passed (54/54), TypeScript, changed-file ESLint and diff check passed; Playwright passed all 26 locale SSR cases and the live projection (2/2). No engine changes. Native-speaker review not performed. Next DRAFT: `us-roth-ira-calculator`.
+
+`us-roth-ira-calculator`: added distinct income-phaseout guidance, contribution-cap assumptions, projection method, example and eligibility limitations in all 26 locales. At USD 160,000 entered income, Single status, USD 6,000 requested annual contribution, 6% assumed return and 10 years, the code-configured phaseout factor is 53.33%; the modeled contribution is USD 3,200/year and projected balance USD 43,919.66 (USD 32,000 principal plus USD 11,919.66 assumed growth). Input label now clarifies it is an income value used by the simplified phaseout model, not a MAGI determination. Policy remains BLOCKED; current legal thresholds and eligibility were not verified. Focused content tests passed (55/55), audit test passed, TypeScript, changed-file ESLint and diff check passed. Playwright passed all 26 locale SSR checks and the live projection (2/2). Native-speaker review not performed. Latest audit signals are 9 short-content candidates and 79 exact duplicates. Next DRAFT: `us-capital-gains-tax-calculator`.
 
 Integrated checkpoint after five batches since the previous one: `pnpm test` passed 1,165 tests in 210 files; `pnpm lint`, `pnpm typecheck`, and `pnpm build` passed. Build generated 4,423 static pages. Latest audit report shows 9 locale-aware short-content review signals and 83 exact duplicate occurrences. The full Playwright suite was not run.
 
@@ -259,7 +261,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `us-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured marginal bands and standard deduction; deduction eligibility and current-year legal alignment, personal credits/deductions, special income and state/local tax are not fully verified or modeled. |
 | `us-sales-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents user-entered rate arithmetic only; state/local sourcing, product classification, exemptions and current legal rate are not verified or modeled. |
 | `us-401k-calculator` | finance | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the configured contribution cap, employer-match formula and assumed-return projection; current legal limit, plan eligibility, fees, vesting and plan-specific matching rules are not verified or modeled. |
-| `us-roth-ira-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `us-roth-ira-calculator` | finance | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the configured IRA cap and linear income-phaseout projection; current legal limits, MAGI computation, eligibility, tax treatment and withdrawal rules are not verified or modeled. |
 | `us-capital-gains-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `uk-gross-net-salary-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `uk-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
