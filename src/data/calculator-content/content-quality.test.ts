@@ -50,6 +50,7 @@ import { canadaIncomeTaxFollowups } from "@/i18n/dictionaries/canada-income-tax-
 import { canadaCppEiFollowups } from "@/i18n/dictionaries/canada-cpp-ei-followups";
 import { canadaRrspFollowups } from "@/i18n/dictionaries/canada-rrsp-followups";
 import { australiaStampDutyFollowups } from "@/i18n/dictionaries/australia-stamp-duty-followups";
+import { uaeCorporateTaxFollowups } from "@/i18n/dictionaries/uae-corporate-tax-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -473,6 +474,26 @@ describe("calculator content quality", () => {
       expect(copy.description, `${locale} purpose`).toBeTruthy();
       expect(copy.howTo, `${locale} inputs`).toBeTruthy();
       expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} scope`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("matches the UAE corporate-tax configured threshold model in every locale", () => {
+    const slug = "uae-corporate-tax-calculator";
+    const result = calculateBySlug(slug, { income: "500000" });
+    expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual([500000, 11250]);
+    for (const locale of supportedLocales) {
+      const copy = uaeCorporateTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input`).toBeTruthy();
+      expect(copy.formula, `${locale} model`).toBeTruthy();
       expect(copy.example?.answer, `${locale} example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} scope`).toBeTruthy();
       expect(page?.description).toBe(copy.description);

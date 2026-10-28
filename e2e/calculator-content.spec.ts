@@ -58,6 +58,7 @@ import { canadaIncomeTaxFollowups } from "../src/i18n/dictionaries/canada-income
 import { canadaCppEiFollowups } from "../src/i18n/dictionaries/canada-cpp-ei-followups";
 import { canadaRrspFollowups } from "../src/i18n/dictionaries/canada-rrsp-followups";
 import { australiaStampDutyFollowups } from "../src/i18n/dictionaries/australia-stamp-duty-followups";
+import { uaeCorporateTaxFollowups } from "../src/i18n/dictionaries/uae-corporate-tax-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3433,6 +3434,30 @@ test.describe("calculator input and result flows", () => {
     await page.locator("#australia-stamp-duty-calculator-rate").fill("4");
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("20,000");
+    expect(errors).toEqual([]);
+  });
+
+  test("UAE corporate-tax details render in all locales and apply the configured profit bands", async ({ page, request }) => {
+    for (const locale of locales) {
+      const copy = uaeCorporateTaxFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/uae-corporate-tax-calculator");
+      expect(response.status(), locale).toBe(200);
+      const html = await response.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/uae-corporate-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#uae-corporate-tax-calculator-income").fill("500000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("11,250");
     expect(errors).toEqual([]);
   });
 });
