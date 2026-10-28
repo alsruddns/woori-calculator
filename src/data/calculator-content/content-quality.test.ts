@@ -8,6 +8,7 @@ import { localeContentFollowupTargets, nextBatchExampleNotes, reviewedBatchExamp
 import { calculatorContentQualitySignals } from "@/lib/content-quality/signals";
 import { calculateJapanOvertimePay } from "@/calculators/policy/japan";
 import { japanNightHolidayFollowups } from "@/i18n/dictionaries/japan-night-holiday-followups";
+import { franceOvertimeFollowups } from "@/i18n/dictionaries/france-overtime-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -278,6 +279,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} implemented arithmetic and reference scope`).toBeTruthy();
       expect((copy.example?.answer ?? "").length, `${locale} worked example`).toBeGreaterThan(80);
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders France overtime user-entered arithmetic and legal-scope limits in every locale", () => {
+    const slug = "france-overtime-pay-calculator";
+    const output = calculateBySlug(slug, { salary: "20", hours: "8", multiplier: "1.5" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([160, 80, 240]);
+    for (const locale of supportedLocales) {
+      const copy = franceOvertimeFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and legal scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input meaning`).toBeTruthy();
+      expect(copy.formula, `${locale} current-engine formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);

@@ -25,6 +25,7 @@ import { germanyVacationPayFollowups } from "../src/i18n/dictionaries/germany-va
 import { spainGrossNetFollowups } from "../src/i18n/dictionaries/spain-gross-net-followups";
 import { japanOvertimeFollowups } from "../src/i18n/dictionaries/japan-overtime-followups";
 import { japanNightHolidayFollowups } from "../src/i18n/dictionaries/japan-night-holiday-followups";
+import { franceOvertimeFollowups } from "../src/i18n/dictionaries/france-overtime-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -775,7 +776,7 @@ test.describe("South Korea wage and employee policy examples", () => {
   });
 });
 
-test.describe("Japan wage premiums and German VAT examples", () => {
+test.describe("Policy calculator worked examples", () => {
   const slugs = ["japan-overtime-pay-calculator", "japan-night-holiday-pay-calculator", "germany-vat-calculator"] as const;
   for (const [index, locale] of locales.entries()) {
     const slug = slugs[index % slugs.length]!;
@@ -828,6 +829,29 @@ test.describe("Japan wage premiums and German VAT examples", () => {
       expect(dimensions.body, "Japan/Germany policy detail at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
     }
     expect(errors).toEqual([]);
+  });
+
+  test("France overtime editorial is localized in SSR and the calculator returns the documented example", async ({ page }) => {
+    for (const locale of ["ko", "en", "fr", "de"] as const) {
+      const response = await page.goto("/" + locale + "/calculators/france-overtime-pay-calculator");
+      expect(response?.status()).toBe(200);
+      const html = await response!.text();
+      expect(html).toContain(franceOvertimeFollowups[locale].formula);
+      expect(html).toContain(franceOvertimeFollowups[locale].example?.answer ?? "");
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("canonical");
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+
+    await page.goto("/fr/calculators/france-overtime-pay-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#france-overtime-pay-calculator-salary").fill("20");
+    await page.locator("#france-overtime-pay-calculator-hours").fill("8");
+    await page.locator("#france-overtime-pay-calculator-multiplier").fill("1.5");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("240");
   });
 });
 
