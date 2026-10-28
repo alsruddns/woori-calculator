@@ -47,6 +47,7 @@ import { usIncomeTaxFollowups } from "../src/i18n/dictionaries/us-income-tax-fol
 import { usSalesTaxFollowups } from "../src/i18n/dictionaries/us-sales-tax-followups";
 import { us401kFollowups } from "../src/i18n/dictionaries/us-401k-followups";
 import { usRothIraFollowups } from "../src/i18n/dictionaries/us-roth-ira-followups";
+import { usCapitalGainsFollowups } from "../src/i18n/dictionaries/us-capital-gains-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3133,6 +3134,39 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("43,919.66");
     await expect(page.locator("[aria-live='polite']")).toContainText("11,919.66");
+    expect(errors).toEqual([]);
+  });
+
+  test("U.S. capital-gains explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = usCapitalGainsFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/us-capital-gains-tax-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("U.S. capital-gains calculator matches the configured long-term example", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/us-capital-gains-tax-calculator");
+    await waitForCalculatorHydration(page);
+    for (const [field, value] of Object.entries({ salePrice: "25000", costBasis: "10000", otherIncome: "50000", filingStatus: "single", term: "long", stateRate: "5" })) {
+      const input = page.locator(`#us-capital-gains-tax-calculator-${field}`);
+      if (field === "filingStatus" || field === "term") await input.selectOption(value);
+      else await input.fill(value);
+    }
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("2,250");
+    await expect(page.locator("[aria-live='polite']")).toContainText("750");
     expect(errors).toEqual([]);
   });
 });

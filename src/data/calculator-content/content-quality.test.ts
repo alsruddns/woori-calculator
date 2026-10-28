@@ -39,6 +39,7 @@ import { usIncomeTaxFollowups } from "@/i18n/dictionaries/us-income-tax-followup
 import { usSalesTaxFollowups } from "@/i18n/dictionaries/us-sales-tax-followups";
 import { us401kFollowups } from "@/i18n/dictionaries/us-401k-followups";
 import { usRothIraFollowups } from "@/i18n/dictionaries/us-roth-ira-followups";
+import { usCapitalGainsFollowups } from "@/i18n/dictionaries/us-capital-gains-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -243,6 +244,26 @@ describe("calculator content quality", () => {
       expect(page?.example).toEqual(copy.example);
       expect(page?.faqs[0]).toEqual(copy.faq);
       expect(page?.fields.income.label).toBe(copy.fieldLabels.income);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders U.S. capital-gains branches and engine-matched example in every locale", () => {
+    const slug = "us-capital-gains-tax-calculator";
+    const longTerm = calculateBySlug(slug, { salePrice: "25000", costBasis: "10000", otherIncome: "50000", filingStatus: "single", term: "long", stateRate: "5" });
+    expect(longTerm && "results" in longTerm ? longTerm.results.map(({ value }) => value) : longTerm).toEqual([15000, 2250, 750]);
+    for (const locale of supportedLocales) {
+      const copy = usCapitalGainsFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} inputs`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
     }
   });
