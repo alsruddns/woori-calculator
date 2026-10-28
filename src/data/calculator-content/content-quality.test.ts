@@ -34,6 +34,7 @@ import { auSgPayrollTaxFollowups } from "@/i18n/dictionaries/au-sg-payroll-tax-f
 import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-specific-global";
 import { calculateCountrySpecific } from "@/calculators/policy/country-specific";
 import { calculateBySlug } from "@/calculators/calculate";
+import { usPaycheckFollowups } from "@/i18n/dictionaries/us-paycheck-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -123,6 +124,26 @@ describe("calculator content quality", () => {
     expect(countryRates.BR?.sources.map(({ checkedAt }) => checkedAt)).toEqual(["2026-10-27", "2026-10-27", "2026-10-27"]);
     for (const locale of supportedLocales) {
       const copy = brazilGrossNetFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders the U.S. paycheck model assumptions and engine-matched example in every locale", () => {
+    const slug = "us-paycheck-calculator";
+    const output = calculateBySlug(slug, { salary: "80000", frequency: "annual", filingStatus: "single", stateRate: "0" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([80000, 8770, 6120, 0, 65110, 5425.83]);
+    for (const locale of supportedLocales) {
+      const copy = usPaycheckFollowups[locale];
       const page = getDictionary(locale).calculators[slug];
       expect(copy.description, `${locale} purpose and scope`).toBeTruthy();
       expect(copy.howTo, `${locale} input guidance`).toBeTruthy();

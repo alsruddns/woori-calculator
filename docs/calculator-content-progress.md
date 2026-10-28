@@ -6,15 +6,19 @@ This register separates earlier result-note work from full content completion. A
 
 - Published calculators: 169
 - Public locale routes: 26 per calculator (4394 detail pages)
-- Content COMPLETE: 150
+- Content COMPLETE: 151
 - VALIDATING: 0
-- Content DRAFT: 19
+- Content DRAFT: 18
 - Policy VERIFIED: 12 (includes Brazil INSS employee-table arithmetic)
 - Policy PARTIAL: 30 (includes Brazil FGTS; apprentice 2% category is not selectable)
 - Policy BLOCKED: 59 (includes Brazil IRRF because monthly simplified/personal deductions are not modeled; India salary because Section 87A eligibility and other payroll deductions are not fully modeled)
 - Policy PENDING: 0
 - Latest audit signals: short-content 10 and exact-duplicate occurrences 127 (from the latest full audit; original short-content baseline 71). Review indicators only, not a completion score.
 - Content completion and policy verification are tracked independently. DRAFT policy pages can receive safe, engine-grounded content while source review proceeds.
+
+## Latest completed batch (2026-10-28): U.S. paycheck model
+
+`us-paycheck-calculator`: connected calculator-specific purpose, input guidance, implemented annualization/federal-band/FICA formula, an USD 80,000 single-filer example, interpretation, and limitations in all 26 locales. Current engine output is USD 8,770 modeled federal tax, USD 6,120 combined Social Security/Medicare, USD 0 entered state/local estimate, USD 65,110 annual net, and USD 5,425.83 monthly average. This reflects configured code assumptions only; source rules/effective date and individual withholding are not revalidated, so policy remains BLOCKED. Focused content tests passed (51/51); Playwright passed all 26 locale SSR checks and the live annual calculation (2/2). No engine or UI changes. Native-speaker review not performed. Next DRAFT: `us-income-tax-calculator`.
 
 ## Completion gate
 
@@ -243,7 +247,7 @@ India gross-net salary follow-up: the engine applies the new-regime standard ded
 | `italy-gross-net-salary-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured 2026 annual IRPEF model; regional/municipal surcharges, employee social contributions and current legal alignment remain unverified/outside the model. |
 | `italy-income-tax-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents configured annual marginal bands and taxable-income input; current legal application, personal deductions/credits, local surcharges and filing details remain unverified/outside the model. |
 | `italy-vat-calculator` | tax | POLICY | 26/26 | COMPLETE | BLOCKED | Documents rate-based inclusive/exclusive arithmetic; product/service classification, applicable rate and current legal treatment remain unverified/outside the model. |
-| `us-paycheck-calculator` | salary | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
+| `us-paycheck-calculator` | salary | POLICY | 26/26 | COMPLETE | BLOCKED | Documents the configured federal bands, standard deduction, simplified FICA model and entered state/local rate; current legal alignment, withholding choices, credits and individual deductions are not verified/modelled. |
 | `us-income-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `us-sales-tax-calculator` | tax | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |
 | `us-401k-calculator` | finance | POLICY | 26/26 | DRAFT | BLOCKED | Official rule and effective date need verification; do not change policy values. |

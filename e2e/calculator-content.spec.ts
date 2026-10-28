@@ -42,6 +42,7 @@ import { taiwanVatFollowups } from "../src/i18n/dictionaries/taiwan-vat-followup
 import { italyGrossNetFollowups } from "../src/i18n/dictionaries/italy-gross-net-followups";
 import { italyIncomeTaxFollowups } from "../src/i18n/dictionaries/italy-income-tax-followups";
 import { italyVatFollowups } from "../src/i18n/dictionaries/italy-vat-followups";
+import { usPaycheckFollowups } from "../src/i18n/dictionaries/us-paycheck-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2967,6 +2968,38 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("819.67");
     await expect(page.locator("[aria-live='polite']")).toContainText("180.33");
+    expect(errors).toEqual([]);
+  });
+
+  test("U.S. paycheck explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = usPaycheckFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/us-paycheck-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("U.S. paycheck calculator matches the annual single-filer model example", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/us-paycheck-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#us-paycheck-calculator-salary").fill("80000");
+    await page.locator("#us-paycheck-calculator-frequency").selectOption("annual");
+    await page.locator("#us-paycheck-calculator-filingStatus").selectOption("single");
+    await page.locator("#us-paycheck-calculator-stateRate").fill("0");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("65,110");
+    await expect(page.locator("[aria-live='polite']")).toContainText("5,425.83");
     expect(errors).toEqual([]);
   });
 });
