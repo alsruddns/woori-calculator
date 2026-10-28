@@ -40,6 +40,7 @@ import { taiwanIncomeTaxFollowups } from "../src/i18n/dictionaries/taiwan-income
 import { taiwanLaborInsuranceFollowups } from "../src/i18n/dictionaries/taiwan-labor-insurance-followups";
 import { taiwanVatFollowups } from "../src/i18n/dictionaries/taiwan-vat-followups";
 import { italyGrossNetFollowups } from "../src/i18n/dictionaries/italy-gross-net-followups";
+import { italyIncomeTaxFollowups } from "../src/i18n/dictionaries/italy-income-tax-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -2903,6 +2904,35 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("26,920");
     await expect(page.locator("[aria-live='polite']")).toContainText("2,243.33");
+    expect(errors).toEqual([]);
+  });
+
+  test("Italy income-tax explanation is present in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = italyIncomeTaxFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/italy-income-tax-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} worked example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("Italy income-tax calculator matches its annual marginal-band example", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/italy-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#italy-income-tax-calculator-income").fill("60000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("18,000");
+    await expect(page.locator("[aria-live='polite']")).toContainText("30");
     expect(errors).toEqual([]);
   });
 });

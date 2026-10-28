@@ -23,6 +23,7 @@ import { taiwanIncomeTaxFollowups } from "@/i18n/dictionaries/taiwan-income-tax-
 import { taiwanLaborInsuranceFollowups } from "@/i18n/dictionaries/taiwan-labor-insurance-followups";
 import { taiwanVatFollowups } from "@/i18n/dictionaries/taiwan-vat-followups";
 import { italyGrossNetFollowups } from "@/i18n/dictionaries/italy-gross-net-followups";
+import { italyIncomeTaxFollowups } from "@/i18n/dictionaries/italy-income-tax-followups";
 import { calculateUnemploymentBenefit } from "@/calculators/policy/unemployment-benefit";
 import { unemploymentBenefitExampleNotes, koreanPolicyContextDescriptions, gstCountryContextDescriptions, auSgPolicyContextDescriptions } from "@/i18n/dictionaries/locale-quality-followup";
 import { calculateMinimumWage } from "@/calculators/finance/calculate";
@@ -606,6 +607,27 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} annual progressive formula`).toBeTruthy();
       expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitations`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+      if (locale !== "en") expect(page?.formula, `${locale} localized formula`).not.toBe(getDictionary("en").calculators[slug]?.formula);
+    }
+  });
+  it("renders Italy income-tax configured marginal bands and example in every locale", () => {
+    const slug = "italy-income-tax-calculator";
+    const output = calculateBySlug(slug, { income: "60000" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([60000, 18000, 30]);
+    for (const locale of supportedLocales) {
+      const copy = italyIncomeTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose and taxable-income basis`).toBeTruthy();
+      expect(copy.howTo, `${locale} input meaning`).toBeTruthy();
+      expect(copy.formula, `${locale} progressive-band formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} engine-matched example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limits`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
