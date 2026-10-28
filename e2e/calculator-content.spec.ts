@@ -55,6 +55,7 @@ import { ukStampDutyFollowups } from "../src/i18n/dictionaries/uk-stamp-duty-fol
 import { ukPensionFollowups } from "../src/i18n/dictionaries/uk-pension-followups";
 import { canadaGrossNetFollowups } from "../src/i18n/dictionaries/canada-gross-net-followups";
 import { canadaIncomeTaxFollowups } from "../src/i18n/dictionaries/canada-income-tax-followups";
+import { canadaCppEiFollowups } from "../src/i18n/dictionaries/canada-cpp-ei-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3353,6 +3354,31 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("8,496.00");
     await expect(page.locator("[aria-live='polite']")).toContainText("14.16");
+    expect(errors).toEqual([]);
+  });
+
+  test("Canada CPP/EI details render in all locales and separate employee/employer amounts", async ({ page, request }) => {
+    for (const locale of locales) {
+      const copy = canadaCppEiFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/canada-cpp-ei-calculator");
+      expect(response.status(), locale).toBe(200);
+      const html = await response.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/canada-cpp-ei-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#canada-cpp-ei-calculator-salary").fill("60000");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("3,361.75");
+    await expect(page.locator("[aria-live='polite']")).toContainText("4,730.95");
     expect(errors).toEqual([]);
   });
 });

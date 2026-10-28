@@ -47,6 +47,7 @@ import { ukStampDutyFollowups } from "@/i18n/dictionaries/uk-stamp-duty-followup
 import { ukPensionFollowups } from "@/i18n/dictionaries/uk-pension-followups";
 import { canadaGrossNetFollowups } from "@/i18n/dictionaries/canada-gross-net-followups";
 import { canadaIncomeTaxFollowups } from "@/i18n/dictionaries/canada-income-tax-followups";
+import { canadaCppEiFollowups } from "@/i18n/dictionaries/canada-cpp-ei-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -412,6 +413,26 @@ describe("calculator content quality", () => {
       expect(copy.formula, `${locale} configured bands`).toBeTruthy();
       expect(copy.example?.answer, `${locale} worked example`).toBeTruthy();
       expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("explains Canada's configured CPP, CPP2, EI and employer model in every locale", () => {
+    const slug = "canada-cpp-ei-calculator";
+    const result = calculateBySlug(slug, { salary: "60000" });
+    expect(result && "results" in result ? result.results.map(({ value }) => value) : result).toEqual([3361.75, 0, 978, 4730.95]);
+    for (const locale of supportedLocales) {
+      const copy = canadaCppEiFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} caveat`).toBeTruthy();
       expect(page?.description).toBe(copy.description);
       expect(page?.howTo).toBe(copy.howTo);
       expect(page?.formula).toBe(copy.formula);
