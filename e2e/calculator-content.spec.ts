@@ -43,6 +43,7 @@ import { italyGrossNetFollowups } from "../src/i18n/dictionaries/italy-gross-net
 import { italyIncomeTaxFollowups } from "../src/i18n/dictionaries/italy-income-tax-followups";
 import { italyVatFollowups } from "../src/i18n/dictionaries/italy-vat-followups";
 import { usPaycheckFollowups } from "../src/i18n/dictionaries/us-paycheck-followups";
+import { usIncomeTaxFollowups } from "../src/i18n/dictionaries/us-income-tax-followups";
 
 const locales = [
   "ko", "en", "ja", "zh", "es", "pt-br", "de", "fr", "vi", "id", "th", "zh-tw", "it", "nl", "hi",
@@ -3000,6 +3001,36 @@ test.describe("calculator input and result flows", () => {
     await page.locator('form button[type="submit"]').click();
     await expect(page.locator("[aria-live='polite']")).toContainText("65,110");
     await expect(page.locator("[aria-live='polite']")).toContainText("5,425.83");
+    expect(errors).toEqual([]);
+  });
+
+  test("U.S. income-tax explanation and input meaning render in SSR for all locales", async ({ request }) => {
+    test.setTimeout(240_000);
+    for (const locale of locales) {
+      const copy = usIncomeTaxFollowups[locale];
+      const response = await request.get("/" + locale + "/calculators/us-income-tax-calculator");
+      expect(response?.status(), locale).toBe(200);
+      const html = await response!.text();
+      expect(html, `${locale} purpose`).toContain(copy.description);
+      expect(html, `${locale} formula`).toContain(copy.formula);
+      expect(html, `${locale} example`).toContain(copy.example!.answer);
+      expect(html, `${locale} FAQ`).toContain(copy.faq!.question);
+      expect(html).toMatch(/<h1\b/);
+      expect(html).toMatch(/<h2\b/);
+      expect(html.toLowerCase()).toContain("hreflang");
+      expect(html).not.toMatch(/<meta[^>]+name=["']robots["'][^>]+noindex/i);
+    }
+  });
+
+  test("U.S. income-tax calculator matches its annual single-status model example", async ({ page }) => {
+    const errors = collectBrowserErrors(page);
+    await page.goto("/en/calculators/us-income-tax-calculator");
+    await waitForCalculatorHydration(page);
+    await page.locator("#us-income-tax-calculator-income").fill("100000");
+    await page.locator("#us-income-tax-calculator-filingStatus").selectOption("single");
+    await page.locator('form button[type="submit"]').click();
+    await expect(page.locator("[aria-live='polite']")).toContainText("13,170");
+    await expect(page.locator("[aria-live='polite']")).toContainText("15.7");
     expect(errors).toEqual([]);
   });
 });

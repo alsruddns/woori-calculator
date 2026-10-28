@@ -35,6 +35,7 @@ import { calculateGlobalCountrySpecific } from "@/calculators/policy/country-spe
 import { calculateCountrySpecific } from "@/calculators/policy/country-specific";
 import { calculateBySlug } from "@/calculators/calculate";
 import { usPaycheckFollowups } from "@/i18n/dictionaries/us-paycheck-followups";
+import { usIncomeTaxFollowups } from "@/i18n/dictionaries/us-income-tax-followups";
 import { spainPolicyFollowups } from "@/i18n/dictionaries/spain-policy-followups";
 import { countryRates } from "@/data/country-rates";
 import { francePolicyFollowups } from "@/i18n/dictionaries/france-policy-followups";
@@ -155,6 +156,27 @@ describe("calculator content quality", () => {
       expect(page?.formula).toBe(copy.formula);
       expect(page?.example).toEqual(copy.example);
       expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(supportedLocalesForCalculator(slug)).toContain(locale);
+    }
+  });
+  it("renders the U.S. income-tax model, corrected input meaning, and example in every locale", () => {
+    const slug = "us-income-tax-calculator";
+    const output = calculateBySlug(slug, { income: "100000", filingStatus: "single" });
+    expect(output && "results" in output ? output.results.map(({ value }) => value) : output).toEqual([83900, 13170, 15.7]);
+    for (const locale of supportedLocales) {
+      const copy = usIncomeTaxFollowups[locale];
+      const page = getDictionary(locale).calculators[slug];
+      expect(copy.description, `${locale} purpose`).toBeTruthy();
+      expect(copy.howTo, `${locale} input guidance`).toBeTruthy();
+      expect(copy.formula, `${locale} formula`).toBeTruthy();
+      expect(copy.example?.answer, `${locale} example`).toBeTruthy();
+      expect(copy.faq?.answer, `${locale} limitation`).toBeTruthy();
+      expect(page?.description).toBe(copy.description);
+      expect(page?.howTo).toBe(copy.howTo);
+      expect(page?.formula).toBe(copy.formula);
+      expect(page?.example).toEqual(copy.example);
+      expect(page?.faqs[0]).toEqual(copy.faq);
+      expect(page?.fields.income.label).toBe(copy.fieldLabels.income);
       expect(supportedLocalesForCalculator(slug)).toContain(locale);
     }
   });
