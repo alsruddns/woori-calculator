@@ -5,10 +5,9 @@ import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { RatioExamples } from "@/components/calculator/ratio-examples";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/constants/site-config";
-import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculators/categories";
+import { calculatorCategories } from "@/data/calculators/categories";
 import { getCalculatorPage, publishedCalculatorPages } from "@/data/calculator-content";
 import { createPageMetadata } from "@/lib/seo/metadata";
-import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
 import { localizedCalculatorSlugs, localePath, supportedLocalesForCalculator } from "@/i18n/config";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -51,7 +50,6 @@ export default async function CalculatorPage({ params }: PageProps) {
   const description = localized?.description ?? calculator.description;
 
   return (
-      <CalculatorWorkspace localizedItems={publishedCalculatorPages.map((item) => ({ slug: item.slug, name: getDictionary("ko").calculators[item.slug as keyof ReturnType<typeof getDictionary>["calculators"]]?.name ?? item.name, keywords: item.keywords, category: item.category }))} categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} basePath={localePath("ko", "/calculators")} labels={{ menu: dictionary.nav.menu, search: dictionary.nav.search, close: dictionary.nav.close, empty: dictionary.nav.searchEmpty }}>
     <article className="min-w-0 py-6 sm:py-10">
       <JsonLd data={{
         "@context": "https://schema.org",
@@ -116,6 +114,5 @@ export default async function CalculatorPage({ params }: PageProps) {
         </aside>
       </div>
     </article>
-    </CalculatorWorkspace>
   );
 }

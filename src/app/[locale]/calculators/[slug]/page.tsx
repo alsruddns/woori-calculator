@@ -4,11 +4,10 @@ import { notFound } from "next/navigation";
 import { CalculatorForm } from "@/components/calculator/calculator-form";
 import { RatioExamples } from "@/components/calculator/ratio-examples";
 import { PolicyReferences } from "@/components/calculator/policy-references";
-import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteConfig } from "@/constants/site-config";
 import { getCalculatorPage } from "@/data/calculator-content";
-import { calculatorSupportsLocale, hasLocale, localeConfig, localePath, localizedCalculatorSlugs, localizedIndexSlugs, dictionaryLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
+import { calculatorSupportsLocale, hasLocale, localeConfig, localePath, localizedCalculatorSlugs, dictionaryLocales, supportedLocalesForCalculator, type SupportedLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { localizedMetadata } from "@/lib/i18n/seo";
 
@@ -35,8 +34,7 @@ export default async function LocalizedCalculatorPage({ params }: Props) {
   if (!source) notFound();
   const category = categoryFor(slug);
   const path = localePath(locale, `/calculators/${slug}`);
-  return <CalculatorWorkspace localizedItems={localizedIndexSlugs(locale).map((id) => ({ slug: id, name: dictionary.calculators[id]!.name, keywords: dictionary.calculators[id]!.keywords, category: categoryFor(id) }))} categories={dictionary.categories} categoryOrder={dictionary.categoriesOrder} basePath={localePath(locale, "/calculators")} labels={{ menu: dictionary.nav.menu, search: dictionary.nav.search, close: dictionary.nav.close, empty: dictionary.nav.searchEmpty }}>
-    <article className="min-w-0 py-4">
+  return <article className="min-w-0 py-4">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: dictionary.detail.home, item: `${siteConfig.serviceBaseUrl}${localePath(locale)}` }, { "@type": "ListItem", position: 2, name: dictionary.detail.calculators, item: `${siteConfig.serviceBaseUrl}${localePath(locale, "/calculators")}` }, { "@type": "ListItem", position: 3, name: content.name, item: `${siteConfig.serviceBaseUrl}${path}` }] }} />
       <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", "@id": `${siteConfig.serviceBaseUrl}${path}#webpage`, name: content.title, description: content.description, url: `${siteConfig.serviceBaseUrl}${path}`, isPartOf: { "@id": `${siteConfig.serviceBaseUrl}${localePath(locale)}#website` }, inLanguage: localeConfig[locale].htmlLang }} />
       <nav aria-label={dictionary.calculatorList.breadcrumbCalculators} className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6"><Link className="inline-flex min-h-11 items-center" href={localePath(locale)}>{dictionary.detail.home}</Link><span aria-hidden="true">/</span><Link className="inline-flex min-h-11 items-center" href={localePath(locale, "/calculators")}>{dictionary.detail.calculators}</Link><span aria-hidden="true">/</span><span aria-current="page">{content.name}</span></nav>
@@ -49,6 +47,5 @@ export default async function LocalizedCalculatorPage({ params }: Props) {
         {slug === "ratio" && locale !== "ru" && locale !== "tr" && locale !== "pl" && locale !== "fil" && locale !== "bn" && locale !== "uk" && locale !== "ms" && locale !== "sv" && locale !== "cs" && locale !== "ro" && locale !== "el" ? <RatioExamples locale={locale} heading={dictionary.detail.example} /> : <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"><h2 className="break-words text-lg font-bold text-slate-950 [overflow-wrap:anywhere] sm:text-xl">{dictionary.detail.example}</h2><div className="mt-3 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5"><p className="break-words font-semibold [overflow-wrap:anywhere]">{content.example.question}</p><p className="mt-2 break-words leading-7 text-slate-700 [overflow-wrap:anywhere]">{content.example.answer}</p></div></section>}
         <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"><h2 className="break-words text-lg font-bold text-slate-950 [overflow-wrap:anywhere] sm:text-xl">{dictionary.detail.faqs}</h2><dl className="mt-3 min-w-0 divide-y divide-slate-200 border-y border-slate-200">{content.faqs.map((faq) => <div key={faq.question} className="min-w-0 py-4 sm:py-5"><dt className="break-words font-semibold [overflow-wrap:anywhere]">{faq.question}</dt><dd className="mt-2 break-words leading-7 text-slate-700 [overflow-wrap:anywhere]">{faq.answer}</dd></div>)}</dl></section>
       </div><aside className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5" aria-labelledby="related-heading"><h2 id="related-heading" className="break-words text-lg font-bold [overflow-wrap:anywhere]">{dictionary.detail.related}</h2><ul className="mt-3 space-y-2">{content.related.map((relatedSlug) => { const item = dictionary.calculators[relatedSlug]; return item ? <li key={relatedSlug}><Link className="block min-w-0 break-words rounded-lg border border-slate-200 bg-white px-4 py-3 font-medium [overflow-wrap:anywhere] hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-teal-700" href={localePath(locale, `/calculators/${relatedSlug}`)}>{item.name}</Link></li> : null; })}</ul><PolicyReferences locale={locale} page={source} /></aside></div>
-    </article>
-  </CalculatorWorkspace>;
+  </article>;
 }
