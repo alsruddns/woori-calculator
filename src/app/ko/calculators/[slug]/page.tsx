@@ -9,7 +9,7 @@ import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculator
 import { getCalculatorPage, publishedCalculatorPages } from "@/data/calculator-content";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
-import { localizedCalculatorSlugs, localePath } from "@/i18n/config";
+import { localizedCalculatorSlugs, localePath, supportedLocalesForCalculator } from "@/i18n/config";
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { getDictionary } from "@/i18n/dictionaries";
 import { sourceNotVerified } from "@/i18n/policy-source-status";
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const localized = getDictionary("ko").calculators[calculator.slug as keyof ReturnType<typeof getDictionary>["calculators"]];
   const path = `/calculators/${calculator.slug}` as `/${string}`;
   if (localizedCalculatorSlugs.includes(calculator.slug as (typeof localizedCalculatorSlugs)[number])) {
-    return localizedMetadata("ko", path, localized?.title ?? calculator.title, localized?.description ?? calculator.description, localized?.keywords ?? calculator.keywords);
+    return localizedMetadata("ko", path, localized?.title ?? calculator.title, localized?.description ?? calculator.description, localized?.keywords ?? calculator.keywords, supportedLocalesForCalculator(calculator.slug));
   }
   return createPageMetadata({ title: calculator.title, description: calculator.description, path, keywords: calculator.keywords });
 }
