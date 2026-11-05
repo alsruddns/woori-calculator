@@ -4,7 +4,6 @@ import { calculatorCategories, calculatorCategoryOrder } from "@/data/calculator
 import { localizedMetadata } from "@/lib/i18n/seo";
 import { localePath, supportedLocales } from "@/i18n/config";
 import { publishedCalculatorPages } from "@/data/calculator-content";
-import { CalculatorWorkspace } from "@/components/calculator/calculator-workspace";
 import { CatalogGuidance } from "@/components/calculator/catalog-guidance";
 import { getDictionary } from "@/i18n/dictionaries";
 import { catalogGuidance } from "@/i18n/catalog-guidance";
@@ -22,7 +21,6 @@ export default function CalculatorsPage() {
     .filter(({ items }) => items.length > 0);
 
   return (
-    <CalculatorWorkspace localizedItems={publishedCalculatorPages.map((item) => ({ slug: item.slug, name: dictionary.calculators[item.slug as keyof typeof dictionary.calculators]?.name ?? item.name, keywords: item.keywords, category: item.category }))} categories={calculatorCategories} categoryOrder={calculatorCategoryOrder} basePath={localePath("ko", "/calculators")} labels={{ menu: dictionary.nav.menu, search: dictionary.nav.search, close: dictionary.nav.close, empty: dictionary.nav.searchEmpty }}>
     <section className="min-w-0 py-4 sm:py-10">
       <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-x-2 break-words text-sm text-slate-500 [overflow-wrap:anywhere] sm:mb-6"><Link className="inline-flex min-h-11 items-center hover:text-teal-800" href={localePath("ko")}>홈</Link><span aria-hidden="true">/</span><span aria-current="page">계산기</span></nav>
       <header>
@@ -45,6 +43,5 @@ export default function CalculatorsPage() {
         ))}
       </div>
     </section>
-    </CalculatorWorkspace>
   );
 }
