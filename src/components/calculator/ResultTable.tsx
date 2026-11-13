@@ -5,7 +5,15 @@ import { formatNumber } from "@/lib/formatter/number";
 import { formatCurrency, defaultCurrencyByLocale, type CurrencyCode } from "@/lib/formatter/currency";
 import type { CalculatorTable } from "@/types/calculator-page";
 import type { SupportedLocale } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
+
+type ResultTableCopy = {
+  result: string;
+  input: string;
+  month: string;
+  next: string;
+  previous: string;
+  cagrAssumption: string;
+};
 
 const labels = {
   ko: { periodDetails: "기간별 상세 내역", repaymentSchedule: "월별 상환 내역", yearlyForecast: "연도별 예상 추이", period: "기간", openingBalance: "기초 금액", monthlyDeposit: "월 납입액", cumulativePrincipal: "누적 납입 원금", periodInterest: "해당 기간 이자", cumulativeInterest: "누적 이자", endingBalance: "기간 종료 금액", payment: "납입액", principal: "원금", interest: "이자", remainingBalance: "남은 원금", amount: "예상 금액", change: "전년 대비 증가액", showAll: "전체 보기", showLess: "일부만 보기", cagrAssumption: "같은 CAGR이 매년 유지된다고 가정한 수학적 추정이며 실제 투자 성과를 나타내지 않습니다." },
@@ -14,19 +22,16 @@ const labels = {
   zh: { periodDetails: "分期明细", repaymentSchedule: "每月还款明细", yearlyForecast: "年度预测", period: "期间", openingBalance: "期初金额", monthlyDeposit: "每月存入", cumulativePrincipal: "累计本金", periodInterest: "本期利息", cumulativeInterest: "累计利息", endingBalance: "期末金额", payment: "还款额", principal: "本金", interest: "利息", remainingBalance: "剩余本金", amount: "预测金额", change: "较上年增加", showAll: "显示全部", showLess: "收起部分", cagrAssumption: "此数学推算假设每期保持相同CAGR，不代表实际投资表现。" },
 } as const;
 
-export function ResultTable({ table, locale = "ko", currency = defaultCurrencyByLocale[locale] }: { table: CalculatorTable; locale?: SupportedLocale; currency?: CurrencyCode }) {
+export function ResultTable({ table, locale = "ko", currency = defaultCurrencyByLocale[locale], fallbackLabels }: { table: CalculatorTable; locale?: SupportedLocale; currency?: CurrencyCode; fallbackLabels: ResultTableCopy }) {
   const [expanded, setExpanded] = useState(false);
   const text = labels[locale as keyof typeof labels] ?? {
-    periodDetails: getDictionary(locale).common.result, repaymentSchedule: getDictionary(locale).common.result,
-    yearlyForecast: getDictionary(locale).common.result, period: getDictionary(locale).units.month,
-    openingBalance: getDictionary(locale).common.result, monthlyDeposit: getDictionary(locale).common.input,
-    cumulativePrincipal: getDictionary(locale).common.result, periodInterest: getDictionary(locale).common.result,
-    cumulativeInterest: getDictionary(locale).common.result, endingBalance: getDictionary(locale).common.result,
-    payment: getDictionary(locale).common.result, principal: getDictionary(locale).common.result,
-    interest: getDictionary(locale).common.result, remainingBalance: getDictionary(locale).common.result,
-    amount: getDictionary(locale).common.result, change: getDictionary(locale).common.result,
-    showAll: getDictionary(locale).common.next, showLess: getDictionary(locale).common.previous,
-    cagrAssumption: getDictionary(locale).calculators.cagr?.resultNote ?? getDictionary(locale).common.result,
+    periodDetails: fallbackLabels.result, repaymentSchedule: fallbackLabels.result, yearlyForecast: fallbackLabels.result,
+    period: fallbackLabels.month, openingBalance: fallbackLabels.result, monthlyDeposit: fallbackLabels.input,
+    cumulativePrincipal: fallbackLabels.result, periodInterest: fallbackLabels.result, cumulativeInterest: fallbackLabels.result,
+    endingBalance: fallbackLabels.result, payment: fallbackLabels.result, principal: fallbackLabels.result,
+    interest: fallbackLabels.result, remainingBalance: fallbackLabels.result, amount: fallbackLabels.result,
+    change: fallbackLabels.result, showAll: fallbackLabels.next, showLess: fallbackLabels.previous,
+    cagrAssumption: fallbackLabels.cagrAssumption,
   };
   const visibleRows = table.rows.length > 24 && !expanded ? table.rows.slice(0, 12) : table.rows;
   return <section className="mt-6 min-w-0" aria-label={text[table.title]}>

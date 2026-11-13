@@ -228,7 +228,14 @@ export function CalculatorForm({ slug, fields, locale = "ko", dictionary, conten
               return <div key={`${item.label}-${index}`} className="min-w-0 rounded-lg bg-white px-3 py-3 sm:px-4"><dt className="break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]">{localizedResultLabel(item.label, index, content?.resultLabels)}</dt><dd className="mt-1 break-words text-lg font-bold tabular-nums text-teal-900 [overflow-wrap:anywhere] sm:text-xl">{value}</dd></div>;
             })}
           </dl>
-          {success.table ? <ResultTable table={success.table} locale={locale} currency={currency} /> : null}
+          {success.table ? <ResultTable table={success.table} locale={locale} currency={currency} fallbackLabels={{
+            result: dictionary?.common.result ?? "Result",
+            input: dictionary?.common.input ?? "Input",
+            month: dictionary?.units.month ?? "Month",
+            next: dictionary?.common.next ?? "Next",
+            previous: dictionary?.common.previous ?? "Previous",
+            cagrAssumption: content?.resultNote ?? dictionary?.common.result ?? "Result",
+          }} /> : null}
           {success.note ? <p className="mt-4 text-sm leading-6 text-slate-700">{content?.resultNote ?? success.note}</p> : null}
         </section>
       ) : null}
