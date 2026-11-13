@@ -104,7 +104,7 @@ export function CalculatorSidebar({ calculators, categories, categoryOrder, labe
         <ul className="space-y-1">{items.map((item) => {
           const href = `${basePath}/${item.slug}`;
           const active = pathname === href;
-          return <li key={item.slug} className="min-w-0"><Link href={href} prefetch={false} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)} className={`block min-h-11 min-w-0 break-words rounded-lg px-3 py-3 text-sm leading-5 [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${active ? "bg-teal-50 font-semibold text-teal-900" : "text-slate-700 hover:bg-slate-100"}`}>{item.name}</Link></li>;
+          return <li key={item.slug} className="min-w-0"><Link href={href} aria-current={active ? "page" : undefined} onClick={() => setOpen(false)} className={`block min-h-11 min-w-0 break-words rounded-lg px-3 py-3 text-sm leading-5 [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${active ? "bg-teal-50 font-semibold text-teal-900" : "text-slate-700 hover:bg-slate-100"}`}>{item.name}</Link></li>;
         })}</ul>
       </section>;
     })}
